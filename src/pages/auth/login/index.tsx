@@ -5,7 +5,7 @@ import {
   PasswordIcon,
 
 } from "@ui/icons";
-import React from "react";
+import React, { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import Link from "next/link";
 
@@ -17,15 +17,35 @@ import { useRouter } from "next/router";
 import Auth from "@ui/auth";
 import { signIn } from "next-auth/react";
 
+import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
+import { type NextPage, type GetServerSideProps } from "next/types";
 
-const Login = () => {
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  console.log(session?.user);
+  if (session) {
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: true,
+      },
+    };
+  }
+  return {props:{}}
+
+};
+const Login:NextPage = () => {
   const router = useRouter();
+  const [isLoading, setisLoading] = useState(false)
+  const [remember, setremember] = useState(true);
   const { register, handleSubmit,formState } = useForm<TLogin>({
     mode: "onChange",
   });
    const { errors } = formState;
 
   const onSubmit: SubmitHandler<TLogin> = async(data) =>{
+    setisLoading(true)
     await signIn('credentials',{
         email:data.email,
         password:data.password,
@@ -39,6 +59,8 @@ const Login = () => {
       }).catch((err)=>{
         console.log(err)
         toast.error("Erreur lors de Sign up")
+      }).finally(()=>{
+        setisLoading(false)
       })
 }
   return (
@@ -98,7 +120,8 @@ const Login = () => {
           <div className="flex flex-row gap-3 items-center text-opacity-75">
             <input
               type="checkbox"
-              checked={true}
+              checked={remember}
+              onChange={(v)=>setremember(v.currentTarget.checked)}
               className="checkbox checkbox-sm  checkbox-primary"
             />
             <span>Remember Me</span>
@@ -110,7 +133,9 @@ const Login = () => {
         <div className="h-[30px]"></div>
         <button
           type="submit"
-          className={cx("btn btn-primary px-7 btn-wide rounded-2xl")}
+          className={cx("btn btn-primary px-7 btn-wide rounded-2xl",{
+            "loading":isLoading
+          })}
         >
           Login
         </button>

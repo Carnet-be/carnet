@@ -1,7 +1,7 @@
 
 import Input from "@ui/components/input";
 import { EmailIcon, EntrepriseIcon, PasswordIcon, PersonIcon, TelIcon } from "@ui/icons";
-import React from "react";
+import React, { useState } from "react";
 
 import { useForm, type SubmitHandler } from "react-hook-form";
 import Link from "next/link";
@@ -9,16 +9,69 @@ import { PRIVACY_POLICY_URL, TERMS_URL } from "@data/link";
 import { type TSignupBidder } from "@model/type";
 import Auth from "@ui/auth";
 import SignupLayout from "@ui/signup";
+import { useRouter } from "next/router";
+import { trpc } from "@utils/trpc";
+import { signIn } from "next-auth/react";
+import toast from "react-hot-toast";
+import cx  from 'classnames';
+import { type GetServerSideProps } from "next";
+import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
 
 
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  console.log(session?.user);
+  if (session) {
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: true,
+      },
+    };
+  }
+  return {props:{}}
 
+};
 const Bidder = () => {
-  const { register, handleSubmit, watch, formState } = useForm<TSignupBidder>({
-    mode: "onChange",
-  });
+  const [agree, setagree] = useState(false);
+  const [remember, setremember] = useState(true);
+  //const {onCreateUser,createUserDocLoading}=useCreateUserDoc()
+  const { register, handleSubmit, watch, formState } =
+    useForm<TSignupBidder>({
+      mode: "onChange",
+    });
+  
   const { errors } = formState;
- 
-  const onSubmit: SubmitHandler<TSignupBidder> = (data) => console.log(data);
+  const router=useRouter()
+  const {mutate:signup,isLoading}=trpc.auth.signUp.useMutation({
+    onError:(err)=>{
+     console.log("Auth signup",err)
+     
+     toast.error(err.message)
+    },
+    onSuccess:(user)=>{
+       console.log('user after signup',user)
+       toast.success("Inscription réussie")
+       
+       signIn('credentials',{
+        email:user.email,
+        password:watch('password'),
+        redirect:false,
+       }).then(()=>{
+        router.replace('/dashboard')
+       }).catch(()=>{
+        router.push('/auth/login')
+       })
+       //TODO:Signin
+    }
+  })
+  
+
+  const onSubmit: SubmitHandler<TSignupBidder> = async(data) => {
+    signup({
+      ...data, type: "BID"
+    })
+  };
   return (
     <Auth>
      <SignupLayout>
@@ -107,7 +160,8 @@ const Bidder = () => {
       <div className="flex flex-row gap-3 items-center text-opacity-75">
         <input
           type="checkbox"
-          checked={true}
+          checked={remember}
+          onChange={(v) => setremember(v.currentTarget.checked)}
           className="checkbox checkbox-sm  checkbox-primary"
         />
         <span>Remember Me</span>
@@ -116,7 +170,8 @@ const Bidder = () => {
       <div className="flex flex-row gap-3 items-center  text-opacity-75">
         <input
           type="checkbox"
-          checked={true}
+          checked={agree}
+          onChange={(v) => setagree(v.currentTarget.checked)}
           className="checkbox checkbox-sm  checkbox-primary"
         />
         <span>
@@ -137,7 +192,10 @@ const Bidder = () => {
       <div className="h-[30px]"></div>
       <button
         type="submit"
-        className="btn btn-primary px-7 btn-wide rounded-2xl"
+        className={cx("btn btn-primary px-7 btn-wide rounded-2xl",{
+          loading:isLoading,
+          "btn-disabled":!agree
+        })}
       >
         Créer un compte
       </button>

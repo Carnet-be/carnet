@@ -15,7 +15,23 @@ import { toast } from 'react-hot-toast';
 import { trpc } from "@utils/trpc";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
+import { type GetServerSideProps } from "next";
+import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
 
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  console.log(session?.user);
+  if (session) {
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: true,
+      },
+    };
+  }
+  return {props:{}}
+
+};
 const Auctionnaire = () => {
   const [agree, setagree] = useState(false);
   const [remember, setremember] = useState(true);
