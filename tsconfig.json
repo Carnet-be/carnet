@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "noUncheckedIndexedAccess": true,
+    "paths":{
+      "@ui/*":["./src/ui/*"],
+      "@animations/*":["./public/animations/*"],
+      "@assets/*":["./public/assets/*"],
+      "@model/*":["./src/model/*"],
+      "@config/*":["./src/config/*"],
+      "@utils/*":["./src/utils/*"],
+      "@trpc/route/*":["./src/server/trpc/router/*"],
+      "@data/*":["./src/data/*"],
+      "@hooks/*":["./src/hooks/*"],
+      "@env/*":["./src/env/*"],
+
+
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],
+  "exclude": ["node_modules"]
+}

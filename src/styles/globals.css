@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base{
+    /* text */
+   .text-caption {
+       @apply italic font-semibold;
+   }
+     /* text */
+   .layout{
+       @apply max-w-[1200px] w-full px-3 xl:px-0
+   }
+   .icon{
+       @apply text-xl;
+   } 
+
+   input{
+       @apply outline-none !important;
+   }
+}
