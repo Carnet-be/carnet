@@ -5,12 +5,11 @@ import Mackup from "@assets/mockup_mobile.png";
 import cx from 'classnames'
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { getServerAuthSession } from "../server/common/get-server-auth-session";
 import { type InferGetServerSidePropsType, type NextPage, type GetServerSideProps } from "next/types";
 import { prisma } from '../server/db/client';
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerAuthSession(context)

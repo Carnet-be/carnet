@@ -34,7 +34,7 @@ export const authOptions: NextAuthOptions = {
         const email = credentials?.email;
         const password = credentials?.password;
         try {
-          const user = await prisma.user.findUniqueOrThrow({
+          const user = await prisma.user.findUnique({
             where: {
               email,
             },
@@ -49,7 +49,8 @@ export const authOptions: NextAuthOptions = {
             if (checkPwd) {
               return user;
             } else {
-              throw new Error("password invalid");
+           throw new Error("Password invalid");
+             // return null
             }
             
           } else {
@@ -71,6 +72,7 @@ export const authOptions: NextAuthOptions = {
   secret: env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/auth/login",
+    error:"/auth/login"
   },
 };
 

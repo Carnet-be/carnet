@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
-  const user = await prisma.user
+  const user:User = await prisma.user
     .findUnique({
       where: {
         email: session?.user?.email || "",
@@ -35,6 +35,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return {
       redirect: {
         destination: "/auth/login",
+        permanent: true,
+      },
+    };
+  }
+  if(!user.emailVerified){
+    return {
+      redirect: {
+        destination: "/pages/email-verification",
         permanent: true,
       },
     };
