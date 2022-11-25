@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React, { type FunctionComponent } from 'react'
 import Image  from 'next/image';
 import Logo2 from "@assets/logo2.png";
 import Log from "@assets/logo.png";

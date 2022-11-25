@@ -16,6 +16,7 @@ export const ZSignup = z.object({
   type: z.enum(["BID", "AUC", "ADMIN", "STAFF"]),
 });
 export const authRouter = router({
+
   signUp: publicProcedure.input(ZSignup).mutation(async ({ input, ctx }) => {
     console.log("input signup", input);
 

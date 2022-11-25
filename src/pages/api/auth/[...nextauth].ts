@@ -28,11 +28,13 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "email", type: "email" },
         password: { label: "Password", type: "password" },
+        isAdmin: { label: "check", type: "password" },
       },
 
       async authorize(credentials) {
         const email = credentials?.email;
         const password = credentials?.password;
+        const isAdmin=credentials?.isAdmin
         try {
           const user = await prisma.user.findUnique({
             where: {
@@ -47,7 +49,12 @@ export const authOptions: NextAuthOptions = {
               user.password
             );
             if (checkPwd) {
+              if(isAdmin && user.type!="ADMIN" && user.type!="STAFF")
+              {
+                throw new Error("User not admin");
+              }else{
               return user;
+              }
             } else {
            throw new Error("Password invalid");
              // return null
