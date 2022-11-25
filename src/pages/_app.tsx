@@ -21,6 +21,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
           href="../public/assets/favicon.ico"
           type="image/x-icon"
         />
+      <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        />
       </Head>
       <Component {...pageProps} />
       <Toaster />
@@ -29,7 +33,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
 };
 
 export default trpc.withTRPC(MyApp);
-
 
 export const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url

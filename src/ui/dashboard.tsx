@@ -2,7 +2,7 @@ import React, { type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
-import { DashboardIcon, PeopleIcon, SettingsIcon } from "./icons";
+import { DashboardIcon, NotifIcon, PeopleIcon, SettingsIcon } from "./icons";
 import { type UserType } from "@model/type";
 import Logo from "./components/logo";
 
@@ -15,6 +15,7 @@ type TSide = {
 type DashboardType = {
   children: ReactNode;
   type: UserType;
+  notification?: ReactNode;
 };
 type TMenu = {
   ADMIN: Array<TSide>;
@@ -42,19 +43,18 @@ const menu: TMenu = {
 const Dashboard = ({ children, type }: DashboardType) => {
   const router = useRouter();
   return (
-    // <div className='w-screen h-screen relative flex flex-row items-stretch'>
-    //   <div className="bg-white flex flex-col w-[300px] fixed top-0 left-0 overflow-scroll">
-    //     <div className='w-full h-[1000px] bg-red-400'></div>
-    //     <div className='w-full h-[1000px] bg-yellow-400'></div>
-    //     <div className='w-full h-[1000px] bg-blue-400'></div>
-    //     <div className='w-full h-[1000px] bg-red-400'></div>
-    //     <div className='w-full h-[1000px] bg-purple-400'></div>
-    //   </div>
-    //   <div className='flex-grow bg-background'></div>
-    // </div>
     <div className="drawer-mobile drawer">
       <input id="drawer" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content bg-background">
+      <div className="drawer-content relative bg-background">
+        <div className="sticky top-0 right-0 flex h-[60px] w-full  flex-row items-center gap-3 px-3 backdrop-blur-md">
+          <div className="flex-grow"></div>
+          <div className="btn-ghost btn flex flex-row gap-1">
+            <span className="badge-error badge indicator-start indicator-item text-sm text-white">
+              2
+            </span>
+            <NotifIcon className="text-2xl text-primary" />
+          </div>
+        </div>
         {/* <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label> */}
         {children}
       </div>

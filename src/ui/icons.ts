@@ -3,6 +3,7 @@ import {HiOutlineMail} from 'react-icons/hi'
 import {MdOutlinePassword,MdDashboard} from 'react-icons/md'
 import {BiBuildings} from "react-icons/bi"
 import {AiTwotoneSetting} from "react-icons/ai"
+import {GrNotification} from 'react-icons/gr'
 export const PersonIcon=BsPerson
 export const EmailIcon=HiOutlineMail
 export const TelIcon=BsTelephone
@@ -11,3 +12,4 @@ export const EntrepriseIcon=BiBuildings
 export const PeopleIcon=BsFillPeopleFill
 export const DashboardIcon=MdDashboard
 export const SettingsIcon=AiTwotoneSetting
+export const NotifIcon=GrNotification
