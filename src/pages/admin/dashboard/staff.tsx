@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 
 import { type NextPage } from "next";
 
@@ -11,6 +11,7 @@ import LayoutState from "@ui/layoutState";
 import SimpleInput from "@ui/components/simpleInput";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { emailPatternValidation } from "@utils/extra";
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 // export const getServerSideProps: GetServerSideProps = async (ctx) => {
 //   //   const session = await getServerAuthSession(ctx);
@@ -41,6 +42,9 @@ const AdminDashboard: NextPage = () => {
     },
   });
 
+  const [animateStaff] = useAutoAnimate()
+  const [animateDemande] = useAutoAnimate()
+
   //dialog
   const idAdd = "add";
   return (
@@ -57,12 +61,19 @@ const AdminDashboard: NextPage = () => {
       <LayoutState
         isError={isError}
         isLoading={isLoading}
-        length={staffs?.length || 0}
+        length={[...staffs?.demandes||[],...staffs?.staffs||[]].length || 0}
         hasData={staffs ? true : false}
       >
-        <div></div>
+       
+          <h3 className="pt-[20px] pb-[10px] italic opacity-30">En attente</h3>
+          <ul className="flex flex-col gap-4">
+          {staffs?.demandes.map((d,i)=>{
+            return <div key={i} className="rounded-lg bg-white py-4 px-2">{d.username}</div>
+          })}
+          </ul>
+       
       </LayoutState>
-      <AddStaffDialog id={idAdd} />
+      <AddStaffDialog id={idAdd} refetch={refetch}/>
     </Dashboard>
   );
 };
@@ -78,12 +89,23 @@ type TStaff={
   email:string
 }
 const AddStaffDialog = ({ id ,refetch}: AddDialogProps) => {
-  
-  const { register, handleSubmit, formState } = useForm<TStaff>();
+  const {mutate:sendDemandeStaff,isLoading}=trpc.admin.demandeStaff.useMutation({
+    onError:(err)=>{
+      console.log('err', err)
+      toast.error('Problème rencontré')
+    },
+    onSuccess:()=>{
+      // toast.success('Demande')
+      closeRef.current?.click()
+      reset()
+      refetch()
+    }
+  })
+  const { register, handleSubmit, formState,reset  } = useForm<TStaff>();
   const { errors } = formState;
-  const onSubmit:SubmitHandler<TStaff>=(data)=>{
-    console.log(data)
-  }
+  const onSubmit:SubmitHandler<TStaff>=(data)=>sendDemandeStaff(data)
+  const closeRef=useRef<HTMLLabelElement>(null)
+  
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <input type="checkbox" id={id} className="modal-toggle" />
@@ -96,10 +118,14 @@ const AddStaffDialog = ({ id ,refetch}: AddDialogProps) => {
           <SimpleInput error={errors.email} placeholder="Email" controler={{...register('email',{required:true,pattern:emailPatternValidation})}}/>
           </div>
           <div className="modal-action">
-            <label htmlFor={id} className="btn btn-ghost">
+            <label ref={closeRef} htmlFor={id} onClick={()=>{
+             // reset()
+            }} className="btn btn-ghost">
              annuler
             </label>
-            <button type="submit" className={cx("btn")}>
+            <button type="submit" className={cx("btn",{
+              loading:isLoading
+            })}>
              valider
             </button>
           </div>
@@ -109,3 +135,5 @@ const AddStaffDialog = ({ id ,refetch}: AddDialogProps) => {
   );
 };
 export default AdminDashboard;
+
+

@@ -53,7 +53,7 @@ const {mutate:resend,isLoading:resending}=trpc.auth.resendVerif.useMutation({
                 <span className="text-primary">{user?.email}</span> avec un lien
                 pour vérifier votre compte. Si vous ne recevez pas au bout de
                 quelques minutes, veuillez vérifier votre boîte de spam.
-                <span className="text-green-500">{user?.nom}</span>
+                <span className="text-green-500">{user?.username}</span>
               </p>
               <div className="flex w-full flex-row justify-evenly">
                 <button onClick={()=>resend({email:user?.email||"",id:user?.id||""})} className={cx("btn-primary btn-sm btn",{

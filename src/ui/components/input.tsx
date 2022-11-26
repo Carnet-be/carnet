@@ -7,6 +7,9 @@ type InputProps = {
   icon?: ReactNode;
   type?: "text" | "password" | "email";
   placeholder?: string;
+  
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  props?:Object,
   // eslint-disable-next-line @typescript-eslint/ban-types
   controler: Object;
   error: FieldError | undefined;
@@ -18,6 +21,7 @@ const Input: FunctionComponent<InputProps> = ({
   placeholder = "Saisir",
   controler,
   error,
+  props
 }) => {
  
   return (
@@ -39,6 +43,7 @@ const Input: FunctionComponent<InputProps> = ({
             type={type}
             placeholder={placeholder}
             {...controler}
+            {...props}
             className="text-semibold text-primary w-full"
           />
         </div>

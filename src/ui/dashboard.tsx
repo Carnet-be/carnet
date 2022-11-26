@@ -60,19 +60,19 @@ const Dashboard = ({ children, type }: DashboardType) => {
       {children}
       </div>
       </div>
-      <div className="drawer-side w-[300px] px-4">
+      <div className="drawer-side w-[300px]">
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
-        <div className="flex flex-col items-center gap-3 py-4">
+        <div className="flex flex-col items-center gap-3 py-4 ">
           <div className="flex flex-row items-center justify-center py-4">
             <Logo size={70} />
           </div>
-          <ul className="menu flex w-full flex-grow flex-col gap-2 py-3 text-base-content">
+          <ul className="menu flex w-[80%] flex-grow flex-col gap-2 py-3 text-base-content">
             {menu[type].map((m, i) => {
               const active = router.pathname == m.route;
               return <Side key={i} side={m} active={active} />;
             })}
           </ul>
-          <ul className="menu w-full">
+          <ul className="menu w-[80%]">
             <li>
               <Link
                 href={"/admin/dashboard/settings"}

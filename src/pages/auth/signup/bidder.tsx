@@ -76,22 +76,14 @@ const Bidder = () => {
     <Auth>
      <SignupLayout>
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-      <div className="flex flex-row gap-4">
-        <Input
-          label="Nom"
-          error={errors.nom}
-          icon={<PersonIcon />}
-          controler={{ ...register("nom", { required: "Champs obligatoire" }) }}
-        />
-        <Input
-          label="Prénom"
-          error={errors.prenom}
-          controler={{
-            ...register("prenom", { required: "Champs obligatoire" }),
-          }}
-          icon={<PersonIcon />}
-        />
-      </div>
+    <Input
+              label="Nom d'utilisateur"
+              error={errors.username}
+              icon={<PersonIcon />}
+              controler={{
+                ...register("username", { required: "Champs obligatoire" }),
+              }}
+            />
       <div className="flex flex-row gap-4">
         <Input
           label="Email"

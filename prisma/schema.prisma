@@ -18,18 +18,28 @@ datasource db {
 
 model User {
   id            String    @id @default(cuid())
-  nom           String?
-  prenom        String?
+  
+  username String
   email         String   @unique
   nom_entreprise String?
   type UserType
-  tel           String?
+  tel            String?
   password       String
   isActive Boolean @default(true)
   emailVerified  Boolean @default(false)
   image         String?
+//
+    createAt      DateTime @default(now())
+    updateAt      DateTime @updatedAt
 }
 
+model DemandeStaff{
+  id       String    @id @default(cuid())
+  username  String
+  email         String   @unique
+  createAt      DateTime @default(now())
+  updateAt      DateTime @updatedAt
+}
 enum UserType{
   BID
   AUC

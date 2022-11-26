@@ -1,8 +1,9 @@
 'use client'
 import { useLottie } from 'lottie-react';
-import React, { FunctionComponent } from 'react'
+import React, { type FunctionComponent } from 'react'
 
 type LottieProps={
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     animationData:any
 }
 

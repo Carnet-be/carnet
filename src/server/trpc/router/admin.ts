@@ -1,71 +1,40 @@
 import { type User } from "@prisma/client";
-import * as trpc from "@trpc/server";
 import { Transporter } from "@utils/nodemailer";
-import { hash } from "bcrypt";
 import { z } from "zod";
 import { getBaseUrl } from "../../../pages/_app";
 import { router, publicProcedure } from "../trpc";
 
-export const ZSignup = z.object({
-  nom: z.string(),
-  prenom: z.string(),
-  tel: z.string(),
-  email: z.string(),
-  nom_entreprise: z.string().nullish(),
-  password: z.string(),
-  type: z.enum(["BID", "AUC", "ADMIN", "STAFF"]),
+export const ZStaff = z.object({
+ username:z.string(),
+  email: z.string().email(),
 });
 export const adminRouter = router({
    getStaff:publicProcedure.query(async({ctx})=>{
         const {prisma}=ctx
-        return await prisma.user.findMany({
-            where:{
-                type:'STAFF'
-            }
-        })
+        
+        const [staffs, demandes] = await prisma.$transaction([
+            ctx.prisma.user.findMany({ where: {type:"STAFF"} }),
+            ctx.prisma.demandeStaff.findMany(),
+          ])
+        return {staffs,demandes}
    }),
-  addStaff: publicProcedure.input(ZSignup).mutation(async ({ input, ctx }) => {
-    console.log("input signup", input);
-
-    const exist = await ctx.prisma.user.findFirst({
-      where: {
-        email: input.email,
-      },
-    });
-    if (exist) {
-      throw new trpc.TRPCError({
-        code: "CONFLICT",
-        message: "Cet email est déjà utilisé par un autre compte",
-      });
-    }
-
-    const hashPwd = await hash(input.password, 10);
-    return await ctx.prisma.user
-      .create({
-        data: {
-          ...input,
-          password: hashPwd,
-        },
-      })
-      .then(async (res) => {
-        await sendVerifEmail(res);
-        return res;
-      });
-  }),
-  resendVerif: publicProcedure
-    .input(z.object({ email: z.string(), id: z.string() }))
-    .mutation(async ({ input }) => {
-      return await sendVerifEmail(input);
-    }),
+  demandeStaff: publicProcedure.input(ZStaff).mutation(async ({ input, ctx }) => {
+   return await ctx.prisma.demandeStaff.create({
+    data:input
+   }).then((staff)=>{
+       sendDemandeStaff(staff)
+   })
+  })
+ 
 });
 
-const sendVerifEmail = async (user: User | { email: string; id: string }) => {
+const sendDemandeStaff = async (user: User | { email: string; id: string }) => {
   await Transporter.sendMail({
     to: user.email,
     from: process.env.ADMINS_EMAIL,
-    subject: `Confirmez l'inscription chez CARNET`,
-    html: `<div><h3>Votre compte est créé, pour finaliser, vous devez confirmer votre email </h3> <a href="${getBaseUrl()}/api/verify?id=${
+    subject: `Compte staff chez CARNET`,
+    html: `<div><h3>Vous venez d'avoir un compte staff sur CARNET, veuillez compléter votre compte : </h3> <a href="${getBaseUrl()}/pages/newStaff?id=${
       user.id
-    }">${getBaseUrl()}/api/verify?id=${user.id}</a></div>`,
+    }">compléter ici</a></div>`,
   });
 };

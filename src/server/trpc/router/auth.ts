@@ -7,8 +7,7 @@ import { getBaseUrl } from "../../../pages/_app";
 import { router, publicProcedure } from "../trpc";
 
 export const ZSignup = z.object({
-  nom: z.string(),
-  prenom: z.string(),
+  username:z.string(),
   tel: z.string(),
   email: z.string(),
   nom_entreprise: z.string().nullish(),

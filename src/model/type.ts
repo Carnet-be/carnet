@@ -5,8 +5,7 @@ export type TLogin={
   password:string
 }
 export type PSignup={
-  nom:string,
-  prenom:string,
+  username:string,
   email:string,
   tel:string
 }
