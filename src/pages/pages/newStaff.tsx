@@ -1,10 +1,8 @@
-import Lottie from "@ui/components/lottie";
 import {
   type InferGetServerSidePropsType,
   type GetServerSideProps,
   type NextPage,
 } from "next";
-import animation from "@animations/email.json";
 import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
@@ -15,11 +13,9 @@ import { type DemandeStaff } from "@prisma/client";
 import Logo from "@ui/components/logo";
 import { type TSignupAuc } from "@model/type";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { TERMS_URL, PRIVACY_POLICY_URL } from "@data/link";
 import { PersonIcon, EmailIcon, TelIcon, PasswordIcon } from "@ui/icons";
-import Link from "next/link";
 import Input from "@ui/components/input";
-import signup from "@ui/signup";
+import { signIn } from "next-auth/react";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -49,22 +45,42 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 const EmailVerification: NextPage = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  const demande:DemandeStaff = props.demande;
+  const demande: DemandeStaff = props.demande;
+  const { mutate: completAccount,isLoading } = trpc.auth.addStaff.useMutation({
+    onError: (err) => {
+      console.log("Auth signup", err);
 
+      toast.error(err.message);
+    },
+    onSuccess: (result) => {
+      toast.success("vous avez complété votre compte");
+
+      signIn("credentials", {
+        email: result[1].email,
+        password: watch("password"),
+        redirect: false,
+      })
+        .then(() => {
+          router.replace("/admin/dashboard");
+        })
+        .catch(() => {
+          router.push("/auth/login");
+        });
+      //TODO:Signin
+    },
+  });
   const { register, handleSubmit, watch, formState } = useForm<TSignupAuc>({
-    mode: "onChange",defaultValues:{
-        email:demande.email,
-        username:demande.username
-    }
+    mode: "onChange",
+    defaultValues: {
+      email: demande.email,
+      username: demande.username,
+    },
   });
 
   const { errors } = formState;
   const router = useRouter();
-  const onSubmit: SubmitHandler<TSignupAuc> = async (data) => {
-    // signup({
-    //   ...data, type: "AUC"
-    // })
-  };
+  const onSubmit: SubmitHandler<TSignupAuc> = async (data) =>
+    completAccount({ idDemande: demande.id, data: { ...data, type: "STAFF" } });
   return (
     <div className="relative flex h-screen w-screen flex-row items-stretch">
       <div className="flex-grow bg-primary"></div>
@@ -79,7 +95,7 @@ const EmailVerification: NextPage = (
               error={errors.username}
               icon={<PersonIcon />}
               props={{
-  disabled:true
+                disabled: true,
               }}
               controler={{
                 ...register("username", { required: "Champs obligatoire" }),
@@ -91,8 +107,8 @@ const EmailVerification: NextPage = (
                 error={errors.email}
                 icon={<EmailIcon />}
                 props={{
-                    disabled:true
-                                }}
+                  disabled: true,
+                }}
                 controler={{
                   ...register("email", {
                     required: "Champs obligatoire",
@@ -136,7 +152,7 @@ const EmailVerification: NextPage = (
                 controler={{
                   ...register("confirmPassword", {
                     required: "Champs obligatoire",
-                    
+
                     validate: {
                       isValid: (v) =>
                         v == watch("password")
@@ -153,13 +169,15 @@ const EmailVerification: NextPage = (
 
             <button
               type="submit"
-              className={cx("btn-primary btn-wide btn rounded-2xl px-7 mx-auto", {
-                //   loading:isLoading
-              })}
+              className={cx(
+                "btn-primary btn-wide btn mx-auto rounded-2xl px-7",
+                {
+                 loading:isLoading
+                }
+              )}
             >
-             Valider
+              Valider
             </button>
-           
           </form>
         </div>
       </div>

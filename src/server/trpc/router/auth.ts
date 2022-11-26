@@ -6,19 +6,23 @@ import { z } from "zod";
 import { getBaseUrl } from "../../../pages/_app";
 import { router, publicProcedure } from "../trpc";
 
-export const ZSignup = z.object({
-  username:z.string(),
+
+const ZSignup=z.object({
+  username: z.string(),
   tel: z.string(),
   email: z.string(),
   nom_entreprise: z.string().nullish(),
   password: z.string(),
   type: z.enum(["BID", "AUC", "ADMIN", "STAFF"]),
-});
+})
+export const ZAddStuff = z.object(
+  {
+    idDemande:z.string(),
+    data:ZSignup
+  }
+);
 export const authRouter = router({
-
   signUp: publicProcedure.input(ZSignup).mutation(async ({ input, ctx }) => {
-    console.log("input signup", input);
-
     const exist = await ctx.prisma.user.findFirst({
       where: {
         email: input.email,
@@ -43,6 +47,20 @@ export const authRouter = router({
         await sendVerifEmail(res);
         return res;
       });
+  }),
+  addStaff: publicProcedure.input(ZAddStuff).mutation(async ({ input, ctx }) => {
+    const {idDemande:id,data}=input
+    const hashPwd = await hash(data.password, 10);
+    return await ctx.prisma.$transaction([
+      ctx.prisma.demandeStaff.delete({where:{id}}),
+      ctx.prisma.user.create({
+        data: {
+          ...data,
+          password: hashPwd,
+          emailVerified: true,
+        },
+      }),
+    ]);
   }),
   resendVerif: publicProcedure
     .input(z.object({ email: z.string(), id: z.string() }))
