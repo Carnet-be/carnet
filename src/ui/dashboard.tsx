@@ -66,7 +66,7 @@ const Dashboard = ({ children, type }: DashboardType) => {
           <div className="flex flex-row items-center justify-center py-4">
             <Logo size={70} />
           </div>
-          <ul className="menu flex w-full flex-grow flex-col gap-2 bg-base-100 py-3 text-base-content">
+          <ul className="menu flex w-full flex-grow flex-col gap-2 py-3 text-base-content">
             {menu[type].map((m, i) => {
               const active = router.pathname == m.route;
               return <Side key={i} side={m} active={active} />;
