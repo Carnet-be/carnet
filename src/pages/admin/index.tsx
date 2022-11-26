@@ -24,12 +24,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
   const user = {
-    nom: "Naim",
+    username: "Naim Abdelkerim",
     type: "ADMIN" as UserType,
-    prenom: "Abdelkerim",
+  
     email: "naimdev@gmail.com",
     emailVerified: true,
-   
+ 
   };
 const pwd= await hash("123456", 10);
   const count = await prisma.user.count({

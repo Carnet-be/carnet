@@ -5,6 +5,7 @@ import {BiBuildings} from "react-icons/bi"
 import {AiTwotoneSetting} from "react-icons/ai"
 import {RiNotification2Line} from 'react-icons/ri'
 import {IoMdAdd} from 'react-icons/io'
+import {CgMoreVertical} from 'react-icons/cg'
 export const PersonIcon=BsPerson
 export const EmailIcon=HiOutlineMail
 export const TelIcon=BsTelephone
@@ -15,3 +16,4 @@ export const DashboardIcon=MdDashboard
 export const SettingsIcon=AiTwotoneSetting
 export const NotifIcon=RiNotification2Line
 export const AddIcon=IoMdAdd
+export const MoreIcon=CgMoreVertical
