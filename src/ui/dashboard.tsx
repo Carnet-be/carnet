@@ -56,7 +56,9 @@ const Dashboard = ({ children, type }: DashboardType) => {
           </div>
         </div>
         {/* <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label> */}
-        {children}
+      <div className="p-3 lg:p-6">
+      {children}
+      </div>
       </div>
       <div className="drawer-side w-[300px] px-4">
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>

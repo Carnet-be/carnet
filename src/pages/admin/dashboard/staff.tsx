@@ -1,11 +1,9 @@
 import React from "react";
 
 import { type NextPage} from "next";
-import { type User } from "@prisma/client";
 
 import Dashboard from "@ui/dashboard";
-
-import { createTheme, ThemeProvider } from "@material-ui/core";
+import { AddIcon, PersonIcon } from "@ui/icons";
 
 
 // export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -25,14 +23,18 @@ import { createTheme, ThemeProvider } from "@material-ui/core";
 //   };
 // };
 const AdminDashboard: NextPage = () => {
-    const defaultMaterialTheme = createTheme();
 
 
   return (
     <Dashboard type="ADMIN">
-      <div>
-    
+      <div className="flex flex-row justify-between items-center">
+      <h1 className="title-dashboard">Gestion des staffs</h1>
+      <button className="flex flex-row gap-2 btn btn-primary">
+        <AddIcon className="icon"/>
+        Nouveau
+      </button>
       </div>
+      <div className="divider"/>
     </Dashboard>
   );
 };

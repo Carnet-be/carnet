@@ -7,6 +7,9 @@
    .text-caption {
        @apply italic font-semibold;
    }
+   .title-dashboard {
+       @apply  text-4xl font-semibold;
+   }
      /* text */
    .layout{
        @apply max-w-[1200px] w-full px-3 xl:px-0
