@@ -2,7 +2,7 @@ import {BsFillPeopleFill, BsPerson, BsTelephone} from 'react-icons/bs'
 import {HiOutlineMail} from 'react-icons/hi'
 import {MdOutlinePassword,MdDashboard} from 'react-icons/md'
 import {BiBuildings} from "react-icons/bi"
-import {AiTwotoneSetting} from "react-icons/ai"
+import {AiTwotoneSetting,AiOutlineUserDelete} from "react-icons/ai"
 import {RiNotification2Line} from 'react-icons/ri'
 import {IoMdAdd} from 'react-icons/io'
 import {CgMoreVertical} from 'react-icons/cg'
@@ -17,3 +17,4 @@ export const SettingsIcon=AiTwotoneSetting
 export const NotifIcon=RiNotification2Line
 export const AddIcon=IoMdAdd
 export const MoreIcon=CgMoreVertical
+export const DeleteUserIcon=AiOutlineUserDelete

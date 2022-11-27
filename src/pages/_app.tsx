@@ -7,6 +7,7 @@ import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
 import { Toaster } from "react-hot-toast";
 import Head from "next/head";
+import "rsuite/dist/rsuite.min.css";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

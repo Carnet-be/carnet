@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useRef, useState } from "react";
 
 import { type NextPage } from "next";
 
 import Dashboard from "@ui/dashboard";
-import { AddIcon, MoreIcon } from "@ui/icons";
+import { AddIcon, DeleteUserIcon, EmailIcon, MoreIcon, PersonIcon } from "@ui/icons";
 import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
 import cx from "classnames";
@@ -12,7 +13,9 @@ import SimpleInput from "@ui/components/simpleInput";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { emailPatternValidation } from "@utils/extra";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
+import { Button, Drawer, Placeholder } from "rsuite";
+import { TelIcon } from '../../../ui/icons';
 
 // export const getServerSideProps: GetServerSideProps = async (ctx) => {
 //   //   const session = await getServerAuthSession(ctx);
@@ -48,6 +51,7 @@ const AdminDashboard: NextPage = () => {
 
   //dialog
   const idAdd = "add";
+  const [item, setitem] = useState<User | undefined>(undefined);
   return (
     <Dashboard type="ADMIN">
       <div className="flex flex-row items-center justify-between">
@@ -67,16 +71,16 @@ const AdminDashboard: NextPage = () => {
         }
         hasData={staffs ? true : false}
       >
-        <h3 className="pt-[20px] pb-[10px] italic opacity-30">
+        <h6 className="pt-[20px] pb-[10px] italic opacity-30">
           Comptes actifs
-        </h3>
-        <ul className="flex flex-col gap-4">
+        </h6>
+        <ul ref={animateStaff as any} className="flex flex-col gap-4">
           {staffs?.staffs.map((d, i) => {
-            return <StaffItem key={i} item={d} />;
+            return <StaffItem key={i} item={d} onClick={() => setitem(d)} />;
           })}
         </ul>
-        <h3 className="pt-[20px] pb-[10px] italic opacity-30">En attente</h3>
-        <ul className="flex flex-col gap-4">
+        <h6 className="pt-[20px] pb-[10px] italic opacity-30">En attente</h6>
+        <ul ref={animateDemande as any} className="flex flex-col gap-4">
           {staffs?.demandes.map((d, i) => {
             return (
               <div key={i} className="rounded-lg bg-white py-4 px-2">
@@ -87,13 +91,96 @@ const AdminDashboard: NextPage = () => {
         </ul>
       </LayoutState>
       <AddStaffDialog id={idAdd} refetch={refetch} />
+      <StaffDrawer item={item} close={() => setitem(undefined)} />
     </Dashboard>
   );
 };
 
-const StaffItem = ({ item }: { item: User }) => {
+type StaffDrawer = {
+  item: User | undefined;
+  close: () => void;
+};
+
+const StaffDrawer = ({ item, close }: StaffDrawer) => {
+  type TStaffDrawer={
+    username:string,
+    email:string,
+    tel:string
+  }
+  const { register, handleSubmit, watch, formState,setValue } =
+    useForm<TStaffDrawer>();
+  
+const { errors } = formState;
+const [disable, setdisable] = useState(true)
+ useEffect(() => {
+   if(item){
+    setValue('email',item.email)
+    setValue('username',item.username)
+    setValue('tel',item.tel||"")
+    setdisable(item.isActive)
+   }
+ }, [item,setValue])
+ const changed=()=>{
+  if(watch('email')!==item?.email)return true
+  if(watch('username')!==item?.username)return true
+  if(watch('tel')!==item?.tel||"")return true
+ }
   return (
-    <div className="flex flex-row items-center gap-3 rounded-lg bg-white py-3 px-4 group">
+    <Drawer open={item ? true : false} onClose={close} size="xs">
+     
+        <Drawer.Header>
+          <Drawer.Actions className="flex flex-row jusitify-end gap-2">
+            <button className={cx("btn btn-sm btn-ghost",{
+              hidden:!changed()
+            })}>annuler</button>
+            <button className={cx("btn btn-sm btn-primary",{
+              "btn-disabled":!changed()
+            })}>
+              confirmer
+            </button>
+          </Drawer.Actions>
+        </Drawer.Header>
+      
+      <Drawer.Body className="flex flex-col gap-2">
+        <div className="placeholder avatar">
+          <div className="w-full rounded-lg bg-neutral-focus text-neutral-content">
+            <h2 className="text-4xl uppercase">
+              {item?.username[0]}
+              {item?.username[1]}
+            </h2>
+          </div>
+        </div>
+        <div className="h-[10px]"></div>
+        <h6 className="flex flex-row gap-2 items-center">
+          <PersonIcon/><input {...register('username')} type="text" />
+        </h6>
+        <h6 className="flex flex-row gap-2 items-center">
+          <EmailIcon/> <input {...register('email')} type="text" />
+        </h6>
+        <h6 className="flex flex-row gap-2 items-center">
+          <TelIcon/> <input {...register('tel')} type="text" />
+        </h6>
+        <div className="flex-grow"></div>
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <input type="checkbox" className="toggle" checked={disable} onChange={(v)=>setdisable(v.currentTarget.checked)} />
+            <span className="label-text">Compte {disable?"activé":"désactivé"}</span>
+          </label>
+        </div>
+        <button className="btn-outline btn-error btn-sm btn flex w-full flex-row gap-2 rounded-md">
+          <DeleteUserIcon className="icon" />
+          Supprimer le compte
+        </button>
+      </Drawer.Body>
+    </Drawer>
+  );
+};
+const StaffItem = ({ item, onClick }: { item: User; onClick: () => void }) => {
+  return (
+    <div
+      onClick={onClick}
+      className="group flex cursor-pointer flex-row items-center gap-3 rounded-lg bg-white py-3 px-4 transition-all hover:shadow-sm"
+    >
       <div className="placeholder avatar">
         <div className="w-12 rounded-full bg-neutral-focus text-neutral-content">
           <span className="uppercase">
@@ -103,15 +190,14 @@ const StaffItem = ({ item }: { item: User }) => {
         </div>
       </div>
       <div className="flex flex-grow flex-col gap-1">
-        <h4>{item.username}</h4>
+        <h6>{item.username}</h6>
         <p className="text-sm italic text-amber-600 opacity-75">{item.email}</p>
       </div>
-      <div className="flex-row gap-2 items-center hidden group-hover:flex transition-all">
-      <button className="btn btn-square btn-ghost">
- <MoreIcon className="icon"/>
-</button>
-      </div>
-
+      {/* <div className="hidden flex-row items-center gap-2 transition-all group-hover:flex">
+        <button className="btn-ghost btn-square btn">
+          <MoreIcon className="icon" />
+        </button>
+      </div> */}
     </div>
   );
 };
