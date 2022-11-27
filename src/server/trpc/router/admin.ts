@@ -5,9 +5,10 @@ import { getBaseUrl } from "../../../pages/_app";
 import { router, publicProcedure } from "../trpc";
 
 export const ZStaff = z.object({
- username:z.string(),
+   username:z.string(),
   email: z.string().email(),
 });
+
 export const adminRouter = router({
    getStaff:publicProcedure.query(async({ctx})=>{
         const {prisma}=ctx
@@ -24,6 +25,23 @@ export const adminRouter = router({
    }).then((staff)=>{
        sendDemandeStaff(staff)
    })
+  }),
+  updateStaff:publicProcedure.input(z.object({
+    id:z.string(),
+    data:z.object({ username:z.string(),
+      tel:z.string().nullable(),
+      image:z.string().nullish(),
+       email: z.string().email(),
+       isActive:z.boolean()
+    })})
+   ).mutation(async({input,ctx})=>{
+     return await ctx.prisma.user.update({where:{id:input.id},data:input.data})
+  }),
+  deleteStaff:publicProcedure.input(z.string()).mutation(async ({input,ctx})=>{
+    return await ctx.prisma.user.delete({where:{id:input}})
+  }),
+  deleteDemande:publicProcedure.input(z.string()).mutation(async ({input,ctx})=>{
+    return await ctx.prisma.demandeStaff.delete({where:{id:input}})
   })
  
 });

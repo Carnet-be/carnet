@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { type NextPage } from "next";
 
 import Dashboard from "@ui/dashboard";
-import { AddIcon, DeleteUserIcon, EmailIcon, MoreIcon, PersonIcon } from "@ui/icons";
+import { AddIcon, DeleteUserIcon, EmailIcon, PersonIcon } from "@ui/icons";
 import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
 import cx from "classnames";
@@ -14,8 +14,8 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { emailPatternValidation } from "@utils/extra";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { type User } from "@prisma/client";
-import { Button, Drawer, Placeholder } from "rsuite";
-import { TelIcon } from '../../../ui/icons';
+import { Drawer } from "rsuite";
+import { TelIcon } from "../../../ui/icons";
 
 // export const getServerSideProps: GetServerSideProps = async (ctx) => {
 //   //   const session = await getServerAuthSession(ctx);
@@ -35,7 +35,7 @@ import { TelIcon } from '../../../ui/icons';
 // };
 const AdminDashboard: NextPage = () => {
   const {
-    data: staffs,
+    data: data,
     isLoading,
     isError,
     refetch,
@@ -48,7 +48,17 @@ const AdminDashboard: NextPage = () => {
 
   const [animateStaff] = useAutoAnimate();
   const [animateDemande] = useAutoAnimate();
-
+  const { isLoading: suppressionLoading, mutate: supprimer } =
+    trpc.admin.deleteDemande.useMutation({
+      onError: (err) => {
+        console.log("err", err);
+        toast.error("Echec de la suppression");
+      },
+      onSuccess() {
+        toast.success("Suppression réussi");
+        refetch();
+      },
+    });
   //dialog
   const idAdd = "add";
   const [item, setitem] = useState<User | undefined>(undefined);
@@ -67,31 +77,56 @@ const AdminDashboard: NextPage = () => {
         isError={isError}
         isLoading={isLoading}
         length={
-          [...(staffs?.demandes || []), ...(staffs?.staffs || [])].length || 0
+          [...(data?.demandes || []), ...(data?.staffs || [])].length || 0
         }
-        hasData={staffs ? true : false}
+        hasData={data ? true : false}
       >
-        <h6 className="pt-[20px] pb-[10px] italic opacity-30">
+        <h6 className={cx("pt-[20px] pb-[10px] italic opacity-30",{
+          hidden:data?.staffs.filter(s=>s.isActive).length==0
+        })}>
           Comptes actifs
         </h6>
         <ul ref={animateStaff as any} className="flex flex-col gap-4">
-          {staffs?.staffs.map((d, i) => {
+          {data?.staffs.filter(s=>s.isActive).map((d, i) => {
             return <StaffItem key={i} item={d} onClick={() => setitem(d)} />;
           })}
         </ul>
+        <h6 className={cx("pt-[20px] pb-[10px] italic opacity-30",{
+          hidden:data?.staffs.filter(s=>!s.isActive).length==0
+        })}>
+          Comptes inactifs
+        </h6>
+        <ul ref={animateStaff as any} className="flex flex-col gap-4 opacity-80 transition-all">
+          {data?.staffs.filter(s=>!s.isActive).map((d, i) => {
+            return <StaffItem key={i} item={d} onClick={() => setitem(d)} />;
+          })}
+        
+        </ul>
         <h6 className="pt-[20px] pb-[10px] italic opacity-30">En attente</h6>
         <ul ref={animateDemande as any} className="flex flex-col gap-4">
-          {staffs?.demandes.map((d, i) => {
+          {data?.demandes.map((d, i) => {
             return (
-              <div key={i} className="rounded-lg bg-white py-4 px-2">
-                {d.username}
+              <div key={i} className="rounded-lg bg-white py-4 px-2 flex flex-row justify-between group">
+                       <h6 className="flex items-center py-2">{d.username}(<p className="text-sm italic text-amber-600 opacity-75">{d.email}</p>)</h6>
+                 <button className={cx("btn btn-error btn-outline flex-row gap-2  hidden btn-sm group-hover:flex",{
+                  loading:suppressionLoading
+                 })}>
+                  <DeleteUserIcon onClick={()=>{
+                    supprimer(d.id)
+                  }} className="icon"/>
+                  supprimer
+                 </button>
               </div>
             );
           })}
         </ul>
       </LayoutState>
       <AddStaffDialog id={idAdd} refetch={refetch} />
-      <StaffDrawer item={item} close={() => setitem(undefined)} />
+      <StaffDrawer
+        item={item}
+        close={() => setitem(undefined)}
+        refetch={refetch}
+      />
     </Dashboard>
   );
 };
@@ -99,80 +134,146 @@ const AdminDashboard: NextPage = () => {
 type StaffDrawer = {
   item: User | undefined;
   close: () => void;
+  refetch: any;
 };
 
-const StaffDrawer = ({ item, close }: StaffDrawer) => {
-  type TStaffDrawer={
-    username:string,
-    email:string,
-    tel:string
-  }
-  const { register, handleSubmit, watch, formState,setValue } =
+const StaffDrawer = ({ item, close, refetch }: StaffDrawer) => {
+  type TStaffDrawer = {
+    username: string;
+    email: string;
+    tel: string;
+  };
+  const { register, handleSubmit, watch, setValue, getValues } =
     useForm<TStaffDrawer>();
-  
-const { errors } = formState;
-const [disable, setdisable] = useState(true)
- useEffect(() => {
-   if(item){
-    setValue('email',item.email)
-    setValue('username',item.username)
-    setValue('tel',item.tel||"")
-    setdisable(item.isActive)
-   }
- }, [item,setValue])
- const changed=()=>{
-  if(watch('email')!==item?.email)return true
-  if(watch('username')!==item?.username)return true
-  if(watch('tel')!==item?.tel||"")return true
- }
+
+  const [disable, setdisable] = useState(true);
+  const { isLoading: suppressionLoading, mutate: supprimer } =
+    trpc.admin.deleteStaff.useMutation({
+      onError: (err) => {
+        console.log("err", err);
+        toast.error("Echec de la suppression");
+      },
+      onSuccess() {
+        toast.success("Suppression réussi");
+        refetch();
+      },
+    });
+  const { isLoading, mutate: update } = trpc.admin.updateStaff.useMutation({
+    onError: (err) => {
+      console.log("err", err);
+      toast.error("Echec de la modification");
+    },
+    onSuccess() {
+      toast.success("Compte staff modifié");
+      refetch();
+    },
+  });
+  useEffect(() => {
+    if (item) {
+      init(item);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item]);
+  const init = (item: User) => {
+    setValue("email", item.email);
+    setValue("username", item.username);
+    setValue("tel", item.tel || "");
+    setdisable(item.isActive);
+  };
+  const changed = () => {
+    if (watch("email") !== item?.email) return true;
+    if (watch("username") !== item?.username) return true;
+    if (watch("tel") !== item?.tel || "") return true;
+    if (disable !== item?.isActive) return true;
+  };
+  const onSubmit: SubmitHandler<TStaffDrawer> = async (data) =>
+    update({ id: item?.id || "", data: { ...data, isActive: disable } });
   return (
-    <Drawer open={item ? true : false} onClose={close} size="xs">
-     
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Drawer open={item ? true : false} onClose={close} size="xs">
         <Drawer.Header>
-          <Drawer.Actions className="flex flex-row jusitify-end gap-2">
-            <button className={cx("btn btn-sm btn-ghost",{
-              hidden:!changed()
-            })}>annuler</button>
-            <button className={cx("btn btn-sm btn-primary",{
-              "btn-disabled":!changed()
-            })}>
+          <Drawer.Actions className="jusitify-end flex flex-row gap-2">
+            <button
+              onClick={() => {
+                if (item) init(item);
+              }}
+              className={cx("btn-ghost btn-sm btn", {
+                hidden: !changed(),
+              })}
+            >
+              annuler
+            </button>
+            <button
+              onClick={() => {
+                const data = getValues();
+                update({
+                  id: item?.id || "",
+                  data: { ...data, isActive: disable },
+                });
+              }}
+              className={cx("btn-primary btn-sm btn", {
+                "btn-disabled": !changed(),
+                loading: isLoading,
+              })}
+            >
               confirmer
             </button>
           </Drawer.Actions>
         </Drawer.Header>
-      
-      <Drawer.Body className="flex flex-col gap-2">
-        <div className="placeholder avatar">
-          <div className="w-full rounded-lg bg-neutral-focus text-neutral-content">
-            <h2 className="text-4xl uppercase">
-              {item?.username[0]}
-              {item?.username[1]}
-            </h2>
+
+        <Drawer.Body className="flex flex-col gap-2">
+          <div className="placeholder avatar">
+            <div className="w-full rounded-lg bg-neutral-focus text-neutral-content">
+              <h2 className="text-4xl uppercase">
+                {item?.username[0]}
+                {item?.username[1]}
+              </h2>
+            </div>
           </div>
-        </div>
-        <div className="h-[10px]"></div>
-        <h6 className="flex flex-row gap-2 items-center">
-          <PersonIcon/><input {...register('username')} type="text" />
-        </h6>
-        <h6 className="flex flex-row gap-2 items-center">
-          <EmailIcon/> <input {...register('email')} type="text" />
-        </h6>
-        <h6 className="flex flex-row gap-2 items-center">
-          <TelIcon/> <input {...register('tel')} type="text" />
-        </h6>
-        <div className="flex-grow"></div>
-        <div className="form-control">
-          <label className="label cursor-pointer">
-            <input type="checkbox" className="toggle" checked={disable} onChange={(v)=>setdisable(v.currentTarget.checked)} />
-            <span className="label-text">Compte {disable?"activé":"désactivé"}</span>
-          </label>
-        </div>
-        <button className="btn-outline btn-error btn-sm btn flex w-full flex-row gap-2 rounded-md">
-          <DeleteUserIcon className="icon" />
-          Supprimer le compte
-        </button>
-      </Drawer.Body>
-    </Drawer>
+          <div className="h-[10px]"></div>
+          <h6 className="flex flex-row items-center gap-2">
+            <PersonIcon />
+            <input {...register("username")} type="text" className="w-full" />
+          </h6>
+          <h6 className="flex flex-row items-center gap-2">
+            <EmailIcon />{" "}
+            <input {...register("email")} type="email" className="w-full" />
+          </h6>
+          <h6 className="flex flex-row items-center gap-2">
+            <TelIcon />{" "}
+            <input {...register("tel")} type="text" className="w-full" />
+          </h6>
+          <div className="flex-grow"></div>
+          <div className="form-control">
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                className="toggle"
+                checked={disable}
+                onChange={(v) => setdisable(v.currentTarget.checked)}
+              />
+              <span className="label-text">
+                Compte {disable ? "activé" : "désactivé"}
+              </span>
+            </label>
+          </div>
+          <button
+            onClick={() => {
+              supprimer(item?.id || "");
+            }}
+            className={cx(
+              "btn-outline btn-error btn-sm btn flex w-full flex-row gap-2 rounded-md",
+              {
+                loading: suppressionLoading,
+              }
+            )}
+          >
+            <DeleteUserIcon className="icon" />
+            Supprimer le compte
+          </button>
+        </Drawer.Body>
+      </Drawer>
+    </form>
   );
 };
 const StaffItem = ({ item, onClick }: { item: User; onClick: () => void }) => {
