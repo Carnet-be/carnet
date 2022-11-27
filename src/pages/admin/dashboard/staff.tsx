@@ -53,6 +53,7 @@ const AdminDashboard: NextPage = () => {
       onError: (err) => {
         console.log("err", err);
         toast.error("Echec de la suppression");
+
       },
       onSuccess() {
         toast.success("Suppression réussi");
@@ -102,18 +103,20 @@ const AdminDashboard: NextPage = () => {
           })}
         
         </ul>
-        <h6 className="pt-[20px] pb-[10px] italic opacity-30">En attente</h6>
+        <h6 className={cx("pt-[20px] pb-[10px] italic opacity-30",{
+          hidden:data?.demandes.length===0
+        })}>En attente</h6>
         <ul ref={animateDemande as any} className="flex flex-col gap-4">
           {data?.demandes.map((d, i) => {
             return (
               <div key={i} className="rounded-lg bg-white py-4 px-2 flex flex-row justify-between group">
                        <h6 className="flex items-center py-2">{d.username}(<p className="text-sm italic text-amber-600 opacity-75">{d.email}</p>)</h6>
-                 <button className={cx("btn btn-error btn-outline flex-row gap-2  hidden btn-sm group-hover:flex",{
+                 <button onClick={()=>{
+                    supprimer(d.id)
+                  }} className={cx("btn btn-error btn-outline flex-row gap-2  hidden btn-sm group-hover:flex",{
                   loading:suppressionLoading
                  })}>
-                  <DeleteUserIcon onClick={()=>{
-                    supprimer(d.id)
-                  }} className="icon"/>
+                  <DeleteUserIcon  className="icon"/>
                   supprimer
                  </button>
               </div>
