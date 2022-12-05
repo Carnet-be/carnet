@@ -13,6 +13,7 @@ const ZSignup=z.object({
   email: z.string(),
   nom_entreprise: z.string().nullish(),
   password: z.string(),
+  setEmailVerified:z.boolean().nullish(),
   type: z.enum(["BID", "AUC", "ADMIN", "STAFF"]),
 })
 export const ZAddStuff = z.object(
@@ -36,15 +37,20 @@ export const authRouter = router({
     }
 
     const hashPwd = await hash(input.password, 10);
+    const {setEmailVerified}=input
+    delete input.setEmailVerified
     return await ctx.prisma.user
       .create({
         data: {
           ...input,
+          emailVerified:setEmailVerified?true:false,
           password: hashPwd,
         },
       })
       .then(async (res) => {
+      if(!setEmailVerified){
         await sendVerifEmail(res);
+      }
         return res;
       });
   }),

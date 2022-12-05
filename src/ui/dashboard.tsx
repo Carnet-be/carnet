@@ -5,6 +5,7 @@ import cx from "classnames";
 import { DashboardIcon, NotifIcon, PeopleIcon, SettingsIcon } from "./icons";
 import { type UserType } from "@model/type";
 import Logo from "./components/logo";
+import { useSession } from "next-auth/react";
 
 type TSide = {
   route: string;
@@ -36,12 +37,24 @@ const menu: TMenu = {
       icon: <PeopleIcon />,
     },
   ],
-  AUC: [],
+  AUC: [
+    {
+      title: "Accueil",
+      route: "/admin/dashboard/accueil",
+      icon: <DashboardIcon />,
+    },
+    {
+      title: "Staff",
+      route: "/admin/dashboard/staff",
+      icon: <PeopleIcon />,
+    },
+  ],
   BID: [],
   STAFF: [],
 };
 const Dashboard = ({ children, type }: DashboardType) => {
   const router = useRouter();
+  const {data:session}=useSession()
   return (
     <div className="drawer-mobile drawer">
       <input id="drawer" type="checkbox" className="drawer-toggle" />
@@ -53,6 +66,7 @@ const Dashboard = ({ children, type }: DashboardType) => {
               2
             </span>
             <NotifIcon className="text-2xl text-primary" />
+     {session&& <span>{session.user?.email}</span>}
           </div>
         </div>
         {/* <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label> */}

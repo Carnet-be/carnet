@@ -4,7 +4,7 @@ import {MdOutlinePassword,MdDashboard} from 'react-icons/md'
 import {BiBuildings} from "react-icons/bi"
 import {AiTwotoneSetting,AiOutlineUserDelete} from "react-icons/ai"
 import {RiNotification2Line} from 'react-icons/ri'
-import {IoMdAdd} from 'react-icons/io'
+import {IoMdAdd,IoMdArrowRoundBack} from 'react-icons/io'
 import {CgMoreVertical} from 'react-icons/cg'
 export const PersonIcon=BsPerson
 export const EmailIcon=HiOutlineMail
@@ -18,3 +18,4 @@ export const NotifIcon=RiNotification2Line
 export const AddIcon=IoMdAdd
 export const MoreIcon=CgMoreVertical
 export const DeleteUserIcon=AiOutlineUserDelete
+export const BackIcon=IoMdArrowRoundBack
