@@ -5,16 +5,14 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  FormHelperText,
   InputAdornment,
   OutlinedInput,
 } from "@mui/material";
 import Image from "next/image";
-import { BRAND, INTERIOR_LINING } from "@data/internal";
+import { INTERIOR_LINING } from "@data/internal";
 import { type Data3 } from ".";
 import { TRANSMISSION } from "../../data/internal";
 import { CARROSSERIE } from "../../data/internal";
-import { BsLightning } from "react-icons/bs";
 const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
   return (
     <div className="flex flex-col items-center gap-4">

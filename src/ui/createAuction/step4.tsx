@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Rating } from "@mui/material";
+import {  Rating } from "@mui/material";
 import { EXTERIOR, HANDLING, INTERIOR, TIRES } from "@data/internal";
 import { type Data4 } from ".";
 
@@ -42,7 +42,7 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
         }
       />
       <div className="flex flex-row items-center gap-3">
-        <h6>Handling : </h6>
+        <h6>HANDLING : </h6>
         {data.handling !== null && (
           <span className="text-sm font-semibold italic">
             {HANDLING[hover1 !== -1 ? hover1 : data.handling || 0]}
@@ -72,7 +72,7 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
         }
       />
       <div className="flex flex-row items-center gap-3">
-        <h6>Handling : </h6>
+        <h6>EXTERIOR : </h6>
         {data.exterior !== null && (
           <span className="text-sm font-semibold italic">
             {EXTERIOR[hover2 !== -1 ? hover2 : data.exterior || 0]}
@@ -102,7 +102,7 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
         }
       />
       <div className="flex flex-row items-center gap-3">
-        <h6>Handling : </h6>
+        <h6>INTERIOR : </h6>
         {data.interior !== null && (
           <span className="text-sm font-semibold italic">
             {INTERIOR[hover3 !== -1 ? hover3 : data.interior || 0]}
