@@ -7,6 +7,8 @@ import { type TFuel } from "@data/internal";
 import { useSession } from "next-auth/react";
 import Step1 from "./step1";
 import Step2 from "./step2";
+import Step3 from "./step3";
+import Step4 from "./step4";
 
 export type Data1 = {
   brand?: number;
@@ -19,6 +21,12 @@ export type Data3 = {
   transmission?: number;
   check?: number;
   kilometrage?:number
+};
+export type Data4 = {
+  handling?: number;
+   tires?: number;
+  exterior?: number;
+  interior?:number
 };
 const CreateAuction = () => {
   const [step, setstep] = useState(1);
@@ -39,6 +47,7 @@ const CreateAuction = () => {
     fuel: "Gasoline",
   });
   const [data3, setdata3] = useState<Data3>({});
+  const [data4, setdata4] = useState<Data4>({handling:3,interior:3,exterior:3,tires:3});
   useEffect(() => {
     const isNext1 =
       step === 1
@@ -60,6 +69,9 @@ useEffect(() => {
   }
 }, [session])
 
+useEffect(() => {
+console.log(data4)
+}, [data4])
 
   return (
     <>
@@ -69,6 +81,8 @@ useEffect(() => {
           <Stepper step={step} />
           {step == 1 && <Step1 data={data1} setData={setdata1} />}
           {step == 2 && <Step2 />}
+          {step == 3 && <Step3 data={data3} setData={setdata3} />}
+          {step == 4 && <Step4 data={data4} setData={setdata4} />}
           <div className="modal-action flex flex-row items-center">
             <label htmlFor="create_auction" className="btn-ghost btn-sm btn">
               annuler
