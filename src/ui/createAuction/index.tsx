@@ -14,6 +14,12 @@ export type Data1 = {
   model?: number;
   buildYear?: number;
 };
+export type Data3 = {
+  carrosserie?: number;
+  transmission?: number;
+  check?: number;
+  kilometrage?:number
+};
 const CreateAuction = () => {
   const [step, setstep] = useState(1);
   const next = () => {
@@ -32,11 +38,16 @@ const CreateAuction = () => {
   const [data1, setdata1] = useState<Data1>({
     fuel: "Gasoline",
   });
-
+  const [data3, setdata3] = useState<Data3>({});
   useEffect(() => {
     const isNext1 =
       step === 1
-        ? data1.brand && data1.buildYear && data1.model
+        ? 
+          data1.buildYear!==undefined && 
+          data1.model!==undefined
+        : true;
+     const isNext3= step === 3
+        ? (data3.kilometrage!==undefined && data3.carrosserie!==undefined && data3.transmission!==undefined&& data3.check==undefined)
           ? true
           : false
         : true;

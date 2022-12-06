@@ -55,7 +55,7 @@ const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
             <FormControl className="w-1/2">
               <InputLabel htmlFor="brand">Année</InputLabel>
               <Select
-                value={data.brand}
+                value={data.buildYear}
                 label="Année"
                 disabled={data.brand ? false : data.brand == 0 ? false : true}
                 onChange={(e) =>
