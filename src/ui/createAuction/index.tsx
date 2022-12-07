@@ -9,6 +9,9 @@ import Step1 from "./step1";
 import Step2 from "./step2";
 import Step3 from "./step3";
 import Step4 from "./step4";
+import { boolean } from "zod";
+import Step5 from "./step5";
+import Step6 from "./step6";
 
 export type Data1 = {
   brand?: number;
@@ -28,6 +31,39 @@ export type Data4 = {
   exterior?: number;
   interior?:number
 };
+
+export type Data5={
+  airco:boolean,
+  electric_windows:boolean,
+  climate_control:boolean,
+  panoramic_roof_or_open_roof:boolean,
+  central_locking:boolean,
+  xenon_lighting:boolean,
+  light_alloy_wheels:boolean,
+  "4x4":boolean,
+  power_steering:boolean,
+  cruise_control:boolean,
+  radio_cd:boolean,
+  parking_sensors:boolean,
+  on_board_computer:boolean
+  parking_camera:boolean
+  start_stop:boolean,
+  electric_mirrors:boolean,
+  abs:boolean,
+  tow_hook:boolean
+  dead_angle_detection:boolean
+}
+
+export type Data6={
+  name?:string,
+  images?:Array<string>
+  pricing?:number,
+  expected_price?:number,
+  duration?:Date,
+  address?:string,
+  comment?:string
+
+}
 const CreateAuction = () => {
   const [step, setstep] = useState(1);
   const next = () => {
@@ -47,7 +83,31 @@ const CreateAuction = () => {
     fuel: "Gasoline",
   });
   const [data3, setdata3] = useState<Data3>({});
+
   const [data4, setdata4] = useState<Data4>({handling:3,interior:3,exterior:3,tires:3});
+  const [data5,setdata5]=useState<Data5>({
+    airco:false,
+    electric_windows:false,
+    climate_control:false,
+    panoramic_roof_or_open_roof:false,
+    central_locking:false,
+    xenon_lighting:false,
+    light_alloy_wheels:false,
+    "4x4":false,
+    power_steering:false,
+    cruise_control:false,
+    radio_cd:false,
+    parking_sensors:false,
+    on_board_computer:false,
+    parking_camera:false,
+    start_stop:false,
+    electric_mirrors:false,
+    abs:false,
+    tow_hook:false,
+    dead_angle_detection:false
+  })
+
+  const [data6, setdata6] = useState<Data6>({})
   useEffect(() => {
     const isNext1 =
       step === 1
@@ -83,6 +143,8 @@ console.log(data4)
           {step == 2 && <Step2 />}
           {step == 3 && <Step3 data={data3} setData={setdata3} />}
           {step == 4 && <Step4 data={data4} setData={setdata4} />}
+          {step == 5 && <Step5 data={data5} setData={setdata5} />}
+          {step == 6 && <Step6 data={data6} setData={setdata6} />}
           <div className="modal-action flex flex-row items-center">
             <label htmlFor="create_auction" className="btn-ghost btn-sm btn">
               annuler
