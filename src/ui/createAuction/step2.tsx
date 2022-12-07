@@ -12,7 +12,7 @@ import { TERMS_URL, PRIVACY_POLICY_URL } from "@data/link";
 import { trpc } from "@utils/trpc";
 import Link from "next/link";
 const Step2 = () => {
-  const [isLogin, setisLogin] = useState(true);
+  const [isLogin, setisLogin] = useState(false);
   if (isLogin) {
     return <Login setisLogin={setisLogin} />;
   }

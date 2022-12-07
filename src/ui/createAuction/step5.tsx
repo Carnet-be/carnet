@@ -32,17 +32,17 @@ const Step5 = ({ data, setData }: { data: Data5; setData: any }) => {
  
 
   return (
-   <div className="flex flex-col items-center gap-2">
-       <h5>Cocher les critères de votre voiture</h5>
-     <div className="flex flex-wrap gap-2 justify-center items-center">
+   <div className="flex flex-col items-center gap-4">
+       <span className="flex flex-row justify-start w-full pl-8">Cocher les critères de votre voiture :</span>
+     <div className="flex flex-wrap gap-1 justify-center items-center">
         {Object.keys(data).map((k,i)=>{
-          return <div key={i} className="form-control w-[30%]">
+          return <div key={i} className="form-control w-[30%] rounded-lg p-2 border text-[]">
           <label className="label cursor-pointer  flex flex-row justify-start items-center break-words  gap-2 w-full">
           <input type="checkbox" checked={data[k as keyof Data5]} onChange={(e)=>{
             const obj={...data}
             obj[k as keyof Data5]=e.target.checked
             setData(obj)
-          }} className="checkbox checkbox-primary" />
+          }} className="checkbox checkbox-primary checkbox-sm" />
             <span className="label-text">{text[k]}</span> 
            
           </label>

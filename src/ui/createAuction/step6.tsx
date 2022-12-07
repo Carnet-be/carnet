@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  FormControl,
-  OutlinedInput,
+    ButtonGroup,
   InputAdornment,
   TextField,
 } from "@mui/material";
 import Upload from "@ui/components/upload";
-import { DatePicker } from "antd";
+import { Button, DatePicker } from "antd";
+import { type MutableRefObject } from "react";
 import { type Data6 } from ".";
-import { AddIcon } from '@ui/icons';
 
 const Step6 = ({
   data,
   setData,
-  defaultName,
+  defaultName,uploadRef
 }: {
   data: Data6;
   setData: any;
   defaultName: string;
+ uploadRef:MutableRefObject<undefined>,
 }) => {
   return (
     <div className="flex flex-col items-center gap-2">
@@ -29,22 +29,9 @@ const Step6 = ({
           value={data.name}
           onChange={(e) => setData({ ...data, name: e.target.value })}
         />
-        <Upload />
+        <Upload uploadRef={uploadRef} value={data.images} setValue={(v)=>setData({...data,images:v})}/>
         <div className="flex flex-row items-center gap-3">
-          <TextField
-            label="Pricing"
-            size="small"
-            type="number"
-            value={data.pricing}
-            className="flex-grow"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">{"€"}</InputAdornment>
-              ),
-            }}
-            onChange={(e) => setData({ ...data, pricing: e.target.value })}
-          />
-          -
+   
           <TextField
             label="Expected Price"
             size="small"
@@ -60,8 +47,14 @@ const Step6 = ({
               setData({ ...data, expected_price: e.target.value })
             }
           />
+          
 
-        </div>
+    <ButtonGroup variant="contained">
+      <Button>One</Button>
+      <Button>Two</Button>
+      <Button>Three</Button>
+    </ButtonGroup>
+    </div>
         <div className="w-full">
         <DatePicker 
         showTime={{ format: 'HH:mm' }}
@@ -69,7 +62,7 @@ const Step6 = ({
         placeholder="Choisir la date fin"
          allowClear  onChange={(v)=>{
             setData({...data,duration:v?.toDate()})
-        }} className="w-full border-black/40 active:border-black text-black/70"/>
+        }} className="w-full border-black/30 active:border-black text-black/70 "/>
      
         </div>
         <TextField
@@ -78,7 +71,7 @@ const Step6 = ({
           multiline
           maxRows={2}
           value={data.address}
-          onChange={(e) => setData({ ...data, name: e.target.value })}
+          onChange={(e) => setData({ ...data, address: e.target.value })}
         />
       </div>
     </div>

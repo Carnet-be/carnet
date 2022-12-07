@@ -7,7 +7,7 @@ import { type Data1 } from ".";
 const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
     return (
       <div className="flex flex-col items-center gap-4">
-        <Image alt="image" src={image} height={40} />
+        <Image alt="image" src={image} height={60} />
         <h5>Vous voulez vendre votre voiture?</h5>
         <div className="flex w-full flex-col gap-4 py-4  lg:w-[80%]">
           <div className="flex w-full flex-row items-center gap-6">
@@ -57,7 +57,7 @@ const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
               <Select
                 value={data.buildYear}
                 label="Année"
-                disabled={data.brand ? false : data.brand == 0 ? false : true}
+                disabled={data.brand ===undefined? true : false}
                 onChange={(e) =>
                   setData({
                     ...data,

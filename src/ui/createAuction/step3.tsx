@@ -16,8 +16,8 @@ import { CARROSSERIE } from "../../data/internal";
 const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
   return (
     <div className="flex flex-col items-center gap-4">
-          <Image alt="image" src={image} height={40} />
-      <h5>Completer les champs suivants</h5>
+      
+     
       <div className="flex w-full flex-col gap-4 py-4  lg:w-[80%]">
         <div className="flex w-full flex-row items-center gap-6">
           <FormControl className="w-1/2">
@@ -66,7 +66,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
               onChange={(e) =>
                 setData({
                   ...data,
-                  buildYear: e.target.value,
+                  check: e.target.value,
                 })
               }
             >
