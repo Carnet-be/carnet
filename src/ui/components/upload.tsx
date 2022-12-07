@@ -1,15 +1,20 @@
-import { Uploader } from 'rsuite';
+import { AddPhoto } from "@ui/icons";
+import { Uploader } from "rsuite";
+import CameraRetroIcon from "@rsuite/icons/legacy/CameraRetro";
 
 const Upload = () => {
   return (
-  <div className='w-full'>
-      <Uploader action="//jsonplaceholder.typicode.com/posts/" draggable multiple>
-      <div style={{ height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="w-full">
-        <span>Click or Drag images</span>
-      </div>
+    <Uploader
+      multiple
+      listType="picture"
+      action="//jsonplaceholder.typicode.com/posts/"
+      className="flex flex-row items-center justify-center"
+    >
+      <button>
+        <CameraRetroIcon />
+      </button>
     </Uploader>
-  </div>
   );
 };
 
-export default Upload
+export default Upload;

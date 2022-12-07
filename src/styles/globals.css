@@ -2,23 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base{
-    /* text */
-   .text-caption {
-       @apply italic font-semibold;
-   }
-   .title-dashboard {
-       @apply  text-4xl font-semibold;
-   }
-     /* text */
-   .layout{
-       @apply max-w-[1200px] w-full px-3 xl:px-0
-   }
-   .icon{
-       @apply text-xl;
-   } 
+@layer base {
+  /* text */
+  .text-caption {
+    @apply font-semibold italic;
+  }
+  .title-dashboard {
+    @apply text-4xl font-semibold;
+  }
+  /* text */
+  .layout {
+    @apply w-full max-w-[1200px] px-3 xl:px-0;
+  }
+  .icon {
+    @apply text-xl;
+  }
 
-   input{
-       @apply outline-none !important;
-   }
+  input {
+    @apply outline-none !important;
+  }
+}
+
+.ant-btn-primary {
+  background-color: blue;
+  color: white;
 }

@@ -12,6 +12,7 @@ import Step4 from "./step4";
 import { boolean } from "zod";
 import Step5 from "./step5";
 import Step6 from "./step6";
+import { BRAND } from '@data/internal';
 
 export type Data1 = {
   brand?: number;
@@ -130,8 +131,8 @@ useEffect(() => {
 }, [session])
 
 useEffect(() => {
-console.log(data4)
-}, [data4])
+console.log("Date Step 6",data6.duration?.getFullYear())
+}, [data6])
 
   return (
     <>
@@ -144,7 +145,7 @@ console.log(data4)
           {step == 3 && <Step3 data={data3} setData={setdata3} />}
           {step == 4 && <Step4 data={data4} setData={setdata4} />}
           {step == 5 && <Step5 data={data5} setData={setdata5} />}
-          {step == 6 && <Step6 data={data6} setData={setdata6} />}
+          {step == 6 && <Step6 data={data6} setData={setdata6} defaultName={BRAND[data1.brand||0]?.title+" "+BRAND[data1.brand||0]?.model[data1.model||0]}/>}
           <div className="modal-action flex flex-row items-center">
             <label htmlFor="create_auction" className="btn-ghost btn-sm btn">
               annuler
@@ -162,10 +163,19 @@ console.log(data4)
               onClick={next}
               className={cx("btn-primary btn-sm btn", {
                 "btn-disabled": !isNext,
-                "hidden":step==2
+                "hidden":step==2 ||step==6
               })}
             >
               continuer
+            </button>
+            <button
+              
+              className={cx("btn-primary btn-sm btn", {
+            //    "btn-disabled": !isNext,
+                "hidden":step!==6
+              })}
+            >
+              valider
             </button>
           </div>
         </div>
