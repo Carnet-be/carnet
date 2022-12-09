@@ -19,6 +19,9 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
 
   return (
     <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-row gap-8 items-center">
+      <span className="font-semibold">Handling : </span>
+    
       <Rating
         value={data.handling}
         onChange={(event, newValue) => {
@@ -41,8 +44,9 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
           />
         }
       />
+        </div>
       <div className="flex flex-row items-center gap-3">
-        <h6>HANDLING : </h6>
+       
         {data.handling !== null && (
           <span className="text-sm font-semibold italic">
             {HANDLING[hover1 !== -1 ? hover1 : data.handling || 0]}

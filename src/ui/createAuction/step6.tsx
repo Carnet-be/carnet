@@ -34,7 +34,7 @@ const Step6 = ({
    
           <TextField
             label="Expected Price"
-            size="small"
+           
             type="number"
             value={data.expected_price}
             className="flex-grow"
@@ -49,7 +49,7 @@ const Step6 = ({
           />
           
 
-    <ButtonGroup variant="contained">
+    <ButtonGroup variant="outlined" size="large">
       <Button>One</Button>
       <Button>Two</Button>
       <Button>Three</Button>
