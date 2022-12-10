@@ -1,10 +1,10 @@
 import {BsFillPeopleFill, BsPerson, BsTelephone,BsFillStarFill} from 'react-icons/bs'
 import {HiOutlineMail} from 'react-icons/hi'
-import {MdOutlinePassword,MdDashboard,MdAddPhotoAlternate} from 'react-icons/md'
+import {MdOutlinePassword,MdDashboard,MdAddPhotoAlternate,MdOutlineArrowForwardIos,MdOutlineArrowBackIos} from 'react-icons/md'
 import {BiBuildings} from "react-icons/bi"
-import {AiTwotoneSetting,AiOutlineUserDelete} from "react-icons/ai"
+import {AiTwotoneSetting,AiOutlineUserDelete,AiFillCheckCircle} from "react-icons/ai"
 import {RiNotification2Line} from 'react-icons/ri'
-import {IoMdAdd,IoMdArrowRoundBack} from 'react-icons/io'
+import {IoMdAdd,IoMdArrowRoundBack,IoIosArrowDroprightCircle,IoIosArrowDropleftCircle} from 'react-icons/io'
 import {CgMoreVertical} from 'react-icons/cg'
 export const PersonIcon=BsPerson
 export const EmailIcon=HiOutlineMail
@@ -21,3 +21,6 @@ export const DeleteUserIcon=AiOutlineUserDelete
 export const BackIcon=IoMdArrowRoundBack
 export const StarIcon=BsFillStarFill
 export const AddPhoto=MdAddPhotoAlternate
+export const CheckIcon=AiFillCheckCircle
+export const ArrowRightIconFill=MdOutlineArrowForwardIos
+export const ArrowLeftIconFill=MdOutlineArrowBackIos

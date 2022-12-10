@@ -5,19 +5,69 @@ export type TBrand = {
   buildYear: Array<string>;
 };
 
+// {
+//   title: "Sedan | Berline",
+//   img:"Sedan"
+//  },
+//   "Hatchback",
+//   "Station wagon | Break",
+//   "SUV / Crossover",
+//   "Convertible | Cabriolet / Roadster",
+//   "Coupe",
+//   "Off-road",
+//   "Van | Camionnette",
+//   "Minivan | MPV",
+//   "Minibus",
+//   "Pickup Truck",
+//   "45 km auto",
 export const CARROSSERIE = [
-  "Sedan | Berline",
-  "Hatchback",
-  "Station wagon | Break",
-  "SUV / Crossover",
-  "Convertible | Cabriolet / Roadster",
-  "Coupe",
-  "Off-road",
-  "Van | Camionnette",
-  "Minivan | MPV",
-  "Minibus",
-  "Pickup Truck",
-  "45 km auto",
+ {
+  title: "Sedan",
+  img:"Sedan"
+ },
+  {
+    title:"Hatchback",
+    img:"Hatchback"
+  },
+  {
+    title:" Break",img:"Station wagon"
+  },
+  {
+    title:"SUV",
+    img:"SUV"
+  },
+  {
+    title:"Convertible",
+    img:"Convertible"
+  },
+  {
+title: "Coupe",
+img:"Coupe"
+  },
+{title: "Off-road",
+   img: "Off-road",
+},
+{
+  title:"Van",
+  img:"Van",
+},
+
+ {
+  title:"Minivan",
+  img:"Minivan"
+ },
+ {
+  title:"Minibus",
+  img:"Minibus"
+ },
+{
+  title:"Pickup Truck",
+  img:"Pickup Truck",
+},
+{title: "45 km auto",
+img:"Micro"}
+  
+ 
 ];
 
 export const BRAND: Array<TBrand> = [
