@@ -12,7 +12,7 @@ import Step4 from "./step4";
 import Step5 from "./step5";
 import Step6 from "./step6";
 import { BRAND } from "@data/internal";
-import { FileType } from "rsuite/esm/Uploader";
+import { type FileType } from "rsuite/esm/Uploader";
 
 export type Data1 = {
   brand?: number;
@@ -60,7 +60,7 @@ export type Data6 = {
   images: FileType[];
   pricing?: number;
   expected_price?: number;
-  duration?: Date;
+  duration: "3 days"|"1 week"|"2 weeks";
   address?: string;
   comment?: string;
 };
@@ -113,7 +113,7 @@ const CreateAuction = () => {
     dead_angle_detection: false,
   });
 
-  const [data6, setdata6] = useState<Data6>({ images: [] });
+  const [data6, setdata6] = useState<Data6>({ images: [],duration:"3 days" });
   useEffect(() => {
     const isNext1 =
       step === 1
@@ -154,9 +154,6 @@ const CreateAuction = () => {
     setisValid(isNext);
   }, [data6]);
 
-  useEffect(() => {
-    console.log("Date Step 6", data6.duration?.getFullYear());
-  }, [data6]);
 
   return (
     <>

@@ -1,23 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-    ButtonGroup,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
+import { ButtonGroup, InputAdornment, TextField } from "@mui/material";
 import Upload from "@ui/components/upload";
 import { Button, DatePicker } from "antd";
 import { type MutableRefObject } from "react";
 import { type Data6 } from ".";
-
+import cx from 'classnames'
 const Step6 = ({
   data,
   setData,
-  defaultName,uploadRef
+  defaultName,
+  uploadRef,
 }: {
   data: Data6;
   setData: any;
   defaultName: string;
- uploadRef:MutableRefObject<undefined>,
+  uploadRef: MutableRefObject<undefined>;
 }) => {
   return (
     <div className="flex flex-col items-center gap-2">
@@ -29,12 +26,14 @@ const Step6 = ({
           value={data.name}
           onChange={(e) => setData({ ...data, name: e.target.value })}
         />
-        <Upload uploadRef={uploadRef} value={data.images} setValue={(v)=>setData({...data,images:v})}/>
+        <Upload
+          uploadRef={uploadRef}
+          value={data.images}
+          setValue={(v) => setData({ ...data, images: v })}
+        />
         <div className="flex flex-row items-center gap-3">
-   
           <TextField
             label="Expected Price"
-           
             type="number"
             value={data.expected_price}
             className="flex-grow"
@@ -47,29 +46,27 @@ const Step6 = ({
               setData({ ...data, expected_price: e.target.value })
             }
           />
-          
 
-    <ButtonGroup variant="outlined" size="large">
-      <Button>One</Button>
-      <Button>Two</Button>
-      <Button>Three</Button>
-    </ButtonGroup>
-    </div>
-        <div className="w-full">
-        <DatePicker 
-        showTime={{ format: 'HH:mm' }}
-        format="YYYY-MM-DD HH:mm"
-        placeholder="Choisir la date fin"
-         allowClear  onChange={(v)=>{
-            setData({...data,duration:v?.toDate()})
-        }} className="w-full border-black/30 active:border-black text-black/70 "/>
-     
+          <div className="flex w-1/2 flex-col gap-1">
+            <span className="text-sm">Auction Duration</span>
+            <div className="flex flex-row gap-2">
+              {["3 days","1 week","2 weeks"].map((n,i)=>{
+                return  <button key={i} onClick={()=>setData({...data,duration:n})} className={cx("btn btn-sm rounded-md font-semibold",{
+               //   "btn-disabled":n!=="3 days",
+                  "btn-outline":data.duration!==n
+                })}>{n}</button>
+              })}
+             
+              
+            </div>
+          </div>
         </div>
+
         <TextField
           label="Adresse"
           size="small"
           multiline
-          maxRows={2}
+          minRows={2}
           value={data.address}
           onChange={(e) => setData({ ...data, address: e.target.value })}
         />

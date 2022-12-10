@@ -155,7 +155,7 @@ type BodyItemProps={
   onClick:()=>void
 }
 const BodyItem=({isActive,title,img,onClick}:BodyItemProps)=>{
-  return <div onClick={onClick} className={cx("w-[160px] h-[120px] border rounded-md flex flex-col relative",{
+  return <div onClick={onClick} className={cx("w-[160px] h-[120px] cursor-pointer border rounded-md flex flex-col relative",{
     "text-primary border-primary":isActive
   })}>
    <div className={cx("absolute top-1 right-1 text-lg",{
