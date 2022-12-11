@@ -68,6 +68,9 @@ export type Data6 = {
   duration: "3 days"|"1 week"|"2 weeks";
   address?: string;
   description?: string;
+  zipCode?:string,
+  city?:string,
+  country?:string
 };
 const CreateAuction = () => {
   const [step, setstep] = useState(1);

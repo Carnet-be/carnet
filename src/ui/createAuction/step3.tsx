@@ -143,7 +143,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
               onChange={(e) =>
                 setData({ ...data, cc: e.target.value })
               }
-              endAdornment={<InputAdornment position="end">CC</InputAdornment>}
+              endAdornment={<InputAdornment position="end"><span className="mesure"> CC</span></InputAdornment>}
             />
           </FormControl>
           <FormControl className="flex-grow">
@@ -157,7 +157,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
               onChange={(e) =>
                 setData({ ...data, cv: e.target.value })
               }
-              endAdornment={<InputAdornment position="end">CV</InputAdornment>}
+              endAdornment={<InputAdornment position="end"><span className="mesure"> CV</span></InputAdornment>}
             />
           </FormControl>
           <FormControl className="flex-grow">
@@ -171,7 +171,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
               onChange={(e) =>
                 setData({ ...data, kilometrage: e.target.value })
               }
-              endAdornment={<InputAdornment position="end">Km</InputAdornment>}
+              endAdornment={<InputAdornment position="end"><span className="mesure"> Km</span></InputAdornment>}
             />
           </FormControl>
 

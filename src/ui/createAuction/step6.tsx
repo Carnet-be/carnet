@@ -4,6 +4,8 @@ import Upload from "@ui/components/upload";
 import { Button, DatePicker } from "antd";
 import { type MutableRefObject } from "react";
 import { type Data6 } from ".";
+import GoogleMapReact from 'google-map-react';
+
 import cx from 'classnames'
 const Step6 = ({
   data,
@@ -16,6 +18,13 @@ const Step6 = ({
   defaultName: string;
   uploadRef: MutableRefObject<undefined>;
 }) => {
+  const defaultProps={
+    center: {
+      lat: 33.98087546234331,
+      lng: -6.85962617941780
+    },
+    zoom: 14
+  }
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="flex w-[86%] flex-col items-stretch gap-4">
@@ -56,13 +65,13 @@ const Step6 = ({
           />
 
           <div className="flex w-1/2 flex-col gap-1">
-            <span className="text-sm">Auction Duration</span>
+            <span className="text-sm ">Auction Duration</span>
             <div className="flex flex-row gap-2">
               {["3 days","1 week","2 weeks"].map((n,i)=>{
-                return  <button key={i} onClick={()=>setData({...data,duration:n})} className={cx("btn btn-sm rounded-md font-semibold btn-primary",{
+                return  <button key={i} onClick={()=>setData({...data,duration:n})} className={cx("btn btn-sm h-[2.3rem] rounded-md font-semibold btn-primary",{
                //   "btn-disabled":n!=="3 days",
                   "btn-outline":data.duration!==n
-                })}>{n}</button>
+                })}><span className="">{n}</span></button>
               })}
              
               
@@ -70,14 +79,49 @@ const Step6 = ({
           </div>
         </div>
 
-        <TextField
+       <div className="flex flex-row gap-2">
+   <div className="flex flex-col gap-1 flex-grow">
+   <TextField
           label="Adresse"
           size="small"
           multiline
           minRows={2}
           value={data.address}
+         
           onChange={(e) => setData({ ...data, address: e.target.value })}
         />
+      
+      <div className="flex flex-row gap-1">
+      <TextField
+          label="Country"
+          size="small"
+        
+          value={data.country}
+         
+          onChange={(e) => setData({ ...data, country: e.target.value })}
+        />
+        <TextField
+          label="City"
+          size="small"
+        
+          value={data.city}
+         
+          onChange={(e) => setData({ ...data, city: e.target.value })}
+        />
+        <TextField
+          label="Zip"
+          size="small"
+        
+          value={data.zipCode}
+         
+          onChange={(e) => setData({ ...data, zipCode: e.target.value })}
+        />
+      </div>
+   </div>
+        <div className="w-1/3">
+
+        </div>
+       </div>
       </div>
     </div>
   );

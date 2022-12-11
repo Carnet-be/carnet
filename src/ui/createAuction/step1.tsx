@@ -9,6 +9,8 @@ import { ArrowLeftIconFill } from "../icons";
 import Slider from "react-slick";
 import { SampleNextArrow, SamplePrevArrow } from "./step3";
 import cx from "classnames";
+import { BsCheck } from "react-icons/bs";
+import { AiFillCheckCircle } from 'react-icons/ai';
 const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
   const settings = {
     dots: true,
@@ -134,13 +136,19 @@ type BodyItemProps = {
 };
 const BodyItem = ({ isActive, color, onClick }: BodyItemProps) => {
   return (
-    <div
+   <div className="flex flex-col items-center gap-1">
+     <div
       onClick={onClick}
       style={{ backgroundColor: color }}
       className={cx("h-[50px] w-[50px] cursor-pointer rounded-full", {
         "border-[3px] border-primary": isActive,
       })}
     ></div>
+    <AiFillCheckCircle className={cx("text-xl",{
+      "text-white":!isActive,
+      "text-primary":isActive,
+    })}/>
+   </div>
   );
 };
 export default Step1;
