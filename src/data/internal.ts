@@ -30,7 +30,7 @@ export const CARROSSERIE = [
     img:"Hatchback"
   },
   {
-    title:" Break",img:"Station wagon"
+    title:" Break",img:"Station Wagon"
   },
   {
     title:"SUV",
