@@ -26,6 +26,14 @@ const Step6 = ({
           value={data.name}
           onChange={(e) => setData({ ...data, name: e.target.value })}
         />
+            <TextField
+          label="Description"
+          size="small"
+          multiline
+          minRows={2}
+          value={data.description}
+          onChange={(e) => setData({ ...data, description: e.target.value })}
+        />
         <Upload
           uploadRef={uploadRef}
           value={data.images}
@@ -51,7 +59,7 @@ const Step6 = ({
             <span className="text-sm">Auction Duration</span>
             <div className="flex flex-row gap-2">
               {["3 days","1 week","2 weeks"].map((n,i)=>{
-                return  <button key={i} onClick={()=>setData({...data,duration:n})} className={cx("btn btn-sm rounded-md font-semibold",{
+                return  <button key={i} onClick={()=>setData({...data,duration:n})} className={cx("btn btn-sm rounded-md font-semibold btn-primary",{
                //   "btn-disabled":n!=="3 days",
                   "btn-outline":data.duration!==n
                 })}>{n}</button>

@@ -2,6 +2,7 @@ import { Uploader } from "rsuite";
 import CameraRetroIcon from "@rsuite/icons/legacy/CameraRetro";
 import { type MutableRefObject } from "react";
 import { type FileType } from "rsuite/esm/Uploader";
+import { AddPhotoIcon } from "@ui/icons";
 
 type UploadProps = {
   uploadRef?: MutableRefObject<undefined>;
@@ -25,12 +26,17 @@ const Upload = ({ uploadRef, value, setValue }: UploadProps) => {
           style={{
             height: 80,
             display: "flex",
+            
+            flexDirection:"row",
             alignItems: "center",
             justifyContent: "center",
           }}
-          className="cursor-pointer"
+
+          className="cursor-pointer h-[80px] items-center justify-center"
         >
-          <span>Click or Drag images to this area to upload</span>
+        <div className="flex flex-col  gap-2 items-center">
+        <AddPhotoIcon className="text-2xl mr-3"/> <span>Click or Drag images to this area to upload</span>
+        </div>
         </div>
       </Uploader>
     </div>

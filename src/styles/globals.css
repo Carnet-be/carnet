@@ -23,6 +23,9 @@
   input {
     @apply outline-none !important;
   }
+  .mesure{
+    @apply italic text-sm text-gray-300 !important
+  }
 }
 
 .ant-btn-primary {

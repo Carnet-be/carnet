@@ -18,6 +18,7 @@ import Slider from "react-slick";
 import cx from 'classnames';
 import { ArrowRightIconFill, CheckIcon } from "@ui/icons";
 import { ArrowLeftIconFill } from '../icons';
+import { RiErrorWarningLine } from "react-icons/ri";
 // var settings = {
 //   dots: true,
 //   infinite: false,
@@ -52,7 +53,7 @@ import { ArrowLeftIconFill } from '../icons';
 //     }
 //   ]
 // };
-function SampleNextArrow(props:any) {
+export function SampleNextArrow(props:any) {
   const { className, style, onClick } = props;
   return (
 
@@ -60,7 +61,7 @@ function SampleNextArrow(props:any) {
   );
 }
 
-function SamplePrevArrow(props:any) {
+export function SamplePrevArrow(props:any) {
   const { className, style, onClick } = props;
   return (
      <ArrowLeftIconFill className={className+" text-black text-[17px]"}  onClick={onClick}/>
@@ -71,12 +72,13 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
   dots: true,
   infinite: false,
   speed: 500,
-  slidesToShow: 3,
-  slidesToScroll: 3,
+  slidesToShow: 4,
+  slidesToScroll: 4,
   nextArrow: <SampleNextArrow />,
   prevArrow: <SamplePrevArrow />
   };
   return (
+    <>
     <div className="flex flex-col items-center gap-4">
       
      
@@ -90,7 +92,26 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
       })}
       </Slider>
     
-        <div className="flex w-full flex-row items-center gap-6">
+        <div className="flex w-full flex-row items-center gap-3">
+        <FormControl className="w-1/2">
+            <InputLabel htmlFor="brand">Doors</InputLabel>
+            <Select
+              value={data.doors}
+              label="Doors"
+              onChange={(e) =>
+                setData({
+                  ...data,
+                  doors: e.target.value,
+                })
+              }
+            >
+              {[2,3,4,5,6,7].map((o, i) => (
+                <MenuItem key={i} value={o}>
+                  {o}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <FormControl className="w-1/2">
             <InputLabel htmlFor="model">Transmission</InputLabel>
             <Select
@@ -108,32 +129,44 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
               ))}
             </Select>
           </FormControl>
-          <FormControl className="w-1/2">
-            <InputLabel htmlFor="brand">Interior lining / Check</InputLabel>
-            <Select
-              value={data.check}
-              label=" Interior lining / Check"
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  check: e.target.value,
-                })
-              }
-            >
-              {INTERIOR_LINING.map((o, i) => (
-                <MenuItem key={i} value={i}>
-                  {o}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+         
         </div>
-        <div className="flex w-full flex-row items-center gap-6 justify-center">
-        
-          <FormControl className="w-1/2">
+        <div className="flex w-full flex-row items-center gap-2 justify-center">
+        <FormControl className="flex-grow">
+           <InputLabel htmlFor="model">Engine Size</InputLabel>
+            <OutlinedInput
+            label="Engine size"
+              id="outlined-adornment-weight"
+              type="number"
+             
+              value={data.cc}
+              onChange={(e) =>
+                setData({ ...data, cc: e.target.value })
+              }
+              endAdornment={<InputAdornment position="end">CC</InputAdornment>}
+            />
+          </FormControl>
+          <FormControl className="flex-grow">
+          <InputLabel htmlFor="model">Horse power</InputLabel>
             <OutlinedInput
               id="outlined-adornment-weight"
               type="number"
+              label="Horse power"
+             
+              value={data.cv}
+              onChange={(e) =>
+                setData({ ...data, cv: e.target.value })
+              }
+              endAdornment={<InputAdornment position="end">CV</InputAdornment>}
+            />
+          </FormControl>
+          <FormControl className="flex-grow">
+          <InputLabel htmlFor="model">Kilométrage</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-weight"
+              type="number"
+              label="Kilométrage"
+              
               value={data.kilometrage}
               onChange={(e) =>
                 setData({ ...data, kilometrage: e.target.value })
@@ -141,9 +174,53 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
               endAdornment={<InputAdornment position="end">Km</InputAdornment>}
             />
           </FormControl>
+
         </div>
+       <div className="flex flex-row gap-3">
+       <FormControl className="flex-grow">
+           <InputLabel htmlFor="model">Version</InputLabel>
+            <OutlinedInput
+            label="Version"
+              id="outlined-adornment-weight"
+              // type="number"
+             
+              value={data.version}
+              onChange={(e) =>
+                setData({ ...data, version: e.target.value })
+              }
+              
+              endAdornment={<InputAdornment position="end" className="cursor-pointer">      <label htmlFor="find-verison" className="btn btn-ghost btn-xs"><RiErrorWarningLine className="text-2xl text-blue-400"> </RiErrorWarningLine></label></InputAdornment>}
+            />
+          </FormControl>
+          <FormControl className="flex-grow">
+          <InputLabel htmlFor="model">Emission CO₂</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-weight"
+              type="number"
+              label="Emission CO₂"
+              
+              value={data.co2}
+              onChange={(e) =>
+                setData({ ...data, co2: e.target.value })
+              }
+              endAdornment={<InputAdornment position="end"><span className="mesure"> g/km</span></InputAdornment>}
+            />
+          </FormControl>
+       </div>
       </div>
     </div>
+      
+
+
+          <input type="checkbox" id="find-verison" className="modal-toggle" />
+          <div className="modal">
+            <div className="modal-box relative h-[500px]">
+              <label htmlFor="find-verison" className="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+             
+             
+            </div>
+          </div>
+    </>
   );
 };
 
@@ -155,7 +232,7 @@ type BodyItemProps={
   onClick:()=>void
 }
 const BodyItem=({isActive,title,img,onClick}:BodyItemProps)=>{
-  return <div onClick={onClick} className={cx("w-[160px] h-[120px] cursor-pointer border rounded-md flex flex-col relative",{
+  return <div onClick={onClick} className={cx("w-[110px] h-[100px] cursor-pointer border rounded-md flex flex-col relative",{
     "text-primary border-primary":isActive
   })}>
    <div className={cx("absolute top-1 right-1 text-lg",{

@@ -2,7 +2,7 @@ export type TFuel = "Gasoline" | "Diesel " | "Electricity" | "Hybrid";
 export type TBrand = {
   title: string;
   model: Array<string>;
-  buildYear: Array<string>;
+  buildYear: Array<number>;
 };
 
 // {
@@ -74,7 +74,7 @@ export const BRAND: Array<TBrand> = [
   {
     title: "Acura",
     model: ["1/12 MASERATI MODELS", "1/18 SOLIDO", "A-Class"],
-    buildYear: ["2022", "2023"],
+    buildYear: [2022, 2023],
   },
   {
     title: "Audi",
@@ -86,7 +86,7 @@ export const BRAND: Array<TBrand> = [
       "A6 allroad 1",
       "A8 2",
     ],
-    buildYear: ["2022", "2023", "2021", "2018"],
+    buildYear: [2022, 2023, 2021, 2018],
   },
   {
     title: "Hyundai",
@@ -98,12 +98,12 @@ export const BRAND: Array<TBrand> = [
       "A6 allroad",
       "A8",
     ],
-    buildYear: ["2022", "2023"],
+    buildYear: [2022, 2023],
   },
   {
     title: "Nissan",
     model: ["Altima", "Armada", "A8"],
-    buildYear: ["2022", "2023", "2021", "2018"],
+    buildYear: [2022, 2023, 2021, 2018],
   },
 ];
 export const TRANSMISSION = ["Manual", "Automatique", "Semi-automatique"];
@@ -146,3 +146,7 @@ export const TIRES: { [index: string]: string } = {
   4: "They have miles of experience on the track",
   5: "Less than 5000 kms and still in perfect condition!",
 };
+
+export const COLORS=[
+  "#191716","#AF9BB6","#e76f51","#457b9d","#edede9","#3a5a40","#9a8c98","#023e8a","#370617","#faa307","#fee440","#001524"
+]

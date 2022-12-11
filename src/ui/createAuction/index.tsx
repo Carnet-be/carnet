@@ -18,12 +18,17 @@ export type Data1 = {
   brand?: number;
   fuel: TFuel;
   model?: number;
+  color?:string,
   buildYear?: number;
 };
 export type Data3 = {
   carrosserie?: number;
   transmission?: number;
-  check?: number;
+  doors?: number;
+  cv?:number,
+  cc?:number,
+  version?:string,
+  co2?:number,
   kilometrage?: number;
 };
 export type Data4 = {
@@ -62,7 +67,7 @@ export type Data6 = {
   expected_price?: number;
   duration: "3 days"|"1 week"|"2 weeks";
   address?: string;
-  comment?: string;
+  description?: string;
 };
 const CreateAuction = () => {
   const [step, setstep] = useState(1);
@@ -85,12 +90,7 @@ const CreateAuction = () => {
   });
   const [data3, setdata3] = useState<Data3>({});
 
-  const [data4, setdata4] = useState<Data4>({
-    handling: 3,
-    interior: 3,
-    exterior: 3,
-    tires: 3,
-  });
+  const [data4, setdata4] = useState<Data4>({});
   const [data5, setdata5] = useState<Data5>({
     airco: false,
     electric_windows: false,
@@ -125,8 +125,8 @@ const CreateAuction = () => {
       step === 3
         ? data3.kilometrage &&
           data3.carrosserie !== undefined &&
-          data3.transmission !== undefined &&
-          data3.check !== undefined
+          data3.transmission !== undefined 
+  
           ? true
           : false
         : true;
