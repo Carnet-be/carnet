@@ -52,9 +52,9 @@ const Step6 = ({
       <div className="flex w-[96%] flex-col items-stretch gap-4">
         <TextField
           label="Nom de l'auction"
-          defaultValue={defaultName}
+      
           size="small"
-          value={data.name}
+          value={data.name||defaultName}
           onChange={(e) => setData({ ...data, name: e.target.value })}
         />
         <TextField

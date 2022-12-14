@@ -13,22 +13,24 @@ import Step5 from "./step5";
 import Step6 from "./step6";
 import { BRAND } from "@data/internal";
 import { type FileType } from "rsuite/esm/Uploader";
+import { trpc } from "@utils/trpc";
+import { toast } from "react-hot-toast";
 
 export type Data1 = {
   brand?: number;
   fuel: TFuel;
   model?: number;
-  color?:string,
+  color?: string;
   buildYear?: number;
 };
 export type Data3 = {
   carrosserie?: number;
   transmission?: number;
   doors?: number;
-  cv?:number,
-  cc?:number,
-  version?:string,
-  co2?:number,
+  cv?: number;
+  cc?: number;
+  version?: string;
+  co2?: number;
   kilometrage?: number;
 };
 export type Data4 = {
@@ -65,14 +67,14 @@ export type Data6 = {
   images: FileType[];
   pricing?: number;
   expected_price?: number;
-  duration: "3 days"|"1 week"|"2 weeks";
+  duration: "3 days" | "1 week" | "2 weeks";
   address?: string;
   description?: string;
-  zipCode?:string,
-  city?:string,
-  country?:string,
-  lat?:number,
-  lon?:number
+  zipCode?: string;
+  city?: string;
+  country?: string;
+  lat?: number;
+  lon?: number;
 };
 const CreateAuction = () => {
   const [step, setstep] = useState(1);
@@ -118,7 +120,7 @@ const CreateAuction = () => {
     dead_angle_detection: false,
   });
 
-  const [data6, setdata6] = useState<Data6>({ images: [],duration:"3 days" });
+  const [data6, setdata6] = useState<Data6>({ images: [], duration: "3 days" });
   useEffect(() => {
     const isNext1 =
       step === 1
@@ -134,12 +136,9 @@ const CreateAuction = () => {
           data3.transmission !== undefined &&
           data3.cc !== undefined &&
           data3.cv !== undefined &&
-          data3.version !== undefined 
-          &&
-          data3.doors !== undefined 
-          &&
-          data3.co2 !== undefined 
-  
+          data3.version !== undefined &&
+          data3.doors !== undefined &&
+          data3.co2 !== undefined
           ? true
           : false
         : true;
@@ -158,26 +157,41 @@ const CreateAuction = () => {
         ? data6.name &&
           data6.address &&
           data6.duration &&
-          data6.expected_price 
-          &&
+          data6.expected_price &&
           data6.description &&
-          data6.country&&
-          data6.city 
+          data6.country &&
+          data6.city
           ? true
           : false
         : true;
 
     setisValid(isNext);
-  }, [data6,data1]);
+  }, [data6, data1]);
 
-
+  const { mutate: addAuction,isLoading } = trpc.auctionnaire.addAuction.useMutation({
+    onError: (err) => {
+      toast.dismiss()
+      console.log("Error from AddAuction > ", err);
+      toast.error("Erreur lors de l'ajout");
+    },
+    onSuccess: (data) => {
+      toast.dismiss()
+      toast.success("Opération réussi");
+      console.log(data)
+    },
+    onMutate:()=> toast.loading("En cours de traitement")
+  });
+  const onValid=()=>{
+    addAuction({data1,data3,data4,data5,data6})
+   
+  }
   return (
     <>
       <input type="checkbox" id="create_auction" className="modal-toggle" />
       <div className="modal">
-        <div className="modal-box flex min-h-[450px] flex-col justify-between lg:max-w-2xl gap-6">
+        <div className="modal-box flex min-h-[450px] flex-col justify-between gap-6 lg:max-w-2xl">
           <Stepper step={step} />
-  
+
           {step == 1 && <Step1 data={data1} setData={setdata1} />}
           {step == 2 && <Step2 />}
           {step == 3 && <Step3 data={data3} setData={setdata3} />}
@@ -191,7 +205,9 @@ const CreateAuction = () => {
               defaultName={
                 BRAND[data1.brand || 0]?.title +
                 " " +
-                BRAND[data1.brand || 0]?.model[data1.model || 0] + " "+  data1.buildYear
+                BRAND[data1.brand || 0]?.model[data1.model || 0] +
+                " " +
+                data1.buildYear
               }
             />
           )}
@@ -218,8 +234,9 @@ const CreateAuction = () => {
               continuer
             </button>
             <button
+            onClick={onValid}
               className={cx("btn-primary btn-sm btn", {
-                "btn-disabled": !isValid,
+                "btn-disabled": !isValid || isLoading,
                 hidden: step !== 6,
               })}
             >
@@ -235,7 +252,7 @@ const CreateAuction = () => {
 const Stepper = ({ step }: { step: number }) => {
   return (
     <ul className="steps w-full">
-      {Array.from({ length: 6 }, (_, i) => i + 1).map((k,i) => {
+      {Array.from({ length: 6 }, (_, i) => i + 1).map((k, i) => {
         return (
           <li
             key={k}
@@ -243,12 +260,12 @@ const Stepper = ({ step }: { step: number }) => {
               "step-primary": k <= step,
             })}
           >
-            {k===1 &&"Identify"}
-            {k===2 &&"Login / Registration"}
-            {k===3 &&"Specs"}
-            {k===4 &&"Options"}
-            {k===5 &&"Rating"}
-            {k===6 &&"Validation"} 
+            {k === 1 && "Identify"}
+            {k === 2 && "Login / Registration"}
+            {k === 3 && "Specs"}
+            {k === 4 && "Options"}
+            {k === 5 && "Rating"}
+            {k === 6 && "Validation"}
           </li>
         );
       })}

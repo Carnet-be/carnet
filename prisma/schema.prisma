@@ -54,6 +54,7 @@ model Auction {
   duration       DurationType
   end_date       DateTime
   expected_price Float
+  color String?
   //relation
   specs          AuctionSpecs?
   options        AuctionOptions?
