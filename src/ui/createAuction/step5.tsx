@@ -15,7 +15,7 @@ const text:any={
     central_locking:"Central locking",
     xenon_lighting: "Xenon lighting",
     light_alloy_wheels:"Light Alloy wheels",
-    "4x4":"4x4",
+    four_by_four:"4x4",
     power_steering:"Power Steering",
     cruise_control:"Cruise control",
     radio_cd:"Radio/CD",

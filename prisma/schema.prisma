@@ -14,36 +14,139 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
 model User {
-  id            String    @id @default(cuid())
-  
-  username String
-  email         String   @unique
+  id String @id @default(cuid())
+
+  username       String
+  email          String   @unique
   nom_entreprise String?
-  type UserType
+  type           UserType
   tel            String?
   password       String
-  isActive Boolean @default(true)
-  emailVerified  Boolean @default(false)
-  image         String?
-//
-    createAt      DateTime @default(now())
-    updateAt      DateTime @updatedAt
+  isActive       Boolean  @default(true)
+  emailVerified  Boolean  @default(false)
+  image          String?
+  //
+  createAt       DateTime @default(now())
+  updateAt       DateTime @updatedAt
 }
 
-model DemandeStaff{
-  id       String    @id @default(cuid())
-  username  String
-  email         String   @unique
-  createAt      DateTime @default(now())
-  updateAt      DateTime @updatedAt
+model DemandeStaff {
+  id       String   @id @default(cuid())
+  username String
+  email    String   @unique
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
 }
-enum UserType{
+
+model Auction {
+  id             String          @id
+  createAt       DateTime        @default(now())
+  updateAt       DateTime        @updatedAt
+  //field
+  name           String
+  brand          Int
+  model          Int
+  build_year     Int
+  fuel           FuelType
+  images         String[]
+  description    String?
+  duration       DurationType
+  end_date       DateTime
+  expected_price Float
+  //relation
+  specs          AuctionSpecs?
+  options        AuctionOptions?
+  rating         AuctionRating?
+  address        Address?
+}
+
+model AuctionSpecs {
+  id           String  @id @default(cuid())
+  carrosserie  Int
+  transmission Int
+  doors        Int
+  cv           Float
+  cc           Float
+  co2          Float
+  kilometrage  Float
+  version      String
+  ///
+  auction_id   String  @unique
+  auction      Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+}
+
+model AuctionOptions {
+  id                          String  @id @default(cuid())
+  airco                       Boolean @default(false)
+  electric_windows            Boolean @default(false)
+  climate_control             Boolean @default(false)
+  panoramic_roof_or_open_roof Boolean @default(false)
+  central_locking             Boolean @default(false)
+  xenon_lighting              Boolean @default(false)
+  light_alloy_wheels          Boolean @default(false)
+  four_by_four                Boolean @default(false)
+  power_steering              Boolean @default(false)
+  cruise_control              Boolean @default(false)
+  radio_cd                    Boolean @default(false)
+  parking_sensors             Boolean @default(false)
+  on_board_computer           Boolean @default(false)
+  parking_camera              Boolean @default(false)
+  start_stop                  Boolean @default(false)
+  electric_mirrors            Boolean @default(false)
+  abs                         Boolean @default(false)
+  tow_hook                    Boolean @default(false)
+  dead_angle_detection        Boolean @default(false)
+  ///
+  auction_id                  String  @unique
+  auction                     Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+}
+
+model AuctionRating {
+  id         String  @id @default(cuid())
+  handling   Int?
+  tires      Int?
+  exterior   Int?
+  interior   Int?
+  ///
+  auction_id String  @unique
+  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+}
+
+model Address {
+  id       String   @id @default(cuid())
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  //field
+  zipCode    String?
+  country    String?
+  city       String?
+  address    String?
+  lat        Float?
+  lon        Float?
+  //
+  auction_id String  @unique
+  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+}
+
+//////ENUM///////
+enum UserType {
   BID
   AUC
   ADMIN
   STAFF
 }
 
+enum FuelType {
+  Gasoline
+  Diesel
+  Electricity
+  Hybrid
+}
+
+enum DurationType {
+  ThreeDays
+  OneWeek
+  TwoWeek
+}

@@ -39,7 +39,7 @@ const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
                   ...data,
                   brand: e.target.value,
                   model: 0,
-                  buildYear: 0,
+                  buildYear: BRAND[e.target.value as number||0]?.buildYear[0],
                 });
               }}
             >
@@ -86,7 +86,7 @@ const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
                 .sort()
                 .reverse()
                 .map((o, i) => (
-                  <MenuItem key={i} value={i}>
+                  <MenuItem key={i} value={o}>
                     {o}
                   </MenuItem>
                 ))}

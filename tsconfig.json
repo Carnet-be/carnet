@@ -30,6 +30,6 @@
 
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "src/ui/components/table.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "src/ui/components/table.tsx", "src/ui/components/map.tsx", "src/pages/test.tsx"],
   "exclude": ["node_modules"]
 }

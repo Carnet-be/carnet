@@ -19,11 +19,10 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
 
   return (
     <div className="flex flex-col items-center gap-4 px-8 transition-all">
-      <div className="flex w-full flex-row items-center gap-8 rounded-md border px-4 py-2 h-[65px]">
+      <div className="flex w-full flex-col items-start rounded-md border px-4 py-2 h-[70px] gap-1">
+        <div className="flex flex-row gap-8 items-center">
         <span className="w-[100px] font-semibold text-primary">Handling</span>
-
-        <div className="flex flex-grow flex-col gap-1">
-          <Rating
+        <Rating
             value={data.handling||0}
             onChange={(event, newValue) => {
               setData({ ...data, handling: newValue });
@@ -45,17 +44,21 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
               />
             }
           />
+        </div>
+        <div className="flex flex-row gap-8 items-center">
+        <span className="w-[100px] font-semibold text-primary"></span>
           {data.handling !== null && (
             <span className="pl-2 text-sm italic text-black/70">
               {HANDLING[hover1 !== -1 ? hover1 : data.handling || 1000]||""}
             </span>
           )}
-        </div>
+          </div>
+    
       </div>
-      <div className="flex w-full flex-row items-center gap-8 rounded-md border px-4 py-2 h-[65px]">
+      <div className="flex w-full flex-col items-start rounded-md border px-4 py-2 h-[70px] gap-1">
+        <div className="flex flex-row gap-8 items-center">
         <span className="w-[100px] font-semibold text-primary">Exterior</span>
 
-        <div className="flex flex-grow flex-col  gap-1">
           <Rating
             value={data.exterior}
             onChange={(event, newValue) => {
@@ -78,17 +81,20 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
               />
             }
           />
+               </div>
+        <div className="flex flex-row gap-8 items-center">
+        <span className="w-[100px] font-semibold text-primary"></span>
           {data.exterior !== null && (
             <span className="pl-2 text-sm italic text-black/70">
               {EXTERIOR[hover2 !== -1 ? hover2 : data.exterior  || 1000]||""}
             </span>
           )}
-        </div>
       </div>
-      <div className="flex w-full flex-row items-center gap-8 rounded-md border px-4 py-2 h-[65px]">
+      </div>
+      <div className="flex w-full flex-col items-start rounded-md border px-4 py-2 h-[70px] gap-1">
+        <div className="flex flex-row gap-8 items-center">
         <span className="w-[100px] font-semibold text-primary">Interior</span>
 
-        <div className="flex flex-grow flex-col  gap-1">
           <Rating
             value={data.interior}
             onChange={(event, newValue) => {
@@ -111,6 +117,9 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
               />
             }
           />
+                         </div>
+        <div className="flex flex-row gap-8 items-center">
+        <span className="w-[100px] font-semibold text-primary"></span>
           {data.interior !== null && (
             <span className="pl-2 text-sm italic text-black/70">
               {INTERIOR[hover3 !== -1 ? hover3 : data.interior  || 1000]||""}
@@ -119,10 +128,11 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
         </div>
       </div>
 
-      <div className="flex w-full flex-row items-center gap-8 rounded-md border px-4 py-2 h-[65px]">
+      <div className="flex w-full flex-col items-start rounded-md border px-4 py-2 h-[70px] gap-1">
+        <div className="flex flex-row gap-8 items-center">
         <span className="w-[100px] font-semibold text-primary">Tires</span>
 
-        <div className="flex flex-grow flex-col  gap-1">
+    
           <Rating
             value={data.tires}
             onChange={(event, newValue) => {
@@ -145,6 +155,9 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
               />
             }
           />
+                         </div>
+        <div className="flex flex-row gap-8 items-center">
+        <span className="w-[100px] font-semibold text-primary"></span>
           {data.tires !== null && (
             <span className="pl-2 text-sm italic text-black/70">
               {TIRES[hover4 !== -1 ? hover4 : data.tires || 0]}

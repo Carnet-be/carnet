@@ -46,7 +46,7 @@ export type Data5 = {
   central_locking: boolean;
   xenon_lighting: boolean;
   light_alloy_wheels: boolean;
-  "4x4": boolean;
+  four_by_four: boolean;
   power_steering: boolean;
   cruise_control: boolean;
   radio_cd: boolean;
@@ -70,7 +70,9 @@ export type Data6 = {
   description?: string;
   zipCode?:string,
   city?:string,
-  country?:string
+  country?:string,
+  lat?:number,
+  lon?:number
 };
 const CreateAuction = () => {
   const [step, setstep] = useState(1);
@@ -102,7 +104,7 @@ const CreateAuction = () => {
     central_locking: false,
     xenon_lighting: false,
     light_alloy_wheels: false,
-    "4x4": false,
+    four_by_four: false,
     power_steering: false,
     cruise_control: false,
     radio_cd: false,
@@ -122,13 +124,21 @@ const CreateAuction = () => {
       step === 1
         ? data1.brand !== undefined &&
           data1.buildYear !== undefined &&
-          data1.model !== undefined
+          data1.model !== undefined &&
+          data1.color !== undefined
         : true;
     const isNext3 =
       step === 3
         ? data3.kilometrage &&
           data3.carrosserie !== undefined &&
-          data3.transmission !== undefined 
+          data3.transmission !== undefined &&
+          data3.cc !== undefined &&
+          data3.cv !== undefined &&
+          data3.version !== undefined 
+          &&
+          data3.doors !== undefined 
+          &&
+          data3.co2 !== undefined 
   
           ? true
           : false
@@ -148,14 +158,17 @@ const CreateAuction = () => {
         ? data6.name &&
           data6.address &&
           data6.duration &&
-          data6.pricing &&
-          data6.expected_price
+          data6.expected_price 
+          &&
+          data6.description &&
+          data6.country&&
+          data6.city 
           ? true
           : false
         : true;
 
     setisValid(isNext);
-  }, [data6]);
+  }, [data6,data1]);
 
 
   return (
@@ -164,6 +177,7 @@ const CreateAuction = () => {
       <div className="modal">
         <div className="modal-box flex min-h-[450px] flex-col justify-between lg:max-w-2xl gap-6">
           <Stepper step={step} />
+  
           {step == 1 && <Step1 data={data1} setData={setdata1} />}
           {step == 2 && <Step2 />}
           {step == 3 && <Step3 data={data3} setData={setdata3} />}
@@ -177,7 +191,7 @@ const CreateAuction = () => {
               defaultName={
                 BRAND[data1.brand || 0]?.title +
                 " " +
-                BRAND[data1.brand || 0]?.model[data1.model || 0]
+                BRAND[data1.brand || 0]?.model[data1.model || 0] + " "+  data1.buildYear
               }
             />
           )}

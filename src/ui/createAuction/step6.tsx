@@ -2,11 +2,12 @@
 import { ButtonGroup, InputAdornment, TextField } from "@mui/material";
 import Upload from "@ui/components/upload";
 import { Button, DatePicker } from "antd";
-import { type MutableRefObject } from "react";
+import { useState, type MutableRefObject } from "react";
 import { type Data6 } from ".";
-import GoogleMapReact from 'google-map-react';
+import GoogleMapReact from "google-map-react";
 
-import cx from 'classnames'
+import cx from "classnames";
+import Map from "@ui/components/map";
 const Step6 = ({
   data,
   setData,
@@ -18,16 +19,37 @@ const Step6 = ({
   defaultName: string;
   uploadRef: MutableRefObject<undefined>;
 }) => {
-  const defaultProps={
+  const defaultProps = {
     center: {
       lat: 33.98087546234331,
-      lng: -6.85962617941780
+      lng: -6.8596261794178,
     },
-    zoom: 14
-  }
+    zoom: 14,
+  };
+  const [position, setdefaultProps] = useState(defaultProps);
+  const onAddMarker = (a: any) => {
+    console.log(a);
+  };
+
+  const onClickChild = (id: any) => console.log(id);
+
+  const onChangeLatitude = (v: any) =>
+    setdefaultProps((old) => ({
+      ...old,
+      center: { ...old.center, lat: parseFloat(v.target.value) || 0 },
+    }));
+
+  const onChangeLongitude = (v: any) =>
+    setdefaultProps((old) => ({
+      ...old,
+      center: { ...old.center, lng: parseFloat(v.target.value) || 0 },
+    }));
+  const onDeleteMarker = () => {
+    console.log("Deleting");
+  };
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="flex w-[86%] flex-col items-stretch gap-4">
+      <div className="flex w-[96%] flex-col items-stretch gap-4">
         <TextField
           label="Nom de l'auction"
           defaultValue={defaultName}
@@ -35,7 +57,7 @@ const Step6 = ({
           value={data.name}
           onChange={(e) => setData({ ...data, name: e.target.value })}
         />
-            <TextField
+        <TextField
           label="Description"
           size="small"
           multiline
@@ -67,61 +89,70 @@ const Step6 = ({
           <div className="flex w-1/2 flex-col gap-1">
             <span className="text-sm ">Auction Duration</span>
             <div className="flex flex-row gap-2">
-              {["3 days","1 week","2 weeks"].map((n,i)=>{
-                return  <button key={i} onClick={()=>setData({...data,duration:n})} className={cx("btn btn-sm h-[2.3rem] rounded-md font-semibold btn-primary",{
-               //   "btn-disabled":n!=="3 days",
-                  "btn-outline":data.duration!==n
-                })}><span className="">{n}</span></button>
+              {["3 days", "1 week", "2 weeks"].map((n, i) => {
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setData({ ...data, duration: n })}
+                    className={cx(
+                      "btn-primary btn-sm btn h-[2.3rem] rounded-md font-semibold",
+                      {
+                        //   "btn-disabled":n!=="3 days",
+                        "btn-outline": data.duration !== n,
+                      }
+                    )}
+                  >
+                    <span className="">{n}</span>
+                  </button>
+                );
               })}
-             
-              
             </div>
           </div>
         </div>
 
-       <div className="flex flex-row gap-2">
-   <div className="flex flex-col gap-1 flex-grow">
-   <TextField
-          label="Adresse"
-          size="small"
-          multiline
-          minRows={2}
-          value={data.address}
-         
-          onChange={(e) => setData({ ...data, address: e.target.value })}
-        />
-      
-      <div className="flex flex-row gap-1">
-      <TextField
-          label="Country"
-          size="small"
-        
-          value={data.country}
-         
-          onChange={(e) => setData({ ...data, country: e.target.value })}
-        />
-        <TextField
-          label="City"
-          size="small"
-        
-          value={data.city}
-         
-          onChange={(e) => setData({ ...data, city: e.target.value })}
-        />
-        <TextField
-          label="Zip"
-          size="small"
-        
-          value={data.zipCode}
-         
-          onChange={(e) => setData({ ...data, zipCode: e.target.value })}
-        />
-      </div>
-   </div>
-        <div className="w-1/3">
+        <div className="flex flex-row gap-2">
+          <div className="flex flex-grow flex-col gap-1">
+            <TextField
+              label="Adresse"
+              size="small"
+              multiline
+              minRows={2}
+              value={data.address}
+              onChange={(e) => setData({ ...data, address: e.target.value })}
+            />
 
+            <div className="flex flex-row gap-1">
+              <TextField
+                label="Country"
+                size="small"
+                value={data.country}
+                onChange={(e) => setData({ ...data, country: e.target.value })}
+              />
+              <TextField
+                label="City"
+                size="small"
+                value={data.city}
+                onChange={(e) => setData({ ...data, city: e.target.value })}
+              />
+              <TextField
+                label="Zip"
+                size="small"
+                value={data.zipCode}
+                onChange={(e) => setData({ ...data, zipCode: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <Map
+            options={{ zoomControl: false }}
+            latitude={0}
+            longitude={0}
+            onClick={(el) => {
+              console.log(el);
+            }}
+            containerClass={"w-[50%] h-auto bg-red-100"}
+          />
         </div>
-       </div>
       </div>
     </div>
   );
