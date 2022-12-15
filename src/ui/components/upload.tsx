@@ -1,23 +1,41 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Uploader } from "rsuite";
 import CameraRetroIcon from "@rsuite/icons/legacy/CameraRetro";
 import { type MutableRefObject } from "react";
 import { type FileType } from "rsuite/esm/Uploader";
 import { AddPhotoIcon } from "@ui/icons";
+import { cloudy } from "@utils/cloudinary";
 
 type UploadProps = {
   uploadRef?: MutableRefObject<undefined>;
   value: FileType[];
   setValue: (fileList: FileType[]) => void;
 };
+export function previewFile(file:any, callback: (s:unknown)=>void) {
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    callback(reader.result);
+  };
+  reader.readAsDataURL(file);
+}
 const Upload = ({ uploadRef, value, setValue }: UploadProps) => {
   return (
     <div className="max-h-[200px] overflow-scroll">
       <Uploader
-        action="//jsonplaceholder.typicode.com/posts/"
+        action=""
         draggable
         multiple
+        
+        onUpload={file => {
+           console.log("file",file)
+          previewFile(file.blobFile, value => {
+            console.log(value);
+           
+          });
+        }}
+       
         listType="picture-text"
-        autoUpload={false}
+      //  autoUpload={false}
         fileList={value}
         ref={uploadRef}
         onChange={setValue}

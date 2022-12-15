@@ -15,10 +15,13 @@ import { BRAND } from "@data/internal";
 import { type FileType } from "rsuite/esm/Uploader";
 import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
+import { type FuelType } from "@prisma/client";
+import { Router, useRouter } from "next/router";
+import { previewFile } from "@ui/components/upload";
 
 export type Data1 = {
   brand?: number;
-  fuel: TFuel;
+  fuel: FuelType;
   model?: number;
   color?: string;
   buildYear?: number;
@@ -167,7 +170,7 @@ const CreateAuction = () => {
 
     setisValid(isNext);
   }, [data6, data1]);
-
+const router=useRouter()
   const { mutate: addAuction,isLoading } = trpc.auctionnaire.addAuction.useMutation({
     onError: (err) => {
       toast.dismiss()
@@ -177,12 +180,19 @@ const CreateAuction = () => {
     onSuccess: (data) => {
       toast.dismiss()
       toast.success("Opération réussi");
-      console.log(data)
+       router.push("/auction/"+data.id)
     },
     onMutate:()=> toast.loading("En cours de traitement")
   });
   const onValid=()=>{
-    addAuction({data1,data3,data4,data5,data6})
+    const img:Array<string>=[]
+    for(const im of data6.images){
+      previewFile(im.blobFile, value => {
+     
+        img.push(value as string)
+      });
+    }
+    addAuction({data1,data3,data4,data5,data6,images:img})
    
   }
   return (

@@ -29,6 +29,10 @@ model User {
   //
   createAt       DateTime @default(now())
   updateAt       DateTime @updatedAt
+
+
+  //relation
+  auctions Auction[]
 }
 
 model DemandeStaff {
@@ -60,18 +64,22 @@ model Auction {
   options        AuctionOptions?
   rating         AuctionRating?
   address        Address?
+
+  
+  auctionnaire_id String
+  auctionnaire User @relation(fields: [auctionnaire_id],references: [id],onDelete: Cascade)
 }
 
 model AuctionSpecs {
   id           String  @id @default(cuid())
-  carrosserie  Int
-  transmission Int
-  doors        Int
-  cv           Float
-  cc           Float
-  co2          Float
-  kilometrage  Float
-  version      String
+  carrosserie  Int?
+  transmission Int?
+  doors        Int?
+  cv           String?
+  cc           String?
+  co2          String?
+  kilometrage  String?
+  version      String?
   ///
   auction_id   String  @unique
   auction      Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
