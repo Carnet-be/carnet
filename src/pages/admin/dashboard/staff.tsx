@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from "react";
 
-import { type NextPage } from "next";
+import { type GetServerSideProps, type NextPage } from "next";
 
 import Dashboard from "@ui/dashboard";
 import { AddIcon, DeleteUserIcon, EmailIcon, PersonIcon } from "@ui/icons";
@@ -16,23 +16,24 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { type User } from "@prisma/client";
 import { Drawer } from "rsuite";
 import { TelIcon } from "../../../ui/icons";
+import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
 
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//   //   const session = await getServerAuthSession(ctx);
-//   //   console.log(session?.user);
-//   //   if (!session) {
-//   //     return {
-//   //       redirect: {
-//   //         destination: "/admin",
-//   //         permanent: true,
-//   //       },
-//   //     };
-//   //   }
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const session = await getServerAuthSession(ctx);
+    console.log(session?.user);
+    if (!session) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: true,
+        },
+      };
+    }
 
-//   return {
-//     props: {},
-//   };
-// };
+  return {
+    props: {},
+  };
+};
 const AdminDashboard: NextPage = () => {
   const {
     data: data,
@@ -87,7 +88,7 @@ const AdminDashboard: NextPage = () => {
         })}>
           Comptes actifs
         </h6>
-        <ul ref={animateStaff as any} className="flex flex-col gap-4">
+        <ul ref={animateStaff as any} className="flex flex-col gap-4 z-0">
           {data?.staffs.filter(s=>s.isActive).map((d, i) => {
             return <StaffItem key={i} item={d} onClick={() => setitem(d)} />;
           })}
@@ -97,7 +98,7 @@ const AdminDashboard: NextPage = () => {
         })}>
           Comptes inactifs
         </h6>
-        <ul ref={animateStaff as any} className="flex flex-col gap-4 opacity-80 transition-all">
+        <ul ref={animateStaff as any} className="flex flex-col gap-4 opacity-80">
           {data?.staffs.filter(s=>!s.isActive).map((d, i) => {
             return <StaffItem key={i} item={d} onClick={() => setitem(d)} />;
           })}

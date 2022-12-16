@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
-  const user:User = await prisma.user
+  const user: User = await prisma.user
     .findUnique({
       where: {
         email: session?.user?.email || "",
@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
-  if(!user.emailVerified){
+  if (!user.emailVerified) {
     return {
       redirect: {
         destination: "/pages/email-verification",
@@ -47,9 +47,21 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
+  let route;
+  switch (user.type) {
+    case "AUC":
+      route = "/dashboard/auctionnaire";
+      break;
+    case "BID":
+      route = "/dashboard/bidder";
+      break;
+    default:
+      route = "/admin/dashboard";
+      break;
+  }
   return {
     redirect: {
-      destination:user.type=="AUC"? "/dashboard/auctionnaire":user.type=="BID"?"/dashboard/bidder":"/",
+      destination: route,
       permanent: true,
     },
   };

@@ -18,6 +18,7 @@ export const authOptions: NextAuthOptions = {
       }
       return token
     },
+    
   },
   // Configure one or more authentication providers
   

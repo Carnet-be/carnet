@@ -6,6 +6,7 @@ import { DashboardIcon, NotifIcon, PeopleIcon, SettingsIcon } from "./icons";
 import { type UserType } from "@model/type";
 import Logo from "./components/logo";
 import { useSession } from "next-auth/react";
+import ProfileCard from "./profileCard";
 
 type TSide = {
   route: string;
@@ -61,13 +62,14 @@ const Dashboard = ({ children, type }: DashboardType) => {
       <div className="drawer-content relative bg-background">
         <div className="sticky top-0 right-0 flex h-[60px] w-full  flex-row items-center gap-3 px-3 backdrop-blur-md">
           <div className="flex-grow"></div>
-          <div className="btn-ghost btn flex flex-row gap-1">
+          <div className="btn-ghost hover:bg-primary/10 btn flex flex-row gap-1">
             <span className="badge-error badge indicator-start indicator-item text-sm text-white">
               2
             </span>
             <NotifIcon className="text-2xl text-primary" />
-     {session&& <span>{session.user?.email}</span>}
+            
           </div>
+          <ProfileCard/>
         </div>
         {/* <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label> */}
       <div className="p-3 lg:p-6">

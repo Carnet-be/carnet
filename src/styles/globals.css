@@ -26,6 +26,9 @@
   .mesure{
     @apply italic text-sm text-gray-300 !important
   }
+  .menu-item{
+    @apply flex flex-row gap-3 items-center !important;
+  }
 }
 
 .ant-btn-primary {
