@@ -26,13 +26,13 @@ const Upload = ({ uploadRef, value, setValue }: UploadProps) => {
         draggable
         multiple
         
-        onUpload={file => {
-           console.log("file",file)
-          previewFile(file.blobFile, value => {
-            console.log(value);
+        // onUpload={file => {
+        //    console.log("file",file)
+        //   previewFile(file.blobFile, value => {
+        //     console.log(value);
            
-          });
-        }}
+        //   });
+        // }}
        
         listType="picture-text"
       //  autoUpload={false}

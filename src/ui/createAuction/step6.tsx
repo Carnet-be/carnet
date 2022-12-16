@@ -137,6 +137,7 @@ const Step6 = ({
               <TextField
                 label="Zip"
                 size="small"
+                
                 value={data.zipCode}
                 onChange={(e) => setData({ ...data, zipCode: e.target.value })}
               />

@@ -16,9 +16,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
   console.log(session?.user);
   if (session) {
+    const user=await prisma.user.findUnique({
+      where:{email:session.user?.email||""}
+    });
+ 
     return {
       redirect: {
-        destination: "/admin/dashboard",
+        destination: user?.type=="ADMIN"?"/admin/dashboard":"/",
         permanent: true,
       },
     };

@@ -48,8 +48,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
   return {
-    props: {
-      user,
+    redirect: {
+      destination:user.type=="AUC"? "/dashboard/auctionnaire":user.type=="BID"?"/dashboard/bidder":"/",
+      permanent: true,
     },
   };
 };

@@ -26,12 +26,11 @@ export const auctionnaireRouter = router({
       const data4: Data4 = input.data4;
       const data5: Data5 = input.data5;
       const data6: Data6 = input.data6;
-      const img: Array<string> = input.images;
 
       const processDate = new ProcessDate();
       const processUser = new ProcessUser(ctx.session);
       //
-      const images =await uploadImage(img);
+   
       const duration = processDate.getDuration(data6.duration);
       const end_date = processDate.endDate(duration);
       // return
@@ -53,7 +52,7 @@ export const auctionnaireRouter = router({
           model: data1.model!,
           build_year: data1.buildYear!,
           fuel: data1.fuel,
-          images,
+          //images,
           description: data6.description,
           duration,
           end_date,

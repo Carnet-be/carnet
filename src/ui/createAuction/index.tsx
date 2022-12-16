@@ -17,7 +17,7 @@ import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
 import { type FuelType } from "@prisma/client";
 import { Router, useRouter } from "next/router";
-import { previewFile } from "@ui/components/upload";
+
 
 export type Data1 = {
   brand?: number;
@@ -185,14 +185,8 @@ const router=useRouter()
     onMutate:()=> toast.loading("En cours de traitement")
   });
   const onValid=()=>{
-    const img:Array<string>=[]
-    for(const im of data6.images){
-      previewFile(im.blobFile, value => {
-     
-        img.push(value as string)
-      });
-    }
-    addAuction({data1,data3,data4,data5,data6,images:img})
+  
+    addAuction({data1,data3,data4,data5,data6})
    
   }
   return (
