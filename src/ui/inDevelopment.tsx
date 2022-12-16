@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React, { type FunctionComponent } from 'react'
 import Lottie from './components/lottie'
 import animationData from "@animations/in_development.json"
 type InDevelopmentProps={
@@ -16,5 +16,15 @@ const InDevelopment:FunctionComponent<InDevelopmentProps> = ({section="Section",
     </div>
   )
 }
+export const InDevelopmentMini:FunctionComponent<InDevelopmentProps> = ({section="Section"}) => {
 
+  return (
+    <div className='w-full flex flex-col justify-center items-center gap-4'>
+        <div>
+          <Lottie animationData={animationData}/>
+        </div>
+        <span className='text-caption'><span className='underline text-primary'>{section}</span> en cours de développement</span>
+    </div>
+  )
+}
 export default InDevelopment

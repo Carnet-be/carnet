@@ -1,9 +1,11 @@
+import Dashboard from "@ui/dashboard";
+import{ InDevelopmentMini } from "@ui/inDevelopment";
 import { type NextPage } from "next";
 
 const Home: NextPage = () => {
-    return <div>
-       Home
-    </div>
+    return   <Dashboard type="BID">
+     <InDevelopmentMini section="Home"/>
+    </Dashboard>
     };
 
 

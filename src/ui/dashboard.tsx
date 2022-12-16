@@ -2,7 +2,7 @@ import React, { type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
-import { DashboardIcon, NotifIcon, PeopleIcon, SettingsIcon } from "./icons";
+import { AuctionIcon, ClipIcon, DashboardIcon, NotifIcon, PeopleIcon, SettingsIcon } from "./icons";
 import { type UserType } from "@model/type";
 import Logo from "./components/logo";
 import { useSession } from "next-auth/react";
@@ -40,17 +40,33 @@ const menu: TMenu = {
   ],
   AUC: [
     {
-      title: "Accueil",
-      route: "/admin/dashboard/accueil",
+      title: "Home",
+      route: "/dashboard/auctionnaire/home",
       icon: <DashboardIcon />,
     },
     {
-      title: "Staff",
-      route: "/admin/dashboard/staff",
-      icon: <PeopleIcon />,
+      title: "My Auctions",
+      route: "/dashboard/auctionnaire/myauctions",
+      icon: <AuctionIcon />,
     },
   ],
-  BID: [],
+  BID: [
+    {
+      title: "Home",
+      route: "/dashboard/bidder/home",
+      icon: <DashboardIcon />,
+    },
+    {
+      title: "My biddes",
+      route: "/dashboard/bidder/mybiddes",
+      icon:<AuctionIcon />,
+    },
+    {
+      title: "Wish list",
+      route: "/dashboard/bidder/wishlist",
+      icon: <ClipIcon />,
+    },
+  ],
   STAFF: [],
 };
 const Dashboard = ({ children, type }: DashboardType) => {
@@ -112,7 +128,7 @@ const Side = ({ side, active }: { side: TSide; active: boolean }) => {
     <li>
       <Link
         href={side.route}
-        className={cx("flex flex-row gap-5 rounded-lg font-light", {
+        className={cx("flex flex-row gap-5 rounded-lg font-light no-underline", {
           "bg-primary text-white": active,
         })}
       >
