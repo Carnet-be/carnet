@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 const Login: NextPage = () => {
   const router = useRouter();
-  const [isLoading,setisLoading] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
   const [remember, setremember] = useState(true);
   const { register, handleSubmit, formState } = useForm<TLogin>({
     mode: "onChange",
@@ -38,44 +38,36 @@ const Login: NextPage = () => {
   const { errors } = formState;
 
   const onSubmit: SubmitHandler<TLogin> = async (data) => {
-   
-    setisLoading(true)
+    setisLoading(true);
     signIn("credentials", {
       email: data.email,
       password: data.password,
       redirect: false,
-    }).then((data)=>{
-      if(data?.ok){
-        toast.success("Vous êtes connectés avec succès")
-        router.replace("/dashboard");
-      }else{
-        switch (data?.error) {
-          case "Password invalid":
-
-             toast.error("Password invalide");
-             break
-          case "User not exist":
-             toast.error("Compte inexistant, veuillez en créer un")
-             break
-         case "User is admin":
-          toast.error("Ce compte est admin ou staff")
-          break
-          default:
-             toast.error("Erreur lors de Sign up");
-             break
-        
-        }
-      }
-    }).finally(()=>{
-      setisLoading(false)
     })
-
-
-   
-    
-     
-  
-    
+      .then((data) => {
+        if (data?.ok) {
+          toast.success("Vous êtes connectés avec succès");
+          router.replace("/dashboard");
+        } else {
+          switch (data?.error) {
+            case "Password invalid":
+              toast.error("Password invalide");
+              break;
+            case "User not exist":
+              toast.error("Compte inexistant, veuillez en créer un");
+              break;
+            case "User is admin":
+              toast.error("Ce compte est admin ou staff");
+              break;
+            default:
+              toast.error("Erreur lors de Sign up");
+              break;
+          }
+        }
+      })
+      .finally(() => {
+        setisLoading(false);
+      });
   };
   return (
     <Auth>

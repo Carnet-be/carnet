@@ -30,7 +30,7 @@ export const auctionnaireRouter = router({
       const processDate = new ProcessDate();
       const processUser = new ProcessUser(ctx.session);
       //
-   
+
       const duration = processDate.getDuration(data6.duration);
       const end_date = processDate.endDate(duration);
       // return
@@ -62,12 +62,12 @@ export const auctionnaireRouter = router({
 
           address: {
             create: {
-              zipCode:data6.zipCode,
-              city:data6.city,
-              country:data6.country,
-              lat:data6.lat,
-              lon:data6.lon,
-              address:data6.address
+              zipCode: data6.zipCode,
+              city: data6.city,
+              country: data6.country,
+              lat: data6.lat,
+              lon: data6.lon,
+              address: data6.address,
             },
           },
           rating: {
@@ -91,27 +91,36 @@ export const auctionnaireRouter = router({
         },
       });
     }),
+  getAuctions: publicProcedure
+    .input(
+      z.object({ filter: z.enum(["new", "trending" ,"feature" ,"buy now"]) })
+    )
+    .query(async({input,ctx}) => {
+       return await ctx.prisma.auction.findMany()
+    }),
 });
 
+const uploadImage = async (images: Array<string>) => {
+  const result = await Promise.all(
+    images.map((im, i) => {
+      console.log("im.url", im);
 
-const uploadImage =async (images:Array<string>) => {
- 
-  const result=await Promise.all(images.map((im,i)=>{
-    console.log('im.url',im )
+      return cloudy.uploader.upload(
+        im,
+        {
+          use_filename: true,
+          unique_filename: false,
+          overwrite: true,
+        },
+        async (error: any, result: any) => {
+          console.log("error", error);
+          console.log(i, result);
+        }
+      );
+    })
+  ).then((datas) => {
+    console.log("Datas >", datas);
+  });
 
-    return  cloudy.uploader.upload(
-      im,{
-        use_filename: true,
-        unique_filename: false,
-        overwrite: true,
-      },
-      async (error: any, result: any) => {
-        console.log('error', error)
-        console.log(i,result)
-      })
-  })).then((datas)=>{
-    console.log("Datas >",datas)
-  })
- 
   return [];
 };
