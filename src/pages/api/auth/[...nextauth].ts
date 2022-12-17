@@ -6,22 +6,19 @@ import { prisma } from "../../../server/db/client";
 import { confirmPasswordHash } from "@utils/bcrypt";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
-
-
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
 
   callbacks: {
     async jwt({ token, user }) {
-      if(user){
-          token.email=user.email
+      if (user) {
+        token.email = user.email;
       }
-      return token
+      return token;
     },
-    
   },
   // Configure one or more authentication providers
-  
+
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
@@ -35,13 +32,13 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const email = credentials?.email;
         const password = credentials?.password;
-        const isAdmin=credentials?.isAdmin
+        const isAdmin = credentials?.isAdmin;
         try {
           const user = await prisma.user.findUnique({
             where: {
               email,
             },
-          }); 
+          });
 
           if (user) {
             // Any object returned will be saved in `user` property of the JWT
@@ -50,17 +47,24 @@ export const authOptions: NextAuthOptions = {
               user.password
             );
             if (checkPwd) {
-              if(isAdmin && user.type!="ADMIN" && user.type!="STAFF")
-              {
-                throw new Error("User not admin");
-              }else{
-              return user;
+              if (isAdmin) {
+                if (user.type == "ADMIN" || user.type == "STAFF") {
+                  return user;
+                } else {
+                  throw new Error("User not admin");
+                }
+              } else {
+                if (user.type != "ADMIN" && user.type != "STAFF") {
+                  return user;
+                } else {
+                  throw new Error("User is admin");
+                }
               }
-            } else {
-           throw new Error("Password invalid");
-             // return null
-            }
             
+            } else {
+              throw new Error("Password invalid");
+              // return null
+            }
           } else {
             // If you return null then an error will be displayed advising the user to check their details.
             throw new Error("User not exist");
@@ -80,7 +84,7 @@ export const authOptions: NextAuthOptions = {
   secret: env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/auth/login",
-    error:"/auth/login"
+    error: "/auth/login",
   },
 };
 

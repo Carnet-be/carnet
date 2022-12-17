@@ -57,7 +57,9 @@ const Login: NextPage = () => {
           case "User not exist":
              toast.error("Compte inexistant, veuillez en créer un")
              break
-    
+         case "User is admin":
+          toast.error("Ce compte est admin ou staff")
+          break
           default:
              toast.error("Erreur lors de Sign up");
              break

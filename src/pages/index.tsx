@@ -16,6 +16,7 @@ import { prisma } from "../server/db/client";
 import { type User } from "@prisma/client";
 import CreateAuction from "@ui/createAuction";
 import { signOut } from "next-auth/react";
+import { ProfileCardButton } from "@ui/profileCard";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerAuthSession(context);
@@ -97,7 +98,7 @@ const Nav = ({ user }: { user: User }) => {
       <div className="flex-grow" />
       <button className="font-semibold  text-white">Accueil</button>
       <button className="font-semibold text-white">About</button>
-
+    
       <ProfileButton user={user} />
     </div>
   );
@@ -110,21 +111,14 @@ const ProfileButton = ({ user }: { user: User }) => {
     return (
       <Link
         href={"/auth/login"}
-        className={cx("rounded-lg bg-white px-6 py-2 text-sm font-semibold")}
+        className={cx("rounded-lg bg-white px-6 py-2 text-sm font-semibold no-underline")}
       >
         Se connecter
       </Link>
     );
   }
-  console.log(user);
-  return (
-    <button
-      onClick={() => router.push("/dashboard")}
-      className="btn-warning btn"
-    >
-      {user.username}
-    </button>
-  );
+
+  return    <ProfileCardButton/>
 };
 const Overlay = () => {
   return (
