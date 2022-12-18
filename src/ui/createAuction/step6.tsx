@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ButtonGroup, InputAdornment, TextField } from "@mui/material";
+import { ButtonGroup, FormControl, InputAdornment, InputLabel, MenuItem, TextField ,Select} from "@mui/material";
 import Upload from "@ui/components/upload";
-import { Button, DatePicker } from "antd";
+
 import { useState, type MutableRefObject } from "react";
 import { type Data6 } from ".";
 import GoogleMapReact from "google-map-react";
@@ -122,22 +122,46 @@ const Step6 = ({
             />
 
             <div className="flex flex-row gap-1">
-              <TextField
-                label="Country"
-                size="small"
-                value={data.country}
-                onChange={(e) => setData({ ...data, country: e.target.value })}
-              />
-              <TextField
-                label="City"
-                size="small"
-                value={data.city}
-                onChange={(e) => setData({ ...data, city: e.target.value })}
-              />
+     
+              <FormControl className="w-1/2">
+            <InputLabel htmlFor="brand">Country</InputLabel>
+            <Select
+               value={data.country}
+              label="Country"
+              size="small"
+              className="w-full"
+              onChange={(e) => setData({ ...data, country: e.target.value })}
+             
+            >
+              {['France',"Belgique","Maroc"].map((o, i) => (
+                <MenuItem key={i} value={i}>
+                  {o}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl className="w-1/2">
+            <InputLabel htmlFor="brand">City</InputLabel>
+            <Select
+               value={data.city}
+              label="City"
+              className="w-full"
+              size="small"
+              onChange={(e) => setData({ ...data, city: e.target.value })}
+             
+            >
+              {['Paris',"Caen","Marseille"].map((o, i) => (
+                <MenuItem key={i} value={i}>
+                  {o}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
               <TextField
                 label="Zip"
                 size="small"
-                
+                className="w-1/2"
                 value={data.zipCode}
                 onChange={(e) => setData({ ...data, zipCode: e.target.value })}
               />

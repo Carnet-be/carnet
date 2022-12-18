@@ -2,11 +2,13 @@ import React, { type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
-import { AuctionIcon, ClipIcon, DashboardIcon, NotifIcon, PeopleIcon, SettingsIcon } from "./icons";
+import { AuctionIcon, ClipIcon, DashboardIcon, NotifIcon, PeopleIcon, SettingsIcon,BidderIcon,DataIcon } from "./icons";
 import { type UserType } from "@model/type";
 import Logo from "./components/logo";
 import { useSession } from "next-auth/react";
 import ProfileCard from "./profileCard";
+import { AddIcon } from '@ui/icons';
+import CreateAuction  from '@ui/createAuction';
 
 type TSide = {
   route: string;
@@ -33,9 +35,29 @@ const menu: TMenu = {
       icon: <DashboardIcon />,
     },
     {
+      title: "Auctions",
+      route: "/admin/dashboard/auctions",
+      icon: <AuctionIcon />,
+    },
+    {
+      title: "Biddes",
+      route: "/admin/dashboard/biddes",
+      icon:<BidderIcon />,
+    },
+    {
+      title: "Users",
+      route: "/admin/dashboard/user",
+      icon: <PeopleIcon />,
+    },
+    {
       title: "Staff",
       route: "/admin/dashboard/staff",
       icon: <PeopleIcon />,
+    },
+    {
+      title: "Data",
+      route: "/admin/dashboard/data",
+      icon: <DataIcon/>,
     },
   ],
   AUC: [
@@ -59,7 +81,7 @@ const menu: TMenu = {
     {
       title: "My biddes",
       route: "/dashboard/bidder/mybiddes",
-      icon:<AuctionIcon />,
+      icon:<BidderIcon />,
     },
     {
       title: "Wish list",
@@ -73,6 +95,8 @@ const Dashboard = ({ children, type }: DashboardType) => {
   const router = useRouter();
   const {data:session}=useSession()
   return (
+    <>
+       <CreateAuction/>
     <div className="drawer-mobile drawer">
       <input id="drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content relative bg-background">
@@ -104,11 +128,22 @@ const Dashboard = ({ children, type }: DashboardType) => {
               return <Side key={i} side={m} active={active} />;
             })}
           </ul>
-          <ul className="menu w-[80%]">
+          <ul className="menu w-[80%] space-y-2">
+         {type=="AUC"&& <li>
+              <label  htmlFor="create_auction"
+                className={cx("flex flex-row gap-5 rounded-lg font-light no-underline border")}
+              >
+                <div className="text-xl">
+                  <AddIcon />
+               
+                </div>
+                New Auction
+              </label>
+            </li>}
             <li>
               <Link
                 href={"/admin/dashboard/settings"}
-                className={cx("flex flex-row gap-5 rounded-lg font-light")}
+                className={cx("flex flex-row gap-5 rounded-lg font-light no-underline border")}
               >
                 <div className="text-xl">
                   <SettingsIcon />
@@ -120,6 +155,7 @@ const Dashboard = ({ children, type }: DashboardType) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
