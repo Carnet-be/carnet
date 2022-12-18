@@ -16,19 +16,56 @@ import { prisma } from "../server/db/client";
 import { type User } from "@prisma/client";
 import CreateAuction from "@ui/createAuction";
 import { signOut } from "next-auth/react";
-import { ProfileCardButton } from "@ui/profileCard";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerAuthSession(context);
-  const user = await prisma.user
+  console.log(session?.user);
+  if (!session) {
+    return {
+      props: {},
+    };
+  }
+  const user: User = await prisma.user
     .findUnique({
       where: {
         email: session?.user?.email || "",
       },
     })
     .then((res) => JSON.parse(JSON.stringify(res)));
-
-  return { props: { user } };
+  if (!user) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: true,
+      },
+    };
+  }
+  if (!user.emailVerified) {
+    return {
+      redirect: {
+        destination: "/pages/email-verification",
+        permanent: true,
+      },
+    };
+  }
+  let route;
+  switch (user.type) {
+    case "AUC":
+      route = "/dashboard/auctionnaire";
+      break;
+    case "BID":
+      route = "/dashboard/bidder";
+      break;
+    default:
+      route = "/admin/dashboard";
+      break;
+  }
+  return {
+    redirect: {
+      destination: route,
+      permanent: true,
+    },
+  };
 };
 
 const Home: NextPage = (
@@ -107,7 +144,7 @@ const Nav = ({ user }: { user: User }) => {
 const ProfileButton = ({ user }: { user: User }) => {
   const router = useRouter();
 
-  if (!user) {
+
     return (
       <Link
         href={"/auth/login"}
@@ -116,9 +153,7 @@ const ProfileButton = ({ user }: { user: User }) => {
         Se connecter
       </Link>
     );
-  }
 
-  return    <ProfileCardButton/>
 };
 const Overlay = () => {
   return (

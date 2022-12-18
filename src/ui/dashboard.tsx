@@ -113,7 +113,7 @@ const Dashboard = ({ children, type }: DashboardType) => {
                 <div className="text-xl">
                   <SettingsIcon />
                 </div>
-                Compte
+                Settings
               </Link>
             </li>
           </ul>
