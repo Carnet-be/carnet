@@ -14,9 +14,9 @@ const AuctionCard = ({ auction }: AuctionCardProps) => {
 const src=auction.images.length>0 && auction.images[0]?auction.images[0]:`/assets/v${getRandomNumber(1,5)}.png`
 const util=new ProcessAuction(auction)
   return (
-    <div className="w-[330px] h-[270px] rounded-xl bg-base-100  drop-shadow-md flex flex-col p-3">
-       <div className="flex-grow w-full">
-       {/* <Image src={src} alt="image" fill/> */}
+    <div className="w-[330px] h-[270px] rounded-2xl bg-base-100  drop-shadow-md flex flex-col p-3">
+       <div className="flex-grow w-full relative p-2">
+       <Image src={src} alt="image" fill className="object-contain" />
        </div>
         <div className="w-full  flex flex-col justify-between gap-[0px]">
            <div className="flex flex-row justify-between gap-1 items-end  text-primary">
