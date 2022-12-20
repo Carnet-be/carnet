@@ -100,7 +100,7 @@ const Dashboard = ({ children, type }: DashboardType) => {
     <div className="drawer-mobile drawer">
       <input id="drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content relative bg-background">
-        <div className="sticky top-0 right-0 flex h-[60px] w-full  flex-row items-center gap-3 px-3 backdrop-blur-md">
+        <div className="sticky z-50 top-0 right-0 flex h-[60px] w-full  flex-row items-center gap-3 px-3 backdrop-blur-md">
           <div className="flex-grow"></div>
           <div className="btn-ghost hover:bg-primary/10 btn flex flex-row gap-1">
             <span className="badge-error badge indicator-start indicator-item text-sm text-white">

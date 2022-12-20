@@ -13,6 +13,7 @@ import {
 import { cloudy } from "@utils/cloudinary";
 import { ProcessDate } from "@utils/processDate";
 import { ProcessUser } from "@utils/processUser";
+import { getRandomNumber } from "@utils/utilities";
 import { FileType } from "rsuite/esm/Uploader";
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
@@ -96,7 +97,7 @@ export const auctionnaireRouter = router({
       z.object({ filter: z.enum(["new", "trending" ,"feature" ,"buy now"]) })
     )
     .query(async({input,ctx}) => {
-       return await ctx.prisma.auction.findMany()
+       return await ctx.prisma.auction.findMany().then((auctions)=>[...auctions,...auctions,...auctions,...auctions,...auctions,...auctions].map((a,i)=>({...a,images:[`/assets/v${getRandomNumber(1,5)}.png`]})))
     }),
 });
 

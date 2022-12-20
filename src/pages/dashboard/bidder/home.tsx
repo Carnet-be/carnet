@@ -7,6 +7,7 @@ import cx from "classnames";
 import { useState } from "react";
 import { trpc } from '../../../utils/trpc';
 import { useRouter } from "next/router";
+import AuctionCard from "@ui/components/auctionCard";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -58,8 +59,8 @@ const filter=router.query.filter as TFilterBidde||"new"
         })}
       
       </div>
-      <div>
-      <span>{auctions&&auctions.length}</span>
+      <div className="flex flex-wrap gap-6 items-center justify-center">
+       {!auctions? <span></span>:auctions.map((a,i)=><AuctionCard key={i} auction={a}/>)}
       </div>
     </Dashboard>
   );
