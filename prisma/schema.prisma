@@ -26,6 +26,7 @@ model User {
   isActive       Boolean  @default(true)
   emailVerified  Boolean  @default(false)
   image          String?
+  favoris_auctions String[]
   //
   createAt       DateTime @default(now())
   updateAt       DateTime @updatedAt
@@ -121,6 +122,7 @@ model AuctionRating {
   auction_id String  @unique
   auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 }
+
 
 model Address {
   id       String   @id @default(cuid())

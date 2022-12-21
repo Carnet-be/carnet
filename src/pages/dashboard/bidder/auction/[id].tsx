@@ -2,6 +2,8 @@ import Dashboard from "@ui/dashboard";
 import  { InDevelopmentMini } from "@ui/inDevelopment";
 import { type GetServerSideProps, type NextPage } from "next";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
+import BigTitle from "@ui/components/bigTitle";
+import { useRouter } from "next/router";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const session = await getServerAuthSession(ctx);
@@ -24,15 +26,17 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         },
       };
     }
-    
+
     return {
-      props:{
+      props:{id
       }
     };
   };
 const Home: NextPage = () => {
+  const router=useRouter()
     return   <Dashboard type="BID">
-    <InDevelopmentMini section="My biddes"/>
+      <BigTitle />
+
     </Dashboard>
     };
 

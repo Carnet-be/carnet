@@ -94,10 +94,61 @@ export const auctionnaireRouter = router({
     }),
   getAuctions: publicProcedure
     .input(
-      z.object({ filter: z.enum(["new", "trending" ,"feature" ,"buy now"]) })
+      z.object({ filter: z.enum(["new", "trending", "feature", "buy now"]) })
     )
-    .query(async({input,ctx}) => {
-       return await ctx.prisma.auction.findMany().then((auctions)=>[...auctions,...auctions,...auctions,...auctions,...auctions,...auctions].map((a,i)=>({...a,images:[`/assets/v${getRandomNumber(1,5)}.png`]})))
+    .query(async ({ input, ctx }) => {
+      return await ctx.prisma.auction
+        .findMany()
+        .then((auctions) =>
+          [
+            ...auctions,
+            ...auctions,
+            ...auctions,
+            ...auctions,
+            ...auctions,
+            ...auctions,
+          ].map((a, i) => ({
+            ...a,
+            images: [`/assets/v${getRandomNumber(1, 5)}.png`],
+          }))
+        );
+    }),
+  favorite: publicProcedure
+    .input(
+      z.object({ id: z.string(), action: z.enum(["add", "remove"]).nullable() })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const favorites = await ctx.prisma.user.findUnique({
+        where: { email: ctx.session?.user?.email || "" },
+        select: { favoris_auctions: true },
+      });
+      const add = () =>
+        ctx.prisma.user.update({
+          where: { email: ctx.session?.user?.email || "" },
+          data: {
+            favoris_auctions: [
+              ...(favorites?.favoris_auctions || []),
+              input.id,
+            ],
+          },
+        });
+      const remove = () =>
+        ctx.prisma.user.update({
+          where: { email: ctx.session?.user?.email || "" },
+          data: {
+            favoris_auctions: favorites?.favoris_auctions.filter(
+              (f) => f != input.id
+            ),
+          },
+        });
+      switch (input.action) {
+        case "add":
+          return add()
+        case "remove":
+         return remove()
+        default:
+          return add()
+      }
     }),
 });
 
