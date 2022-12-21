@@ -26,6 +26,7 @@
       "@data/*":["./src/data/*"],
       "@hooks/*":["./src/hooks/*"],
       "@env/*":["./src/env/*"],
+      "@server/*":["./src/server/*"],
 
 
     }

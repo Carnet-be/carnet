@@ -180,7 +180,7 @@ const router=useRouter()
     onSuccess: (data) => {
       toast.dismiss()
       toast.success("Opération réussi");
-       router.push("/auction/"+data.id)
+       router.push("/dashboard/auctionnaire/myauctions")
     },
     onMutate:()=> toast.loading("En cours de traitement")
   });

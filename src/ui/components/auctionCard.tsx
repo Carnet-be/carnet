@@ -5,6 +5,7 @@ import Image from "next/image"
 import { getRandomNumber } from '../../utils/utilities';
 import Swapper from './swapper';
 import { FavIcon, FavFillIcon } from '../icons';
+import Link from "next/link";
 type AuctionCardProps = {
   auction: Auction;
 };
@@ -42,9 +43,9 @@ const util=new ProcessAuction(auction)
                <span className="text-green flex flex-row items-center gap-2 font-semibold"><span className="text-lg">€</span> 24000</span>
             </div>
             <div className="bg-[#00A369] flex flex-row rounded-full">
-             <button className="bg-green text-white rounded-full p-[5px] px-3 text-[13px] font-semibold">
+             <Link href={'/dashboard/bidder/auction/'+auction.id} className="bg-green text-white rounded-full p-[5px] no-underline px-3 text-[13px] font-semibold">
                 Bid Now
-             </button>
+             </Link>
              <button className="p-1 pr-2 text-white">
                 <FavFillIcon className="text-xl"/>
                 </button>
