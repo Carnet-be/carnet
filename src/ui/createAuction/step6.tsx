@@ -8,6 +8,7 @@ import GoogleMapReact from "google-map-react";
 
 import cx from "classnames";
 import Map from "@ui/components/map";
+import { useEffect } from 'react';
 const Step6 = ({
   data,
   setData,
@@ -47,6 +48,10 @@ const Step6 = ({
   const onDeleteMarker = () => {
     console.log("Deleting");
   };
+  useEffect(() => {
+    setData({ ...data, name: defaultName })
+  }, [])
+  
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="flex w-[96%] flex-col items-stretch gap-4">
@@ -54,7 +59,8 @@ const Step6 = ({
           label="Nom de l'auction"
       
           size="small"
-          value={data.name||defaultName}
+          value={data.name}
+          defaultValue={defaultName}
           onChange={(e) => setData({ ...data, name: e.target.value })}
         />
         <TextField
@@ -134,7 +140,7 @@ const Step6 = ({
              
             >
               {['France',"Belgique","Maroc"].map((o, i) => (
-                <MenuItem key={i} value={i}>
+                <MenuItem key={i} value={o}>
                   {o}
                 </MenuItem>
               ))}
@@ -151,7 +157,7 @@ const Step6 = ({
              
             >
               {['Paris',"Caen","Marseille"].map((o, i) => (
-                <MenuItem key={i} value={i}>
+                <MenuItem key={i} value={o}>
                   {o}
                 </MenuItem>
               ))}

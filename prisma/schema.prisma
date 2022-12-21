@@ -82,8 +82,8 @@ model AuctionSpecs {
   kilometrage  String?
   version      String?
   ///
-  auction_id   String  @unique
-  auction      Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  auction_id   String @unique 
+  auction      Auction @relation(fields: [auction_id], references: [id])
 }
 
 model AuctionOptions {

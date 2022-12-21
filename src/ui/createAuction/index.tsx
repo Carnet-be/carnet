@@ -155,20 +155,18 @@ const CreateAuction = () => {
   }, [session]);
 
   useEffect(() => {
-    const isNext =
-      step === 6
-        ? data6.name &&
-          data6.address &&
-          data6.duration &&
-          data6.expected_price &&
-          data6.description &&
-          data6.country &&
-          data6.city
-          ? true
-          : false
-        : true;
+    
 
-    setisValid(isNext);
+   let valide=true
+
+   if(data6.address==undefined) valide=false
+   if(data6.duration==undefined) valide=false
+   if(data6.description==undefined) valide=false
+   if(data6.city==undefined) valide=false
+   if(data6.country==undefined) valide=false
+   if(data6.zipCode==undefined) valide=false
+   if(data6.expected_price==undefined) valide=false
+    setisValid(step===6&&valide);
   }, [data6, data1]);
 const router=useRouter()
   const { mutate: addAuction,isLoading } = trpc.auctionnaire.addAuction.useMutation({
@@ -180,7 +178,9 @@ const router=useRouter()
     onSuccess: (data) => {
       toast.dismiss()
       toast.success("Opération réussi");
+      
        router.push("/dashboard/auctionnaire/myauctions")
+       ref.current?.click()
     },
     onMutate:()=> toast.loading("En cours de traitement")
   });
@@ -189,6 +189,7 @@ const router=useRouter()
     addAuction({data1,data3,data4,data5,data6})
    
   }
+  const ref=useRef<HTMLLabelElement|null>(null)
   return (
     <>
       <input type="checkbox" id="create_auction" className="modal-toggle" />
@@ -216,7 +217,7 @@ const router=useRouter()
             />
           )}
           <div className="modal-action flex flex-row items-center">
-            <label htmlFor="create_auction" className="btn-ghost btn-sm btn">
+            <label ref={ref} htmlFor="create_auction" className="btn-ghost btn-sm btn">
               annuler
             </label>
             <div className="flex-grow"></div>

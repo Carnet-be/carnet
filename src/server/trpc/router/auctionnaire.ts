@@ -35,7 +35,7 @@ export const auctionnaireRouter = router({
       const duration = processDate.getDuration(data6.duration);
       const end_date = processDate.endDate(duration);
       // return
-      const auctionnaire_id = (await processUser.getId())!;
+      const auctionnaire_id = (await processUser.getId());
 
       const id = Math.random().toString().slice(2, 9);
       let incorrectId = true;
@@ -45,6 +45,7 @@ export const auctionnaireRouter = router({
           incorrectId = false;
         }
       }
+      console.log("id user",auctionnaire_id)
       return await ctx.prisma.auction.create({
         data: {
           id,
@@ -59,8 +60,10 @@ export const auctionnaireRouter = router({
           end_date,
           expected_price: parseFloat(data6.expected_price!.toString()),
           color: data1.color,
-          auctionnaire_id,
-
+        
+auctionnaire:{
+connect:{id:auctionnaire_id}
+},
           address: {
             create: {
               zipCode: data6.zipCode,
