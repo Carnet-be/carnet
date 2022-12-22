@@ -9,8 +9,9 @@ import { toast } from "react-hot-toast";
 import moment from "moment";
 type BidSection = {
   auction: TAuction;
+  isTimeOut:boolean
 };
-const BidSection = ({ auction }: BidSection) => {
+const BidSection = ({ auction ,isTimeOut}: BidSection) => {
   const getBidPrice = (bids: TBid[]) =>
     bids.length <= 0
       ? auction.expected_price / 2
@@ -47,13 +48,13 @@ const BidSection = ({ auction }: BidSection) => {
         </div>
       </span>
 
-      <AddBid
+       {!isTimeOut&&  <AddBid
         start={bidPrice || 0}
         onAddBidSucces={() => {
           refetch();
         }}
         auctionId={auction.id}
-      />
+      />}
       <div className="w-full space-y-2">
         {bids.map((b, i) => {
           return (
