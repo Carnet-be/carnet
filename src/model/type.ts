@@ -1,4 +1,6 @@
 
+import type {Address, Auction, AuctionOptions, AuctionRating, AuctionSpecs, User } from "@prisma/client";
+
 //Auth
 export type TLogin={
   email:string,
@@ -27,3 +29,6 @@ export type TSignupBidder = TSignup&{
     type:UserType,//BID=bidder AUC=auctionnaire
 
   }
+
+export type TAuction=Auction &{specs:AuctionSpecs,address:Address,options:AuctionOptions,rating:AuctionRating}
+export type TUser=User &{auctions:Auction[]}

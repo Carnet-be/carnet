@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import AuctionCard from "@ui/components/auctionCard";
 import { UserType } from "@prisma/client";
 import { prisma } from "../../../server/db/client";
-import { TUser } from "../../../types/dataTypes";
+import { TUser } from "../../../model/data";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);

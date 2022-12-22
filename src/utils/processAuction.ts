@@ -21,4 +21,6 @@ export class ProcessAuction {
   getTimer(){
     return "2j 05h 34min"
   }
+
+  
 }

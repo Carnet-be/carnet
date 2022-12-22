@@ -45,6 +45,7 @@
     "react-icons": "^4.6.0",
     "react-loading-skeleton": "^3.1.0",
     "react-slick": "^0.29.0",
+    "react-spinners": "^0.13.7",
     "rsuite": "^5.23.0",
     "rxjs": "^7.8.0",
     "superjson": "1.9.1",

@@ -19,6 +19,9 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
 export const auctionnaireRouter = router({
+  get:publicProcedure.input(z.string()).query(async({input,ctx})=>{
+    return await ctx.prisma.auction.findUnique({where:{id:input},include:{address:true,specs:true,options:true,rating:true}})
+  }),
   addAuction: publicProcedure
     .input(z.any())
     .mutation(async ({ input, ctx }) => {
