@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import { toast } from "react-hot-toast";
+import CountDown from "./countDown";
 type AuctionCardProps = {
   auction: Auction;
   isFavorite: boolean;
@@ -55,14 +56,7 @@ const AuctionCard = ({ auction, isFavorite }: AuctionCardProps) => {
           <div className="flex-grow font-semibold">
             <span>{auction.name}</span>
           </div>
-          <span className="flex flex-row items-center gap-1 whitespace-nowrap text-[12px]">
-            <TimerIcon />
-
-            {util.getDurationType()}
-
-            {" | "}
-            {util.getTimer()}
-          </span>
+          <CountDown variant="secondary" onTimeOut={()=>{console.log("is time out")}} endDate={auction.end_date}/>
         </div>
         <hr className="my-1 h-0" />
         <div className="flex flex-row items-center justify-between">

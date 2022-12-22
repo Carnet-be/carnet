@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Dashboard from "@ui/dashboard";
 import { InDevelopmentMini } from "@ui/inDevelopment";
 import {
@@ -17,6 +18,8 @@ import { ProcessAuction } from "@utils/processAuction";
 import { BRAND, CARROSSERIE, TRANSMISSION } from "@data/internal";
 import Image from "next/image";
 import cx from 'classnames'
+import CountDown from "@ui/components/countDown";
+import { ProcessDate } from "@utils/processDate";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -83,10 +86,13 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
 };
 
 const RightSide = ({ auction }: { auction: TAuction }) => {
-  // const process=new ProcessAuction(auction)
+
   const brand = BRAND[auction.brand]?.title || "";
   const model = BRAND[auction.brand]?.model[auction.model];
  const carrosserie=CARROSSERIE[auction.specs.carrosserie||0]
+ const onTimeOut=()=>{
+  console.log("Time out, executing...")
+ }
   return (
     <div className=" w-full lg:w-[40%] ">
       <div className="w-full rounded-xl bg-grey p-3 space-y-4">
@@ -107,7 +113,10 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
         <MiniCard containerClass="w-[48%] lg:w-[30%]" size={80} title="Mileage" img={"/assets/mileage.png"} value={auction.specs.kilometrage+" km/h"}/>
       </div>
       </div>
-   
+      <CountDown variant="primary" onTimeOut={onTimeOut} endDate={auction.end_date}/>
+      <div className="w-full rounded-xl bg-grey p-3 space-y-4 h-[600px]">
+       
+      </div>
     </div>
   );
 };

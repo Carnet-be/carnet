@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type DurationType } from "@prisma/client";
 
 export class ProcessDate {
@@ -38,5 +39,18 @@ export class ProcessDate {
       default:
         return this.addDays(3);
     }
+  }
+  getSecondsDiff(startDate:any, endDate:any) {
+    const msInSecond = 1000;
+  
+    return Math.round(
+      Math.abs(endDate - startDate) / msInSecond
+    );
+  }
+  getSecondsFronmNow() {
+    const msInSecond = 1000;
+  const now=new Date()
+    return Math.round((this.date as any - (now as any)) / msInSecond
+    );
   }
 }

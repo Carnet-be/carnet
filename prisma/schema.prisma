@@ -34,6 +34,7 @@ model User {
 
   //relation
   auctions Auction[]
+  bids Bid[]
 }
 
 model DemandeStaff {
@@ -65,6 +66,7 @@ model Auction {
   options        AuctionOptions?
   rating         AuctionRating?
   address        Address?
+  bids Bid[]
 
   
   auctionnaire_id String
@@ -141,6 +143,21 @@ model Address {
   auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 }
 
+
+model Bid{
+    id       String   @id
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  //
+  montant Float
+
+  ///
+  bidder_id String
+  bidder User @relation(fields: [bidder_id],references: [id],onDelete: Cascade)
+  auction_id String  @unique
+  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+
+}
 //////ENUM///////
 enum UserType {
   BID
