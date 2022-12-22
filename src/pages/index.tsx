@@ -25,13 +25,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {},
     };
   }
-  const user: User = await prisma.user
-    .findUnique({
-      where: {
-        email: session?.user?.email || "",
-      },
-    })
-    .then((res) => JSON.parse(JSON.stringify(res)));
+  let user: User |undefined
+try {
+   user = await prisma.user
+  .findUnique({
+    where: {
+      email: session?.user?.email || "",
+    },
+  })
+  .then((res) => JSON.parse(JSON.stringify(res)));
+} catch (error) {
+  return {
+    redirect: {
+      destination: "/",
+      permanent: true,
+    },
+  };
+}
   if (!user) {
     return {
       redirect: {

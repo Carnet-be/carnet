@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import AuctionCard from "@ui/components/auctionCard";
 import { UserType } from "@prisma/client";
 import { prisma } from "../../../server/db/client";
-import type { TUser } from "@model/type";
+import type { TAuction, TUser } from "@model/type";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -74,7 +74,7 @@ const Home = (props:InferGetServerSidePropsType<typeof getServerSideProps>) => {
         {!auctions ? (
           <span></span>
         ) : (
-          auctions.map((a, i) => <AuctionCard key={i} auction={a} isFavorite={user.favoris_auctions.includes(a.id)}/>)
+          auctions.map((a, i) => <AuctionCard key={i} auction={a as TAuction} isFavorite={user.favoris_auctions.includes(a.id)}/>)
         )}
       </div>
     </Dashboard>

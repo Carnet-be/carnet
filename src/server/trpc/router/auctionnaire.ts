@@ -112,7 +112,7 @@ export const auctionnaireRouter = router({
       z.object({ filter: z.enum(["new", "trending", "feature", "buy now"]) })
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.prisma.auction.findMany().then((auctions) =>
+      return await ctx.prisma.auction.findMany({include:{bids:true}}).then((auctions) =>
         [
           ...auctions,
           ...auctions,

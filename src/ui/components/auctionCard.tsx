@@ -1,5 +1,5 @@
 import { type Auction } from "@prisma/client";
-import { TimerIcon } from "@ui/icons";
+import { AuctionIcon, TimerIcon } from "@ui/icons";
 import { ProcessAuction } from "@utils/processAuction";
 import Image from "next/image";
 import { getRandomNumber } from "../../utils/utilities";
@@ -10,8 +10,10 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import { toast } from "react-hot-toast";
 import CountDown from "./countDown";
+import type { TAuction } from "@model/type";
+import Price from "./price";
 type AuctionCardProps = {
-  auction: Auction;
+  auction: TAuction;
   isFavorite: boolean;
 };
 
@@ -61,10 +63,10 @@ const AuctionCard = ({ auction, isFavorite }: AuctionCardProps) => {
         <hr className="my-1 h-0" />
         <div className="flex flex-row items-center justify-between">
           <div className="flex flex-col">
-            <span className="text-xs opacity-50">Current bid</span>
+            <span className="text-xs opacity-50 flex flex-row gap-1 items-center">{auction.bids.length<=0?"Initial bid":"Current bid"} | <span className="flex flex-row gap-1 items-center text-primary">{auction.bids.length} <AuctionIcon/></span> </span>
 
             <span className="flex flex-row items-center gap-2 font-semibold text-green">
-              <span className="text-lg">€</span> 24000
+              <Price textStyle="text-base" value={auction.bids.length<=0?auction.expected_price/2:auction.bids[auction.bids.length-1]?.montant||0}/>
             </span>
           </div>
           <div className="flex flex-row rounded-full bg-[#00A369]">
