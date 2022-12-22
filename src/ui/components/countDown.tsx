@@ -18,7 +18,7 @@ const CountDown = ({
   function executeEverySecond() {
     const process = new ProcessDate(endDate);
     const secondLeft = process.getSecondsFronmNow();
-    console.log(secondLeft)
+  
     return  moment.duration(secondLeft<=0?0:secondLeft, "s");
   }
   useEffect(() => {

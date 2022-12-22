@@ -19,8 +19,17 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
 export const auctionnaireRouter = router({
-  get:publicProcedure.input(z.string()).query(async({input,ctx})=>{
-    return await ctx.prisma.auction.findUnique({where:{id:input},include:{address:true,specs:true,options:true,rating:true}})
+  get: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
+    return await ctx.prisma.auction.findUnique({
+      where: { id: input },
+      include: {
+        address: true,
+        specs: true,
+        options: true,
+        rating: true,
+        bids: true,
+      },
+    });
   }),
   addAuction: publicProcedure
     .input(z.any())
@@ -32,13 +41,13 @@ export const auctionnaireRouter = router({
       const data6: Data6 = input.data6;
 
       const processDate = new ProcessDate();
-      const processUser = new ProcessUser(ctx.session);
+      const processUser = new ProcessUser(ctx.session!);
       //
 
       const duration = processDate.getDuration(data6.duration);
       const end_date = processDate.endDate(duration);
       // return
-      const auctionnaire_id = (await processUser.getId());
+      const auctionnaire_id = await processUser.getId();
 
       const id = Math.random().toString().slice(2, 9);
       let incorrectId = true;
@@ -48,7 +57,7 @@ export const auctionnaireRouter = router({
           incorrectId = false;
         }
       }
-      console.log("id user",auctionnaire_id)
+      console.log("id user", auctionnaire_id);
       return await ctx.prisma.auction.create({
         data: {
           id,
@@ -63,10 +72,10 @@ export const auctionnaireRouter = router({
           end_date,
           expected_price: parseFloat(data6.expected_price!.toString()),
           color: data1.color,
-        
-auctionnaire:{
-connect:{id:auctionnaire_id}
-},
+
+          auctionnaire: {
+            connect: { id: auctionnaire_id },
+          },
           address: {
             create: {
               zipCode: data6.zipCode,
@@ -103,21 +112,19 @@ connect:{id:auctionnaire_id}
       z.object({ filter: z.enum(["new", "trending", "feature", "buy now"]) })
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.prisma.auction
-        .findMany()
-        .then((auctions) =>
-          [
-            ...auctions,
-            ...auctions,
-            ...auctions,
-            ...auctions,
-            ...auctions,
-            ...auctions,
-          ].map((a, i) => ({
-            ...a,
-            images: [`/assets/v${getRandomNumber(1, 5)}.png`],
-          }))
-        );
+      return await ctx.prisma.auction.findMany().then((auctions) =>
+        [
+          ...auctions,
+          ...auctions,
+          ...auctions,
+          ...auctions,
+          ...auctions,
+          ...auctions,
+        ].map((a, i) => ({
+          ...a,
+          images: [`/assets/v${getRandomNumber(1, 5)}.png`],
+        }))
+      );
     }),
   favorite: publicProcedure
     .input(
@@ -149,13 +156,13 @@ connect:{id:auctionnaire_id}
         });
       switch (input.action) {
         case "add":
-          return add()
+          return add();
         case "remove":
-         return remove()
+          return remove();
         default:
-          return add()
+          return add();
       }
-    }),
+    })
 });
 
 const uploadImage = async (images: Array<string>) => {

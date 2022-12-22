@@ -154,7 +154,7 @@ model Bid{
   ///
   bidder_id String
   bidder User @relation(fields: [bidder_id],references: [id],onDelete: Cascade)
-  auction_id String  @unique
+  auction_id String  
   auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 
 }

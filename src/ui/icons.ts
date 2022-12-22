@@ -1,6 +1,6 @@
 import {BsFillPeopleFill, BsPerson, BsTelephone,BsFillStarFill} from 'react-icons/bs'
 import {HiOutlineMail} from 'react-icons/hi'
-import {MdOutlinePassword,MdDashboard,MdExpandMore,MdAddPhotoAlternate,MdOutlineTimer,MdOutlineArrowForwardIos,MdOutlineArrowBackIos} from 'react-icons/md'
+import {MdOutlinePassword,MdDashboard,MdRemove,MdExpandMore,MdAddPhotoAlternate,MdOutlineTimer,MdOutlineArrowForwardIos,MdOutlineArrowBackIos} from 'react-icons/md'
 import {BiBuildings,BiSupport,BiDollarCircle} from "react-icons/bi"
 import {AiTwotoneSetting,AiOutlineHeart,AiFillHeart,AiOutlineUserDelete,AiFillCheckCircle} from "react-icons/ai"
 import {RiNotification2Line,RiAuctionFill} from 'react-icons/ri'
@@ -38,3 +38,4 @@ export const DataIcon=GoDatabase
 export const TimerIcon=MdOutlineTimer
 export const FavFillIcon=AiFillHeart
 export const FavIcon=AiOutlineHeart
+export const MoinsIcon=MdRemove

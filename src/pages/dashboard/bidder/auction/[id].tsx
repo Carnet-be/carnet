@@ -20,6 +20,7 @@ import Image from "next/image";
 import cx from 'classnames'
 import CountDown from "@ui/components/countDown";
 import { ProcessDate } from "@utils/processDate";
+import BidSection from "@ui/bidSection";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -105,18 +106,16 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
           <span className="font-semibold text-gray-500">#{auction.id}</span>
         </div>
         <div className="flex flex-wrap gap-4">
-        <MiniCard containerClass="w-[48%] lg:w-[30%]" size={80} title="Carrosserie" img={"/assets/step2/"+carrosserie?.img+".svg"} value={carrosserie?.title||""}/>
-        <MiniCard containerClass="w-[48%] lg:w-[30%]" size={80} title="Fuel" img={"/assets/fuel.png"} value={auction.fuel}/>
-        <MiniCard containerClass="w-[48%] lg:w-[30%]" size={80} title="Color" img={"/assets/color.png"} value={auction.color||"#fffff"} isColor/>
-        <MiniCard containerClass="w-[48%] lg:w-[30%]" size={80} title="Transmission" img={"/assets/transmission.png"} value={TRANSMISSION[auction.specs.transmission||0]||""}/>
-        <MiniCard containerClass="w-[48%] lg:w-[30%]" size={80} title="Horse Power" img={"/assets/horse.png"} value={auction.specs.cc+" cc"}/>
-        <MiniCard containerClass="w-[48%] lg:w-[30%]" size={80} title="Mileage" img={"/assets/mileage.png"} value={auction.specs.kilometrage+" km/h"}/>
+        <MiniCard containerClass="w-[48%] lg:w-[30%]" size={94} title="Carrosserie" img={"/assets/step2/"+carrosserie?.img+".svg"} value={carrosserie?.title||""}/>
+        <MiniCard containerClass="w-[48%] lg:w-[30%]" size={94} title="Fuel" img={"/assets/fuel.png"} value={auction.fuel}/>
+        <MiniCard containerClass="w-[48%] lg:w-[30%]" size={94} title="Color" img={"/assets/color.png"} value={auction.color||"#fffff"} isColor/>
+        <MiniCard containerClass="w-[48%] lg:w-[30%]" size={94} title="Transmission" img={"/assets/transmission.png"} value={TRANSMISSION[auction.specs.transmission||0]||""}/>
+        <MiniCard containerClass="w-[48%] lg:w-[30%]" size={94} title="Horse Power" img={"/assets/horse.png"} value={auction.specs.cc+" cc"}/>
+        <MiniCard containerClass="w-[48%] lg:w-[30%]" size={94} title="Mileage" img={"/assets/mileage.png"} value={auction.specs.kilometrage+" km/h"}/>
       </div>
       </div>
       <CountDown variant="primary" onTimeOut={onTimeOut} endDate={auction.end_date}/>
-      <div className="w-full rounded-xl bg-grey p-3 space-y-4 h-[600px]">
-       
-      </div>
+         <BidSection auction={auction}/>
     </div>
   );
 };
@@ -130,7 +129,7 @@ const MiniCard = (props: { value: string; img: string; title?: string,imgClass?:
      <div className={cx("h-[20px] relative w-full",imgClass)}>
      <Image alt="logo" src={img} fill className="object-contain"/>
      </div>
-     {isColor? <div style={{backgroundColor:value}} className={cx("w-8 h-4 rounded-full")}></div> : <span>{value}</span>}
+     {isColor? <div style={{backgroundColor:value}} className={cx("w-8 h-4 rounded-full")}></div> : <span className="text-[12px]">{value}</span>}
     </div>
   );
 };

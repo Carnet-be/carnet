@@ -1,5 +1,5 @@
 
-import type {Address, Auction, AuctionOptions, AuctionRating, AuctionSpecs, User } from "@prisma/client";
+import type {Address, Auction, AuctionOptions, AuctionRating, AuctionSpecs, User,Bid } from "@prisma/client";
 
 //Auth
 export type TLogin={
@@ -30,5 +30,6 @@ export type TSignupBidder = TSignup&{
 
   }
 
-export type TAuction=Auction &{specs:AuctionSpecs,address:Address,options:AuctionOptions,rating:AuctionRating}
+export type TAuction=Auction &{specs:AuctionSpecs,address:Address,options:AuctionOptions,rating:AuctionRating,bids:TBid[]}
 export type TUser=User &{auctions:Auction[]}
+export type TBid=Bid &{bidder:TUser}
