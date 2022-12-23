@@ -70,7 +70,7 @@ const Home = (props:InferGetServerSidePropsType<typeof getServerSideProps>) => {
           }
         )}
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-6">
+      <div className="flex flex-wrap items-center justify-between gap-6">
         {!auctions ? (
           <span></span>
         ) : (

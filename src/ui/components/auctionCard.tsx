@@ -12,6 +12,7 @@ import { toast } from "react-hot-toast";
 import CountDown from "./countDown";
 import type { TAuction } from "@model/type";
 import Price from "./price";
+import { useRouter } from 'next/router';
 type AuctionCardProps = {
   auction: TAuction;
   isFavorite: boolean;
@@ -48,8 +49,9 @@ const AuctionCard = ({ auction, isFavorite }: AuctionCardProps) => {
       }
     },
   });
+  const router=useRouter()
   return (
-    <div className="flex h-[270px] w-[330px] flex-col  rounded-2xl bg-base-100 p-3 drop-shadow-md">
+    <div onClick={()=>router.push("/dashboard/bidder/auction/" + auction.id)} className=" cursor-pointer flex h-[250px] w-[310px] flex-col  rounded-2xl bg-base-100 p-3 drop-shadow-md">
       <div className="relative w-full flex-grow p-2">
         <Image src={src} alt="image" fill className="object-contain" />
       </div>
@@ -77,7 +79,8 @@ const AuctionCard = ({ auction, isFavorite }: AuctionCardProps) => {
               Bid Now
             </Link>
             <button
-              onClick={() => {
+              onClick={(event) => {
+                event.stopPropagation()
                 mutate({id:auction.id,action:fav?"remove":"add"})
               }}
               className="p-1 pr-2 text-white"

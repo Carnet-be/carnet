@@ -113,7 +113,7 @@ const Dashboard = ({ children, type,background="bg-background" }: DashboardType)
           <ProfileCard/>
         </div>
         {/* <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label> */}
-      <div className="p-3 lg:p-6">
+      <div className="p-3 lg:p-6 lg:px-14">
       {children}
       </div>
       </div>

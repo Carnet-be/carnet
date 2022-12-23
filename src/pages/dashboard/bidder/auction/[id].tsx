@@ -144,8 +144,8 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
               <div
                 key={i}
                 onClick={() => setImgP(i)}
-                className={cx("flex flex-col items-center", {
-                  //   "border border-primary": isActive,
+                className={cx("flex flex-col items-center p-3 rounded-lg", {
+                "border": isActive,
                 })}
               >
                 <Image src={m} alt="photo" width={140} height={120} />
@@ -154,11 +154,11 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
           })}
         </Slider>
       </div>
-      <div className="my-3 flex flex-col gap-3">
+      <div className="my-3 flex flex-col gap-3 bg-white p-2">
         <h4 className="text-primary">Description</h4>
         <p>{auction.description}</p>
       </div>
-      <div className="my-3 flex flex-col gap-3">
+      <div className="my-3 flex flex-col gap-3 bg-white p-2">
       
         <h4 className="text-primary">Options</h4>
         <div className="flex flex-wrap gap-3">
@@ -167,7 +167,7 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
           })}
         </div>
       </div>
-      <div className="my-3 flex flex-col gap-3">
+      <div className="my-3 flex flex-col gap-3 bg-white p-2">
         <h4 className="text-primary">Rating</h4>
         {rating.filter((r)=>r.rate!==null).map((r,i)=>{
           return <div key={i} className="flex flex-row gap-2 items-center">
@@ -204,8 +204,9 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
       <div className="w-full space-y-4 rounded-xl bg-grey p-3">
         <div className="flex flex-row items-center justify-between gap-2">
           <MiniCard
-            imgClass="scale-110"
-            value={brand}
+            containerClass="w-[70px]"
+            value={""}
+            size={94}
             img="/assets/Cars/Audi.svg"
           />
           <div className="flex flex-col items-center font-semibold text-primary">
@@ -224,36 +225,36 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
-            size={94}
+            size={110}
             title="Fuel"
             img={"/assets/fuel.png"}
             value={auction.fuel}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
-            size={94}
+            size={110}
             title="Color"
-            img={"/assets/color.png"}
+           
             value={auction.color || "#fffff"}
             isColor
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
-            size={94}
+            size={110}
             title="Transmission"
             img={"/assets/transmission.png"}
             value={TRANSMISSION[auction.specs.transmission || 0] || ""}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
-            size={94}
+            size={110}
             title="Horse Power"
             img={"/assets/horse.png"}
             value={auction.specs.cc + " cc"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
-            size={94}
+            size={110}
             title="Mileage"
             img={"/assets/mileage.png"}
             value={auction.specs.kilometrage + " km/h"}
@@ -272,8 +273,8 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
 };
 
 const MiniCard = (props: {
-  value: string;
-  img: string;
+  value?: string;
+  img?: string;
   title?: string;
   imgClass?: string;
   size?: number;
@@ -285,19 +286,19 @@ const MiniCard = (props: {
   return (
     <div
       className={cx(
-        "flex flex-col items-center justify-between rounded-xl bg-base-100 py-2 px-4  text-primary",
+        "flex flex-col items-center justify-between rounded-xl bg-base-100 py-2 px-4  text-primary gap-1",
         containerClass,
         { [`h-[${size}px]`]: size }
       )}
     >
-      <span className="font-semibold ">{title ? title : ""}</span>
-      <div className={cx("relative h-[20px] w-full", imgClass)}>
+      <span className="text-gray-500 text-[10px]">{title ? title : ""}</span>
+    {img&&   <div className={cx("relative h-[30px] w-full", imgClass)}>
         <Image alt="logo" src={img} fill className="object-contain" />
-      </div>
+      </div>}
       {isColor ? (
         <div
           style={{ backgroundColor: value }}
-          className={cx("h-4 w-8 rounded-full")}
+          className={cx("h-8 w-8 rounded-full border -translate-y-2")}
         ></div>
       ) : (
         <span className="text-[12px]">{value}</span>
