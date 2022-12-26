@@ -41,8 +41,8 @@ const menu: TMenu = {
       icon: <AuctionIcon />,
     },
     {
-      title: "Biddes",
-      route: "/admin/dashboard/biddes",
+      title: "Bids",
+      route: "/admin/dashboard/bids",
       icon:<BidderIcon />,
     },
     {

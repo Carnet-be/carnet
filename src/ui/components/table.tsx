@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import React, { useState,useEffect } from 'react';
@@ -9,11 +10,13 @@ import cx from 'classnames'
 interface Props<T>{
     columns: ColumnsType<T>,
     data:T[],
-    loading:boolean
+    loading:boolean,
+    options?:Object
 }
-const MyTable: React.FC<Props<Auction>> = ({columns,data,loading}) => <Table 
+export type TableType=Auction|Bid
+const MyTable: React.FC<Props<TableType>> = ({columns,data,loading,options}) => <Table 
 
-scroll={{x :'1200px'}}
+  {...options}
   loading={loading}  columns={columns} dataSource={data} />;
 
 export default MyTable;
@@ -66,6 +69,7 @@ import { TAuction } from '@model/type';
 import type { Auction } from '@prisma/client';
 import moment from 'moment';
 import { executeEverySecond } from './countDown';
+import { Bid } from '@prisma/client';
 
 // const { Column, HeaderCell, Cell } = Table;
 

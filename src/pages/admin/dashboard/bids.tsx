@@ -12,107 +12,58 @@ import { EditIcon } from '../../../ui/icons';
 import BigTitle from "@ui/components/bigTitle"
 import type { ColumnsType } from "antd/es/table";
 import type { Auction } from "@prisma/client";
+import { Bid } from '@prisma/client';
 
 
 const Auctions = () => {
-  const { data: auctions, isLoading } = trpc.auctionnaire.getAuctions.useQuery({
+  const { data: bids, isLoading } = trpc.auctionnaire.getBids.useQuery({
     filter: "all",
   });
-const columns:ColumnsType<Auction>=[
+const columns:ColumnsType<Bid>=[
     {
         title: "Id",
-        width:"100px",
+        width:"150px",
         dataIndex: "id",
         key: "id",
         render: (v) => <span className="italic text-primary text-[12px]">#{v}</span>,
       },
+      {
+        title: "Bidder",
+
+  
+        dataIndex: "bidder",
+        key: "bidder",
+        render: (_,v) => <div>
+            <h6>{(v as any).bidder.username}</h6>
+            <span className="italic text-primary text-[12px]">#{(v as any).bidder.id}</span>
+        </div>,
+      },
     {
-      title: "Name",
+      title: "Auction's id",
      
-      className:"w-[150px] text-[12px] lg:w-[240px] lg:text-base",
+      width:"150px",
+
       dataIndex: "name",
       key: "name",
+      render: (_,v) => <span className="italic text-green-500 text-[12px]">#{(v as any).auction.id}</span>,
     },
     {
-      title: "Date pub",
+      title: "Date",
 
       dataIndex: "createAt",
       key: "createAt",
       align: "center",
       render: (v) => renderDate(v),
     },
+    
     {
-      title: "Status",
-      align: "center",
-      dataIndex: "status",
-      key: "status",
-      render: (v) =>
-        !v && (
-          <span className="text-green-700 text-sm italic">Opened</span>
-        ),
-    },
-    {
-      title: "Bids",
-      dataIndex: "bids",
+      title: "Value",
+      dataIndex: "montant",
       align: "right",
-      key: "bids",
-     width:"70px",
-      render: (v) => (
-        <div className="flex flex-row items-center justify-end gap-1 text-sm text-primary">
-          {v.length}
-          <AuctionIcon />
-        </div>
-      ),
-    },
-    {
-      title: "Expected Price",
-      dataIndex: "expected_price",
-      align: "right",
-      key: "expected_price",
+      key: "montant",
       render: (v) => <Price value={v} textStyle="text-sm leading-4" />,
     },
-    {
-      title: "Latest Bid",
-      dataIndex: "latest_bid",
-      align: "right",
-      key: "latest_bid",
-      render: (v, auction) => {
-        const { bids } = auction as TAuction;
-
-        return bids.length <= 0 ? (
-          "--"
-        ) : (
-          <Price
-            value={bids[bids.length - 1]?.montant || 0}
-            textStyle="text-sm leading-4"
-          />
-        );
-      },
-    },
-    {
-      title: "Time Left",
-
-      dataIndex: "end_date",
-      key: "end_date",
-      align: "center",
-      
-      render: (v) => <RenderTimer date={v} />,
-    },
-    {
-      title: "Publish",
-      dataIndex: "publish",
-      align: "center",
-      key: "publish",
-      render: (v) => (
-        <Tag
-          icon={<CheckIcon />}
-          color="#55acee"
-          className="flex flex-row items-center justify-center gap-1 px-1"
-        >
-          published
-        </Tag>
-      ),
-    },
+    
     {
       title: "Actions",
 
@@ -143,7 +94,7 @@ const columns:ColumnsType<Auction>=[
   return (
     <Dashboard type="ADMIN">
          <BigTitle title="Management of auctions"/>
-      <div className="flex flex-col items-end mt-6">
+      <div className="flex flex-col">
       {/* <Select
       mode="multiple"
       allowClear
@@ -159,8 +110,9 @@ const columns:ColumnsType<Auction>=[
     /> */}
         <MyTable
           loading={isLoading}
-          data={auctions || []}
-           options={{scroll:{x:1400}}}
+          data={bids || []}
+         // xScroll={1000}
+         
           columns={columns as ColumnsType<TableType>}
          // columns={columns.filter((c)=>options.includes(c.key))}
         />

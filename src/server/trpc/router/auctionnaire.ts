@@ -131,6 +131,14 @@ export const auctionnaireRouter = router({
         }))
       );
     }),
+    getBids: publicProcedure
+    .input(
+      z.object({ filter: z.enum(["all"])})
+    )
+    .query(async ({ ctx }) => {
+      return await ctx.prisma.bid.findMany({
+        include:{bidder:true,auction:{include:{auctionnaire:true,bids:true}}}});
+    }),
     getMyAuctions: publicProcedure
     .query(async ({ input, ctx }) => {
 
