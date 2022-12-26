@@ -72,7 +72,7 @@ export const authRouter = router({
     let idStaff = Math.random().toString().slice(2, 9);
     let incorrectId = true;
     while (incorrectId) {
-      const count = await ctx.prisma.user.count({ where: { idStaff } });
+      const count = await ctx.prisma.user.count({ where: {id: idStaff } });
       if (count === 0) {
         incorrectId = false;
       }else{
