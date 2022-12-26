@@ -23,11 +23,17 @@ export const auctionnaireRouter = router({
     return await ctx.prisma.auction.findUnique({
       where: { id: input },
       include: {
+       
         address: true,
         specs: true,
         options: true,
         rating: true,
-        bids: true,
+        bids: {
+          include:{
+            bidder:true
+          }
+        },
+      
       },
     });
   }),
@@ -49,12 +55,14 @@ export const auctionnaireRouter = router({
       // return
       const auctionnaire_id = await processUser.getId();
 
-      const id = Math.random().toString().slice(2, 9);
+      let id = Math.random().toString().slice(2, 9);
       let incorrectId = true;
       while (incorrectId) {
         const count = await ctx.prisma.auction.count({ where: { id } });
         if (count === 0) {
           incorrectId = false;
+        }else{
+          id = Math.random().toString().slice(2, 9)
         }
       }
       console.log("id user", auctionnaire_id);
@@ -109,18 +117,31 @@ export const auctionnaireRouter = router({
     }),
   getAuctions: publicProcedure
     .input(
-      z.object({ filter: z.enum(["new", "trending", "feature", "buy now"]) })
+      z.object({ filter: z.enum(["new", "trending", "feature", "buy now","all"])})
     )
+    .query(async ({ ctx }) => {
+
+ 
+      return await ctx.prisma.auction.findMany({
+     
+        include:{bids:true}}).then((auctions) =>
+        auctions.map((a) => ({
+          ...a,
+          images: [`/assets/v${getRandomNumber(1, 5)}.png`],
+        }))
+      );
+    }),
+    getMyAuctions: publicProcedure
     .query(async ({ input, ctx }) => {
-      return await ctx.prisma.auction.findMany({include:{bids:true}}).then((auctions) =>
-        [
-          ...auctions,
-          ...auctions,
-          ...auctions,
-          ...auctions,
-          ...auctions,
-          ...auctions,
-        ].map((a, i) => ({
+
+      return await ctx.prisma.auction.findMany({
+        where:{
+auctionnaire:{
+  email:ctx.session?.user?.email||""
+}
+        },
+        include:{bids:true}}).then((auctions) =>
+        auctions.map((a) => ({
           ...a,
           images: [`/assets/v${getRandomNumber(1, 5)}.png`],
         }))

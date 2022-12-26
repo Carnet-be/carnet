@@ -5,6 +5,13 @@ import { ProcessDate } from "@utils/processDate";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import cx from "classnames";
+
+export function executeEverySecond(endDate:Date) {
+  const process = new ProcessDate(endDate);
+  const secondLeft = process.getSecondsFronmNow();
+
+  return  moment.duration(secondLeft<=0?0:secondLeft, "s");
+}
 const CountDown = ({
   endDate,
   onTimeOut,
@@ -13,16 +20,11 @@ const CountDown = ({
   endDate: Date;
   onTimeOut: () => void;variant:"primary"|"secondary"
 }) => {
-  const [leftTime, setleft] = useState<moment.Duration>(executeEverySecond());
+  const [leftTime, setleft] = useState<moment.Duration>(executeEverySecond(endDate));
 
-  function executeEverySecond() {
-    const process = new ProcessDate(endDate);
-    const secondLeft = process.getSecondsFronmNow();
-  
-    return  moment.duration(secondLeft<=0?0:secondLeft, "s");
-  }
+
   useEffect(() => {
-    const interval = setInterval(() =>leftTime.asSeconds()>0&& setleft(executeEverySecond()), 1000);
+    const interval = setInterval(() =>leftTime.asSeconds()>0&& setleft(executeEverySecond(endDate)), 1000);
     return () => {
       clearInterval(interval);
     };

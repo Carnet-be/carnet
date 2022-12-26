@@ -30,6 +30,6 @@ export type TSignupBidder = TSignup&{
 
   }
 
-export type TAuction=Auction &{specs:AuctionSpecs,address:Address,options:AuctionOptions,rating:AuctionRating,bids:TBid[]}
+export type TAuction=Auction &{specs:AuctionSpecs,address:Address,options:AuctionOptions,rating:AuctionRating,bids:TBid[],bidder:TUser}
 export type TUser=User &{auctions:Auction[]}
 export type TBid=Bid &{bidder:TUser}

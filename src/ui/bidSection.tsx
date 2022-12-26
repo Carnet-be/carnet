@@ -6,6 +6,7 @@ import { AddIcon, AuctionIcon, MoinsIcon } from "./icons";
 import cx from "classnames";
 import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
+import {PersonIcon} from '@ui/icons'
 import moment from "moment";
 type BidSection = {
   auction: TAuction;
@@ -36,7 +37,7 @@ const BidSection = ({ auction ,isTimeOut}: BidSection) => {
   }, [bids, getBidPrice]);
 
   return (
-    <div className="flex max-h-[600px] w-full flex-col items-center space-y-4 rounded-xl bg-grey  p-6">
+    <div className="flex max-h-[600px] w-full flex-col items-center space-y-4 rounded-xl bg-grey  p-6 overflow-hidden">
       <div className="rounded-3xl bg-white px-6 py-3 text-3xl font-semibold text-primary">
         {new Intl.NumberFormat().format(bidPrice || 0)} {" €"}
       </div>
@@ -55,12 +56,12 @@ const BidSection = ({ auction ,isTimeOut}: BidSection) => {
         }}
         auctionId={auction.id}
       />}
-      <div className="w-full space-y-2">
+      <div className="w-full space-y-2 overflow-scroll">
         {bids.map((b, i) => {
           return (
             <div key={i} className={cx("flex flex-row items-center justify-between border-t-2 pt-2")}>
               <div>
-                <h6 className="text-primary/80">#{b.id}</h6>
+                <h6 className="text-primary/80 flex flex-row items-center"><PersonIcon/> #{b.bidder.id}</h6>
                 <span>{moment(b.createAt).fromNow()}</span>
               </div>
               <Price value={b.montant} textStyle="text-primary font-semibold text-lg"/>

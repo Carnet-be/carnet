@@ -9,12 +9,14 @@ export const bidderRouter = router({
         const processUser = new ProcessUser(ctx.session);
         const bidder_id = await processUser.getId();
   
-        const id = Math.random().toString().slice(2, 13);
+        let id = Math.random().toString().slice(2, 13);
         let incorrectId = true;
         while (incorrectId) {
           const count = await ctx.prisma.auction.count({ where: { id } });
           if (count === 0) {
             incorrectId = false;
+          }else{
+            id = Math.random().toString().slice(2, 13);
           }
         }
         return await ctx.prisma.bid.create({data:{

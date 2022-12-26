@@ -12,13 +12,15 @@ import { toast } from "react-hot-toast";
 import CountDown from "./countDown";
 import type { TAuction } from "@model/type";
 import Price from "./price";
+import cx from 'classnames'
 import { useRouter } from 'next/router';
 type AuctionCardProps = {
   auction: TAuction;
-  isFavorite: boolean;
+  isFavorite?: boolean;
+  mineAuction?:boolean
 };
 
-const AuctionCard = ({ auction, isFavorite }: AuctionCardProps) => {
+const AuctionCard = ({ auction, isFavorite,mineAuction }: AuctionCardProps) => {
   const [fav, setfav] = useState(isFavorite);
   const src =
     auction.images.length > 0 && auction.images[0]
@@ -51,7 +53,9 @@ const AuctionCard = ({ auction, isFavorite }: AuctionCardProps) => {
   });
   const router=useRouter()
   return (
-    <div onClick={()=>router.push("/dashboard/bidder/auction/" + auction.id)} className=" cursor-pointer flex h-[250px] w-[310px] flex-col  rounded-2xl bg-base-100 p-3 drop-shadow-md">
+    <div onClick={()=>mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)} className={cx("flex h-[250px] w-[310px] flex-col  rounded-2xl bg-base-100 p-3 drop-shadow-md",{
+      "cursor-pointer":!mineAuction
+    })}>
       <div className="relative w-full flex-grow p-2">
         <Image src={src} alt="image" fill className="object-contain" />
       </div>
@@ -72,7 +76,8 @@ const AuctionCard = ({ auction, isFavorite }: AuctionCardProps) => {
             </span>
           </div>
           <div className="flex flex-row rounded-full bg-[#00A369]">
-            <Link
+           {mineAuction?<button className="p-[5px] rounded-full px-3 text-white bg-primary">Edit</button>:<>
+           <Link
               href={"/dashboard/bidder/auction/" + auction.id}
               className="rounded-full bg-green p-[5px] px-3 text-[13px] font-semibold text-white no-underline"
             >
@@ -91,6 +96,7 @@ const AuctionCard = ({ auction, isFavorite }: AuctionCardProps) => {
                 <FavIcon className="text-xl" />
               )}
             </button>
+           </>}
           </div>
         </div>
       </div>

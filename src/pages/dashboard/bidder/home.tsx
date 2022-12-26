@@ -72,7 +72,7 @@ const Home = (props:InferGetServerSidePropsType<typeof getServerSideProps>) => {
       </div>
       <div className="flex flex-wrap items-center justify-between gap-6">
         {!auctions ? (
-          <span></span>
+          <span>No data</span>
         ) : (
           auctions.map((a, i) => <AuctionCard key={i} auction={a as TAuction} isFavorite={user.favoris_auctions.includes(a.id)}/>)
         )}

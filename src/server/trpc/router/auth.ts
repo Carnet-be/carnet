@@ -39,9 +39,21 @@ export const authRouter = router({
     const hashPwd = await hash(input.password, 10);
     const {setEmailVerified}=input
     delete input.setEmailVerified
+
+    let id = Math.random().toString().slice(2, 9);
+    let incorrectId = true;
+    while (incorrectId) {
+      const count = await ctx.prisma.user.count({ where: { id } });
+      if (count === 0) {
+        incorrectId = false;
+      }else{
+        id = Math.random().toString().slice(2, 9);
+      }
+    }
     return await ctx.prisma.user
       .create({
         data: {
+          id,
           ...input,
           emailVerified:setEmailVerified?true:false,
           password: hashPwd,
@@ -57,10 +69,21 @@ export const authRouter = router({
   addStaff: publicProcedure.input(ZAddStuff).mutation(async ({ input, ctx }) => {
     const {idDemande:id,data}=input
     const hashPwd = await hash(data.password, 10);
+    let idStaff = Math.random().toString().slice(2, 9);
+    let incorrectId = true;
+    while (incorrectId) {
+      const count = await ctx.prisma.user.count({ where: { idStaff } });
+      if (count === 0) {
+        incorrectId = false;
+      }else{
+        idStaff = Math.random().toString().slice(2, 9);
+      }
+    }
     return await ctx.prisma.$transaction([
       ctx.prisma.demandeStaff.delete({where:{id}}),
       ctx.prisma.user.create({
         data: {
+          id:idStaff,
           ...data,
           password: hashPwd,
           emailVerified: true,
