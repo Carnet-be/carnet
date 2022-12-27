@@ -52,7 +52,7 @@ const menu: TMenu = {
     },
     {
       title: "Staff",
-      route: "/admin/dashboard/staff",
+      route: "/admin/dashboard/staffs",
       icon: <PeopleIcon />,
     },
     {

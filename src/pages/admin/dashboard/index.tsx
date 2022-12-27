@@ -3,8 +3,7 @@ import React from "react";
 
 import {
   type NextPage,
-  type GetServerSideProps,
-} from "next";
+  type GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { type User } from "@prisma/client";
 import { prisma } from '../../../server/db/client';
 import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
@@ -44,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const home="/staff"
+  const home="/users/auctioneers"
   return {
     redirect:{
       destination: "/admin/dashboard"+home,
@@ -52,7 +51,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   };
 };
-const AdminDashboard: NextPage = () => {
+const AdminDashboard: NextPage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 return <div></div>
 };
 

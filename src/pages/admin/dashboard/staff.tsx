@@ -317,7 +317,7 @@ type TStaff = {
   username: string;
   email: string;
 };
-const AddStaffDialog = ({ id, refetch }: AddDialogProps) => {
+export const AddStaffDialog = ({ id, refetch }: AddDialogProps) => {
   const { mutate: sendDemandeStaff, isLoading } =
     trpc.admin.demandeStaff.useMutation({
       onError: (err) => {
