@@ -47,7 +47,7 @@ const menu: TMenu = {
     },
     {
       title: "Users",
-      route: "/admin/dashboard/user",
+      route: "/admin/dashboard/users",
       icon: <PeopleIcon />,
     },
     {
@@ -125,7 +125,7 @@ const Dashboard = ({ children, type,background="bg-background" }: DashboardType)
           </div>
           <ul className="menu flex w-[80%] flex-grow flex-col gap-2 py-3 text-base-content">
             {menu[type].map((m, i) => {
-              const active = router.pathname == m.route;
+              const active = router.pathname == m.route || router.pathname.includes(m.route);
               return <Side key={i} side={m} active={active} />;
             })}
           </ul>

@@ -19,6 +19,16 @@ export const adminRouter = router({
           ])
         return {staffs,demandes}
    }),
+   getUsers:publicProcedure.input(z.object({type:z.enum(['ADMIN','BID','AUC','STAFF'])})).query(async({input,ctx})=>{
+    return await  ctx.prisma.user.findMany(
+      {where:{type:input.type},include:{
+        auctions:{
+          include:{bids:true}
+        },
+        bids:{include:{bidder:true}}
+      }}
+    )
+}),
   demandeStaff: publicProcedure.input(ZStaff).mutation(async ({ input, ctx }) => {
    return await ctx.prisma.demandeStaff.create({
     data:input

@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import React, { useState,useEffect } from 'react';
-import { Table, Tag } from 'antd';
+import { Button, Table, Tag, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import cx from 'classnames'
 
@@ -13,7 +13,7 @@ interface Props<T>{
     loading:boolean,
     options?:Object
 }
-export type TableType=Auction|Bid
+export type TableType=Auction|Bid|User
 const MyTable: React.FC<Props<TableType>> = ({columns,data,loading,options}) => <Table 
 
   {...options}
@@ -56,6 +56,23 @@ export const RenderTimer=({date}:{date:Date})=>{
       </Tag> 
 }
 
+
+export const ActionTable=({onView,onDelete,onEdit}:{onView?:()=>void,onEdit?:()=>void,onDelete?:()=>void})=>{
+  return <div className="flex flex-row items-center justify-center gap-1">
+  {onView&& <Tooltip title="View" className="flex flex-row items-center justify-center">
+    <Button onClick={onView} shape="circle" icon={<ViewIcon className="text-lg"/>} />
+  </Tooltip>}
+
+ {onEdit&&  <Tooltip title="Edit" className="flex flex-row items-center justify-center text-primary">
+    <Button onClick={onEdit} shape="circle" icon={<EditIcon className="text-lg"/>} />
+  </Tooltip>}
+
+ {onDelete&&  <Tooltip title="Delete" className="flex flex-row items-center justify-center text-red-500">
+    <Button onClick={onDelete} shape="circle" icon={<DeleteIcon className="text-lg"/>} />
+  </Tooltip>}
+
+</div>
+}
 // /* eslint-disable @typescript-eslint/ban-types */
 // /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { useWindowHeight } from '@react-hook/window-size';
@@ -66,10 +83,11 @@ export const RenderTimer=({date}:{date:Date})=>{
 // import { useEffect } from 'react';
 // import type{ TAuction } from '@model/type';
 import { TAuction } from '@model/type';
-import type { Auction } from '@prisma/client';
+import type { Auction, User } from '@prisma/client';
 import moment from 'moment';
 import { executeEverySecond } from './countDown';
-import { Bid } from '@prisma/client';
+import type { Bid } from '@prisma/client';
+import { ViewIcon, EditIcon, DeleteIcon } from '@ui/icons';
 
 // const { Column, HeaderCell, Cell } = Table;
 

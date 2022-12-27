@@ -2,7 +2,8 @@
 import Dashboard from "@ui/dashboard";
 import React, { useState } from "react";
 
-import MyTable, { renderDate, RenderTimer, TableType } from "@ui/components/table";
+import type { TableType } from "@ui/components/table";
+import MyTable, { ActionTable, renderDate, RenderTimer } from "@ui/components/table";
 import { trpc } from "@utils/trpc";
 import type { TAuction } from "@model/type";
 import { AuctionIcon, CheckIcon, DeleteIcon, ViewIcon } from "@ui/icons";
@@ -120,22 +121,7 @@ const columns:ColumnsType<Auction>=[
       key: "actions",
       align: "center",
       fixed:"right",
-      render: (v) => (
-        <div className="flex flex-row items-center justify-center gap-1">
-          <Tooltip title="View" className="flex flex-row items-center justify-center">
-            <Button shape="circle" icon={<ViewIcon className="text-lg"/>} />
-          </Tooltip>
-     
-          <Tooltip title="Edit" className="flex flex-row items-center justify-center text-primary">
-            <Button shape="circle" icon={<EditIcon className="text-lg"/>} />
-          </Tooltip>
-       
-          <Tooltip title="Delete" className="flex flex-row items-center justify-center text-red-500">
-            <Button shape="circle" icon={<DeleteIcon className="text-lg"/>} />
-          </Tooltip>
-        
-        </div>
-      ),
+      render: (v) => <ActionTable onDelete={()=>{console.log('delete')}} onEdit={()=>{console.log('edit')}} onView={()=>{console.log('view')}}/>,
     },
   ]
   const [options, setoptions] = useState(columns.map((c)=>c.key))
