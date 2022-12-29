@@ -25,7 +25,7 @@ model User {
   password       String
   isActive       Boolean  @default(true)
   emailVerified  Boolean  @default(false)
-  image          String?
+ 
   favoris_auctions String[]
   //
   createAt       DateTime @default(now())
@@ -33,6 +33,7 @@ model User {
 
 
   //relation
+  image AssetImage?
   auctions Auction[]
   bids Bid[]
 }
@@ -55,7 +56,7 @@ model Auction {
   model          Int
   build_year     Int
   fuel           FuelType
-  images         String[]
+      
   description    String?
   duration       DurationType
   end_date       DateTime
@@ -67,6 +68,7 @@ model Auction {
   rating         AuctionRating?
   address        Address?
   bids Bid[]
+  images   AssetImage[]
 
   
   auctionnaire_id String
@@ -85,7 +87,7 @@ model AuctionSpecs {
   version      String?
   ///
   auction_id   String @unique 
-  auction      Auction @relation(fields: [auction_id], references: [id])
+  auction      Auction @relation(fields: [auction_id], references: [id],onDelete: Cascade)
 }
 
 model AuctionOptions {
@@ -157,6 +159,18 @@ model Bid{
   auction_id String  
   auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 
+}
+
+model AssetImage{
+  name String
+  fileKey String @id
+  url String 
+  //
+  auction_id String?
+  auction Auction? @relation(fields: [auction_id],references: [id],onDelete: Cascade)
+
+  user_id String? @unique
+  user User? @relation(fields: [user_id],references: [id],onDelete: Cascade)
 }
 //////ENUM///////
 enum UserType {

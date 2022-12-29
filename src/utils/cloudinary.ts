@@ -1,13 +1,11 @@
-import cl from 'cloudinary'
+import {Cloudinary} from "@cloudinary/url-gen";
 import { env } from '@env/server.mjs';
 
-const cloudy=cl.v2
+const cloudy = new Cloudinary({
+    cloud: {
+      cloudName:env.NEXT_PUBLIC_CLOUDY_NAME_CLIENT
+    }
+  });
 
 
-cloudy.config({
-    cloud_name:"dab7dxfh7",
-    api_key:"125426688527763",
-    api_secret:"PaeviZiqhZf-2HyI-VlmldqVopE"
-})
-
-export {cloudy}
+  export default cloudy

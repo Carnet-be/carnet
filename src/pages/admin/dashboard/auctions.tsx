@@ -27,6 +27,14 @@ const columns:ColumnsType<Auction>=[
         key: "id",
         render: (v) => <span className="italic text-primary text-[12px]">#{v}</span>,
       },
+      {
+        title: "Date pub",
+  
+        dataIndex: "createAt",
+        key: "createAt",
+        align: "center",
+        render: (v) => renderDate(v),
+      },
     {
       title: "Name",
      
@@ -34,14 +42,7 @@ const columns:ColumnsType<Auction>=[
       dataIndex: "name",
       key: "name",
     },
-    {
-      title: "Date pub",
-
-      dataIndex: "createAt",
-      key: "createAt",
-      align: "center",
-      render: (v) => renderDate(v),
-    },
+ 
     {
       title: "Status",
       align: "center",

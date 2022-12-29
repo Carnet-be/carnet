@@ -14,18 +14,20 @@ import type { TAuction } from "@model/type";
 import Price from "./price";
 import cx from 'classnames'
 import { useRouter } from 'next/router';
+import DisplayImage from './displayImage';
+import cloudy from "@utils/cloudinary";
+import { fill } from "@cloudinary/url-gen/actions/resize";
+import { AdvancedImage } from '@cloudinary/react';
 type AuctionCardProps = {
   auction: TAuction;
   isFavorite?: boolean;
   mineAuction?:boolean
 };
 
+export const NO_IMAGE_URL="no-image_g27dbh";
 const AuctionCard = ({ auction, isFavorite,mineAuction }: AuctionCardProps) => {
   const [fav, setfav] = useState(isFavorite);
-  const src =
-    auction.images.length > 0 && auction.images[0]
-      ? auction.images[0]
-      : `/assets/v${getRandomNumber(1, 5)}.png`;
+
   const util = new ProcessAuction(auction);
   const { mutate } = trpc.auctionnaire.favorite.useMutation({
     onError: (err) => {
@@ -52,12 +54,15 @@ const AuctionCard = ({ auction, isFavorite,mineAuction }: AuctionCardProps) => {
     },
   });
   const router=useRouter()
+  const src=!auction.images[0]?NO_IMAGE_URL:auction.images[0].fileKey
+  console.log(src)
   return (
     <div onClick={()=>mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)} className={cx("flex h-[250px] w-[310px] flex-col  rounded-2xl bg-base-100 p-3 drop-shadow-md",{
       "cursor-pointer":!mineAuction
     })}>
       <div className="relative w-full flex-grow p-2">
-        <Image src={src} alt="image" fill className="object-contain" />
+        <Image src={cloudy.image(src).toURL()} alt="image" fill className="object-contain" />
+      
       </div>
       <div className="flex  w-full flex-col justify-between gap-[0px]">
         <div className="flex flex-row items-end justify-between gap-1  text-primary">

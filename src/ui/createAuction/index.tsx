@@ -15,7 +15,7 @@ import { BRAND } from "@data/internal";
 import { type FileType } from "rsuite/esm/Uploader";
 import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
-import { type FuelType } from "@prisma/client";
+import { AssetImage, type FuelType } from "@prisma/client";
 import { Router, useRouter } from "next/router";
 
 
@@ -67,7 +67,7 @@ export type Data5 = {
 
 export type Data6 = {
   name?: string;
-  images: FileType[];
+  images: AssetImage[];
   pricing?: number;
   expected_price?: number;
   duration: "3 days" | "1 week" | "2 weeks";

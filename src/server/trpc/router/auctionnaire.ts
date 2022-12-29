@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { Address, DurationType } from "@prisma/client";
-import { previewFile } from "@ui/components/upload";
 import {
   type Data3,
   type Data4,
@@ -10,11 +8,10 @@ import {
   type Data6,
   type Data1,
 } from "@ui/createAuction";
-import { cloudy } from "@utils/cloudinary";
+
 import { ProcessDate } from "@utils/processDate";
 import { ProcessUser } from "@utils/processUser";
 import { getRandomNumber } from "@utils/utilities";
-import { FileType } from "rsuite/esm/Uploader";
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
@@ -23,17 +20,16 @@ export const auctionnaireRouter = router({
     return await ctx.prisma.auction.findUnique({
       where: { id: input },
       include: {
-       
         address: true,
         specs: true,
         options: true,
         rating: true,
+        images:true,
         bids: {
-          include:{
-            bidder:true
-          }
+          include: {
+            bidder: true,
+          },
         },
-      
       },
     });
   }),
@@ -61,8 +57,8 @@ export const auctionnaireRouter = router({
         const count = await ctx.prisma.auction.count({ where: { id } });
         if (count === 0) {
           incorrectId = false;
-        }else{
-          id = Math.random().toString().slice(2, 9)
+        } else {
+          id = Math.random().toString().slice(2, 9);
         }
       }
       console.log("id user", auctionnaire_id);
@@ -79,6 +75,11 @@ export const auctionnaireRouter = router({
           duration,
           end_date,
           expected_price: parseFloat(data6.expected_price!.toString()),
+          images: {
+            createMany: {
+              data: data6.images,
+            },
+          },
           color: data1.color,
 
           auctionnaire: {
@@ -117,44 +118,37 @@ export const auctionnaireRouter = router({
     }),
   getAuctions: publicProcedure
     .input(
-      z.object({ filter: z.enum(["new", "trending", "feature", "buy now","all"])})
+      z.object({
+        filter: z.enum(["new", "trending", "feature", "buy now", "all"]),
+      })
     )
     .query(async ({ ctx }) => {
-
- 
       return await ctx.prisma.auction.findMany({
-     
-        include:{bids:true}}).then((auctions) =>
-        auctions.map((a) => ({
-          ...a,
-          images: [`/assets/v${getRandomNumber(1, 5)}.png`],
-        }))
-      );
+        include: { bids: true, images: true },
+      })
     }),
-    getBids: publicProcedure
-    .input(
-      z.object({ filter: z.enum(["all"])})
-    )
+  getBids: publicProcedure
+    .input(z.object({ filter: z.enum(["all"]) }))
     .query(async ({ ctx }) => {
       return await ctx.prisma.bid.findMany({
-        include:{bidder:true,auction:{include:{auctionnaire:true,bids:true}}}});
-    }),
-    getMyAuctions: publicProcedure
-    .query(async ({ input, ctx }) => {
-
-      return await ctx.prisma.auction.findMany({
-        where:{
-auctionnaire:{
-  email:ctx.session?.user?.email||""
-}
+        include: {
+          bidder: true,
+          auction: { include: { auctionnaire: true, bids: true } },
         },
-        include:{bids:true}}).then((auctions) =>
-        auctions.map((a) => ({
-          ...a,
-          images: [`/assets/v${getRandomNumber(1, 5)}.png`],
-        }))
-      );
+      });
     }),
+  getMyAuctions: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.auction
+      .findMany({
+        where: {
+          auctionnaire: {
+            email: ctx.session?.user?.email || "",
+          },
+        },
+        include: { bids: true,images:true },
+      })
+      
+  }),
   favorite: publicProcedure
     .input(
       z.object({ id: z.string(), action: z.enum(["add", "remove"]).nullable() })
@@ -191,30 +185,5 @@ auctionnaire:{
         default:
           return add();
       }
-    })
+    }),
 });
-
-const uploadImage = async (images: Array<string>) => {
-  const result = await Promise.all(
-    images.map((im, i) => {
-      console.log("im.url", im);
-
-      return cloudy.uploader.upload(
-        im,
-        {
-          use_filename: true,
-          unique_filename: false,
-          overwrite: true,
-        },
-        async (error: any, result: any) => {
-          console.log("error", error);
-          console.log(i, result);
-        }
-      );
-    })
-  ).then((datas) => {
-    console.log("Datas >", datas);
-  });
-
-  return [];
-};

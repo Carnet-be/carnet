@@ -13,5 +13,8 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    domains: ['lh3.googleusercontent.com','firebasestorage.googleapis.com','res.cloudinary.com','placehold.jp'],
+  },
 };
 export default config;

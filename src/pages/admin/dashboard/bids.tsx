@@ -28,6 +28,14 @@ const columns:ColumnsType<Bid>=[
         render: (v) => <span className="italic text-primary text-[12px]">#{v}</span>,
       },
       {
+        title: "Date",
+  
+        dataIndex: "createAt",
+        key: "createAt",
+        align: "center",
+        render: (v) => renderDate(v),
+      },
+      {
         title: "Bidder",
 
   
@@ -47,14 +55,7 @@ const columns:ColumnsType<Bid>=[
       key: "name",
       render: (_,v) => <span className="italic text-green-500 text-[12px]">#{(v as any).auction.id}</span>,
     },
-    {
-      title: "Date",
 
-      dataIndex: "createAt",
-      key: "createAt",
-      align: "center",
-      render: (v) => renderDate(v),
-    },
     
     {
       title: "Value",

@@ -33,6 +33,9 @@ import { EXTERIOR } from '@data/internal';
 import { INTERIOR } from '@data/internal';
 import { TIRES } from '@data/internal';
 import { StarIcon } from "@ui/icons";
+import cloudy from "@utils/cloudinary";
+import { NO_IMAGE_URL } from "@ui/components/auctionCard";
+import { fill } from '@cloudinary/url-gen/actions/resize';
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -91,7 +94,7 @@ const Home = (
 };
 
 const LeftSide = ({ auction }: { auction: TAuction }) => {
-  const img = [1, 2, 3, 4, 5].map((i) => `/assets/v${i}.png`);
+  const noImg=auction.images.length<=0
   const [imgP, setImgP] = useState(0);
   const [imgSize, setimgSize] = useState(0);
   const imgRef = useRef<HTMLDivElement>(null);
@@ -134,11 +137,11 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
         ref={imgRef}
         className="flex h-[500px] w-full flex-col items-center justify-center bg-white"
       >
-        <Image src={img[imgP] || ""} alt="photo" width={imgSize} height={400} />
+        <Image src={cloudy.image(noImg?NO_IMAGE_URL:auction.images[imgP]?.fileKey).resize(fill(undefined,400)).toURL()} alt="photo" width={imgSize} height={400} />
       </div>
-      <div className="bg-white px-10 py-6">
+      <div className={cx("bg-white px-10 py-6",{hidden:noImg})}>
         <Slider {...settings} className="mb-4">
-          {img.map((m, i) => {
+          {auction.images.map((im)=>im.fileKey).map((m, i) => {
             const isActive = imgP == i;
             return (
               <div
@@ -148,7 +151,7 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
                 "border": isActive,
                 })}
               >
-                <Image src={m} alt="photo" width={140} height={120} />
+                <Image src={cloudy.image(m).resize(fill(undefined, 120)).toURL()} alt="photo" width={140} height={120} />
               </div>
             );
           })}

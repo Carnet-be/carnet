@@ -72,7 +72,7 @@ const Step6 = ({
           onChange={(e) => setData({ ...data, description: e.target.value })}
         />
         <Upload
-          uploadRef={uploadRef}
+      
           value={data.images}
           setValue={(v) => setData({ ...data, images: v })}
         />

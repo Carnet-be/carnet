@@ -4,88 +4,79 @@ import CameraRetroIcon from "@rsuite/icons/legacy/CameraRetro";
 import { type MutableRefObject } from "react";
 import { type FileType } from "rsuite/esm/Uploader";
 import { AddPhotoIcon } from "@ui/icons";
-import { cloudy } from "@utils/cloudinary";
+import type { AssetImage } from "@prisma/client";
+import { env } from "@env/server.mjs";
+import { toast } from 'react-hot-toast';
 
 type UploadProps = {
   uploadRef?: MutableRefObject<undefined>;
-  value: FileType[];
-  setValue: (fileList: FileType[]) => void;
+  value: AssetImage[];
+  setValue: (fileList: AssetImage[]) => void;
 };
-export function previewFile(file:any, callback: (s:unknown)=>void) {
+export function previewFile(file: any, callback: (s: unknown) => void) {
   const reader = new FileReader();
   reader.onloadend = () => {
     callback(reader.result);
   };
   reader.readAsDataURL(file);
 }
+
+export const ACTION_UPLOAD = `https://api.cloudinary.com/v1_1/${env.NEXT_PUBLIC_CLOUDY_NAME_CLIENT}/image/upload`;
+export const UNSIGNE_UPLOAD = {
+  upload_preset: "public",
+  api_key: env.NEXT_PUBLIC_CLOUDY_API_KEY_CLIENT,
+};
 const Upload = ({ uploadRef, value, setValue }: UploadProps) => {
+  const onRemove = (file: FileType) => {
+    console.log("Rove", file);
+    console.log("images", value);
+    setValue(value.filter((img) => img.name != file.name));
+  };
+
+  const onSuccess = (res: any, file: FileType) => {
+    console.log("Succes upload", res.url);
+    // console.log('File',f)
+    const img = {
+      fileKey: res.public_id,
+      name: file.name || "",
+      url: res.url,
+    };
+    setValue([...value, img as AssetImage]);
+  };
+  const onError=()=>toast.error("Error d'upload")
   return (
     <div className="max-h-[200px] overflow-scroll">
       <Uploader
-        action=""
+        action={ACTION_UPLOAD}
+        //FIXME:remove public id
+        data={UNSIGNE_UPLOAD}
         draggable
         multiple
-        
-        // onUpload={file => {
-        //    console.log("file",file)
-        //   previewFile(file.blobFile, value => {
-        //     console.log(value);
-           
-        //   });
-        // }}
-       
+        defaultFileList={value}
         listType="picture-text"
-      //  autoUpload={false}
-        fileList={value}
         ref={uploadRef}
-        onChange={setValue}
+        onRemove={onRemove}
+        onSuccess={onSuccess}
+        onError={onError}
       >
         <div
           style={{
             height: 80,
             display: "flex",
-            
-            flexDirection:"row",
+
+            flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
           }}
-
-          className="cursor-pointer h-[80px] items-center justify-center"
+          className="h-[80px] cursor-pointer items-center justify-center"
         >
-        <div className="flex flex-col  gap-2 items-center">
-        <AddPhotoIcon className="text-2xl mr-3"/> <span>Click or Drag images to this area to upload</span>
-        </div>
+          <div className="flex flex-col  items-center gap-2">
+            <AddPhotoIcon className="mr-3 text-2xl" />{" "}
+            <span>Click or Drag images to this area to upload</span>
+          </div>
         </div>
       </Uploader>
     </div>
-    // <Uploader
-    //   multiple
-    //   listType="picture"
-    //   autoUpload={false}
-    //    fileList={value}
-    //   ref={uploadRef}
-    //  onChange={setValue}
-    //   action="//jsonplaceholder.typicode.com/posts/"
-    //   className="flex flex-row items-center justify-center"
-    // >
-    //   <button>
-    //     <CameraRetroIcon />
-    //   </button>
-    // </Uploader>
-    // <Uploader
-    //   multiple
-    //   listType="picture"
-    //   autoUpload={false}
-    //    fileList={value}
-    //   ref={uploadRef}
-    //  onChange={setValue}
-    //   action="//jsonplaceholder.typicode.com/posts/"
-    //   className="flex flex-row items-center justify-center"
-    // >
-    //   <button>
-    //     <CameraRetroIcon />
-    //   </button>
-    // </Uploader>
   );
 };
 
