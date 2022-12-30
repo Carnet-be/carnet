@@ -24,7 +24,7 @@ export const auctionnaireRouter = router({
         specs: true,
         options: true,
         rating: true,
-        images:true,
+        images: true,
         bids: {
           include: {
             bidder: true,
@@ -119,35 +119,81 @@ export const auctionnaireRouter = router({
   getAuctions: publicProcedure
     .input(
       z.object({
-        filter: z.enum(["new", "trending", "feature", "buy now", "all"]),
+        filter: z.enum([
+          "new",
+          "trending",
+          "feature",
+          "buy now",
+          "all",
+          "mine",
+        ]),
       })
     )
-    .query(async ({ ctx }) => {
+    .query(async ({ input, ctx }) => {
+     let condition={}
+      switch (input.filter) {
+        case "mine":
+          const user = await ctx.prisma.user.findUnique({
+            where: { email: ctx.session?.user?.email || "" },
+            select: {
+              favoris_auctions: true,
+            },
+          });
+          condition={where:{id:{in:user?.favoris_auctions}}}
+          break;
+      
+        default:
+          break;
+      }
       return await ctx.prisma.auction.findMany({
+        ...condition,
         include: { bids: true, images: true },
-      })
+        orderBy:{
+          createAt:'desc'
+        }
+      });
     }),
   getBids: publicProcedure
-    .input(z.object({ filter: z.enum(["all"]) }))
-    .query(async ({ ctx }) => {
+    .input(z.object({ filter: z.enum(["all", "mine"]) }))
+    .query(async ({ input, ctx }) => {
+      let condition;
+      switch (input.filter) {
+        case "mine":
+          condition = {
+            where: {
+              bidder: {
+                email: ctx.session?.user?.email || "",
+              },
+            },
+          };
+          break;
+
+        default:
+          break;
+      }
       return await ctx.prisma.bid.findMany({
+        ...condition,
         include: {
           bidder: true,
           auction: { include: { auctionnaire: true, bids: true } },
         },
+        orderBy:{
+          createAt:'desc'
+        }
       });
     }),
   getMyAuctions: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.auction
-      .findMany({
-        where: {
-          auctionnaire: {
-            email: ctx.session?.user?.email || "",
-          },
+    return await ctx.prisma.auction.findMany({
+      where: {
+        auctionnaire: {
+          email: ctx.session?.user?.email || "",
         },
-        include: { bids: true,images:true },
-      })
-      
+      },
+      include: { bids: true, images: true },
+      orderBy:{
+        createAt:'desc'
+      }
+    });
   }),
   favorite: publicProcedure
     .input(

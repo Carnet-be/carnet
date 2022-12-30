@@ -57,7 +57,7 @@ const BidSection = ({ auction ,isTimeOut}: BidSection) => {
         auctionId={auction.id}
       />}
       <div className="w-full space-y-2 overflow-scroll">
-        {bids.map((b, i) => {
+        {bids.reverse().map((b, i) => {
           return (
             <div key={i} className={cx("flex flex-row items-center justify-between border-t-2 pt-2")}>
               <div>

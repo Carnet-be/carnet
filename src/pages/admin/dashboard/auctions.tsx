@@ -42,17 +42,7 @@ const columns:ColumnsType<Auction>=[
       dataIndex: "name",
       key: "name",
     },
- 
-    {
-      title: "Status",
-      align: "center",
-      dataIndex: "status",
-      key: "status",
-      render: (v) =>
-        !v && (
-          <span className="text-green-700 text-sm italic">Opened</span>
-        ),
-    },
+
     {
       title: "Bids",
       dataIndex: "bids",

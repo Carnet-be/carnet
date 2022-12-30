@@ -21,11 +21,13 @@ import { AdvancedImage } from '@cloudinary/react';
 type AuctionCardProps = {
   auction: TAuction;
   isFavorite?: boolean;
-  mineAuction?:boolean
+  mineAuction?:boolean,
+  onClickFavorite?:()=>void,
+  onEdit?:()=>void
 };
 
 export const NO_IMAGE_URL="no-image_g27dbh";
-const AuctionCard = ({ auction, isFavorite,mineAuction }: AuctionCardProps) => {
+const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit }: AuctionCardProps) => {
   const [fav, setfav] = useState(isFavorite);
 
   const util = new ProcessAuction(auction);
@@ -44,6 +46,9 @@ const AuctionCard = ({ auction, isFavorite,mineAuction }: AuctionCardProps) => {
           break;
         case "remove":
           toast.success(onRemove);
+          if(onClickFavorite){
+            onClickFavorite()
+          }
           setfav(false)
           break;
         default:
@@ -81,7 +86,12 @@ const AuctionCard = ({ auction, isFavorite,mineAuction }: AuctionCardProps) => {
             </span>
           </div>
           <div className="flex flex-row rounded-full bg-[#00A369]">
-           {mineAuction?<button className="p-[5px] rounded-full px-3 text-white bg-primary">Edit</button>:<>
+           {mineAuction?
+              <label onClick={onEdit} htmlFor="create_auction"
+              className={cx("cursor-pointer p-[5px] rounded-full px-3 text-white bg-primary")}
+            
+            >Edit
+            </label>:<>
            <Link
               href={"/dashboard/bidder/auction/" + auction.id}
               className="rounded-full bg-green p-[5px] px-3 text-[13px] font-semibold text-white no-underline"

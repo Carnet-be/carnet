@@ -36,6 +36,9 @@ export const RenderTimer=({date}:{date:Date})=>{
           clearInterval(interval);
         };
       }, []);
+      useEffect(() => {
+       console.log(leftTime)
+      }, [leftTime]);
     return   <Tag color={leftTime?.asSeconds()<=0?"error":"default"} className='flex flex-row items-end justify-center font-semibold gap-1'>
        
        {leftTime?.asSeconds()<=0?"Expired":<>

@@ -17,6 +17,7 @@ import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
 import { AssetImage, type FuelType } from "@prisma/client";
 import { Router, useRouter } from "next/router";
+import { TAuction } from "@model/type";
 
 
 export type Data1 = {
@@ -79,7 +80,8 @@ export type Data6 = {
   lat?: number;
   lon?: number;
 };
-const CreateAuction = () => {
+const CreateAuction = ({auction,isEdit,onCancel}:{auction?:TAuction,isEdit?:boolean,onCancel?:()=>void}) => {
+  const [edit,setedit]=useState(auction)
   const [step, setstep] = useState(1);
   const next = () => {
     let nextStep = step + 1;
@@ -124,6 +126,23 @@ const CreateAuction = () => {
   });
 
   const [data6, setdata6] = useState<Data6>({ images: [], duration: "3 days" });
+  useEffect(()=>{
+    console.log("update editable auction")
+    if(edit){
+      console.log('isEdit')
+      const {brand,build_year,fuel,name,model,color}=edit
+      const d1:Data1={
+        brand:2,
+        model:1,buildYear:build_year,color:color||undefined,
+        fuel:"Diesel"
+      }
+      console.log()
+      setdata1(d1)
+      setdata3({carrosserie:3})
+    }else{
+      console.log('no Edit')
+    }
+  },[edit])
   useEffect(() => {
     const isNext1 =
       step === 1
@@ -193,10 +212,10 @@ const router=useRouter()
   return (
     <>
       <input type="checkbox" id="create_auction" className="modal-toggle" />
-      <div className="modal">
+      <div className={cx("modal")}>
         <div className="modal-box flex min-h-[450px] flex-col justify-between gap-6 lg:max-w-2xl">
           <Stepper step={step} />
-
+        
           {step == 1 && <Step1 data={data1} setData={setdata1} />}
           {step == 2 && <Step2 />}
           {step == 3 && <Step3 data={data3} setData={setdata3} />}
@@ -216,8 +235,9 @@ const router=useRouter()
               }
             />
           )}
+          
           <div className="modal-action flex flex-row items-center">
-            <label ref={ref} htmlFor="create_auction" className="btn-ghost btn-sm btn">
+            <label ref={ref} onClick={onCancel} htmlFor="create_auction" className="btn-ghost btn-sm btn">
               annuler
             </label>
             <div className="flex-grow"></div>
@@ -254,7 +274,7 @@ const router=useRouter()
   );
 };
 
-const Stepper = ({ step }: { step: number }) => {
+export const Stepper = ({ step }: { step: number }) => {
   return (
     <ul className="steps w-full">
       {Array.from({ length: 6 }, (_, i) => i + 1).map((k, i) => {

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import cx from "classnames";
 
 export function executeEverySecond(endDate:Date) {
+ 
   const process = new ProcessDate(endDate);
   const secondLeft = process.getSecondsFronmNow();
 
