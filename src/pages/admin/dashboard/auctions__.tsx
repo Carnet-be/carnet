@@ -13,8 +13,34 @@ import { EditIcon } from '../../../ui/icons';
 import BigTitle from "@ui/components/bigTitle"
 import type { ColumnsType } from "antd/es/table";
 import type { Auction } from "@prisma/client";
-
-
+import { useRouter } from "next/router";
+import { getServerAuthSession } from "@server/common/get-server-auth-session";
+import { GetServerSideProps } from "next";
+import Link from "next/link";
+import cx from "classnames"
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  console.log(session?.user);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: true,
+      },
+    };
+  }
+if(!ctx.query.type){
+  return {
+    redirect: {
+      destination: "/admin/dashboard/auctions?type=published",
+      permanent: true,
+    },
+  };
+}
+return {
+  props: {},
+};
+};
 const Auctions = () => {
   const { data: auctions, isLoading } = trpc.auctionnaire.getAuctions.useQuery({
     filter: "all",
@@ -116,10 +142,17 @@ const columns:ColumnsType<Auction>=[
     },
   ]
   const [options, setoptions] = useState(columns.map((c)=>c.key))
- 
+   const router=useRouter()
   return (
     <Dashboard type="ADMIN">
          <BigTitle title="Management of auctions"/>
+         <div className="tabs tabs-boxed px-3 py-1 gap-4">
+    {["published","pending"].map((r,i)=>{
+      const isActive=router.query.type==r
+      return <button key={i} onClick={()=>router.push("/admin/dashboard/auctions?type="+r,undefined,{shallow:true})} className={cx("tab no-underline",{"tab-active":isActive})}>{r}</button>
+    })}
+
+</div>
       <div className="flex flex-col items-end mt-6">
       {/* <Select
       mode="multiple"

@@ -31,6 +31,7 @@ const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
             <InputLabel htmlFor="brand">Marque</InputLabel>
             <Select
               value={data.brand}
+              
               label="Marque"
               onChange={(e) => {
                 console.log(typeof e.target.value);

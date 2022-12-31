@@ -183,6 +183,7 @@ const CreateAuction = ({auction,isEdit,onCancel,id,refetch}:{auction?:TAuction,i
       console.log('no Edit')
     }
   },[edit])
+
   useEffect(() => {
     const isNext1 =
       step === 1

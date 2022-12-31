@@ -6,21 +6,21 @@ import { z } from "zod";
  * This way you can ensure the app isn't built with invalid env vars.
  */
 export const serverSchema = z.object({
- DATABASE_URL: z.string().url(),
-  CLOUDY_NAME:z.string(),
-  CLOUDY_API_KEY:z.string(),
-CLOUDY_API_SECRET:z.string(),
-  NODE_ENV: z.enum(["development", "test", "production"]),
+ DATABASE_URL: z.string().url().optional(),
+  CLOUDY_NAME:z.string().optional(),
+  CLOUDY_API_KEY:z.string().optional(),
+CLOUDY_API_SECRET:z.string().optional(),
+  NODE_ENV: z.enum(["development", "test", "production"]).optional(),
   NEXTAUTH_SECRET:
     process.env.NODE_ENV === "production"
-      ? z.string().min(1)
-      : z.string().min(1).optional(),
+      ? z.string().min(1).optional()
+      : z.string().min(1).optional().optional(),
   NEXTAUTH_URL: z.preprocess(
     // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
     // Since NextAuth automatically uses the VERCEL_URL if present.
     (str) => process.env.VERCEL_URL ?? str,
     // VERCEL_URL doesnt include `https` so it cant be validated as a URL
-    process.env.VERCEL ? z.string() : z.string().url(),
+    process.env.VERCEL ? z.string() : z.string().url().optional(),
   ),
 
 });

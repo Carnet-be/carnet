@@ -62,6 +62,7 @@ model Auction {
   end_date       DateTime
   expected_price Float
   color String?
+  state AuctionState @default(pending)
   //relation
   specs          AuctionSpecs?
   options        AuctionOptions?
@@ -191,4 +192,9 @@ enum DurationType {
   ThreeDays
   OneWeek
   TwoWeek
+}
+
+enum AuctionState{
+  published
+  pending
 }

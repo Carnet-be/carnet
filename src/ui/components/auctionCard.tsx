@@ -65,7 +65,7 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,re
   console.log(src)
   return (
     <>
-     <CreateAuction auction={auction}  isEdit={true} id={auction.id} refetch={refetch}/>
+    {mineAuction&& <CreateAuction auction={auction}  isEdit={true} id={auction.id} refetch={refetch}/>}
   
     <div onClick={()=>mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)} className={cx("flex h-[250px] w-[310px] flex-col  rounded-2xl bg-base-100 p-3 drop-shadow-md z-50",{
       "cursor-pointer":!mineAuction

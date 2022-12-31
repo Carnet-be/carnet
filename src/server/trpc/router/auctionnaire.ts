@@ -189,6 +189,7 @@ const auction_id=auction.id
   getAuctions: publicProcedure
     .input(
       z.object({
+        state:z.enum(['pending','published']).nullish(),
         filter: z.enum([
           "new",
           "trending",
@@ -201,6 +202,7 @@ const auction_id=auction.id
     )
     .query(async ({ input, ctx }) => {
      let condition={}
+     
       switch (input.filter) {
         case "mine":
           const user = await ctx.prisma.user.findUnique({
@@ -209,14 +211,18 @@ const auction_id=auction.id
               favoris_auctions: true,
             },
           });
-          condition={where:{id:{in:user?.favoris_auctions}}}
+          condition={id:{in:user?.favoris_auctions}}
           break;
       
         default:
           break;
       }
+     
       return await ctx.prisma.auction.findMany({
-        ...condition,
+        where:{
+          ...condition,
+          state:input.state|| undefined
+        },
         include: { bids: true, images: true },
         orderBy:{
           createAt:'desc'

@@ -15,7 +15,8 @@ interface Props<T>{
 }
 export type TableType=Auction|Bid|User
 const MyTable: React.FC<Props<TableType>> = ({columns,data,loading,options}) => <Table 
-
+   size='small'
+   className='w-full'
   {...options}
   loading={loading}  columns={columns} dataSource={data} />;
 
