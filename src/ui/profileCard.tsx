@@ -6,7 +6,7 @@ import aucitonaireIcon from "@assets/auctionnaire.png"
 import bidderIcon from "@assets/bidder.png"
 import {PersonIcon} from "@ui/icons"
 import adminIcon from "@assets/admin.png"
-const Avatar = ({username,user,isLoading,session}:{username?:boolean,user:User|undefined|null,isLoading:boolean,session:Session|null}) => {
+const Avatar = ({username,user,isLoading,session}:{username?:boolean,user:TUser|undefined|null,isLoading:boolean,session:Session|null}) => {
 
  // const { data: session } = useSession();
   if (isLoading || !user?.image) {
@@ -21,7 +21,7 @@ const Avatar = ({username,user,isLoading,session}:{username?:boolean,user:User|u
   return (
     <div className="avatar">
       <div className="w-24 rounded-full">
-        <Image src={user.image} width={50} height={60} alt="profile" />
+        <Image src={cloudy.image(user.image.fileKey).resize(fill(50,60)).toURL()} width={50} height={60} alt="profile" />
       </div>
     </div>
   );
@@ -40,6 +40,9 @@ import { LogoutIcon } from "./icons";
 import { useRouter } from "next/router";
 import { type User } from "@prisma/client";
 import { type Session } from "next-auth";
+import { TUser } from "@model/type";
+import cloudy from "@utils/cloudinary";
+import { fill } from "@cloudinary/url-gen/actions/resize";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -111,7 +114,7 @@ export default function CustomizedMenus() {
         startIcon={user&&<Image src={user.type=="AUC"? aucitonaireIcon:user.type=="BID"?bidderIcon:adminIcon} width={25} height={25} alt="icon"/>}
         endIcon={<ExpandMoreIcon className="text-xl" />}
       >
-        <Avatar session={session} isLoading={isLoading} user={user}/>
+        <Avatar session={session} isLoading={isLoading} user={user as TUser}/>
       </Button>
 
       <StyledMenu

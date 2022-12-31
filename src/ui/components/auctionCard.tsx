@@ -18,16 +18,18 @@ import DisplayImage from './displayImage';
 import cloudy from "@utils/cloudinary";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { AdvancedImage } from '@cloudinary/react';
+import CreateAuction from "@ui/createAuction";
 type AuctionCardProps = {
   auction: TAuction;
   isFavorite?: boolean;
   mineAuction?:boolean,
   onClickFavorite?:()=>void,
-  onEdit?:()=>void
+  onEdit?:()=>void,
+  refetch?:()=>void
 };
 
 export const NO_IMAGE_URL="no-image_g27dbh";
-const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit }: AuctionCardProps) => {
+const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,refetch }: AuctionCardProps) => {
   const [fav, setfav] = useState(isFavorite);
 
   const util = new ProcessAuction(auction);
@@ -62,7 +64,10 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit }:
   const src=!auction.images[0]?NO_IMAGE_URL:auction.images[0].fileKey
   console.log(src)
   return (
-    <div onClick={()=>mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)} className={cx("flex h-[250px] w-[310px] flex-col  rounded-2xl bg-base-100 p-3 drop-shadow-md",{
+    <>
+     <CreateAuction auction={auction}  isEdit={true} id={auction.id} refetch={refetch}/>
+  
+    <div onClick={()=>mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)} className={cx("flex h-[250px] w-[310px] flex-col  rounded-2xl bg-base-100 p-3 drop-shadow-md z-50",{
       "cursor-pointer":!mineAuction
     })}>
       <div className="relative w-full flex-grow p-2">
@@ -87,7 +92,7 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit }:
           </div>
           <div className="flex flex-row rounded-full bg-[#00A369]">
            {mineAuction?
-              <label onClick={onEdit} htmlFor="create_auction"
+              <label onClick={onEdit} htmlFor={auction.id}
               className={cx("cursor-pointer p-[5px] rounded-full px-3 text-white bg-primary")}
             
             >Edit
@@ -116,6 +121,7 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit }:
         </div>
       </div>
     </div>
+    </>
   );
 };
 

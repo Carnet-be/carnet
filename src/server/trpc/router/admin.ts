@@ -40,7 +40,7 @@ export const adminRouter = router({
     id:z.string(),
     data:z.object({ username:z.string(),
       tel:z.string().nullable(),
-      image:z.string().nullish(),
+      
        email: z.string().email(),
        isActive:z.boolean()
     })})

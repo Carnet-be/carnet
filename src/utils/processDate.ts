@@ -23,6 +23,18 @@ export class ProcessDate {
         return "ThreeDays"
     }
   }
+  getDurationName(d:DurationType):  "3 days" | "1 week" | "2 weeks" {
+    switch (d) {
+      case "ThreeDays":
+        return "3 days";
+      case "OneWeek":
+        return "1 week";
+      case  "TwoWeek":
+        return "2 weeks";
+        default:
+        return "3 days"
+    }
+  }
   addDays(numOfDays: number, date = new Date()) {
     date.setDate(date.getDate() + numOfDays);
     return date;

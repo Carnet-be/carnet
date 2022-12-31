@@ -18,6 +18,7 @@ import { toast } from "react-hot-toast";
 import { AssetImage, type FuelType } from "@prisma/client";
 import { Router, useRouter } from "next/router";
 import { TAuction } from "@model/type";
+import { ProcessDate } from "@utils/processDate";
 
 
 export type Data1 = {
@@ -69,7 +70,7 @@ export type Data5 = {
 export type Data6 = {
   name?: string;
   images: AssetImage[];
-  pricing?: number;
+
   expected_price?: number;
   duration: "3 days" | "1 week" | "2 weeks";
   address?: string;
@@ -80,7 +81,7 @@ export type Data6 = {
   lat?: number;
   lon?: number;
 };
-const CreateAuction = ({auction,isEdit,onCancel}:{auction?:TAuction,isEdit?:boolean,onCancel?:()=>void}) => {
+const CreateAuction = ({auction,isEdit,onCancel,id,refetch}:{auction?:TAuction,isEdit?:boolean,onCancel?:()=>void,id?:string,refetch?:()=>void}) => {
   const [edit,setedit]=useState(auction)
   const [step, setstep] = useState(1);
   const next = () => {
@@ -130,15 +131,54 @@ const CreateAuction = ({auction,isEdit,onCancel}:{auction?:TAuction,isEdit?:bool
     console.log("update editable auction")
     if(edit){
       console.log('isEdit')
-      const {brand,build_year,fuel,name,model,color}=edit
+      const {brand,build_year,fuel,name,model,color,specs,address,options,rating,images,expected_price}=edit
       const d1:Data1={
-        brand:2,
-        model:1,buildYear:build_year,color:color||undefined,
-        fuel:"Diesel"
+        brand,
+        model,buildYear:build_year,color:color||undefined,
+        fuel
       }
-      console.log()
+      const {carrosserie,cc,co2,cv,kilometrage,doors,version,transmission}=specs
+      const d3:Data3={
+        carrosserie:carrosserie||undefined,
+        transmission:transmission||undefined,
+        cc:parseInt(cc||"")||undefined,
+        co2:parseInt(co2||"")||undefined,
+        cv:parseInt(cv||"")||undefined,
+        kilometrage:parseInt( kilometrage||"")||undefined,
+        doors:doors||undefined,
+        version:version||undefined
+      }
+      const {handling,tires,exterior,interior}=rating
+      const d4:Data4={
+        handling:handling||undefined,
+        tires:tires||undefined,exterior:exterior||undefined,interior:interior||undefined
+      }
+      const d5:Data5={
+        ...options
+      }
+   
+      const {duration,description}=edit
+      const {address:adresse,zipCode,city,country,lat,lon}=address
+      const process=new ProcessDate()
+      const d6:Data6={
+        name,
+        images,
+      
+        expected_price,
+        duration:process.getDurationName(duration),
+        address:adresse||undefined,
+        description:description||undefined,
+        zipCode:zipCode||undefined,
+        city: city||undefined,
+        country:country||undefined,
+        lat:lat||undefined,
+        lon: lon||undefined,
+      }
       setdata1(d1)
-      setdata3({carrosserie:3})
+      setdata3(d3)
+      setdata4(d4)
+      setdata5(d5)
+      setdata6(d6)
     }else{
       console.log('no Edit')
     }
@@ -203,16 +243,39 @@ const router=useRouter()
     },
     onMutate:()=> toast.loading("En cours de traitement")
   });
+  const { mutate: updateAuction,isLoading:isUpdating } = trpc.auctionnaire.updateAuction.useMutation({
+    onError: (err) => {
+      toast.dismiss()
+      console.log("Error from Update Auction > ", err);
+      toast.error("Failed updating");
+    },
+    onSuccess: (data) => {
+      toast.dismiss()
+      toast.success("Opération réussi");
+      
+     //  router.push("/dashboard/auctionnaire/myauctions")
+    if(refetch){
+      refetch()
+    }
+       ref.current?.click()
+    },
+    onMutate:()=> toast.loading("Processing")
+  });
   const onValid=()=>{
+  if(edit){
+    updateAuction({data1,data3,data4,data5,data6,auction:edit})
+  }else{
+
   
     addAuction({data1,data3,data4,data5,data6})
-   
   }
+  }
+
   const ref=useRef<HTMLLabelElement|null>(null)
   return (
     <>
-      <input type="checkbox" id="create_auction" className="modal-toggle" />
-      <div className={cx("modal")}>
+      <input type="checkbox" id={id||"create_auction"} className="modal-toggle" />
+      <div className={cx("modal absolute top-0 left-0 z-[1000]")}>
         <div className="modal-box flex min-h-[450px] flex-col justify-between gap-6 lg:max-w-2xl">
           <Stepper step={step} />
         
@@ -237,7 +300,7 @@ const router=useRouter()
           )}
           
           <div className="modal-action flex flex-row items-center">
-            <label ref={ref} onClick={onCancel} htmlFor="create_auction" className="btn-ghost btn-sm btn">
+            <label ref={ref} onClick={onCancel} htmlFor={id||"create_auction"} className="btn-ghost btn-sm btn">
               annuler
             </label>
             <div className="flex-grow"></div>
@@ -261,7 +324,7 @@ const router=useRouter()
             <button
             onClick={onValid}
               className={cx("btn-primary btn-sm btn", {
-                "btn-disabled": !isValid || isLoading,
+                "btn-disabled": !isValid || isLoading ||isUpdating,
                 hidden: step !== 6,
               })}
             >

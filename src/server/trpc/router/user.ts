@@ -7,7 +7,7 @@ export const userRouter = router({
     return await ctx.prisma.user
       .findUnique({where:{
         email:ctx.session?.user?.email||""
-      }})
+      },include:{image:true}})
   }),
   
 });

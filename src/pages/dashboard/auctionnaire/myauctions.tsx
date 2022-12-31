@@ -26,15 +26,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   };
 const Home: NextPage = () => {
-  const { data: auctions } = trpc.auctionnaire.getMyAuctions.useQuery();
+  const { data: auctions,refetch } = trpc.auctionnaire.getMyAuctions.useQuery({full:true});
   const [editAuction,setEditAuction]=useState<TAuction|undefined>()
     return   <Dashboard type="AUC">
-    <CreateAuction auction={editAuction} onCancel={()=>setEditAuction(undefined)} isEdit={true}/>
+   
      <div className="flex flex-wrap items-center  gap-6">
         {!auctions ? (
           <span>No data</span>
         ) : (
-          auctions.map((a, i) => <AuctionCard key={i} auction={a as TAuction} mineAuction={true} onEdit={()=>{
+          auctions.map((a, i) => <AuctionCard key={i} refetch={refetch} auction={a as TAuction} mineAuction={true} onEdit={()=>{
             
             setEditAuction(a as TAuction)
           }}/>)
