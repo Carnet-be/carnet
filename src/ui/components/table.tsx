@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useRef } from 'react';
 import { Button, Table, Tag, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import cx from 'classnames'
@@ -61,14 +61,19 @@ export const RenderTimer=({date}:{date:Date})=>{
 }
 
 
-export const ActionTable=({onView,onDelete,onEdit}:{onView?:()=>void,onEdit?:()=>void,onDelete?:()=>void})=>{
+export const ActionTable=({onView,onDelete,onEdit,id}:{id?:string,onView?:()=>void,onEdit?:()=>void,onDelete?:()=>void})=>{
+  const ref=useRef<HTMLLabelElement>(null)
   return <div className="flex flex-row items-center justify-center gap-1">
+   <label ref={ref} hidden={true}  htmlFor={id}></label>
   {onView&& <Tooltip title="View" className="flex flex-row items-center justify-center">
     <Button onClick={onView} shape="circle" icon={<ViewIcon className="text-lg"/>} />
   </Tooltip>}
 
  {onEdit&&  <Tooltip title="Edit" className="flex flex-row items-center justify-center text-primary">
-    <Button onClick={onEdit} shape="circle" icon={<EditIcon className="text-lg"/>} />
+    <Button onClick={()=>{
+      ref.current?.click()
+      onEdit()
+    }} shape="circle" icon={<EditIcon className="text-lg"/>} />
   </Tooltip>}
 
  {onDelete&&  <Tooltip title="Delete" className="flex flex-row items-center justify-center text-red-500">

@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { TAuction } from "@model/type";
+import { AuctionState } from "@prisma/client";
 import { TRPCClientError } from "@trpc/client";
 import {
   type Data3,
@@ -38,7 +39,7 @@ export const auctionnaireRouter = router({
   addAuction: publicProcedure
     .input(z.any())
     .mutation(async ({ input, ctx }) => {
-      const idAcution=input.id
+      const idAcution = input.id;
       const data1: Data1 = input.data1;
       const data3: Data3 = input.data3;
       const data4: Data4 = input.data4;
@@ -119,16 +120,16 @@ export const auctionnaireRouter = router({
         },
       });
     }),
-   updateAuction: publicProcedure
+  updateAuction: publicProcedure
     .input(z.any())
     .mutation(async ({ input, ctx }) => {
-      const auction:TAuction=input.auction
+      const auction: TAuction = input.auction;
       const data1: Data1 = input.data1;
       const data3: Data3 = input.data3;
       const data4: Data4 = input.data4;
-      delete input.data5.auction_id
+      delete input.data5.auction_id;
       const data5: Data5 = input.data5;
-     
+
       const data6: Data6 = input.data6;
 
       const processDate = new ProcessDate(auction.createAt);
@@ -138,58 +139,75 @@ export const auctionnaireRouter = router({
       const duration = processDate.getDuration(data6.duration);
       const end_date = processDate.endDate(duration);
 
-console.log("images",data6.images)
-const idsImage=data6.images.map((dim)=>dim.fileKey)
-const deleteImage=auction.images.filter((im)=>!idsImage.includes(im.fileKey))
-const idsImageAdd=auction.images.map((dim)=>dim.fileKey)
-const addImage=data6.images.filter((im)=>!idsImageAdd.includes(im.fileKey))
-const auction_id=auction.id
+      console.log("images", data6.images);
+      const idsImage = data6.images.map((dim) => dim.fileKey);
+      const deleteImage = auction.images.filter(
+        (im) => !idsImage.includes(im.fileKey)
+      );
+      const idsImageAdd = auction.images.map((dim) => dim.fileKey);
+      const addImage = data6.images.filter(
+        (im) => !idsImageAdd.includes(im.fileKey)
+      );
+      const auction_id = auction.id;
+      const state:AuctionState=input.state
       return ctx.prisma.$transaction([
-        ctx.prisma.auction.update({where:{  id:auction.id},data:{
-          name: data6.name!,
-          brand: data1.brand!,
-          model: data1.model!,
-          build_year: data1.buildYear!,
-          fuel: data1.fuel,
-          images:{
-            deleteMany:deleteImage,
-            createMany:{
-              data:addImage
-            }
+        ctx.prisma.auction.update({
+          where: { id: auction.id },
+          data: {
+            name: data6.name!,
+            brand: data1.brand!,
+            model: data1.model!,
+            state,
+            build_year: data1.buildYear!,
+            fuel: data1.fuel,
+            images: {
+              deleteMany: deleteImage,
+              createMany: {
+                data: addImage,
+              },
+            },
+            description: data6.description,
+            duration,
+            color: data1.color,
+            end_date,
+            expected_price: parseFloat(data6.expected_price!.toString()),
           },
-          description: data6.description,
-          duration,
-          color: data1.color,
-          end_date,
-          expected_price: parseFloat(data6.expected_price!.toString()),
-        }}),
-        ctx.prisma.auctionSpecs.update({where:{auction_id},data:{
-          carrosserie: data3.carrosserie,
-          cc: data3.cc!.toString(),
-          cv: data3.cv!.toString(),
-          co2: data3.co2!.toString(),
-          kilometrage: data3.kilometrage!.toString(),
-          version: data3.version,
-          transmission: data3.transmission,
-          doors: data3.doors,
-        }}),
-        ctx.prisma.auctionOptions.update({where:{auction_id},data:data5}),
-        ctx.prisma.auctionRating.update({where:{auction_id},data:data4}),
-        ctx.prisma.address.update({where:{auction_id},data:{
-          zipCode: data6.zipCode,
-          city: data6.city,
-          country: data6.country,
-          lat: data6.lat,
-          lon: data6.lon,
-          address: data6.address,
-        }}),
-      ])
-      
+        }),
+        ctx.prisma.auctionSpecs.update({
+          where: { auction_id },
+          data: {
+            carrosserie: data3.carrosserie,
+            cc: data3.cc!.toString(),
+            cv: data3.cv!.toString(),
+            co2: data3.co2!.toString(),
+            kilometrage: data3.kilometrage!.toString(),
+            version: data3.version,
+            transmission: data3.transmission,
+            doors: data3.doors,
+          },
+        }),
+        ctx.prisma.auctionOptions.update({
+          where: { auction_id },
+          data: data5,
+        }),
+        ctx.prisma.auctionRating.update({ where: { auction_id }, data: data4 }),
+        ctx.prisma.address.update({
+          where: { auction_id },
+          data: {
+            zipCode: data6.zipCode,
+            city: data6.city,
+            country: data6.country,
+            lat: data6.lat,
+            lon: data6.lon,
+            address: data6.address,
+          },
+        }),
+      ]);
     }),
   getAuctions: publicProcedure
     .input(
       z.object({
-        state:z.enum(['pending','published']).nullish(),
+        state: z.enum(["pending", "published"]).nullish(),
         filter: z.enum([
           "new",
           "trending",
@@ -201,8 +219,8 @@ const auction_id=auction.id
       })
     )
     .query(async ({ input, ctx }) => {
-     let condition={}
-     
+      let condition = {};
+
       switch (input.filter) {
         case "mine":
           const user = await ctx.prisma.user.findUnique({
@@ -211,22 +229,29 @@ const auction_id=auction.id
               favoris_auctions: true,
             },
           });
-          condition={id:{in:user?.favoris_auctions}}
+          condition = { id: { in: user?.favoris_auctions } };
           break;
-      
+
         default:
           break;
       }
-     
+
       return await ctx.prisma.auction.findMany({
-        where:{
+        where: {
           ...condition,
-          state:input.state|| undefined
+          state: input.state || undefined,
         },
-        include: { bids: true, images: true },
-        orderBy:{
-          createAt:'desc'
-        }
+        include: {
+          bids: true,
+          images: true,
+          specs: true,
+          rating: true,
+          options: true,
+          address: true,
+        },
+        orderBy: {
+          createAt: "desc",
+        },
       });
     }),
   getBids: publicProcedure
@@ -253,29 +278,30 @@ const auction_id=auction.id
           bidder: true,
           auction: { include: { auctionnaire: true, bids: true } },
         },
-        orderBy:{
-          createAt:'desc'
-        }
+        orderBy: {
+          createAt: "desc",
+        },
       });
     }),
-  getMyAuctions: publicProcedure.input(z.object({full:z.boolean().nullish()})).query(async ({input, ctx }) => {
-
-    let more
-    if(input.full){
-      more={specs:true,options:true,rating:true,address:true}
-    }
-    return await ctx.prisma.auction.findMany({
-      where: {
-        auctionnaire: {
-          email: ctx.session?.user?.email || "",
-        },
-      },
-      include: { bids: true, images: true,...more },
-      orderBy:{
-        createAt:'desc'
+  getMyAuctions: publicProcedure
+    .input(z.object({ full: z.boolean().nullish() }))
+    .query(async ({ input, ctx }) => {
+      let more;
+      if (input.full) {
+        more = { specs: true, options: true, rating: true, address: true };
       }
-    });
-  }),
+      return await ctx.prisma.auction.findMany({
+        where: {
+          auctionnaire: {
+            email: ctx.session?.user?.email || "",
+          },
+        },
+        include: { bids: true, images: true, ...more },
+        orderBy: {
+          createAt: "desc",
+        },
+      });
+    }),
   favorite: publicProcedure
     .input(
       z.object({ id: z.string(), action: z.enum(["add", "remove"]).nullable() })

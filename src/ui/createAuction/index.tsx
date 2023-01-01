@@ -15,7 +15,7 @@ import { BRAND } from "@data/internal";
 import { type FileType } from "rsuite/esm/Uploader";
 import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
-import { AssetImage, type FuelType } from "@prisma/client";
+import { AssetImage, type FuelType,type AuctionState } from "@prisma/client";
 import { Router, useRouter } from "next/router";
 import { TAuction } from "@model/type";
 import { ProcessDate } from "@utils/processDate";
@@ -81,7 +81,7 @@ export type Data6 = {
   lat?: number;
   lon?: number;
 };
-const CreateAuction = ({auction,isEdit,onCancel,id,refetch}:{auction?:TAuction,isEdit?:boolean,onCancel?:()=>void,id?:string,refetch?:()=>void}) => {
+const CreateAuction = ({auction,isEdit,onCancel,id,refetch,isAdmin}:{auction?:TAuction,isEdit?:boolean,onCancel?:()=>void,id?:string,refetch?:()=>void,isAdmin?:boolean}) => {
   const [edit,setedit]=useState(auction)
   const [step, setstep] = useState(1);
   const next = () => {
@@ -271,7 +271,7 @@ const router=useRouter()
     addAuction({data1,data3,data4,data5,data6})
   }
   }
-
+  const onPublish=({state}:{state:AuctionState})=>updateAuction({data1,data3,data4,data5,data6,auction:edit,state})
   const ref=useRef<HTMLLabelElement|null>(null)
   return (
     <>
@@ -330,6 +330,15 @@ const router=useRouter()
               })}
             >
               valider
+            </button>
+            <button
+            onClick={()=>onPublish({state:auction?.state=="pending"?"published":"pending"})}
+              className={cx("btn-warning btn-sm btn", {
+               
+                hidden: !isAdmin,
+              })}
+            >
+              {auction?.state=="published"? "pending":"publish"}
             </button>
           </div>
         </div>

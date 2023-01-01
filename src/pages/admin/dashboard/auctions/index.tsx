@@ -20,6 +20,7 @@ import { useState } from "react";
 
 import { Tag } from "antd";
 import Dashboard from "@ui/dashboard";
+import CreateAuction from "@ui/createAuction";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
   console.log(session?.user);
@@ -78,7 +79,7 @@ export const SwitcherAuctions = () => {
 };
 
 export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
-  const { data: auctions, isLoading } = trpc.auctionnaire.getAuctions.useQuery({
+  const { data: auctions, isLoading,refetch } = trpc.auctionnaire.getAuctions.useQuery({
     filter: "all",
     state,
   });
@@ -178,8 +179,11 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
       key: "actions",
       align: "center",
       fixed: "right",
-      render: (v) => (
+      render: (v,auction) => (
+        <>
+    
         <ActionTable
+          id={auction.id}
           onDelete={() => {
             console.log("delete");
           }}
@@ -190,12 +194,17 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
             console.log("view");
           }}
         />
+       
+        </>
       ),
     },
   ];
   
   const router = useRouter();
   return (
+    <>
+   {auctions?.map((auc,i)=>  <CreateAuction isAdmin key={i} auction={auc as TAuction}  isEdit={true} id={auc.id} refetch={refetch}/>)}
+  
     <Dashboard type="ADMIN">
       <BigTitle title="Management of auctions" />
       <SwitcherAuctions/>
@@ -208,5 +217,6 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
         />
       </div>
     </Dashboard>
+    </>
   );
 };
