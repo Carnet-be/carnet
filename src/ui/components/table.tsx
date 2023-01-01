@@ -63,8 +63,12 @@ export const RenderTimer=({date}:{date:Date})=>{
 
 export const ActionTable=({onView,onDelete,onEdit,id}:{id?:string,onView?:()=>void,onEdit?:()=>void,onDelete?:()=>void})=>{
   const ref=useRef<HTMLLabelElement>(null)
+  const refDelete=useRef<HTMLLabelElement>(null)
+
   return <div className="flex flex-row items-center justify-center gap-1">
+{id&&onDelete &&    <ConfirmationDelete id={id} onDelete={onDelete}/>}
    <label ref={ref} hidden={true}  htmlFor={id}></label>
+   <label ref={refDelete} hidden={true}  htmlFor={"delete"+id}></label>
   {onView&& <Tooltip title="View" className="flex flex-row items-center justify-center">
     <Button onClick={onView} shape="circle" icon={<ViewIcon className="text-lg"/>} />
   </Tooltip>}
@@ -77,10 +81,35 @@ export const ActionTable=({onView,onDelete,onEdit,id}:{id?:string,onView?:()=>vo
   </Tooltip>}
 
  {onDelete&&  <Tooltip title="Delete" className="flex flex-row items-center justify-center text-red-500">
-    <Button onClick={onDelete} shape="circle" icon={<DeleteIcon className="text-lg"/>} />
+    <Button onClick={()=>{
+      refDelete.current?.click()
+ 
+      }} shape="circle" icon={<DeleteIcon className="text-lg"/>} />
   </Tooltip>}
 
 </div>
+}
+
+
+export const ConfirmationDelete=({id,onDelete}:{id:string,onDelete:()=>void})=>{
+  const key="delete"
+  const ref=useRef<HTMLLabelElement>(null)
+  return <>
+  <input type="checkbox" id={key+id} className="modal-toggle" />
+<div className="modal">
+  <div className="modal-box">
+    <h3 className="font-bold text-lg  flex flex-col items-start">You are about to delete it</h3>
+    {/* <p className="py-4">You've been selected for a chance to get one year of subscription to use Wikipedia for free!</p> */}
+    <div className="modal-action flex flex-row justify-between items-center">
+    <label ref={ref} htmlFor={key+id} className="btn btn-ghost btn-sm">cancel</label>
+      <button onClick={()=>{
+        onDelete()
+        ref.current?.click()
+      }} className="btn btn-error btn-sm">delete</button>
+    </div>
+  </div>
+  </div>
+  </>
 }
 // /* eslint-disable @typescript-eslint/ban-types */
 // /* eslint-disable @typescript-eslint/no-explicit-any */

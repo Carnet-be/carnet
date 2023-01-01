@@ -100,7 +100,7 @@ const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
               label="Cardurant"
               onChange={(e) => setData({ ...data, fuel: e.target.value })}
             >
-              {["Gasoline", "Diesel ", "Electricity", "Hybrid"].map((f, i) => (
+              {["Gasoline", "Diesel", "Electricity", "Hybrid"].map((f, i) => (
                 <MenuItem key={i} value={f}>
                   {f}
                 </MenuItem>

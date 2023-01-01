@@ -11,6 +11,7 @@ import MyTable,{ActionTable} from '@ui/components/table';
 import type { User } from '@prisma/client';
 import type { ColumnsType } from 'antd/es/table';
 import { Tag } from 'antd';
+import toast from 'react-hot-toast';
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const session = await getServerAuthSession(ctx);
     console.log(session?.user);
@@ -28,7 +29,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
  const Auctioneers = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const {data:auctioneers,isLoading}=trpc.admin.getUsers.useQuery({type:"AUC"})
+  const {data:auctioneers,isLoading,refetch}=trpc.admin.getUsers.useQuery({type:"AUC"})
+  const { mutate: deleteUser } = trpc.global.delete.useMutation({
+    onMutate: () => {
+      toast.loading("In process");
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.dismiss();
+      toast.error("Faild to delete");
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success("Success");
+      refetch()
+    },
+  });
   const columns:ColumnsType<User>=[
     {
         title: "Id",
@@ -70,7 +86,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         key: "actions",
         align: "center",
         fixed:"right",
-        render: () => <ActionTable onDelete={()=>{console.log('delete')}} onEdit={()=>{console.log('edit')}} onView={()=>{console.log('view')}}/>,
+        render: (_,user) => <ActionTable id={user.id} onDelete={()=>{
+          deleteUser({id:user.id,table:"user"})
+        }} onEdit={()=>{console.log('edit')}} onView={()=>{console.log('view')}}/>,
       },
     ]
   return (

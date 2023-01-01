@@ -8,6 +8,7 @@ import { Auction } from "@prisma/client";
 import { TAuction } from "@model/type";
 import BigTitle from "@ui/components/bigTitle";
 import Price from "@ui/components/price";
+import App from "antd";
 import MyTable, {
   renderDate,
   RenderTimer,
@@ -21,6 +22,7 @@ import { useState } from "react";
 import { Tag } from "antd";
 import Dashboard from "@ui/dashboard";
 import CreateAuction from "@ui/createAuction";
+import { toast } from "react-hot-toast";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
   console.log(session?.user);
@@ -61,7 +63,7 @@ export const SwitcherAuctions = () => {
     },
   ];
   return (
-    <div className="tabs tabs-boxed gap-4 px-3 py-1 my-4">
+    <div className="tabs tabs-boxed my-4 gap-4 px-3 py-1">
       {routers.map((r, i) => {
         const isActive = router.pathname == r.route;
         return (
@@ -79,9 +81,28 @@ export const SwitcherAuctions = () => {
 };
 
 export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
-  const { data: auctions, isLoading,refetch } = trpc.auctionnaire.getAuctions.useQuery({
+  const {
+    data: auctions,
+    isLoading,
+    refetch,
+  } = trpc.auctionnaire.getAuctions.useQuery({
     filter: "all",
     state,
+  });
+  const { mutate: deleteAuction } = trpc.global.delete.useMutation({
+    onMutate: () => {
+      toast.loading("In process");
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.dismiss();
+      toast.error("Faild to delete");
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success("Success");
+      refetch()
+    },
   });
   const columns: ColumnsType<Auction> = [
     {
@@ -179,44 +200,52 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
       key: "actions",
       align: "center",
       fixed: "right",
-      render: (v,auction) => (
+      render: (v, auction) => (
         <>
-    
-        <ActionTable
-          id={auction.id}
-          onDelete={() => {
-            console.log("delete");
-          }}
-          onEdit={() => {
-            console.log("edit");
-          }}
-          onView={() => {
-            console.log("view");
-          }}
-        />
-       
+          <ActionTable
+            id={auction.id}
+            onDelete={() => {
+              deleteAuction({ id: auction.id, table: "auction" });
+            }}
+            onEdit={() => {
+              console.log("edit");
+            }}
+            onView={() => {
+              console.log("view");
+            }}
+          />
         </>
       ),
     },
   ];
-  
+
   const router = useRouter();
+
   return (
     <>
-   {auctions?.map((auc,i)=>  <CreateAuction isAdmin key={i} auction={auc as TAuction}  isEdit={true} id={auc.id} refetch={refetch}/>)}
-  
-    <Dashboard type="ADMIN">
-      <BigTitle title="Management of auctions" />
-      <SwitcherAuctions/>
-      <div className="mt-6 flex flex-col items-end w-full">
-        <MyTable
-          loading={isLoading}
-          data={auctions || []}
-         // options={{ scroll: { x: 1400 } }}
-          columns={columns as ColumnsType<TableType>}
+      {auctions?.map((auc, i) => (
+        <CreateAuction
+          isAdmin
+          key={i}
+          auction={auc as TAuction}
+          isEdit={true}
+          id={auc.id}
+          refetch={refetch}
         />
-      </div>
-    </Dashboard>
+      ))}
+
+      <Dashboard type="ADMIN">
+        <BigTitle title="Management of auctions" />
+        <SwitcherAuctions />
+        <div className="mt-6 flex w-full flex-col items-end">
+          <MyTable
+            loading={isLoading}
+            data={auctions || []}
+            // options={{ scroll: { x: 1400 } }}
+            columns={columns as ColumnsType<TableType>}
+          />
+        </div>
+      </Dashboard>
     </>
   );
 };
