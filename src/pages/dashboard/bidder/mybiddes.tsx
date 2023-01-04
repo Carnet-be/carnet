@@ -13,6 +13,7 @@ import BigTitle from "@ui/components/bigTitle"
 import type { ColumnsType } from "antd/es/table";
 import type { Auction } from "@prisma/client";
 import { Bid } from '@prisma/client';
+import Link from "next/link";
 
 
 const Auctions = () => {
@@ -35,6 +36,14 @@ const columns:ColumnsType<Bid>=[
         align: "center",
         render: (v) => renderDate(v),
       },
+      {
+        title: "Numero",
+        dataIndex: "numero",
+        key: "numero",
+        align:"right",
+        render: (v) => <Tag>2</Tag>,
+       
+      }, 
       // {
       //   title: "Bidder",
 
@@ -53,9 +62,9 @@ const columns:ColumnsType<Bid>=[
       dataIndex: "name",
       key: "name",
       render: (_,v) => <div className="flex flex-col gap-1">
-        <p>{(v as any).auction.name}
+        <Link href={"/dashboard/bidder/auction/"+(v as any).auction.id}>{(v as any).auction.name}
 
-        </p>
+        </Link>
         <span className="italic text-blue-400 text-[12px]">#{(v as any).auction.id}</span>
       </div>,
     },
@@ -83,7 +92,7 @@ const columns:ColumnsType<Bid>=[
  
   return (
     <Dashboard type="BID">
-        
+        <BigTitle title="My bids"/>
       <div className="flex flex-col">
       {/* <Select
       mode="multiple"

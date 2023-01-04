@@ -38,6 +38,8 @@ const WishList = () => {
   });
   return (
     <Dashboard type="BID">
+         <BigTitle title="My Wishlist"/>
+         <div className="h-[20px]"></div>
       {!auctions || auctions.length <= 0 ? (
        
           <div className="px-5 text-blue-800 bg-blue-100 border-blue-800 my-3 rounded-2xl border py-3 italic">
