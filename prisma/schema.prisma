@@ -173,6 +173,26 @@ model AssetImage{
   user_id String? @unique
   user User? @relation(fields: [user_id],references: [id],onDelete: Cascade)
 }
+
+
+model Brand{
+   id    Int   @id @default(autoincrement())
+   name String @unique
+   country String?
+   description String?
+   //
+   models Model[]
+}
+
+model Model{
+   id    Int   @id @default(autoincrement())
+   name String
+   year_build Int?
+   brand_id Int
+   brand Brand @relation(fields: [brand_id],references: [id],onDelete: Cascade)
+
+
+}
 //////ENUM///////
 enum UserType {
   BID

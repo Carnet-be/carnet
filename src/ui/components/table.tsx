@@ -13,7 +13,7 @@ interface Props<T>{
     loading:boolean,
     options?:Object
 }
-export type TableType=Auction|Bid|User
+export type TableType=Auction|Bid|User|Brand| Model
 const MyTable: React.FC<Props<TableType>> = ({columns,data,loading,options}) => <Table 
    size='small'
    className='w-full'
@@ -121,7 +121,7 @@ export const ConfirmationDelete=({id,onDelete}:{id:string,onDelete:()=>void})=>{
 // import { useEffect } from 'react';
 // import type{ TAuction } from '@model/type';
 import { TAuction } from '@model/type';
-import type { Auction, User } from '@prisma/client';
+import type { Auction, Brand, Model, User } from '@prisma/client';
 import moment from 'moment';
 import { executeEverySecond } from './countDown';
 import type { Bid } from '@prisma/client';

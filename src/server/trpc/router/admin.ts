@@ -10,6 +10,16 @@ export const ZStaff = z.object({
 });
 
 export const adminRouter = router({
+  getBrand:publicProcedure.query(async({ctx})=>{
+    return await ctx.prisma.brand.findMany({
+      include:{models:{select:{id:true}}}
+    })
+  }),
+  getModel:publicProcedure.query(async({ctx})=>{
+    return await ctx.prisma.model.findMany({
+      include:{brand:true}
+    })
+  }),
    getStaff:publicProcedure.query(async({ctx})=>{
         const {prisma}=ctx
         
