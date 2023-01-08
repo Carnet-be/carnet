@@ -53,6 +53,7 @@
     "rsuite": "^5.23.0",
     "rxjs": "^7.8.0",
     "superjson": "1.9.1",
+    "xlsx": "^0.18.5",
     "zod": "^3.18.0"
   },
   "devDependencies": {

@@ -1,9 +1,9 @@
 import {BsFillPeopleFill, BsPerson, BsTelephone,BsFillStarFill} from 'react-icons/bs'
 import {HiOutlineMail} from 'react-icons/hi'
 import {MdOutlinePassword,MdDelete,MdEdit,MdDashboard,MdRemove,MdExpandMore,MdAddPhotoAlternate,MdOutlineTimer,MdOutlineArrowForwardIos,MdOutlineArrowBackIos} from 'react-icons/md'
-import {BiBuildings,BiSupport,BiDollarCircle} from "react-icons/bi"
+import {BiBuildings,BiSupport,BiDollarCircle, BiImport} from "react-icons/bi"
 import {AiTwotoneSetting,AiOutlineHeart,AiFillHeart,AiOutlineUserDelete,AiFillCheckCircle} from "react-icons/ai"
-import {RiNotification2Line,RiAuctionFill} from 'react-icons/ri'
+import {RiNotification2Line,RiAuctionFill, RiFileDownloadLine} from 'react-icons/ri'
 import {IoMdAdd,IoIosLogOut,IoMdArrowRoundBack,IoIosArrowDroprightCircle,IoIosArrowDropleftCircle} from 'react-icons/io'
 import {CgMoreVertical} from 'react-icons/cg'
 import {CiSettings} from "react-icons/ci"
@@ -42,3 +42,4 @@ export const MoinsIcon=MdRemove
 export const ViewIcon=GrView
 export const EditIcon=MdEdit
 export const DeleteIcon=MdDelete
+export const InportIcon=RiFileDownloadLine
