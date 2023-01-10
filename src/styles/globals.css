@@ -20,7 +20,7 @@
     @apply text-xl;
   }
 
-  input {
+  input,textarea {
     @apply outline-none !important;
   }
   .mesure{

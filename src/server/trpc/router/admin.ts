@@ -20,6 +20,9 @@ export const adminRouter = router({
   getBrand: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.brand.findMany({
       include: { models: { select: { id: true } } },
+      orderBy:{
+        id:'desc'
+      }
     });
   }),
   addBrand: publicProcedure
@@ -38,7 +41,10 @@ export const adminRouter = router({
           brands.push(b);
         }
       }
-      return await ctx.prisma.brand.createMany(brands)
+      console.log(brands)
+      return await ctx.prisma.brand.createMany({
+        data:brands,skipDuplicates:false
+      })
     }),
   getModel: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.model.findMany({
