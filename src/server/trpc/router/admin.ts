@@ -55,6 +55,24 @@ export const adminRouter = router({
         data:brands,skipDuplicates:false
       })
     }),
+    updateBrand: publicProcedure
+    .input(
+     z.object(
+     {
+      data:ZBrand,
+      id:z.number()
+     }
+     )
+    )
+    .mutation(async ({ input, ctx }) => {
+      
+      return await ctx.prisma.brand.update({
+        where:{
+          id:input.id
+        },
+        data:input.data
+      })
+    }),
   getModel: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.model.findMany({
       include: { brand: true },

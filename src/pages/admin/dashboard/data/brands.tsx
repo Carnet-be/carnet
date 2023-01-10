@@ -1,7 +1,7 @@
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import type { InferGetServerSidePropsType } from "next";
 import { type GetServerSideProps } from "next";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Dashboard from "@ui/dashboard";
 import * as XLSX from "xlsx";
 
@@ -19,6 +19,7 @@ import cx from "classnames";
 import { SubmitHandler, useForm } from "react-hook-form";
 import TextArea from "antd/lib/input/TextArea";
 import { TableRowSelection } from "antd/es/table/interface";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -39,6 +40,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 const Brands = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
+  const [edit,setedit]=useState<Brand|undefined>(undefined)
+  const [open, setOpen] = useState<boolean | undefined>(false);
   const [modal, contextHolder] = Modal.useModal();
   const { data: brands, isLoading, refetch } = trpc.admin.getBrand.useQuery();
   const { mutate: addBrand, isLoading: isAdding } =
@@ -53,7 +56,24 @@ const Brands = (
       },
       onSuccess: () => {
         toast.success("Brand(s) added");
-        setOpen(false);
+        setOpen(false)
+        refetch();
+      },
+    });
+   
+    const { mutate: updateBrand } =
+    trpc.admin.updateBrand.useMutation({
+      onError: (err) => {
+        console.log("error message", err.message);
+        if (err.message.includes("Unique constraint failed on the fields")) {
+          toast.error("Brand already exists");
+        } else {
+          toast.error("Error encountered");
+        }
+      },
+      onSuccess: () => {
+        toast.success("Brand updated");
+        setedit(undefined);
         refetch();
       },
     });
@@ -121,7 +141,7 @@ const Brands = (
           id={user.id.toString()}
           onDelete={() => removeBrand([user.id])}
           onEdit={() => {
-            console.log("edit");
+            setedit(user)
           }}
         />
       ),
@@ -187,7 +207,7 @@ const Brands = (
 
     selections: [Table.SELECTION_ALL],
   };
-  const [open, setOpen] = useState<boolean | undefined>(false);
+
   return (
     <Dashboard type="ADMIN">
       <SwitcherData />
@@ -209,7 +229,7 @@ const Brands = (
           <button
             onClick={onPickfile}
             className={cx("btn-sm btn items-center gap-2", {
-              loading: isAdding,
+           
             })}
           >
             <input
@@ -235,9 +255,10 @@ const Brands = (
       </div>
       <ModelBrand
         open={open == undefined ? false : open}
-        setOpen={(e) => setOpen(e)}
+        onClose={() => setOpen(false)}
         onValide={(b: FBrand) => addBrand({ init: [], brands: [b] })}
       />
+      <ModelBrandUpdate open={edit!=undefined}  brand={edit}  onClose={() => setedit(undefined)}   onValide={(b: FBrand) => updateBrand({id:edit?.id!,data:b})}/>
     </Dashboard>
   );
 };
@@ -248,22 +269,20 @@ type ModelBrandProps = {
   onValide: (e: FBrand) => void;
   brand?: Brand;
   open: boolean;
-  setOpen: (e: boolean | undefined) => void;
+
+  onClose: () => void;
 };
 type FBrand = {
   name: string;
   country?: string;
   description?: string;
 };
-const ModelBrand = ({ brand, open, setOpen, onValide }: ModelBrandProps) => {
+const ModelBrand = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
   const { register, handleSubmit, watch, formState, getValues } =
     useForm<FBrand>({});
 
   const { errors } = formState;
 
-  const handleCancel = () => {
-    setOpen(undefined);
-  };
 
   const onSubmit: SubmitHandler<FBrand> = (data) => onValide(data);
 
@@ -273,7 +292,7 @@ const ModelBrand = ({ brand, open, setOpen, onValide }: ModelBrandProps) => {
         open={open}
         destroyOnClose={true}
         title="Brand"
-        onCancel={handleCancel}
+        onCancel={onClose}
         footer={[
           <button
             onClick={() => onValide(getValues())}
@@ -282,6 +301,86 @@ const ModelBrand = ({ brand, open, setOpen, onValide }: ModelBrandProps) => {
             })}
           >
             add
+          </button>,
+        ]}
+      >
+        <div className="flex flex-col gap-3 py-3">
+          <input
+            type="text"
+            {...register("name", { required: true })}
+            placeholder="Name"
+            className="input-bordered input w-full "
+          />
+          <input
+            type="text"
+            {...register("country")}
+            placeholder="Country"
+            className="input-bordered input w-full "
+          />
+
+          <textarea
+            className="textarea-bordered textarea w-full"
+            {...register("description")}
+            placeholder="Description"
+          ></textarea>
+        </div>
+      </Modal>
+    </>
+  );
+};
+
+
+const ModelBrandUpdate = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
+  const  defaultValues= {
+    name: brand?.name,
+    country: brand?.country!,
+    description: brand?.description!,
+  }
+  const { register, watch, formState, getValues,setValue } =
+    useForm<FBrand>({
+      defaultValues
+    });
+
+  const { errors } = formState;
+
+useEffect(() => {
+  if(brand){
+    console.log('brand', brand)
+    setValue("name",brand.name)
+    setValue("country",brand.country||undefined)
+    setValue("description",brand.description||undefined)
+  }
+
+}, [brand])
+
+
+  const onSubmit: SubmitHandler<FBrand> = (data) => onValide(data);
+const isEditable=()=>{
+  if(watch("name")!==defaultValues.name){
+    return true
+  }
+  if(watch("country")!==defaultValues.country){
+    return true
+  }
+  if(watch("description")!==defaultValues.description){
+    return true
+  }
+}
+  return (
+    <>
+      <Modal
+        open={open}
+        destroyOnClose={true}
+        title="Brand"
+        onCancel={onClose}
+        footer={[
+          <button
+            onClick={() => onValide(getValues())}
+            className={cx("btn-primary btn-sm btn", {
+              "btn-disabled": !isEditable(),
+            })}
+          >
+            update
           </button>,
         ]}
       >

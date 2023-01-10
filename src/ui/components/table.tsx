@@ -11,6 +11,7 @@ import { TableRowSelection } from "antd/es/table/interface";
 import moment from "moment";
 import { User } from "next-auth";
 import { executeEverySecond } from "./countDown";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface Props<T> {
   columns: ColumnsType<T>;
@@ -27,10 +28,11 @@ const MyTable: React.FC<Props<TableType>> = ({
   options,
   rowSelection,
 }) => {
- 
+  const [parent] = useAutoAnimate(/* optional config */)
   return (
     <Table
       size="small"
+     
       className="w-full"
       rowSelection={rowSelection}
       rowKey={(record) => record.id}
