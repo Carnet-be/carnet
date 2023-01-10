@@ -25,6 +25,15 @@ export const adminRouter = router({
       }
     });
   }),
+  removeBrand: publicProcedure.input(z.array(z.number())).mutation(async ({ input,ctx }) => {
+    return await ctx.prisma.brand.deleteMany({
+      where: {
+        id: {
+          in: input,
+          },
+      }}
+    )
+  }),
   addBrand: publicProcedure
     .input(
      z.object(
