@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import type { InferGetServerSidePropsType } from "next";
 import { type GetServerSideProps } from "next";
@@ -258,7 +259,7 @@ const Brands = (
         onClose={() => setOpen(false)}
         onValide={(b: FBrand) => addBrand({ init: [], brands: [b] })}
       />
-      <ModelBrandUpdate open={edit!=undefined}  brand={edit}  onClose={() => setedit(undefined)}   onValide={(b: FBrand) => updateBrand({id:edit?.id!,data:b})}/>
+      <ModelBrandUpdate open={edit!=undefined}  brand={edit}  onClose={() => setedit(undefined)}   onValide={(b: FBrand) => updateBrand({id:edit?.id||1,data:b})}/>
     </Dashboard>
   );
 };
@@ -295,6 +296,7 @@ const ModelBrand = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
         onCancel={onClose}
         footer={[
           <button
+          key={"ok"}
             onClick={() => onValide(getValues())}
             className={cx("btn-primary btn-sm btn", {
               "btn-disabled": !watch("name"),
@@ -333,8 +335,8 @@ const ModelBrand = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
 const ModelBrandUpdate = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
   const  defaultValues= {
     name: brand?.name,
-    country: brand?.country!,
-    description: brand?.description!,
+    country: brand?.country||"",
+    description: brand?.description||"",
   }
   const { register, watch, formState, getValues,setValue } =
     useForm<FBrand>({
@@ -375,6 +377,7 @@ const isEditable=()=>{
         onCancel={onClose}
         footer={[
           <button
+          key={"ok"}
             onClick={() => onValide(getValues())}
             className={cx("btn-primary btn-sm btn", {
               "btn-disabled": !isEditable(),

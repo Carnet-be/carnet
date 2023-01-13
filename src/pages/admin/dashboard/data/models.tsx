@@ -1,24 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import type { InferGetServerSidePropsType } from "next";
 import { type GetServerSideProps } from "next";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Dashboard from "@ui/dashboard";
 import * as XLSX from "xlsx";
 
 import { trpc } from "@utils/trpc";
-import BigTitle from "@ui/components/bigTitle";
 import type { TableType } from "@ui/components/table";
-import MyTable, { ActionTable } from "@ui/components/table";
-import type { Brand, Model, User } from "@prisma/client";
+import MyTable from "@ui/components/table";
+import type { Brand, Model } from "@prisma/client";
 import type { ColumnsType } from "antd/es/table";
 import { Button, Input, Modal, Table, Tag } from "antd";
 import toast from "react-hot-toast";
 import { SwitcherData } from ".";
 import { DeleteIcon, InportIcon } from "@ui/icons";
 import cx from "classnames";
-import { SubmitHandler, useForm } from "react-hook-form";
-import TextArea from "antd/lib/input/TextArea";
-import { TableRowSelection } from "antd/es/table/interface";
+import { type TableRowSelection } from "antd/es/table/interface";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -38,30 +36,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 const Models = (
-  props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  const [edit, setedit] = useState<Model | undefined>(undefined);
-  const [open, setOpen] = useState<boolean | undefined>(false);
-  const [modal, contextHolder] = Modal.useModal();
 
   const { data: models, isLoading, refetch } = trpc.admin.getModel.useQuery();
 
-  const { mutate: updateBrand } = trpc.admin.updateBrand.useMutation({
-    onError: (err) => {
-      console.log("error message", err.message);
-      if (err.message.includes("Unique constraint failed on the fields")) {
-        toast.error("Brand already exists");
-      } else {
-        toast.error("Error encountered");
-      }
-    },
-    onSuccess: () => {
-      toast.success("Brand updated");
-      setedit(undefined);
-      refetch();
-    },
-  });
-  const { mutate: removeBrand, isLoading: isRemoving } =
+  const { mutate: removeBrand } =
     trpc.admin.removeModel.useMutation({
       onError: (err) => {
         console.log("error message", err.message);
@@ -73,7 +52,6 @@ const Models = (
         refetch();
       },
     });
-  const fileRef = useRef<HTMLInputElement>(null);
   const columns: ColumnsType<Model> = [
     {
       title: "Id",
@@ -128,7 +106,6 @@ const Models = (
     //   ),
     // },
   ];
-  const onPickfile = () => fileRef.current?.click();
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -206,16 +183,13 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  const { data: brands, isLoading: isGettingBrands } =
+  const { data: brands } =
     trpc.admin.getBrand.useQuery();
-  const { mutate: addModel, isLoading: isAdding } =
+  const { mutate: addModel } =
     trpc.admin.addModel.useMutation({
       onError: (err) => {
         console.log("error message", err.message);
@@ -259,7 +233,7 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
           console.log(data);
     
     
-          addModel({ brandId:brandSelected?.id!,models: lines });
+          addModel({ brandId:brandSelected?.id||1,models: lines });
         }
       };
       reader.readAsBinaryString(file);
@@ -291,6 +265,7 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
          cancel
         </Button>,
           <Button
+          key={"ok"}
           type="primary"
             onClick={onPickfile}
             disabled={!brandSelected}
@@ -313,6 +288,7 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
           {brands&& brands.filter((b)=>b.name.includes(search)).map((b, i) => {
               return (
                 <Tag
+                key={i}
                   onClick={() => setbrandSelected(b)}
                   color={
                     brandSelected && brandSelected.id == b.id
@@ -325,150 +301,6 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
                 </Tag>
               );
             })}
-        </div>
-      </Modal>
-    </>
-  );
-};
-
-type ModelBrandProps = {
-  onValide: (e: FBrand) => void;
-  brand?: Brand;
-  open: boolean;
-
-  onClose: () => void;
-};
-type FBrand = {
-  name: string;
-  country?: string;
-  description?: string;
-};
-const ModelBrand = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
-  const { register, handleSubmit, watch, formState, getValues } =
-    useForm<FBrand>({});
-
-  const { errors } = formState;
-
-  const onSubmit: SubmitHandler<FBrand> = (data) => onValide(data);
-
-  return (
-    <>
-      <Modal
-        open={open}
-        destroyOnClose={true}
-        title="Brand"
-        onCancel={onClose}
-        footer={[
-          <button
-            onClick={() => onValide(getValues())}
-            className={cx("btn-primary btn-sm btn", {
-              "btn-disabled": !watch("name"),
-            })}
-          >
-            add
-          </button>,
-        ]}
-      >
-        <div className="flex flex-col gap-3 py-3">
-          <input
-            type="text"
-            {...register("name", { required: true })}
-            placeholder="Name"
-            className="input-bordered input w-full "
-          />
-          <input
-            type="text"
-            {...register("country")}
-            placeholder="Country"
-            className="input-bordered input w-full "
-          />
-
-          <textarea
-            className="textarea-bordered textarea w-full"
-            {...register("description")}
-            placeholder="Description"
-          ></textarea>
-        </div>
-      </Modal>
-    </>
-  );
-};
-
-const ModelBrandUpdate = ({
-  brand,
-  open,
-  onClose,
-  onValide,
-}: ModelBrandProps) => {
-  const defaultValues = {
-    name: brand?.name,
-    country: brand?.country!,
-    description: brand?.description!,
-  };
-  const { register, watch, formState, getValues, setValue } = useForm<FBrand>({
-    defaultValues,
-  });
-
-  const { errors } = formState;
-
-  useEffect(() => {
-    if (brand) {
-      console.log("brand", brand);
-      setValue("name", brand.name);
-      setValue("country", brand.country || undefined);
-      setValue("description", brand.description || undefined);
-    }
-  }, [brand]);
-
-  const onSubmit: SubmitHandler<FBrand> = (data) => onValide(data);
-  const isEditable = () => {
-    if (watch("name") !== defaultValues.name) {
-      return true;
-    }
-    if (watch("country") !== defaultValues.country) {
-      return true;
-    }
-    if (watch("description") !== defaultValues.description) {
-      return true;
-    }
-  };
-  return (
-    <>
-      <Modal
-        open={open}
-        destroyOnClose={true}
-        title="Brand"
-        onCancel={onClose}
-        footer={[
-          <button
-            onClick={() => onValide(getValues())}
-            className={cx("btn-primary btn-sm btn", {
-              "btn-disabled": !isEditable(),
-            })}
-          >
-            update
-          </button>,
-        ]}
-      >
-        <div className="flex flex-col gap-3 py-3">
-          <input
-            type="text"
-            {...register("name", { required: true })}
-            placeholder="Name"
-            className="input-bordered input w-full "
-          />
-          <input
-            type="text"
-            {...register("country")}
-            placeholder="Country"
-            className="input-bordered input w-full "
-          />
-
-          <textarea
-            className="textarea-bordered textarea w-full"
-            {...register("description")}
-            placeholder="Description"
-          ></textarea>
         </div>
       </Modal>
     </>
