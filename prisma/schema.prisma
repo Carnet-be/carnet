@@ -187,10 +187,11 @@ model Brand{
 model Model{
    id    Int   @id @default(autoincrement())
    name String
-   year_build Int?
+   year Int?
+   description String?
    brand_id Int
    brand Brand @relation(fields: [brand_id],references: [id],onDelete: Cascade)
-
+   @@unique([name, year])
 
 }
 //////ENUM///////

@@ -15,7 +15,12 @@ const ZBrand=z.object({
     country: z.string().optional(),
     description: z.string().optional(),
   })
-
+  const ZModel=z.object({
+    id:z.number().optional(),
+    name: z.string(),
+    year: z.number(),
+    description: z.string().optional(),
+  })
 export const adminRouter = router({
   getBrand: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.brand.findMany({
@@ -78,6 +83,22 @@ export const adminRouter = router({
       include: { brand: true },
     });
   }),
+  addModel: publicProcedure
+    .input(
+     z.object(
+      {
+        brandId:z.number(),
+        models:z.array(ZModel)
+      }
+     )
+    )
+    .mutation(async ({ input, ctx }) => {
+      
+      return await ctx.prisma.model.createMany({
+        data:input.models.map((m)=>({...m,brand_id:input.brandId}))
+      })
+    }),
+ 
   getStaff: publicProcedure.query(async ({ ctx }) => {
     const { prisma } = ctx;
 

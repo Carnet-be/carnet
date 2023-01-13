@@ -32,7 +32,7 @@ const MyTable: React.FC<Props<TableType>> = ({
   return (
     <Table
       size="small"
-     
+      
       className="w-full"
       rowSelection={rowSelection}
       rowKey={(record) => record.id}
