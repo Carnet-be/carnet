@@ -39,6 +39,15 @@ export const adminRouter = router({
       }}
     )
   }),
+  removeModel: publicProcedure.input(z.array(z.number())).mutation(async ({ input,ctx }) => {
+    return await ctx.prisma.model.deleteMany({
+      where: {
+        id: {
+          in: input,
+          },
+      }}
+    )
+  }),
   addBrand: publicProcedure
     .input(
      z.object(
@@ -80,7 +89,9 @@ export const adminRouter = router({
     }),
   getModel: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.model.findMany({
-      include: { brand: true },
+      include: { brand: true, },   orderBy:{
+        id:'desc'
+      }
     });
   }),
   addModel: publicProcedure

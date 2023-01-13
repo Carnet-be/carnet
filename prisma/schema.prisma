@@ -191,7 +191,7 @@ model Model{
    description String?
    brand_id Int
    brand Brand @relation(fields: [brand_id],references: [id],onDelete: Cascade)
-   @@unique([name, year])
+   @@unique([name, year,brand_id])
 
 }
 //////ENUM///////

@@ -62,7 +62,7 @@ const Models = (
     },
   });
   const { mutate: removeBrand, isLoading: isRemoving } =
-    trpc.admin.removeBrand.useMutation({
+    trpc.admin.removeModel.useMutation({
       onError: (err) => {
         console.log("error message", err.message);
         toast.error("Error encountered");
@@ -77,7 +77,7 @@ const Models = (
   const columns: ColumnsType<Model> = [
     {
       title: "Id",
-      width: "50px",
+      width: "100px",
       dataIndex: "id",
       key: "id",
       render: (v) => (
@@ -87,7 +87,7 @@ const Models = (
     {
       title: "Name",
       dataIndex: "name",
-      width: "150px",
+      width: "300px",
       key: "name",
       render: (v) => <h6>{v}</h6>,
     },
@@ -96,6 +96,7 @@ const Models = (
       dataIndex: "year",
       width: "150px",
       key: "year",
+      align:"center",
       render: (v) => <Tag>{v}</Tag>,
     },
     {
@@ -109,23 +110,23 @@ const Models = (
         </div>
       ),
     },
-    {
-      title: "Actions",
+    // {
+    //   title: "Actions",
 
-      dataIndex: "actions",
-      key: "actions",
-      align: "center",
-      fixed: "right",
-      render: (_, user) => (
-        <ActionTable
-          id={user.id.toString()}
-          onDelete={() => removeBrand([user.id])}
-          onEdit={() => {
-            setedit(user);
-          }}
-        />
-      ),
-    },
+    //   dataIndex: "actions",
+    //   key: "actions",
+    //   align: "center",
+    //   fixed: "right",
+    //   render: (_, user) => (
+    //     <ActionTable
+    //       id={user.id.toString()}
+    //       onDelete={() => removeBrand([user.id])}
+    //       // onEdit={() => {
+    //       //   setedit(user);
+    //       // }}
+    //     />
+    //   ),
+    // },
   ];
   const onPickfile = () => fileRef.current?.click();
 
@@ -269,7 +270,7 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
   );
   const [search, setsearch] = useState("")
   const onPickfile = () => fileRef.current?.click();
-
+  const [parent]=useAutoAnimate()
   return (
     <>
       <button
@@ -308,7 +309,7 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
         
       >
         <Input value={search} onChange={(e)=>setsearch(e.target.value)} width={"200px"} placeholder="Search" />
-        <div className="mx-auto my-3 flex w-[90%]  flex-wrap items-center gap-3 border-dashed">
+        <div ref={parent as any} className="mx-auto my-3 flex w-[90%]  flex-wrap items-center gap-3 border-dashed">
           {brands&& brands.filter((b)=>b.name.includes(search)).map((b, i) => {
               return (
                 <Tag
