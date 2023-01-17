@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
 import { ColumnsType } from "antd/es/table";
-import { Auction } from "@prisma/client";
+import { Auction, Bid } from "@prisma/client";
 import { TAuction } from "@model/type";
 import BigTitle from "@ui/components/bigTitle";
 import Price from "@ui/components/price";
@@ -89,6 +91,9 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
     filter: "all",
     state,
   });
+  const { data: bids,isLoading:isLoadingBids } = trpc.auctionnaire.getBids.useQuery({
+    filter: "all",
+  });
   const { mutate: deleteAuction } = trpc.global.delete.useMutation({
     onMutate: () => {
       toast.loading("In process");
@@ -104,6 +109,52 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
       refetch()
     },
   });
+  const expandedColumns =(record: Auction)=>{
+    const columns:ColumnsType<Bid>=[
+      {
+          title: "Id",
+          width:"150px",
+          dataIndex: "id",
+          key: "id",
+          render: (v) => <span className="italic text-primary text-[12px]">#{v}</span>,
+        },
+        {
+          title: "Date",
+          width:"150px",
+          dataIndex: "createAt",
+          key: "createAt",
+          align: "center",
+          render: (v) => renderDate(v),
+        },
+        {
+          title: "Bidder",
+  
+    
+          dataIndex: "bidder",
+          key: "bidder",
+          render: (_,v) => <div>
+              <h6>{(v as any).bidder.username}</h6>
+              <span className="italic text-primary text-[12px]">#{(v as any).bidder.id}</span>
+          </div>,
+        },
+      
+  
+      
+      {
+        title: "Value",
+        dataIndex: "montant",
+       
+        key: "montant",
+        render: (v) => <Price value={v} textStyle="text-sm leading-4" />,
+      },
+      
+      
+    ]
+    return  <MyTable
+    loading={isLoadingBids}
+    columns={columns as ColumnsType<TableType>}
+    data={(bids || []).map((b,i)=>({...b,key:b.auction_id})).filter((f)=>f.auction_id==record.id)} options={{pagination:false}}  />;
+  }
   const columns: ColumnsType<Auction> = [
     {
       title: "Id",
@@ -126,7 +177,7 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
     {
       title: "Name",
 
-      className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
+     // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
       dataIndex: "name",
       key: "name",
     },
@@ -240,9 +291,10 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
         <div className="mt-6 flex w-full flex-col items-end">
           <MyTable
             loading={isLoading}
-            data={auctions || []}
+            data={(auctions || []).map((auc) => ({ ...auc, key: auc.id }))}
             // options={{ scroll: { x: 1400 } }}
             columns={columns as ColumnsType<TableType>}
+            options={{expandedRowRender:expandedColumns}}
           />
         </div>
       </Dashboard>
