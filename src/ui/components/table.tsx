@@ -46,8 +46,8 @@ const MyTable: React.FC<Props<TableType>> = ({
 
 export default MyTable;
 
-export const renderDate = (date: string, color = "blue") => {
-  return <Tag color="processing">{moment(date).format("L")}</Tag>; // <div className={cx("rounded-md px-2 py-[1px] flex justify-center",`bg-${color}-100 border border-${color}-500 text-${color}-500`)}>{moment(date).format('L')}</div>
+export const renderDate = (date: string, format="L") => {
+  return <Tag color="processing">{moment(date).format(format)}</Tag>; // <div className={cx("rounded-md px-2 py-[1px] flex justify-center",`bg-${color}-100 border border-${color}-500 text-${color}-500`)}>{moment(date).format('L')}</div>
 };
 
 export const RenderTimer = ({ date }: { date: Date }) => {

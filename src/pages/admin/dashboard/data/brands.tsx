@@ -21,7 +21,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import TextArea from "antd/lib/input/TextArea";
 import { TableRowSelection } from "antd/es/table/interface";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-
+import Image from "next/image";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
   console.log(session?.user);
@@ -100,6 +100,13 @@ const Brands = (
       render: (v) => (
         <span className="text-[12px] italic text-primary">#{v}</span>
       ),
+    },
+    {
+      title: "Logo",
+      width: "80px",
+      dataIndex: "logo",
+      key: "logo",
+      render: (_,v) => <Image  src={"/assets/Cars/"+v.name+".svg"} alt="logo" width={60} height={60}/>,
     },
     {
       title: "Name",

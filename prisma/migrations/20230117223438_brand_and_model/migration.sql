@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Bid" ADD COLUMN     "numero" INTEGER NOT NULL DEFAULT 1;

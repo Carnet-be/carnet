@@ -25,6 +25,7 @@ import { Tag } from "antd";
 import Dashboard from "@ui/dashboard";
 import CreateAuction from "@ui/createAuction";
 import { toast } from "react-hot-toast";
+import Image from "next/image";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
   console.log(session?.user);
@@ -112,6 +113,16 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
   const expandedColumns =(record: Auction)=>{
     const columns:ColumnsType<Bid>=[
       {
+        title: "Numero",
+        width: "80px",
+        dataIndex: "numero",
+        key: "numero",
+       align:"center",
+        render: (v) => <div className="rounded-full w-[20px] h-[20px] bg-primary/60 flex items-center justify-center text-white mx-auto">
+          <h6>{v}</h6>
+        </div>,
+      },
+      {
           title: "Id",
           width:"150px",
           dataIndex: "id",
@@ -124,7 +135,7 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
           dataIndex: "createAt",
           key: "createAt",
           align: "center",
-          render: (v) => renderDate(v),
+          render: (v) => renderDate(v, "DD/MM/YYYY HH:mm:ss"),
         },
         {
           title: "Bidder",
@@ -156,6 +167,7 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
     data={(bids || []).map((b,i)=>({...b,key:b.auction_id})).filter((f)=>f.auction_id==record.id)} options={{pagination:false}}  />;
   }
   const columns: ColumnsType<Auction> = [
+ 
     {
       title: "Id",
       width: "80px",
@@ -165,6 +177,7 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
         <span className="text-[12px] italic text-primary">#{v}</span>
       ),
     },
+  
     {
       title: "Date pub",
 
@@ -172,7 +185,7 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
       key: "createAt",
       width: "100px",
       align: "center",
-      render: (v) => renderDate(v),
+      render: (v) => renderDate(v, "DD/MM/YYYY HH:mm"),
     },
     {
       title: "Name",
