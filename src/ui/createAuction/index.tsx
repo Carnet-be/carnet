@@ -15,11 +15,10 @@ import { BRAND } from "@data/internal";
 import { type FileType } from "rsuite/esm/Uploader";
 import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
-import { AssetImage, type FuelType,type AuctionState } from "@prisma/client";
+import { AssetImage, type FuelType, type AuctionState } from "@prisma/client";
 import { Router, useRouter } from "next/router";
 import { TAuction } from "@model/type";
 import { ProcessDate } from "@utils/processDate";
-
 
 export type Data1 = {
   brand?: number;
@@ -81,8 +80,22 @@ export type Data6 = {
   lat?: number;
   lon?: number;
 };
-const CreateAuction = ({auction,isEdit,onCancel,id,refetch,isAdmin}:{auction?:TAuction,isEdit?:boolean,onCancel?:()=>void,id?:string,refetch?:()=>void,isAdmin?:boolean}) => {
-  const [edit,setedit]=useState(auction)
+const CreateAuction = ({
+  auction,
+  isEdit,
+  onCancel,
+  id,
+  refetch,
+  isAdmin,
+}: {
+  auction?: TAuction;
+  isEdit?: boolean;
+  onCancel?: () => void;
+  id?: string;
+  refetch?: () => void;
+  isAdmin?: boolean;
+}) => {
+  const [edit, setedit] = useState(auction);
   const [step, setstep] = useState(1);
   const next = () => {
     let nextStep = step + 1;
@@ -127,62 +140,88 @@ const CreateAuction = ({auction,isEdit,onCancel,id,refetch,isAdmin}:{auction?:TA
   });
 
   const [data6, setdata6] = useState<Data6>({ images: [], duration: "3 days" });
-  useEffect(()=>{
-    console.log("update editable auction")
-    if(edit){
-      console.log('isEdit')
-      const {brand,build_year,fuel,name,model,color,specs,address,options,rating,images,expected_price}=edit
-      const d1:Data1={
+  useEffect(() => {
+    console.log("update editable auction");
+    if (edit) {
+      console.log("isEdit");
+      const {
         brand,
-        model,buildYear:build_year,color:color||undefined,
-        fuel
-      }
-      const {carrosserie,cc,co2,cv,kilometrage,doors,version,transmission}=specs
-      const d3:Data3={
-        carrosserie:carrosserie||undefined,
-        transmission:transmission||undefined,
-        cc:parseInt(cc||"")||undefined,
-        co2:parseInt(co2||"")||undefined,
-        cv:parseInt(cv||"")||undefined,
-        kilometrage:parseInt( kilometrage||"")||undefined,
-        doors:doors||undefined,
-        version:version||undefined
-      }
-      const {handling,tires,exterior,interior}=rating
-      const d4:Data4={
-        handling:handling||undefined,
-        tires:tires||undefined,exterior:exterior||undefined,interior:interior||undefined
-      }
-      const d5:Data5={
-        ...options
-      }
-   
-      const {duration,description}=edit
-      const {address:adresse,zipCode,city,country,lat,lon}=address
-      const process=new ProcessDate()
-      const d6:Data6={
+        build_year,
+        fuel,
+        name,
+        model,
+        color,
+        specs,
+        address,
+        options,
+        rating,
+        images,
+        expected_price,
+      } = edit;
+      const d1: Data1 = {
+        brand,
+        model,
+        buildYear: build_year,
+        color: color || undefined,
+        fuel,
+      };
+      const {
+        carrosserie,
+        cc,
+        co2,
+        cv,
+        kilometrage,
+        doors,
+        version,
+        transmission,
+      } = specs;
+      const d3: Data3 = {
+        carrosserie: carrosserie || undefined,
+        transmission: transmission || undefined,
+        cc: parseInt(cc || "") || undefined,
+        co2: parseInt(co2 || "") || undefined,
+        cv: parseInt(cv || "") || undefined,
+        kilometrage: parseInt(kilometrage || "") || undefined,
+        doors: doors || undefined,
+        version: version || undefined,
+      };
+      const { handling, tires, exterior, interior } = rating;
+      const d4: Data4 = {
+        handling: handling || undefined,
+        tires: tires || undefined,
+        exterior: exterior || undefined,
+        interior: interior || undefined,
+      };
+      const d5: Data5 = {
+        ...options,
+      };
+
+      const { duration, description } = edit;
+      const { address: adresse, zipCode, city, country, lat, lon } = address;
+      const process = new ProcessDate();
+      const d6: Data6 = {
         name,
         images,
-      
+
         expected_price,
-        duration:process.getDurationName(duration),
-        address:adresse||undefined,
-        description:description||undefined,
-        zipCode:zipCode||undefined,
-        city: city||undefined,
-        country:country||undefined,
-        lat:lat||undefined,
-        lon: lon||undefined,
-      }
-      setdata1(d1)
-      setdata3(d3)
-      setdata4(d4)
-      setdata5(d5)
-      setdata6(d6)
-    }else{
-      console.log('no Edit')
+        duration: process.getDurationName(duration),
+        address: adresse || undefined,
+        description: description || undefined,
+        zipCode: zipCode || undefined,
+        city: city || undefined,
+        country: country || undefined,
+        lat: lat || undefined,
+        lon: lon || undefined,
+      };
+      setdata1(d1);
+      setdata3(d3);
+      setdata4(d4);
+      setdata5(d5);
+      setdata6(d6);
+    } else {
+      console.log("no Edit");
     }
-  },[edit])
+  }, [edit]);
 
   useEffect(() => {
     const isNext1 =
@@ -215,71 +254,74 @@ const CreateAuction = ({auction,isEdit,onCancel,id,refetch,isAdmin}:{auction?:TA
   }, [session]);
 
   useEffect(() => {
-    
+    let valide = true;
 
-   let valide=true
-
-   if(data6.address==undefined) valide=false
-   if(data6.duration==undefined) valide=false
-   if(data6.description==undefined) valide=false
-   if(data6.city==undefined) valide=false
-   if(data6.country==undefined) valide=false
-   if(data6.zipCode==undefined) valide=false
-   if(data6.expected_price==undefined) valide=false
-    setisValid(step===6&&valide);
+    if (data6.address == undefined) valide = false;
+    if (data6.duration == undefined) valide = false;
+    if (data6.description == undefined) valide = false;
+    if (data6.city == undefined) valide = false;
+    if (data6.country == undefined) valide = false;
+    if (data6.zipCode == undefined) valide = false;
+    if (data6.expected_price == undefined) valide = false;
+    setisValid(step === 6 && valide);
   }, [data6, data1]);
-const router=useRouter()
-  const { mutate: addAuction,isLoading } = trpc.auctionnaire.addAuction.useMutation({
-    onError: (err) => {
-      toast.dismiss()
-      console.log("Error from AddAuction > ", err);
-      toast.error("Erreur lors de l'ajout");
-    },
-    onSuccess: (data) => {
-      toast.dismiss()
-      toast.success("Opération réussi");
-      
-       router.push("/dashboard/auctionnaire/myauctions")
-       ref.current?.click()
-    },
-    onMutate:()=> toast.loading("En cours de traitement")
-  });
-  const { mutate: updateAuction,isLoading:isUpdating } = trpc.auctionnaire.updateAuction.useMutation({
-    onError: (err) => {
-      toast.dismiss()
-      console.log("Error from Update Auction > ", err);
-      toast.error("Failed updating");
-    },
-    onSuccess: (data) => {
-      toast.dismiss()
-      toast.success("Opération réussi");
-      
-     //  router.push("/dashboard/auctionnaire/myauctions")
-    if(refetch){
-      refetch()
-    }
-       ref.current?.click()
-    },
-    onMutate:()=> toast.loading("Processing")
-  });
-  const onValid=()=>{
-  if(edit){
-    updateAuction({data1,data3,data4,data5,data6,auction:edit})
-  }else{
+  const router = useRouter();
+  const { mutate: addAuction, isLoading } =
+    trpc.auctionnaire.addAuction.useMutation({
+      onError: (err) => {
+        toast.dismiss();
+        console.log("Error from AddAuction > ", err);
+        toast.error("Erreur lors de l'ajout");
+      },
+      onSuccess: (data) => {
+        toast.dismiss();
+        toast.success("Opération réussi");
 
-  
-    addAuction({data1,data3,data4,data5,data6})
-  }
-  }
-  const onPublish=({state}:{state:AuctionState})=>updateAuction({data1,data3,data4,data5,data6,auction:edit,state})
-  const ref=useRef<HTMLLabelElement|null>(null)
+        router.push("/dashboard/auctionnaire/myauctions");
+        ref.current?.click();
+      },
+      onMutate: () => toast.loading("En cours de traitement"),
+    });
+  const { mutate: updateAuction, isLoading: isUpdating } =
+    trpc.auctionnaire.updateAuction.useMutation({
+      onError: (err) => {
+        toast.dismiss();
+        console.log("Error from Update Auction > ", err);
+        toast.error("Failed updating");
+      },
+      onSuccess: (data) => {
+        toast.dismiss();
+        toast.success("Opération réussi");
+
+        //  router.push("/dashboard/auctionnaire/myauctions")
+        if (refetch) {
+          refetch();
+        }
+        ref.current?.click();
+      },
+      onMutate: () => toast.loading("Processing"),
+    });
+  const onValid = () => {
+    if (edit) {
+      updateAuction({ data1, data3, data4, data5, data6, auction: edit });
+    } else {
+      addAuction({ data1, data3, data4, data5, data6 });
+    }
+  };
+  const onPublish = ({ state }: { state: AuctionState }) =>
+    updateAuction({ data1, data3, data4, data5, data6, auction: edit, state });
+  const ref = useRef<HTMLLabelElement | null>(null);
   return (
     <>
-      <input type="checkbox" id={id||"create_auction"} className="modal-toggle" />
+      <input
+        type="checkbox"
+        id={id || "create_auction"}
+        className="modal-toggle"
+      />
       <div className={cx("modal absolute top-0 left-0 z-[1000]")}>
         <div className="modal-box flex min-h-[450px] flex-col justify-between gap-6 lg:max-w-2xl">
           <Stepper step={step} />
-        
+
           {step == 1 && <Step1 data={data1} setData={setdata1} />}
           {step == 2 && <Step2 />}
           {step == 3 && <Step3 data={data3} setData={setdata3} />}
@@ -299,9 +341,14 @@ const router=useRouter()
               }
             />
           )}
-          
+
           <div className="modal-action flex flex-row items-center">
-            <label ref={ref} onClick={onCancel} htmlFor={id||"create_auction"} className="btn-ghost btn-sm btn">
+            <label
+              ref={ref}
+              onClick={onCancel}
+              htmlFor={id || "create_auction"}
+              className="btn-ghost btn-sm btn"
+            >
               annuler
             </label>
             <div className="flex-grow"></div>
@@ -323,22 +370,25 @@ const router=useRouter()
               continuer
             </button>
             <button
-            onClick={onValid}
+              onClick={onValid}
               className={cx("btn-primary btn-sm btn", {
-                "btn-disabled": !isValid || isLoading ||isUpdating,
+                "btn-disabled": !isValid || isLoading || isUpdating,
                 hidden: step !== 6,
               })}
             >
               valider
             </button>
             <button
-            onClick={()=>onPublish({state:auction?.state=="pending"?"published":"pending"})}
+              onClick={() =>
+                onPublish({
+                  state: auction?.state == "pending" ? "published" : "pending",
+                })
+              }
               className={cx("btn-warning btn-sm btn", {
-               
                 hidden: !isAdmin,
               })}
             >
-              {auction?.state=="published"? "pending":"publish"}
+              {auction?.state == "published" ? "pending" : "publish"}
             </button>
           </div>
         </div>

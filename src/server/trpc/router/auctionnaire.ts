@@ -39,7 +39,7 @@ export const auctionnaireRouter = router({
   addAuction: publicProcedure
     .input(z.any())
     .mutation(async ({ input, ctx }) => {
-      const idAcution = input.id;
+   
       const data1: Data1 = input.data1;
       const data3: Data3 = input.data3;
       const data4: Data4 = input.data4;
@@ -51,7 +51,7 @@ export const auctionnaireRouter = router({
       //
 
       const duration = processDate.getDuration(data6.duration);
-      const end_date = processDate.endDate(duration);
+      //const end_date = processDate.endDate(duration);
       // return
       const auctionnaire_id = await processUser.getId();
 
@@ -65,7 +65,7 @@ export const auctionnaireRouter = router({
           id = Math.random().toString().slice(2, 9);
         }
       }
-      console.log("id user", auctionnaire_id);
+      console.log("images", data6.images);
       return await ctx.prisma.auction.create({
         data: {
           id,
@@ -77,7 +77,6 @@ export const auctionnaireRouter = router({
           //images,
           description: data6.description,
           duration,
-          end_date,
           expected_price: parseFloat(data6.expected_price!.toString()),
           images: {
             createMany: {
@@ -119,6 +118,15 @@ export const auctionnaireRouter = router({
           },
         },
       });
+    }),
+    pauseAuction: publicProcedure.input(z.string()).mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.auction.update({
+        where: { id: input },
+        data: {
+          state: AuctionState.pause,
+          pause_date: new Date(),
+        }
+      })
     }),
   updateAuction: publicProcedure
     .input(z.any())
@@ -207,7 +215,7 @@ export const auctionnaireRouter = router({
   getAuctions: publicProcedure
     .input(
       z.object({
-        state: z.enum(["pending", "published"]).nullish(),
+        state: z.enum(["pending", "published","pause"]).nullish(),
         filter: z.enum([
           "new",
           "trending",

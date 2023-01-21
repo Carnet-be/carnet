@@ -17,7 +17,7 @@ import MyTable, {
   ActionTable,
   TableType,
 } from "@ui/components/table";
-import { AuctionIcon, CheckIcon } from "@ui/icons";
+import { AuctionIcon, CheckIcon, PauseIcon } from "@ui/icons";
 import { trpc } from "@utils/trpc";
 import { useState } from "react";
 
@@ -26,6 +26,7 @@ import Dashboard from "@ui/dashboard";
 import CreateAuction from "@ui/createAuction";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
+import { BiPause } from "react-icons/bi";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
   console.log(session?.user);
@@ -64,6 +65,10 @@ export const SwitcherAuctions = () => {
       title: "Pending",
       route: "/admin/dashboard/auctions/pending",
     },
+    {
+      title: "Pause",
+      route: "/admin/dashboard/auctions/pause",
+    },
   ];
   return (
     <div className="tabs tabs-boxed my-4 gap-4 px-3 py-1">
@@ -83,7 +88,7 @@ export const SwitcherAuctions = () => {
   );
 };
 
-export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
+export const AuctionsPage = ({ state }: { state: "published" | "pending"|"pause" }) => {
   const {
     data: auctions,
     isLoading,
@@ -166,6 +171,23 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
     columns={columns as ColumnsType<TableType>}
     data={(bids || []).map((b,i)=>({...b,key:b.auction_id})).filter((f)=>f.auction_id==record.id)} options={{pagination:false}}  />;
   }
+  const { mutate: pauseAuction } = trpc.auctionnaire.pauseAuction.useMutation({
+    onMutate: () => {
+      toast.loading("In process");
+    }
+    ,
+    onError: (err) => {
+      console.log(err);
+      toast.dismiss();
+      toast.error("Faild to pause");
+    }
+    ,
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success("Success");
+      refetch()
+    }
+  })
   const columns: ColumnsType<Auction> = [
  
     {
@@ -240,7 +262,7 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
       key: "end_date",
       align: "center",
 
-      render: (v) => <RenderTimer date={v} />,
+      render: (v,a) => <RenderTimer date={v} state={state} initDate={a.pause_date||undefined}/>,
     },
     // {
     //   title: "Publish",
@@ -268,12 +290,19 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending" }) => {
         <>
           <ActionTable
             id={auction.id}
-            onDelete={() => {
+            onDelete={state=="published"?undefined: () => {
               deleteAuction({ id: auction.id, table: "auction" });
             }}
-            onEdit={() => {
+            onEdit={state=="published"?undefined: () => {
               console.log("edit");
             }}
+            onCustom={state!="published"?undefined: () => ({
+              icon:<PauseIcon className="text-lg" />,
+              tooltip:"Pause",
+              onClick:()=>{
+                console.log("pause")
+              pauseAuction(auction.id)
+            }})}
             onView={() => {
               console.log("view");
             }}

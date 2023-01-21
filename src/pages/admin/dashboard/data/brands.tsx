@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import type { InferGetServerSidePropsType } from "next";
@@ -5,23 +6,24 @@ import { type GetServerSideProps } from "next";
 import React, { useEffect, useRef, useState } from "react";
 import Dashboard from "@ui/dashboard";
 import * as XLSX from "xlsx";
-
+import tableExport from "antd-table-export";
 import { trpc } from "@utils/trpc";
 import BigTitle from "@ui/components/bigTitle";
 import type { TableType } from "@ui/components/table";
 import MyTable, { ActionTable } from "@ui/components/table";
-import type { Brand, User } from "@prisma/client";
+import type { Brand, Model, User } from "@prisma/client";
 import type { ColumnsType } from "antd/es/table";
 import { Input, Modal, Table, Tag } from "antd";
 import toast from "react-hot-toast";
 import { SwitcherData } from ".";
-import { DeleteIcon, InportIcon } from "@ui/icons";
+import { DeleteIcon, ExportIcon, InportIcon } from "@ui/icons";
 import cx from "classnames";
 import { SubmitHandler, useForm } from "react-hook-form";
 import TextArea from "antd/lib/input/TextArea";
 import { TableRowSelection } from "antd/es/table/interface";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import Image from "next/image";
+import axios from "axios";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
   console.log(session?.user);
@@ -38,6 +40,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     props: {},
   };
 };
+
+
+export function CheckImage(path:string) {
+  axios
+    .get(path)
+    .then(() => {
+      return true;
+    })
+    .catch(() => {
+      return false;
+    });
+}
 const Brands = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
@@ -91,6 +105,41 @@ const Brands = (
       },
     });
   const fileRef = useRef<HTMLInputElement>(null);
+  const { data: models, isLoading:isLoadingModels } = trpc.admin.getModel.useQuery();
+
+  const expandedColumns =(record: Brand)=>{
+    const columns: ColumnsType<Model> = [
+      {
+        title: "Id",
+        width: "100px",
+        dataIndex: "id",
+        key: "id",
+        render: (v) => (
+          <span className="text-[12px] italic text-primary">#{v}</span>
+        ),
+      },
+      {
+        title: "Name",
+        dataIndex: "name",
+        width: "300px",
+        key: "name",
+        render: (v) => <h6>{v}</h6>,
+      },
+      {
+        title: "Year",
+        dataIndex: "year",
+        width: "150px",
+        key: "year",
+        align:"center",
+        render: (v) => <Tag color="green">{v}</Tag>,
+      },
+     
+    ]
+    return  <MyTable
+    loading={isLoadingModels}
+    columns={columns as ColumnsType<TableType>}
+    data={(models || []).map((b)=>({...b,key:b.id})).filter((f)=>f.brand_id==record.id)} options={{pagination:false}}  />;
+  }
   const columns: ColumnsType<Brand> = [
     {
       title: "Id",
@@ -106,7 +155,11 @@ const Brands = (
       width: "80px",
       dataIndex: "logo",
       key: "logo",
-      render: (_,v) => <Image  src={"/assets/Cars/"+v.name+".svg"} alt="logo" width={60} height={60}/>,
+      render: (_,v) => <Image onError={(e)=>{
+        console.log(e)
+        e.currentTarget.hidden=true
+      }} 
+       src={"/assets/Cars/"+v.name+".svg"} alt="logo" width={60} height={60}/>,
     },
     {
       title: "Name",
@@ -177,9 +230,9 @@ const Brands = (
           /* Update state */
           toast.dismiss();
           const lines = data.map((d: any) => ({
-            name: d.name,
-            country: d.country,
-            description: d.description,
+            name: d.name|| d.Name,
+            country:d.country || d.Country,
+            description: d.description || d.Description,
           }));
           console.log(data);
           //  for(let i=0;i<Object.keys(data).length;i++){
@@ -215,7 +268,24 @@ const Brands = (
 
     selections: [Table.SELECTION_ALL],
   };
-
+  const onExport=()=>{
+    const exportInstance = new tableExport(brands||[], [
+      {
+      title: "Name",
+      dataIndex: "name",
+      },
+          {
+      title: "Country",
+      dataIndex: "country",
+    },
+        {
+      title: "Description",
+      dataIndex: "description",
+    },
+   
+  ], );
+  exportInstance.download("brands", "xlsx");
+  }
   return (
     <Dashboard type="ADMIN">
       <SwitcherData />
@@ -234,6 +304,7 @@ const Brands = (
           >
             add Brand
           </button>
+         
           <button
             onClick={onPickfile}
             className={cx("btn-sm btn items-center gap-2", {
@@ -250,13 +321,21 @@ const Brands = (
             <InportIcon className="text-lg" />
             Import
           </button>
+          <button
+            onClick={onExport}
+            hidden={(brands||[]).length===0}
+            className="btn-secondary btn-outline btn-sm btn gap-2"
+          >
+            <ExportIcon className="text-lg" />
+            Export
+          </button>
         </div>
         <MyTable
           rowSelection={rowSelection as TableRowSelection<TableType>}
           loading={isLoading}
           data={brands || []}
           // xScroll={1000}
-
+          options={{expandedRowRender:expandedColumns}}
           columns={columns as ColumnsType<TableType>}
           // columns={columns.filter((c)=>options.includes(c.key))}
         />

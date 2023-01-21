@@ -50,14 +50,14 @@ export const renderDate = (date: string, format="L") => {
   return <Tag color="processing">{moment(date).format(format)}</Tag>; // <div className={cx("rounded-md px-2 py-[1px] flex justify-center",`bg-${color}-100 border border-${color}-500 text-${color}-500`)}>{moment(date).format('L')}</div>
 };
 
-export const RenderTimer = ({ date }: { date: Date }) => {
+export const RenderTimer = ({ date,state,initDate }: { date: Date,state:"pause"|"published"|"pending",initDate?:Date }) => {
   const [leftTime, setleft] = useState<moment.Duration>(
-    executeEverySecond(date)
+    executeEverySecond(date,initDate)
   );
 
   useEffect(() => {
     const interval = setInterval(
-      () => leftTime.asSeconds() > 0 && setleft(executeEverySecond(date)),
+      () =>state=="published"&& leftTime.asSeconds() > 0  && setleft(executeEverySecond(date)),
       1000
     );
     return () => {
@@ -69,14 +69,13 @@ export const RenderTimer = ({ date }: { date: Date }) => {
   }, [leftTime]);
   return (
     <Tag
-      color={leftTime?.asSeconds() <= 0 ? "error" : "default"}
+      color={leftTime?.asSeconds() <= 0 ? "error" :state=="pause"?"yellow":state=="published"?"green": "default"}
       className="flex flex-row items-end justify-center gap-1 font-semibold"
     >
       {leftTime?.asSeconds() <= 0 ? (
         "Expired"
-      ) : (
-        <>
-          <span>
+      ) : 
+            state=="pending"? <span className="">Pending</span>:   <><span>
             {leftTime?.days()}
             <span className="text-sm font-light opacity-70">d</span>
           </span>
@@ -88,8 +87,11 @@ export const RenderTimer = ({ date }: { date: Date }) => {
             {leftTime?.minutes()}
             <span className="text-sm font-light opacity-70">m</span>
           </span>
-        </>
-      )}
+         
+          </>
+          }
+      
+      
     </Tag>
   );
 };
@@ -99,20 +101,23 @@ export const ActionTable = ({
   onDelete,
   onEdit,
   id,
+  onCustom
 }: {
   id?: string;
   onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
   onDeleteModal?: () => void;
+  onCustom?:()=>{icon:React.ReactNode;onClick:()=>void,tooltip:string}
 }) => {
   const ref = useRef<HTMLLabelElement>(null);
   const refDelete = useRef<HTMLLabelElement>(null);
   const [openDelete, setOpenDelete] = useState(false);
-
+  const [openEdit, setOpenEdit] = useState(false);
   return (
     <div className="flex flex-row items-center justify-center gap-1">
      {id && onDelete&& <ConfirmationDelete open={openDelete} setOpen={setOpenDelete} id={id} onDelete={onDelete} />}
+     {id && onCustom&& <ConfirmationPause open={openEdit} setOpen={setOpenEdit} id={id} onValide={onCustom().onClick} />}
       <label ref={ref} hidden={true} htmlFor={id}></label>
       <label ref={refDelete} hidden={true} htmlFor={"delete" + id}></label>
       {onView && (
@@ -143,7 +148,20 @@ export const ActionTable = ({
           />
         </Tooltip>
       )}
-
+{onCustom && (
+        <Tooltip
+          title={onCustom().tooltip}
+          className="flex flex-row items-center justify-center text-primary"
+        >
+          <Button
+            onClick={() => {
+              setOpenEdit(true)
+            }}
+            shape="circle"
+            icon={onCustom().icon}
+          />
+        </Tooltip>
+      )}
       {onDelete && (
         <Tooltip
           title="Delete"
@@ -182,6 +200,29 @@ const  ConfirmationDelete = ({
  
       <Modal okType='danger' title="Warning" open={open} onOk={onDelete} onCancel={()=>setOpen(false)}>
         <p>You are about to delete this element</p>
+      </Modal>
+    </>
+  );
+};
+
+
+const  ConfirmationPause = ({
+  id,
+  onValide,
+  open,setOpen
+}: {
+  id: string|number;
+  onValide: () => void;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}) => {
+
+
+  return (
+    <>
+ 
+      <Modal okType='danger' title="info" open={open} onOk={onValide} onCancel={()=>setOpen(false)}>
+        <p>You are about to pause this auction</p>
       </Modal>
     </>
   );

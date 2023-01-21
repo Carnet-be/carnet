@@ -7,9 +7,9 @@ import {RiNotification2Line,RiAuctionFill, RiFileDownloadLine} from 'react-icons
 import {IoMdAdd,IoIosLogOut,IoMdArrowRoundBack,IoIosArrowDroprightCircle,IoIosArrowDropleftCircle} from 'react-icons/io'
 import {CgMoreVertical} from 'react-icons/cg'
 import {CiSettings} from "react-icons/ci"
-import {TbClipboardList} from 'react-icons/tb'
+import {TbClipboardList, TbFileExport} from 'react-icons/tb'
 import {GoDatabase} from 'react-icons/go'
-import {GrView} from 'react-icons/gr'
+import {GrPauseFill, GrView} from 'react-icons/gr'
 export const PersonIcon=BsPerson
 export const EmailIcon=HiOutlineMail
 export const TelIcon=BsTelephone
@@ -43,3 +43,5 @@ export const ViewIcon=GrView
 export const EditIcon=MdEdit
 export const DeleteIcon=MdDelete
 export const InportIcon=RiFileDownloadLine
+export const PauseIcon=GrPauseFill
+export const ExportIcon=TbFileExport

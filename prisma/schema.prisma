@@ -59,7 +59,8 @@ model Auction {
       
   description    String?
   duration       DurationType
-  end_date       DateTime
+  end_date       DateTime?
+  pause_date    DateTime?
   expected_price Float
   color String?
   state AuctionState @default(pending)
@@ -218,4 +219,5 @@ enum DurationType {
 enum AuctionState{
   published
   pending
+  pause
 }

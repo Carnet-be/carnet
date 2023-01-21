@@ -59,9 +59,9 @@ export class ProcessDate {
       Math.abs(endDate - startDate) / msInSecond
     );
   }
-  getSecondsFronmNow() {
+  getSecondsFronmNow(initDate?:Date) {
     const msInSecond = 1000;
-  const now=new Date()
+  const now=initDate|| new Date()
     return Math.round((this.date as any - (now as any)) / msInSecond
     );
   }

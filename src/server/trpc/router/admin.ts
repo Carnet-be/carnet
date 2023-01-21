@@ -65,6 +65,7 @@ export const adminRouter = router({
         }
       }
       console.log(brands)
+      await ctx.prisma.brand.deleteMany({})
       return await ctx.prisma.brand.createMany({
         data:brands,skipDuplicates:false
       })
