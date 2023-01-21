@@ -303,7 +303,7 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending"|"pause"
                 console.log("pause")
               pauseAuction(auction.id)
             }})}
-            onView={() => {
+            onView={state!="published"?undefined:() => {
               console.log("view");
             }}
           />

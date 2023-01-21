@@ -381,14 +381,14 @@ const CreateAuction = ({
             <button
               onClick={() =>
                 onPublish({
-                  state: auction?.state == "pending" ? "published" : "pending",
+                  state: "published" ,
                 })
               }
               className={cx("btn-warning btn-sm btn", {
                 hidden: !isAdmin,
               })}
             >
-              {auction?.state == "published" ? "pending" : "publish"}
+              {auction?.state == "pause" ? "resume" : "publish"}
             </button>
           </div>
         </div>
