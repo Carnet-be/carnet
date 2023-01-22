@@ -85,6 +85,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
       <div className="flex w-full flex-col gap-4 py-4  lg:w-[80%]">
       <Slider {...settings} className="mb-4">
       {CARROSSERIE.map((o, i) => {
+        console.log(data.carrosserie)
         const isActive=data.carrosserie==i
         return <BodyItem key={i} isActive={isActive} title={o.title} img={o.img} onClick={()=>{
           setData({...data,carrosserie:i})

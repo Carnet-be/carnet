@@ -1,10 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import Dashboard from "@ui/dashboard";
-import { InDevelopmentMini } from "@ui/inDevelopment";
 import {
   type InferGetServerSidePropsType,
   type GetServerSideProps,
-  type NextPage,
 } from "next";
 
 import Slider from "react-slick";
@@ -13,21 +11,18 @@ import BigTitle from "@ui/components/bigTitle";
 import { useRouter } from "next/router";
 import { trpc } from "../../../../utils/trpc";
 import { toast } from "react-hot-toast";
-import { PropagateLoader } from "react-spinners";
 import Loading from "@ui/components/loading";
 import type { TAuction } from "@model/type";
-import { ProcessAuction } from "@utils/processAuction";
 import { BRAND, CARROSSERIE, TRANSMISSION } from "@data/internal";
 import Image from "next/image";
 import cx from "classnames";
 import CountDown from "@ui/components/countDown";
-import { ProcessDate } from "@utils/processDate";
 import BidSection from "@ui/bidSection";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { SampleNextArrow, SamplePrevArrow } from "@ui/createAuction/step3";
 import { Chip } from "@mui/material";
-import type { AuctionOptions } from '@prisma/client';
+import type { Auction, AuctionOptions } from '@prisma/client';
 import { HANDLING } from '@data/internal';
 import { EXTERIOR } from '@data/internal';
 import { INTERIOR } from '@data/internal';
@@ -57,7 +52,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
+const auct:Auction=await prisma?.auction.findUnique({
+    where: {
+      id: id,
+    },}).then((res) => JSON.parse(JSON.stringify(res)))
 
+  if(auct.state!=="published"){
+    return {
+      redirect: {
+        destination: "/dashboard/bidder/home",
+        permanent: true,
+      },
+    };
+  }
   return {
     props: { id },
   };
@@ -67,15 +74,12 @@ const Home = (
 ) => {
   const {
     data: auction,
-    isLoading,
-    refetch,
   } = trpc.auctionnaire.get.useQuery(props.id, {
     onError: (err) => {
       console.log(err);
       toast.error("Error lors de la recupération des données");
     },
   });
-  const router = useRouter();
   return (
     <Dashboard type="BID" background="bg-[#FCFCFF]">
       {!auction ? (
@@ -194,7 +198,6 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
 
 const RightSide = ({ auction }: { auction: TAuction }) => {
   const [isTimeOut, setisTimeOut] = useState(false)
-  const brand = BRAND[auction.brand]?.title || "";
   const model = BRAND[auction.brand]?.model[auction.model];
   const carrosserie = CARROSSERIE[auction.specs.carrosserie || 0];
   const onTimeOut = () => {
@@ -268,7 +271,7 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
         variant="primary"
         onTimeOut={onTimeOut}
         
-        endDate={auction.end_date}
+        endDate={auction.end_date!}
       />
       <BidSection auction={auction} isTimeOut={isTimeOut}/>
     </div>

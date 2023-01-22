@@ -99,12 +99,21 @@ const CreateAuction = ({
   const [step, setstep] = useState(1);
   const next = () => {
     let nextStep = step + 1;
+    if(auction){
+    }else{
+
+    
     if (nextStep === 2 && session) nextStep++;
+    }
     setstep(nextStep);
   };
   const back = () => {
     let nextStep = step - 1;
+   if(auction){
+
+   }else{
     if (nextStep === 2 && session) nextStep--;
+   }
     setstep(nextStep);
   };
   const uploadRef = useRef();
@@ -175,6 +184,7 @@ const CreateAuction = ({
         version,
         transmission,
       } = specs;
+      console.log(specs);
       const d3: Data3 = {
         carrosserie: carrosserie || undefined,
         transmission: transmission || undefined,
@@ -192,8 +202,13 @@ const CreateAuction = ({
         exterior: exterior || undefined,
         interior: interior || undefined,
       };
+      const o:any={...options}
+      delete o.id
+      delete o.auction_id
+      delete o.auction
+      console.log(Object.keys(o))
       const d5: Data5 = {
-        ...options,
+        ...o,
       };
 
       const { duration, description } = edit;
@@ -232,7 +247,7 @@ const CreateAuction = ({
           data1.color !== undefined
         : true;
     const isNext3 =
-      step === 3
+      step === (auction?2: 3)
         ? data3.kilometrage &&
           data3.carrosserie !== undefined &&
           data3.transmission !== undefined &&
@@ -248,7 +263,7 @@ const CreateAuction = ({
   }, [data1, step, data3]);
 
   useEffect(() => {
-    if (step === 2 && session) {
+    if (step === 2 && session&& !auction) {
       next();
     }
   }, [session]);
@@ -263,7 +278,7 @@ const CreateAuction = ({
     if (data6.country == undefined) valide = false;
     if (data6.zipCode == undefined) valide = false;
     if (data6.expected_price == undefined) valide = false;
-    setisValid(step === 6 && valide);
+    setisValid(step === (auction?5: 6) && valide);
   }, [data6, data1]);
   const router = useRouter();
   const { mutate: addAuction, isLoading } =
@@ -320,9 +335,25 @@ const CreateAuction = ({
       />
       <div className={cx("modal absolute top-0 left-0 z-[1000]")}>
         <div className="modal-box flex min-h-[450px] flex-col justify-between gap-6 lg:max-w-2xl">
-          <Stepper step={step} />
+         {auction?<StepperEdit step={step}/> :<Stepper step={step} /> } 
 
-          {step == 1 && <Step1 data={data1} setData={setdata1} />}
+          {auction? <>
+            {step == 1 && <Step1 data={data1} setData={setdata1} disabled={auction==undefined?false:true}/>}
+        
+          {step == 2 && <Step3 data={data3} setData={setdata3} />}
+          {step == 3 && <Step4 data={data4} setData={setdata4} />}
+          {step == 4 && <Step5 data={data5} setData={setdata5} />}
+          {step == 5 && (
+            <Step6
+              data={data6}
+              uploadRef={uploadRef}
+              setData={setdata6}
+              defaultName={edit?.name||""}
+            />
+          )}
+          </>:
+          <>
+          {step == 1 && <Step1 data={data1} setData={setdata1} disabled={auction==undefined?false:true}/>}
           {step == 2 && <Step2 />}
           {step == 3 && <Step3 data={data3} setData={setdata3} />}
           {step == 5 && <Step4 data={data4} setData={setdata4} />}
@@ -341,6 +372,7 @@ const CreateAuction = ({
               }
             />
           )}
+          </>}
 
           <div className="modal-action flex flex-row items-center">
             <label
@@ -364,7 +396,7 @@ const CreateAuction = ({
               onClick={next}
               className={cx("btn-primary btn-sm btn", {
                 "btn-disabled": !isNext,
-                hidden: step == 2 || step == 6,
+                hidden: step == 2 &&!auction || step == (auction?5: 6),
               })}
             >
               continuer
@@ -373,7 +405,7 @@ const CreateAuction = ({
               onClick={onValid}
               className={cx("btn-primary btn-sm btn", {
                 "btn-disabled": !isValid || isLoading || isUpdating,
-                hidden: step !== 6,
+                hidden: step !== (auction?5: 6),
               })}
             >
               valider
@@ -388,7 +420,7 @@ const CreateAuction = ({
                 hidden: !isAdmin,
               })}
             >
-              {auction?.state == "pause" ? "resume" : "publish"}
+              {auction?.state == "pause" ?step==5? "save & resume":"save" :step==6?"save & publish" :"publish"}
             </button>
           </div>
         </div>
@@ -414,6 +446,30 @@ export const Stepper = ({ step }: { step: number }) => {
             {k === 4 && "Options"}
             {k === 5 && "Rating"}
             {k === 6 && "Validation"}
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
+export const StepperEdit = ({ step }: { step: number }) => {
+
+  return (
+    <ul className="steps w-full">
+      {Array.from({ length: 5 }, (_, i) => i + 1).map((k, i) => {
+        return (
+          <li
+            key={k}
+            className={cx("step", {
+              "step-primary": k <= step,
+            })}
+          >
+            {k === 1 && "Identify"}
+           
+            {k === 2 && "Specs"}
+            {k === 3 && "Options"}
+            {k === 4 && "Rating"}
+            {k === 5 && "Validation"}
           </li>
         );
       })}

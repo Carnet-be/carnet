@@ -35,7 +35,7 @@ const Home = (props:InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const user:TUser=props.user
   const filter = (router.query.filter as TFilterBidde) || "new";
-  const { data: auctions } = trpc.auctionnaire.getAuctions.useQuery({ filter });
+  const { data: auctions } = trpc.auctionnaire.getAuctions.useQuery({ filter,state:"published" });
   return (
     <Dashboard type="BID">
       <BigTitle />

@@ -57,7 +57,7 @@ const Step6 = ({
       <div className="flex w-[96%] flex-col items-stretch gap-4">
         <TextField
           label="Nom de l'auction"
-      
+      disabled
           size="small"
           value={data.name}
           defaultValue={defaultName}

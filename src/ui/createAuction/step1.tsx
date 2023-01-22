@@ -11,7 +11,7 @@ import { SampleNextArrow, SamplePrevArrow } from "./step3";
 import cx from "classnames";
 import { BsCheck } from "react-icons/bs";
 import { AiFillCheckCircle } from 'react-icons/ai';
-const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
+const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:boolean }) => {
   const settings = {
     dots: true,
     infinite: false,
@@ -31,7 +31,7 @@ const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
             <InputLabel htmlFor="brand">Marque</InputLabel>
             <Select
               value={data.brand}
-              
+              disabled={disabled}
               label="Marque"
               onChange={(e) => {
                 console.log(typeof e.target.value);
@@ -57,7 +57,8 @@ const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
               value={data.model}
               labelId="model"
               label="Modèle"
-              disabled={data.brand ? false : data.brand == 0 ? false : true}
+            
+              disabled={disabled?true:data.brand ? false : data.brand == 0 ? false : true}
               onChange={(e) => setData({ ...data, model: e.target.value })}
             >
               {BRAND[data.brand || 0]?.model.map((o, i) => (
@@ -75,7 +76,7 @@ const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
             <Select
               value={data.buildYear}
               label="Année"
-              disabled={data.brand === undefined ? true : false}
+              disabled={disabled?true:data.brand === undefined ? true : false}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -98,6 +99,7 @@ const Step1 = ({ data, setData }: { data: Data1; setData: any }) => {
             <Select
               value={data.fuel}
               label="Cardurant"
+              disabled={disabled}
               onChange={(e) => setData({ ...data, fuel: e.target.value })}
             >
               {["Gasoline", "Diesel", "Electricity", "Hybrid"].map((f, i) => (

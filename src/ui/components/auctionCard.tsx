@@ -79,7 +79,7 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,re
           <div className="flex-grow font-semibold">
             <span>{auction.name}</span>
           </div>
-          <CountDown variant="secondary" onTimeOut={()=>{console.log("is time out")}} endDate={auction.end_date}/>
+          <CountDown variant="secondary" onTimeOut={()=>{console.log("is time out")}} endDate={auction.end_date||auction.createAt}/>
         </div>
         <hr className="my-1 h-0" />
         <div className="flex flex-row items-center justify-between">
