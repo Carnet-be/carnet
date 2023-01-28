@@ -25,17 +25,16 @@ model User {
   password       String
   isActive       Boolean  @default(true)
   emailVerified  Boolean  @default(false)
- 
+
   favoris_auctions String[]
   //
-  createAt       DateTime @default(now())
-  updateAt       DateTime @updatedAt
+  createAt         DateTime @default(now())
+  updateAt         DateTime @updatedAt
 
-
-  //relation
-  image AssetImage?
+  // relation
+  image    AssetImage?
   auctions Auction[]
-  bids Bid[]
+  bids     Bid[]
 }
 
 model DemandeStaff {
@@ -47,34 +46,33 @@ model DemandeStaff {
 }
 
 model Auction {
-  id             String          @id
-  createAt       DateTime        @default(now())
-  updateAt       DateTime        @updatedAt
-  //field
-  name           String
-  brand          Int
-  model          Int
-  build_year     Int
-  fuel           FuelType
-      
+  id         String   @id
+  createAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
+  // field
+  name       String
+  brand      Int
+  model      Int
+  build_year Int
+  fuel       FuelType
+
   description    String?
   duration       DurationType
   end_date       DateTime?
-  pause_date    DateTime?
+  pause_date     DateTime?
   expected_price Float
-  color String?
-  state AuctionState @default(pending)
-  //relation
+  color          String?
+  state          AuctionState    @default(pending)
+  // relation
   specs          AuctionSpecs?
   options        AuctionOptions?
   rating         AuctionRating?
   address        Address?
-  bids Bid[]
-  images   AssetImage[]
+  bids           Bid[]
+  images         AssetImage[]
 
-  
   auctionnaire_id String
-  auctionnaire User @relation(fields: [auctionnaire_id],references: [id],onDelete: Cascade)
+  auctionnaire    User   @relation(fields: [auctionnaire_id], references: [id], onDelete: Cascade)
 }
 
 model AuctionSpecs {
@@ -88,8 +86,8 @@ model AuctionSpecs {
   kilometrage  String?
   version      String?
   ///
-  auction_id   String @unique 
-  auction      Auction @relation(fields: [auction_id], references: [id],onDelete: Cascade)
+  auction_id   String  @unique
+  auction      Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 }
 
 model AuctionOptions {
@@ -129,72 +127,69 @@ model AuctionRating {
   auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 }
 
-
 model Address {
   id       String   @id @default(cuid())
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
-  //field
+  // field
   zipCode    String?
   country    String?
   city       String?
   address    String?
-  lat        Float?
-  lon        Float?
+  lat        Float
+  lon        Float
   //
   auction_id String  @unique
   auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 }
 
-
-model Bid{
-    id       String   @id
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+model Bid {
+  id         String   @id
+  createAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
   //
-  montant Float
-  numero Int @default(1)
+  montant    Float
+  numero     Int      @default(1)
   ///
-  bidder_id String
-  bidder User @relation(fields: [bidder_id],references: [id],onDelete: Cascade)
-  auction_id String  
-  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
-
+  bidder_id  String
+  bidder     User     @relation(fields: [bidder_id], references: [id], onDelete: Cascade)
+  auction_id String
+  auction    Auction  @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 }
 
-model AssetImage{
-  name String
-  fileKey String @id
-  url String 
+model AssetImage {
+  name       String
+  fileKey    String   @id
+  url        String
   //
   auction_id String?
-  auction Auction? @relation(fields: [auction_id],references: [id],onDelete: Cascade)
+  auction    Auction? @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 
   user_id String? @unique
-  user User? @relation(fields: [user_id],references: [id],onDelete: Cascade)
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
-
-model Brand{
-   id    Int   @id @default(autoincrement())
-   name String @unique
-   country String?
-   description String?
-   //
-   models Model[]
+model Brand {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  country     String?
+  description String?
+  //
+  models      Model[]
 }
 
-model Model{
-   id    Int   @id @default(autoincrement())
-   name String
-   year Int?
-   description String?
-   brand_id Int
-   brand Brand @relation(fields: [brand_id],references: [id],onDelete: Cascade)
-   @@unique([name, year,brand_id])
+model Model {
+  id          Int     @id @default(autoincrement())
+  name        String
+  year        Int?
+  description String?
+  brand_id    Int
+  brand       Brand   @relation(fields: [brand_id], references: [id], onDelete: Cascade)
 
+  @@unique([name, year, brand_id])
 }
+
 //////ENUM///////
 enum UserType {
   BID
@@ -216,7 +211,7 @@ enum DurationType {
   TwoWeek
 }
 
-enum AuctionState{
+enum AuctionState {
   published
   pending
   pause
