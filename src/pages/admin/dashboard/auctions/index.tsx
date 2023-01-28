@@ -17,7 +17,7 @@ import MyTable, {
   ActionTable,
   TableType,
 } from "@ui/components/table";
-import { AuctionIcon, CheckIcon, PauseIcon } from "@ui/icons";
+import { AuctionIcon, CheckIcon, PauseIcon, WinIcon } from "@ui/icons";
 import { trpc } from "@utils/trpc";
 import { useState } from "react";
 
@@ -67,6 +67,14 @@ export const SwitcherAuctions = () => {
     },
     {
       title: "Pause",
+      route: "/admin/dashboard/auctions/pause",
+    },
+    {
+      title: "Confirmation",
+      route: "/admin/dashboard/auctions/pause",
+    },
+    {
+      title: "Completed",
       route: "/admin/dashboard/auctions/pause",
     },
   ];
@@ -162,6 +170,37 @@ export const AuctionsPage = ({ state }: { state: "published" | "pending"|"pause"
        
         key: "montant",
         render: (v) => <Price value={v} textStyle="text-sm leading-4" />,
+      },
+      {
+        title: "Actions",
+  
+        dataIndex: "actions",
+        key: "actions",
+        align: "center",
+        fixed: "right",
+        render: (v, auction) => (
+          <>
+            <ActionTable
+              id={auction.id}
+              // onDelete={state=="published"?undefined: () => {
+              //   deleteAuction({ id: auction.id, table: "auction" });
+              // }}
+              // onEdit={state=="published"?undefined: () => {
+              //   console.log("edit");
+              // }}
+              onCustom={state!="published"?undefined: () => ({
+                icon:<WinIcon className="text-lg text-yellow-500" />,
+                tooltip:"Make winner",
+                onClick:()=>{
+                  console.log("make winner")
+                pauseAuction(auction.id)
+              }})}
+              // onView={state!="published"?undefined:() => {
+              //   console.log("view");
+              // }}
+            />
+          </>
+        ),
       },
       
       

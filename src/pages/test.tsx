@@ -63,7 +63,7 @@ import React from 'react';
 
 const App = () => {
   return (
-    <Wrapper apiKey={"AIzaSyBQ1mBJCas2HXTqIYq2CQ3jJ0DsYHfnXNQ"}>
+    <Wrapper apiKey={"AIzaSyBzcR5S3N8kdskRxiakWUx3LgtD4B_HARs"}>
     <div className='h-screen w-screen'>
     <Map latitude={0} longitude={0} />
     </div>
@@ -82,8 +82,6 @@ const Map = ({latitude, longitude}: {latitude: number; longitude: number}) => {
         new google.maps.Map(ref.current, {
           zoomControl:false,
           mapTypeControl: false,
-         
-          isFractionalZoomEnabled:false,
           scaleControl:false,
           
           streetViewControl: false,

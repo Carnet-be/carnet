@@ -228,6 +228,8 @@ const CreateAuction = ({
         lat: lat || undefined,
         lon: lon || undefined,
       };
+      console.clear();
+      console.log(lat,lon)
       setdata1(d1);
       setdata3(d3);
       setdata4(d4);
@@ -277,6 +279,8 @@ const CreateAuction = ({
     if (data6.city == undefined) valide = false;
     if (data6.country == undefined) valide = false;
     if (data6.zipCode == undefined) valide = false;
+    if (data6.lat == undefined) valide = false;
+    if (data6.lon == undefined) valide = false;
     if (data6.expected_price == undefined) valide = false;
     setisValid(step === (auction?5: 6) && valide);
   }, [data6, data1]);
@@ -420,7 +424,7 @@ const CreateAuction = ({
                 hidden: !isAdmin,
               })}
             >
-              {auction?.state == "pause" ?step==5? "save & resume":"save" :step==6?"save & publish" :"publish"}
+              {auction?.state == "pause" ?step==5? "save & resume":"save" :step==5?"save & publish" :"save"}
             </button>
           </div>
         </div>

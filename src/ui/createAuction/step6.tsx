@@ -20,37 +20,11 @@ const Step6 = ({
   defaultName: string;
   uploadRef: MutableRefObject<undefined>;
 }) => {
-  const defaultProps = {
-    center: {
-      lat: 33.98087546234331,
-      lng: -6.8596261794178,
-    },
-    zoom: 14,
-  };
-  const [position, setdefaultProps] = useState(defaultProps);
-  const onAddMarker = (a: any) => {
-    console.log(a);
-  };
 
-  const onClickChild = (id: any) => console.log(id);
-
-  const onChangeLatitude = (v: any) =>
-    setdefaultProps((old) => ({
-      ...old,
-      center: { ...old.center, lat: parseFloat(v.target.value) || 0 },
-    }));
-
-  const onChangeLongitude = (v: any) =>
-    setdefaultProps((old) => ({
-      ...old,
-      center: { ...old.center, lng: parseFloat(v.target.value) || 0 },
-    }));
-  const onDeleteMarker = () => {
-    console.log("Deleting");
-  };
-  useEffect(() => {
-    setData({ ...data, name: defaultName })
-  }, [])
+  
+  // useEffect(() => {
+  //   setData({ ...data, name: defaultName })
+  // }, [])
   
   return (
     <div className="flex flex-col items-center gap-2">
@@ -176,10 +150,17 @@ const Step6 = ({
 
           <Map
             options={{ zoomControl: false }}
-            latitude={0}
-            longitude={0}
-            onClick={(el) => {
+            latitude={data.lat||0}
+            longitude={data.lon||0}
+            onClick={(el:google.maps.MapMouseEvent) => {
               console.log(el);
+              if(el.latLng){
+              setData({
+                ...data,
+                lat: el.latLng.lat(),
+                lon: el.latLng.lng(),
+              });
+            }
             }}
             containerClass={"w-[50%] h-auto bg-red-100"}
           />

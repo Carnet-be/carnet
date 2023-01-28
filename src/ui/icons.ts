@@ -10,6 +10,7 @@ import {CiSettings} from "react-icons/ci"
 import {TbClipboardList, TbFileExport} from 'react-icons/tb'
 import {GoDatabase} from 'react-icons/go'
 import {GrPauseFill, GrView} from 'react-icons/gr'
+import {FaCrown} from 'react-icons/fa'
 export const PersonIcon=BsPerson
 export const EmailIcon=HiOutlineMail
 export const TelIcon=BsTelephone
@@ -45,3 +46,4 @@ export const DeleteIcon=MdDelete
 export const InportIcon=RiFileDownloadLine
 export const PauseIcon=GrPauseFill
 export const ExportIcon=TbFileExport
+export const WinIcon=FaCrown

@@ -2,53 +2,79 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Wrapper } from "@googlemaps/react-wrapper";
-import React from "react";
-
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  GoogleMap,
+  InfoWindow,
+  Marker,
+  MarkerF,
+  useLoadScript,
+} from "@react-google-maps/api";
 const Map = ({
   latitude,
   longitude,
   onClick,
   containerClass,
-  options
+  options,
 }: {
   latitude: number;
   longitude: number;
-  containerClass:string,
-  options?:any
-  onClick:(el:any)=>void
+  containerClass: string;
+  options?: any;
+  onClick: (el: any) => void;
 }) => {
-  const ref = React.useRef(null);
-  const [map, setMap] = React.useState<google.maps.Map | null>(null);
+  const libraries = useMemo(() => ["places"], []);
+  //coord usestate
+  const [coord, setCoord] = React.useState({ lat: latitude, lng: longitude });
 
-  React.useEffect(() => {
-    if (ref.current && !map) {
-     
-     // maps.addListener("click", (el: any) => onClick(el));
-     setMap(new google.maps.Map(ref.current, {
-      zoomControl: true,
-      // mapTypeControl: false,
-      // streetViewControl: false,
-   
-      center: {
-        lat: latitude ?? 0,
-        lng: longitude ?? 0,
-      },
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY as string,
+    libraries: libraries as any,
+  });
 
-      zoom: 10,
-      ...options,
-    }));
+  useEffect(()=> {
+    if (latitude == 0 && longitude == 0) {   
+      console.log("getting location");
+      navigator.geolocation.getCurrentPosition(function (position) {
+        console.log("Latitude is :", position.coords.latitude);
+        console.log("Longitude is :", position.coords.longitude);
+        setCoord({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
     }
-  }, [ref, map, latitude, longitude]);
+  },[])
+  if (!isLoaded) {
+    return <p>Loading...</p>;
+  }
 
   return (
-
-    <Wrapper apiKey={"AIzaSyBQ1mBJCas2HXTqIYq2CQ3jJ0DsYHfnXNQ"} >
-      <div className={containerClass}>
-      <div ref={ref} style={{ height: "100%", width: "100%" }} />{" "}
-      
-      </div>
-    </Wrapper>
+    <div className={containerClass}>
+      <GoogleMap
+        //  options={mapOptions}
+        options={{
+          clickableIcons: false,
+        }}
+        onClick={onClick}
+        zoom={14}
+        center={coord}
+        // mapTypeId={google.maps.MapTypeId.ROADMAP}
+        mapContainerStyle={{ width: "100%", height: "100%" }}
+        onLoad={() => {
+        
+          console.log("map loaded");
+        }}
+      >
+        <MarkerF key={0} onLoad={()=>{
+          console.log("marker loaded")
+         
+        }} position={{ lat: latitude, lng:longitude }}>
+       
+        </MarkerF>
+      </GoogleMap>
+    </div>
   );
 };
 
-export default Map
+export default Map;

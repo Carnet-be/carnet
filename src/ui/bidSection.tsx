@@ -8,6 +8,7 @@ import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
 import {PersonIcon} from '@ui/icons'
 import moment from "moment";
+import { number } from "zod";
 type BidSection = {
   auction: TAuction;
   isTimeOut:boolean
@@ -54,10 +55,11 @@ const BidSection = ({ auction ,isTimeOut}: BidSection) => {
         onAddBidSucces={() => {
           refetch();
         }}
+        number={auction.bids.length}
         auctionId={auction.id}
       />}
       <div className="w-full space-y-2 overflow-scroll">
-        {bids.reverse().map((b, i) => {
+        {bids.map((b, i) => {
           return (
             <div key={i} className={cx("flex flex-row items-center justify-between border-t-2 pt-2")}>
               <div>
@@ -77,8 +79,9 @@ type AddBidPros = {
   start: number;
   onAddBidSucces: () => void;
   auctionId: string;
+  number:number
 };
-const AddBid = ({ start, onAddBidSucces, auctionId }: AddBidPros) => {
+const AddBid = ({ start, onAddBidSucces, auctionId,number }: AddBidPros) => {
   const [price, setprice] = useState(start + 100);
   const { mutate: addBid, isLoading } = trpc.bidder.add.useMutation({
     onError(error) {
@@ -90,7 +93,7 @@ const AddBid = ({ start, onAddBidSucces, auctionId }: AddBidPros) => {
       onAddBidSucces();
     },
   });
-  const onAddBid = () => addBid({ price, auctionId });
+  const onAddBid = () => addBid({ price, auctionId,number:number+1 });
   return (
     <>
       {" "}

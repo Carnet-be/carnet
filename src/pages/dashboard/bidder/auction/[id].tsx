@@ -5,6 +5,7 @@ import {
   type GetServerSideProps,
 } from "next";
 
+import Map from "@ui/components/map";
 import Slider from "react-slick";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import BigTitle from "@ui/components/bigTitle";
@@ -57,14 +58,14 @@ const auct:Auction=await prisma?.auction.findUnique({
       id: id,
     },}).then((res) => JSON.parse(JSON.stringify(res)))
 
-  if(auct.state!=="published"){
-    return {
-      redirect: {
-        destination: "/dashboard/bidder/home",
-        permanent: true,
-      },
-    };
-  }
+  // if(auct.state!=="published"){
+  //   return {
+  //     redirect: {
+  //       destination: "/dashboard/bidder/home",
+  //       permanent: true,
+  //     },
+  //   };
+  // }
   return {
     props: { id },
   };
@@ -274,6 +275,22 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
         endDate={auction.end_date!}
       />
       <BidSection auction={auction} isTimeOut={isTimeOut}/>
+      <Map
+            options={{ zoomControl: false }}
+            latitude={auction.address.lat}
+            longitude={auction.address.lon}
+            onClick={() => {
+              // console.log(el);
+              // if(el.latLng){
+              // setData({
+              //   ...data,
+              //   lat: el.latLng.lat(),
+              //   lon: el.latLng.lng(),
+              // });
+            //}
+            }}
+            containerClass={"w-full h-[400px] bg-red-100 mt-10"}
+          />
     </div>
   );
 };
