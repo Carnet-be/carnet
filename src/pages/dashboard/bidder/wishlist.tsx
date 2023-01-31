@@ -32,6 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     props: {},
   };
 };
+//
 const WishList = () => {
   const { data: auctions, refetch } = trpc.auctionnaire.getAuctions.useQuery({
     filter: "mine",
