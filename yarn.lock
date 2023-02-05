@@ -282,19 +282,19 @@
   dependencies:
     "@cloudinary/html" "^1.7.0"
 
-"@cloudinary/transformation-builder-sdk@^1.0.0":
-  "integrity" "sha512-BqhTqIwPTyQ4hE0NjKXf/bF7VAjwe2ZHNuypdG6oQ6bDoiLTOSzdAZsg0jFndureQiVPavBKOzQTjHImp45z/g=="
-  "resolved" "https://registry.npmjs.org/@cloudinary/transformation-builder-sdk/-/transformation-builder-sdk-1.1.0.tgz"
-  "version" "1.1.0"
+"@cloudinary/transformation-builder-sdk@^1.2.0":
+  "integrity" "sha512-bcgc4YD9Tfj6F+QLNkw8CwCZ9j8yO7tBouleKvpQp+whYuVq/bIuYF0P4wr5ndcrQqYbOJYk6TAq4sHlnWppsg=="
+  "resolved" "https://registry.npmjs.org/@cloudinary/transformation-builder-sdk/-/transformation-builder-sdk-1.2.1.tgz"
+  "version" "1.2.1"
   dependencies:
     "@cloudinary/url-gen" "^1.7.0"
 
-"@cloudinary/url-gen@^1.7.0", "@cloudinary/url-gen@^1.8.7":
-  "integrity" "sha512-07Hqy3weuuRm8ZCwn/HejrfiC8MiC/dK13IWm01FslhWek55jUTsKqR5xMwYQPX8+MWpLXd/EI/FiwqWaB5dDA=="
-  "resolved" "https://registry.npmjs.org/@cloudinary/url-gen/-/url-gen-1.8.7.tgz"
-  "version" "1.8.7"
+"@cloudinary/url-gen@^1.7.0", "@cloudinary/url-gen@^1.9.0":
+  "integrity" "sha512-rw2/KkWsb2oBTQX58E7Zm1pOb3+K7tqHPxms2C7P49qzJbqG+y/u1StwfqCrE94mZMr8q+o47cHxoQJMwWz1fQ=="
+  "resolved" "https://registry.npmjs.org/@cloudinary/url-gen/-/url-gen-1.9.0.tgz"
+  "version" "1.9.0"
   dependencies:
-    "@cloudinary/transformation-builder-sdk" "^1.0.0"
+    "@cloudinary/transformation-builder-sdk" "^1.2.0"
 
 "@ctrl/tinycolor@^3.4.0":
   "integrity" "sha512-tlJpwF40DEQcfR/QF+wNMVyGMaO9FQp6Z1Wahj4Gk3CJQYHwA2xVG7iKDFdW6zuxZY9XWOpGcfNCTsX4McOsOg=="

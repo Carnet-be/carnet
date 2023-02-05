@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
+import { BRAND } from "@data/internal";
 import { TAuction } from "@model/type";
 import { AuctionState } from "@prisma/client";
 import { TRPCClientError } from "@trpc/client";
@@ -39,7 +40,6 @@ export const auctionnaireRouter = router({
   addAuction: publicProcedure
     .input(z.any())
     .mutation(async ({ input, ctx }) => {
-   
       const data1: Data1 = input.data1;
       const data3: Data3 = input.data3;
       const data4: Data4 = input.data4;
@@ -66,10 +66,17 @@ export const auctionnaireRouter = router({
         }
       }
       console.log("images", data6.images);
+      const name=
+      BRAND[data1.brand || 0]?.title +
+      " " +
+      BRAND[data1.brand || 0]?.model[data1.model || 0] +
+      " " +
+      data1.buildYear
+      console.log("name",name)
       return await ctx.prisma.auction.create({
         data: {
           id,
-          name: data6.name!,
+          name,
           brand: data1.brand!,
           model: data1.model!,
           build_year: data1.buildYear!,
@@ -119,14 +126,16 @@ export const auctionnaireRouter = router({
         },
       });
     }),
-    pauseAuction: publicProcedure.input(z.string()).mutation(async ({ input, ctx }) => {
+  pauseAuction: publicProcedure
+    .input(z.string())
+    .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.auction.update({
         where: { id: input },
         data: {
           state: AuctionState.pause,
           pause_date: new Date(),
-        }
-      })
+        },
+      });
     }),
   updateAuction: publicProcedure
     .input(z.any())
@@ -157,7 +166,7 @@ export const auctionnaireRouter = router({
         (im) => !idsImageAdd.includes(im.fileKey)
       );
       const auction_id = auction.id;
-      const state:AuctionState=input.state
+      const state: AuctionState = input.state;
       return ctx.prisma.$transaction([
         ctx.prisma.auction.update({
           where: { id: auction.id },
@@ -215,7 +224,7 @@ export const auctionnaireRouter = router({
   getAuctions: publicProcedure
     .input(
       z.object({
-        state: z.enum(["pending", "published","pause"]).nullish(),
+        state: z.enum(["pending", "published", "pause"]).nullish(),
         filter: z.enum([
           "new",
           "trending",
