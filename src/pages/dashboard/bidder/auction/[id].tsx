@@ -128,7 +128,7 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
     <div className="flex  w-full flex-grow flex-col gap-3 lg:w-[57%]">
       <div
         ref={imgRef}
-        className="flex h-[500px] w-full flex-col items-center justify-center bg-white"
+        className="flex h-[500px] w-full flex-col items-center justify-center bg-white overflow-hidden"
       >
         <Image src={cloudy.image(noImg?NO_IMAGE_URL:auction.images[imgP]?.fileKey).resize(fill(undefined,400)).toURL()} alt="photo" width={imgSize} height={400} />
       </div>
