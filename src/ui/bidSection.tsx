@@ -13,11 +13,20 @@ type BidSection = {
   auction: TAuction;
   isTimeOut:boolean
 };
+const getMax=(bids:TBid[])=>{
+  let max=0
+  bids.forEach(bid=>{
+    if(bid.montant>max){
+      max=bid.montant
+    }
+  })
+  return max
+}
 const BidSection = ({ auction ,isTimeOut}: BidSection) => {
   const getBidPrice = (bids: TBid[]) =>
     bids.length <= 0
       ? auction.expected_price / 2
-      : bids[bids.length - 1]?.montant;
+      : getMax(bids);
   const [bids, setbids] = useState(auction.bids);
   const [bidPrice, setbidPrice] = useState<number | undefined>(
     getBidPrice(auction.bids)
@@ -28,7 +37,10 @@ const BidSection = ({ auction ,isTimeOut}: BidSection) => {
     refetch,
   } = trpc.bidder.getAuctionBidOnly.useQuery(auction.id, {
     enabled: false,
-    onSettled(data, error) {
+    onSuccess(data) {
+      setbids(data?.bids as TBid[]);
+    },
+    onSettled(data) {
       setbids(data?.bids as TBid[]);
     },
   });
