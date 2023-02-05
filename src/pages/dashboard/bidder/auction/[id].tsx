@@ -53,19 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
-const auct:Auction=await prisma?.auction.findUnique({
-    where: {
-      id: id,
-    },}).then((res) => JSON.parse(JSON.stringify(res)))
 
-  // if(auct.state!=="published"){
-  //   return {
-  //     redirect: {
-  //       destination: "/dashboard/bidder/home",
-  //       permanent: true,
-  //     },
-  //   };
-  // }
   return {
     props: { id },
   };

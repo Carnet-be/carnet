@@ -69,14 +69,14 @@ export const SwitcherAuctions = () => {
       title: "Pause",
       route: "/admin/dashboard/auctions/pause",
     },
-    {
-      title: "Confirmation",
-      route: "/admin/dashboard/auctions/pause",
-    },
-    {
-      title: "Completed",
-      route: "/admin/dashboard/auctions/pause",
-    },
+    // {
+    //   title: "Confirmation",
+    //   route: "/admin/dashboard/auctions/pause",
+    // },
+    // {
+    //   title: "Completed",
+    //   route: "/admin/dashboard/auctions/pause",
+    // },
   ];
   return (
     <div className="tabs tabs-boxed my-4 gap-4 px-3 py-1">
