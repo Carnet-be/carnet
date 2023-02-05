@@ -228,8 +228,7 @@ const CreateAuction = ({
         lat: lat || undefined,
         lon: lon || undefined,
       };
-      console.clear();
-      console.log(lat,lon)
+     
       setdata1(d1);
       setdata3(d3);
       setdata4(d4);
