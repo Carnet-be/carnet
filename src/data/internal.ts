@@ -21,53 +21,49 @@ export type TBrand = {
 //   "Pickup Truck",
 //   "45 km auto",
 export const CARROSSERIE = [
- {
-  title: "Sedan",
-  img:"Sedan"
- },
   {
-    title:"Hatchback",
-    img:"Hatchback"
+    title: "Sedan",
+    img: "Sedan",
   },
   {
-    title:" Break",img:"Station Wagon"
+    title: "Hatchback",
+    img: "Hatchback",
   },
   {
-    title:"SUV",
-    img:"SUV"
+    title: " Break",
+    img: "Station Wagon",
   },
   {
-    title:"Convertible",
-    img:"Convertible"
+    title: "SUV",
+    img: "SUV",
   },
   {
-title: "Coupe",
-img:"Coupe"
+    title: "Convertible",
+    img: "Convertible",
   },
-{title: "Off-road",
-   img: "Off-road",
-},
-{
-  title:"Van",
-  img:"Van",
-},
+  {
+    title: "Coupe",
+    img: "Coupe",
+  },
+  { title: "Off-road", img: "Off-road" },
+  {
+    title: "Van",
+    img: "Van",
+  },
 
- {
-  title:"Minivan",
-  img:"Minivan"
- },
- {
-  title:"Minibus",
-  img:"Minibus"
- },
-{
-  title:"Pickup Truck",
-  img:"Pickup Truck",
-},
-{title: "45 km auto",
-img:"Micro"}
-  
- 
+  {
+    title: "Minivan",
+    img: "Minivan",
+  },
+  {
+    title: "Minibus",
+    img: "Minibus",
+  },
+  {
+    title: "Pickup Truck",
+    img: "Pickup Truck",
+  },
+  { title: "45 km auto", img: "Micro" },
 ];
 
 export const BRAND: Array<TBrand> = [
@@ -116,7 +112,6 @@ export const INTERIOR_LINING = [
   "Skai / Artificial leather",
 ];
 
-
 export const HANDLING: { [index: string]: string } = {
   1: "Doesn't start nor drive",
   2: "Starts but doesn't drive",
@@ -147,6 +142,65 @@ export const TIRES: { [index: string]: string } = {
   5: "Less than 5000 kms and still in perfect condition!",
 };
 
-export const COLORS=[
-  "#191716","#AF9BB6","#e76f51","#457b9d","#edede9","#3a5a40","#9a8c98","#023e8a","#370617","#faa307","#fee440","#001524"
-]
+export const COLORS = [
+  {
+    name: "Red",
+    value: "#FF0000",
+  },
+  {
+    name: "Blue",
+    value: "#0000FF",
+  },
+  {
+    name: "Green",
+    value: "#008000",
+  },
+  {
+    name: "Yellow",
+    value: "#FFFF00",
+  },
+  {
+    name: "Black",
+    value: "#000000",
+  },
+  {
+    name: "White",
+    value: "#FFFFFF",
+  },
+  {
+    name: "Grey",
+    value: "#808080",
+  },
+  {
+    name: "Brown",
+    value: "#A52A2A",
+  },
+  {
+    name: "Orange",
+    value: "#FFA500",
+  },
+  {
+    name: "Purple",
+    value: "#800080",
+  },
+  {
+    name: "Pink",
+    value: "#FFC0CB",
+  },
+  {
+    name: "Silver",
+    value: "#C0C0C0",
+  },
+  {
+    name: "Gold",
+    value: "#FFD700",
+  },
+  {
+    name: "Beige",
+    value: "#F5F5DC",
+  },
+  {
+    name: "Maroon",
+    value: "#800000",
+  },
+];

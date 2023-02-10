@@ -110,17 +110,17 @@ const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:
             </Select>
           </FormControl>
         </div>
-        <span className="translate-x-2 translate-y-3">Color</span>
         <Slider {...settings} className="">
           {COLORS.map((o, i) => {
-            const isActive = data.color == o;
+            const isActive = data.color == o.value;
             return (
               <BodyItem
                 key={i}
+                name={o.name}
                 isActive={isActive}
-                color={o}
+                color={o.value}
                 onClick={() => {
-                  setData({ ...data, color: o });
+                  setData({ ...data, color: o.value });
                 }}
               />
             );
@@ -134,23 +134,20 @@ const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:
 type BodyItemProps = {
   isActive: boolean;
   color: string;
-
+name:string,
   onClick: () => void;
 };
-const BodyItem = ({ isActive, color, onClick }: BodyItemProps) => {
+const BodyItem = ({ isActive, color, onClick,name }: BodyItemProps) => {
   return (
    <div className="flex flex-col items-center gap-1">
      <div
       onClick={onClick}
       style={{ backgroundColor: color }}
-      className={cx("h-[50px] w-[50px] cursor-pointer rounded-full", {
+      className={cx("h-[50px] w-[50px] cursor-pointer rounded-full  border", {
         "border-[3px] border-primary": isActive,
       })}
     ></div>
-    <AiFillCheckCircle className={cx("text-xl",{
-      "text-white":!isActive,
-      "text-primary":isActive,
-    })}/>
+      <span className={cx("text-[10px]",isActive&&"text-white bg-primary rounded-md px-2 py-[1px]")}>{name}</span>
    </div>
   );
 };

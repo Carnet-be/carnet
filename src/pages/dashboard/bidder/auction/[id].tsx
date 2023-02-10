@@ -14,7 +14,7 @@ import { trpc } from "../../../../utils/trpc";
 import { toast } from "react-hot-toast";
 import Loading from "@ui/components/loading";
 import type { TAuction } from "@model/type";
-import { BRAND, CARROSSERIE, TRANSMISSION } from "@data/internal";
+import { BRAND, CARROSSERIE, COLORS, TRANSMISSION } from "@data/internal";
 import Image from "next/image";
 import cx from "classnames";
 import CountDown from "@ui/components/countDown";
@@ -228,7 +228,7 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title="Color"
+            title={COLORS.filter((c)=>c.value===auction.color)[0]?.name || "Color"}
            
             value={auction.color || "#fffff"}
             isColor
@@ -245,14 +245,35 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
             size={110}
             title="Horse Power"
             img={"/assets/horse.png"}
-            value={auction.specs.cc + " cc"}
+            value={auction.specs.cv?auction.specs.cv?.toString():"-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
             title="Mileage"
             img={"/assets/mileage.png"}
-            value={auction.specs.kilometrage + " km/h"}
+            value={auction.specs.kilometrage||"-" + " km/h"}
+          />
+            <MiniCard
+            containerClass="w-[48%] lg:w-[30%]"
+            size={110}
+            title="Emission co2"
+            img={"/assets/mileage.png"}
+            value={auction.specs.co2||"-"}
+          />
+            <MiniCard
+            containerClass="w-[48%] lg:w-[30%]"
+            size={110}
+            title="Doors"
+            img={"/assets/mileage.png"}
+            value={auction.specs.doors?.toString()||"-"}
+          />
+            <MiniCard
+            containerClass="w-[48%] lg:w-[30%]"
+            size={110}
+            title="Engine Size "
+            img={"/assets/mileage.png"}
+            value={auction.specs.cc||"-"}
           />
         </div>
       </div>
