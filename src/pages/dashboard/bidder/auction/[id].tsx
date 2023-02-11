@@ -23,15 +23,15 @@ import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { SampleNextArrow, SamplePrevArrow } from "@ui/createAuction/step3";
 import { Chip } from "@mui/material";
-import type { Auction, AuctionOptions } from '@prisma/client';
-import { HANDLING } from '@data/internal';
-import { EXTERIOR } from '@data/internal';
-import { INTERIOR } from '@data/internal';
-import { TIRES } from '@data/internal';
+import type { Auction, AuctionOptions } from "@prisma/client";
+import { HANDLING } from "@data/internal";
+import { EXTERIOR } from "@data/internal";
+import { INTERIOR } from "@data/internal";
+import { TIRES } from "@data/internal";
 import { StarIcon } from "@ui/icons";
 import cloudy from "@utils/cloudinary";
 import { NO_IMAGE_URL } from "@ui/components/auctionCard";
-import { fill } from '@cloudinary/url-gen/actions/resize';
+import { fill } from "@cloudinary/url-gen/actions/resize";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -61,9 +61,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 const Home = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  const {
-    data: auction,
-  } = trpc.auctionnaire.get.useQuery(props.id, {
+  const { data: auction } = trpc.auctionnaire.get.useQuery(props.id, {
     onError: (err) => {
       console.log(err);
       toast.error("Error lors de la recupération des données");
@@ -87,7 +85,7 @@ const Home = (
 };
 
 const LeftSide = ({ auction }: { auction: TAuction }) => {
-  const noImg=auction.images.length<=0
+  const noImg = auction.images.length <= 0;
   const [imgP, setImgP] = useState(0);
   const [imgSize, setimgSize] = useState(0);
   const imgRef = useRef<HTMLDivElement>(null);
@@ -105,49 +103,67 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
   };
-  const rating=[{
-    title:"Handling",
-    list:HANDLING,
-    rate:auction.rating.handling
-  },{
-    title:"Exterior",
-    list:EXTERIOR,
-    rate:auction.rating.exterior
-  },
-  {
-    title:"Interior",
-    list:INTERIOR,
-    rate:auction.rating.interior
-  },
-  {
-    title:"Tires",
-    list:TIRES,
-    rate:auction.rating.tires
-  },]
+  const rating = [
+    {
+      title: "Handling",
+      list: HANDLING,
+      rate: auction.rating.handling,
+    },
+    {
+      title: "Exterior",
+      list: EXTERIOR,
+      rate: auction.rating.exterior,
+    },
+    {
+      title: "Interior",
+      list: INTERIOR,
+      rate: auction.rating.interior,
+    },
+    {
+      title: "Tires",
+      list: TIRES,
+      rate: auction.rating.tires,
+    },
+  ];
   return (
     <div className="flex  w-full flex-grow flex-col gap-3 lg:w-[57%]">
       <div
         ref={imgRef}
-        className="flex h-[500px] w-full flex-col items-center justify-center bg-white overflow-hidden"
+        className="flex h-[500px] w-full flex-col items-center justify-center overflow-hidden bg-white"
       >
-        <Image src={cloudy.image(noImg?NO_IMAGE_URL:auction.images[imgP]?.fileKey).resize(fill(undefined,400)).toURL()} alt="photo" width={imgSize} height={400} />
+        <Image
+          src={cloudy
+            .image(noImg ? NO_IMAGE_URL : auction.images[imgP]?.fileKey)
+            .resize(fill(undefined, 400))
+            .toURL()}
+          alt="photo"
+          width={imgSize}
+          height={400}
+        />
       </div>
-      <div className={cx("bg-white px-10 py-6",{hidden:noImg})}>
+      <div className={cx("bg-white px-10 py-6", { hidden: noImg })}>
         <Slider {...settings} className="mb-4">
-          {auction.images.map((im)=>im.fileKey).map((m, i) => {
-            const isActive = imgP == i;
-            return (
-              <div
-                key={i}
-                onClick={() => setImgP(i)}
-                className={cx("flex flex-col items-center p-3 rounded-lg", {
-                "border": isActive,
-                })}
-              >
-                <Image src={cloudy.image(m).resize(fill(undefined, 120)).toURL()} alt="photo" width={140} height={120} />
-              </div>
-            );
-          })}
+          {auction.images
+            .map((im) => im.fileKey)
+            .map((m, i) => {
+              const isActive = imgP == i;
+              return (
+                <div
+                  key={i}
+                  onClick={() => setImgP(i)}
+                  className={cx("flex flex-col items-center rounded-lg p-3", {
+                    border: isActive,
+                  })}
+                >
+                  <Image
+                    src={cloudy.image(m).resize(fill(undefined, 120)).toURL()}
+                    alt="photo"
+                    width={140}
+                    height={120}
+                  />
+                </div>
+              );
+            })}
         </Slider>
       </div>
       <div className="my-3 flex flex-col gap-3 bg-white p-2">
@@ -155,45 +171,60 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
         <p>{auction.description}</p>
       </div>
       <div className="my-3 flex flex-col gap-3 bg-white p-2">
-      
         <h4 className="text-primary">Options</h4>
         <div className="flex flex-wrap gap-3">
-          {Object.keys(auction.options).filter((o)=>auction.options[o as keyof AuctionOptions]===true).map((k,i)=>{
-            return <Chip key={i} label={k.replaceAll("_"," ")} />
-          })}
+          {Object.keys(auction.options)
+            .filter((o) => auction.options[o as keyof AuctionOptions] === true)
+            .map((k, i) => {
+              return <Chip key={i} label={k.replaceAll("_", " ")} />;
+            })}
         </div>
       </div>
       <div className="my-3 flex flex-col gap-3 bg-white p-2">
         <h4 className="text-primary">Rating</h4>
-        {rating.filter((r)=>r.rate!==null).map((r,i)=>{
-          return <div key={i} className="flex flex-row gap-2 items-center">
-         <h6 className="min-w-[100px]">{r.title} :</h6>
-         <div>
-         <div className="flex flex-row">
-         {[1,2,3,4,5].map((s,i)=>{
-            return <StarIcon key={i} className={cx("text-xl m-1",i<=(r.rate||0)?"text-yellow-500":"opacity-50")}/>
+        {rating
+          .filter((r) => r.rate !== null)
+          .map((r, i) => {
+            return (
+              <div key={i} className="flex flex-row items-center gap-2">
+                <h6 className="min-w-[100px]">{r.title} :</h6>
+                <div>
+                  <div className="flex flex-row">
+                    {[1, 2, 3, 4, 5].map((s, i) => {
+                      return (
+                        <StarIcon
+                          key={i}
+                          className={cx(
+                            "m-1 text-xl",
+                            i <= (r.rate || 0)
+                              ? "text-yellow-500"
+                              : "opacity-50"
+                          )}
+                        />
+                      );
+                    })}
+                  </div>
+                  <span className="text-sm italic text-black/70">
+                    {r.list[r.rate || 0]}
+                  </span>
+                </div>
+              </div>
+            );
           })}
-         </div>
-         <span className="text-black/70 italic text-sm">
-          {r.list[r.rate||0]}
-         </span>
-         </div>
-          </div>
-        })}
       </div>
     </div>
   );
 };
 
 const RightSide = ({ auction }: { auction: TAuction }) => {
-  const [isTimeOut, setisTimeOut] = useState(false)
+  const [isTimeOut, setisTimeOut] = useState(false);
   const model = BRAND[auction.brand]?.model[auction.model];
   const carrosserie = CARROSSERIE[auction.specs.carrosserie || 0];
   const onTimeOut = () => {
-    setisTimeOut(true)
+    setisTimeOut(true);
     console.log("Time out, executing...");
   };
-  
+
   return (
     <div className=" w-full lg:w-[40%] ">
       <div className="w-full space-y-4 rounded-xl bg-grey p-3">
@@ -228,8 +259,7 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title={COLORS.filter((c)=>c.value===auction.color)[0]?.name || "Color"}
-           
+            title={"Color"}
             value={auction.color || "#fffff"}
             isColor
           />
@@ -245,61 +275,60 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
             size={110}
             title="Horse Power"
             img={"/assets/horse.png"}
-            value={auction.specs.cv?auction.specs.cv?.toString():"-"}
+            value={auction.specs.cv ? auction.specs.cv?.toString() : "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
             title="Mileage"
             img={"/assets/mileage.png"}
-            value={auction.specs.kilometrage||"-" + " km/h"}
+            value={auction.specs.kilometrage || "-" + " km/h"}
           />
-            <MiniCard
+          <MiniCard
             containerClass="w-[48%] lg:w-[30%] text-primary"
             size={110}
             title="Emission co2"
             img={"/assets/CO2.svg"}
-            value={auction.specs.co2||"-"}
+            value={auction.specs.co2 || "-"}
           />
-            <MiniCard
+          <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
             title="Doors"
             img={"/assets/Doors.svg"}
-            value={auction.specs.doors?.toString()||"-"}
+            value={auction.specs.doors?.toString() || "-"}
           />
-            <MiniCard
+          <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
             title="Engine Size "
             img={"/assets/engine.svg"}
-            value={auction.specs.cc||"-"}
+            value={auction.specs.cc || "-"}
           />
         </div>
       </div>
       <CountDown
         variant="primary"
         onTimeOut={onTimeOut}
-        
         endDate={auction.end_date!}
       />
-      <BidSection auction={auction} isTimeOut={isTimeOut}/>
+      <BidSection auction={auction} isTimeOut={isTimeOut} />
       <Map
-            options={{ zoomControl: false }}
-            latitude={auction.address.lat}
-            longitude={auction.address.lon}
-            onClick={() => {
-              // console.log(el);
-              // if(el.latLng){
-              // setData({
-              //   ...data,
-              //   lat: el.latLng.lat(),
-              //   lon: el.latLng.lng(),
-              // });
-            //}
-            }}
-            containerClass={"w-full h-[400px] bg-red-100 mt-10"}
-          />
+        options={{ zoomControl: false }}
+        latitude={auction.address.lat}
+        longitude={auction.address.lon}
+        onClick={() => {
+          // console.log(el);
+          // if(el.latLng){
+          // setData({
+          //   ...data,
+          //   lat: el.latLng.lat(),
+          //   lon: el.latLng.lng(),
+          // });
+          //}
+        }}
+        containerClass={"w-full h-[400px] bg-red-100 mt-10"}
+      />
     </div>
   );
 };
@@ -318,20 +347,28 @@ const MiniCard = (props: {
   return (
     <div
       className={cx(
-        "flex flex-col items-center justify-between rounded-xl bg-base-100 py-2 px-4  text-primary gap-1",
+        "flex flex-col items-center justify-between gap-1 rounded-xl bg-base-100 py-2  px-4 text-primary",
         containerClass,
         { [`h-[${size}px]`]: size }
       )}
     >
-      <span className="text-gray-500 text-[10px]">{title ? title : ""}</span>
-    {img&&   <div className={cx("relative h-[30px] w-full", imgClass)}>
-        <Image alt="logo" src={img} fill className="object-contain" />
-      </div>}
+      <span className="text-[10px] text-gray-500">{title ? title : ""}</span>
+      {img && (
+        <div className={cx("relative h-[30px] w-full", imgClass)}>
+          <Image alt="logo" src={img} fill className="object-contain" />
+        </div>
+      )}
       {isColor ? (
-        <div
-          style={{ backgroundColor: value }}
-          className={cx("h-8 w-8 rounded-full border -translate-y-2")}
-        ></div>
+        <>
+          <div
+            style={{ backgroundColor: value }}
+            className={cx("h-8 w-8 rounded-full border")}
+          ></div>
+          <span className="text-[12px]">
+            {COLORS.filter((c) => c.value === value)[0]?.name ||
+              ""}
+          </span>
+        </>
       ) : (
         <span className="text-[12px]">{value}</span>
       )}
