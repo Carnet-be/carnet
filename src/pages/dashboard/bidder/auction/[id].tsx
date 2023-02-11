@@ -255,7 +255,7 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
             value={auction.specs.kilometrage||"-" + " km/h"}
           />
             <MiniCard
-            containerClass="w-[48%] lg:w-[30%]"
+            containerClass="w-[48%] lg:w-[30%] text-primary"
             size={110}
             title="Emission co2"
             img={"/assets/CO2.svg"}
