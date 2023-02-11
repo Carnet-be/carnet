@@ -70,8 +70,8 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,re
     <div onClick={()=>mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)} className={cx("flex h-[250px] w-[310px] flex-col  rounded-2xl bg-base-100 p-3 drop-shadow-md z-50",{
       "cursor-pointer":!mineAuction
     })}>
-      <div className="relative w-full flex-grow p-2">
-        <Image src={cloudy.image(src).toURL()} alt="image" fill className="object-contain" />
+      <div className="relative w-full flex-grow">
+        <Image src={cloudy.image(src).toURL()} alt="image" fill className="object-contain py-3 px-3" />
       
       </div>
       <div className="flex  w-full flex-col justify-between gap-[0px]">

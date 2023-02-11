@@ -258,21 +258,21 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
             title="Emission co2"
-            img={"/assets/mileage.png"}
+            img={"/assets/CO2.svg"}
             value={auction.specs.co2||"-"}
           />
             <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
             title="Doors"
-            img={"/assets/mileage.png"}
+            img={"/assets/Doors.svg"}
             value={auction.specs.doors?.toString()||"-"}
           />
             <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
             title="Engine Size "
-            img={"/assets/mileage.png"}
+            img={"/assets/engine.svg"}
             value={auction.specs.cc||"-"}
           />
         </div>
