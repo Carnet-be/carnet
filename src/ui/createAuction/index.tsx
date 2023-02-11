@@ -121,6 +121,9 @@ const CreateAuction = ({
   const [isNext, setisNext] = useState(false);
   const [isValid, setisValid] = useState(false);
   const [data1, setdata1] = useState<Data1>({
+    brand:auction?.brand,
+    model:auction?.model,
+    buildYear: auction?.build_year,
     fuel: "Gasoline",
   });
   const [data3, setdata3] = useState<Data3>({});
@@ -186,8 +189,8 @@ const CreateAuction = ({
       } = specs;
       console.log(specs);
       const d3: Data3 = {
-        carrosserie: carrosserie || undefined,
-        transmission: transmission || undefined,
+        carrosserie: carrosserie===null?undefined:carrosserie,
+        transmission: transmission===null?undefined:transmission,
         cc: parseInt(cc || "") || undefined,
         co2: parseInt(co2 || "") || undefined,
         cv: parseInt(cv || "") || undefined,
@@ -229,11 +232,12 @@ const CreateAuction = ({
         lon: lon || undefined,
       };
      
-      setdata1(d1);
+    
       setdata3(d3);
       setdata4(d4);
       setdata5(d5);
       setdata6(d6);
+      setdata1(d1);
     } else {
       console.log("no Edit");
     }
@@ -253,10 +257,7 @@ const CreateAuction = ({
           data3.carrosserie !== undefined &&
           data3.transmission !== undefined &&
           data3.cc !== undefined &&
-          data3.cv !== undefined &&
-          data3.version !== undefined &&
-          data3.doors !== undefined &&
-          data3.co2 !== undefined
+          data3.doors !== undefined
           ? true
           : false
         : true;
@@ -341,7 +342,7 @@ const CreateAuction = ({
          {auction?<StepperEdit step={step}/> :<Stepper step={step} /> } 
 
           {auction? <>
-            {step == 1 && <Step1 data={data1} setData={setdata1} disabled={auction==undefined?false:true}/>}
+          {step == 1 && <Step1 data={data1} setData={setdata1} disabled={auction==undefined?false:true}/>}
         
           {step == 2 && <Step3 data={data3} setData={setdata3} />}
           {step == 3 && <Step4 data={data4} setData={setdata4} />}
@@ -433,14 +434,17 @@ const CreateAuction = ({
 };
 
 export const Stepper = ({ step }: { step: number }) => {
+const {data:session}=useSession()
   return (
     <ul className="steps w-full">
       {Array.from({ length: 6 }, (_, i) => i + 1).map((k, i) => {
         return (
           <li
             key={k}
+
             className={cx("step", {
               "step-primary": k <= step,
+              "hidden":session&&k==2
             })}
           >
             {k === 1 && "Identify"}

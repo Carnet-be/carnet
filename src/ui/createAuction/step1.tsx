@@ -11,7 +11,17 @@ import { SampleNextArrow, SamplePrevArrow } from "./step3";
 import cx from "classnames";
 import { BsCheck } from "react-icons/bs";
 import { AiFillCheckCircle } from 'react-icons/ai';
+import { useEffect, useState } from "react";
 const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:boolean }) => {
+
+ const [time, setTime] = useState(Date.now());
+
+  useEffect(() => {
+  const interval = setInterval(() => setTime(Date.now()), 100);
+  return () => {
+    clearInterval(interval);
+  };
+}, []);
   const settings = {
     dots: true,
     infinite: false,
@@ -27,12 +37,13 @@ const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:
       <h5>Vous voulez vendre votre voiture?</h5>
       <div className="flex w-full flex-col gap-4 py-4  lg:w-[80%]">
         <div className="flex flex-row gap-3">
-          <FormControl className="w-1/2">
+          <FormControl required className="w-1/2">
             <InputLabel htmlFor="brand">Marque</InputLabel>
             <Select
               value={data.brand}
               disabled={disabled}
               label="Marque"
+              defaultValue={data.brand}
               onChange={(e) => {
                 console.log(typeof e.target.value);
 
@@ -51,7 +62,7 @@ const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:
               ))}
             </Select>
           </FormControl>
-          <FormControl className="w-1/2">
+          <FormControl required className="w-1/2">
             <InputLabel htmlFor="model">Modèle</InputLabel>
             <Select
               value={data.model}
@@ -71,7 +82,7 @@ const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:
         </div>
 
         <div className="flex flex-row gap-3">
-          <FormControl className="w-1/2">
+          <FormControl  required className="w-1/2">
             <InputLabel htmlFor="brand">Année</InputLabel>
             <Select
               value={data.buildYear}
@@ -94,7 +105,7 @@ const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:
                 ))}
             </Select>
           </FormControl>
-          <FormControl className="w-1/2">
+          <FormControl required className="w-1/2">
             <InputLabel htmlFor="model">Carburant</InputLabel>
             <Select
               value={data.fuel}

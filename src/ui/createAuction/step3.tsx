@@ -77,6 +77,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
   nextArrow: <SampleNextArrow />,
   prevArrow: <SamplePrevArrow />
   };
+  
   return (
     <>
     <div className="flex flex-col items-center gap-4">
@@ -94,7 +95,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
       </Slider>
     
         <div className="flex w-full flex-row items-center gap-3">
-        <FormControl className="w-1/2">
+        <FormControl required className="w-1/2">
             <InputLabel htmlFor="brand">Doors</InputLabel>
             <Select
               value={data.doors}
@@ -113,7 +114,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
               ))}
             </Select>
           </FormControl>
-          <FormControl className="w-1/2">
+          <FormControl required className="w-1/2">
             <InputLabel htmlFor="model">Transmission</InputLabel>
             <Select
               value={data.transmission}
@@ -133,7 +134,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
          
         </div>
         <div className="flex w-full flex-row items-center gap-2 justify-center">
-        <FormControl className="flex-grow">
+        <FormControl required className="flex-grow">
            <InputLabel htmlFor="model">Engine Size</InputLabel>
             <OutlinedInput
             label="Engine size"
@@ -161,7 +162,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
               endAdornment={<InputAdornment position="end"><span className="mesure"> CV</span></InputAdornment>}
             />
           </FormControl>
-          <FormControl className="flex-grow">
+          <FormControl required className="flex-grow">
           <InputLabel htmlFor="model">Kilométrage</InputLabel>
             <OutlinedInput
               id="outlined-adornment-weight"
@@ -193,7 +194,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
               endAdornment={<InputAdornment position="end" className="cursor-pointer">      <label htmlFor="find-verison" className="btn btn-ghost btn-xs"><RiErrorWarningLine className="text-2xl text-blue-400"> </RiErrorWarningLine></label></InputAdornment>}
             />
           </FormControl>
-          <FormControl className="flex-grow">
+          <FormControl  className="flex-grow">
           <InputLabel htmlFor="model">Emission CO₂</InputLabel>
             <OutlinedInput
               id="outlined-adornment-weight"
