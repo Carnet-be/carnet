@@ -67,7 +67,7 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,re
     <>
     {mineAuction&& <CreateAuction auction={auction}  isEdit={true} id={auction.id} refetch={refetch}/>}
   
-    <div onClick={()=>mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)} className={cx("flex h-[250px] w-[310px] flex-col gap-5  rounded-2xl bg-base-100 drop-shadow-md z-50 overflow-hidden",{
+    <div onClick={()=>mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)} className={cx("flex h-[270px] w-[310px] flex-col gap-[40px]  rounded-2xl bg-base-100 drop-shadow-md z-50 overflow-hidden",{
       "cursor-pointer":!mineAuction
     })}>
       <div className="relative w-full flex-grow ">
@@ -77,7 +77,7 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,re
       <div className="flex px-2 pb-2 w-full flex-col justify-between gap-[0px]">
         <div className="flex flex-row items-end justify-between gap-1  text-primary">
           <div className="flex-grow font-semibold">
-            <span>{auction.name}</span>
+            <span className="cursor-pointer hover:underline" onClick={()=>!mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)}>{auction.name}</span>
           </div>
         {auction.state!="published"?<span className="text-xs opacity-50">{auction.state}</span>:  <CountDown variant="secondary" onTimeOut={()=>{console.log("is time out")}} endDate={auction.end_date||auction.createAt}/>}
         </div>
