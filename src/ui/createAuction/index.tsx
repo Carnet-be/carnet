@@ -30,12 +30,12 @@ export type Data1 = {
 export type Data3 = {
   carrosserie?: number;
   transmission?: number;
-  doors?: number;
-  cv?: number;
-  cc?: number;
+  doors?: string;
+  cv?: string;
+  cc?: string;
   version?: string;
-  co2?: number;
-  kilometrage?: number;
+  co2?: string;
+  kilometrage?: string;
 };
 export type Data4 = {
   handling?: number;
@@ -191,11 +191,11 @@ const CreateAuction = ({
       const d3: Data3 = {
         carrosserie: carrosserie===null?undefined:carrosserie,
         transmission: transmission===null?undefined:transmission,
-        cc: parseInt(cc || "") || undefined,
-        co2: parseInt(co2 || "") || undefined,
-        cv: parseInt(cv || "") || undefined,
-        kilometrage: parseInt(kilometrage || "") || undefined,
-        doors: doors || undefined,
+        cc:cc|| undefined,
+        co2: co2 ||  undefined,
+        cv: cv || undefined,
+        kilometrage: kilometrage || undefined,
+        doors: doors?doors.toString():"0" || undefined,
         version: version || undefined,
       };
       const { handling, tires, exterior, interior } = rating;
@@ -409,7 +409,7 @@ const CreateAuction = ({
               onClick={onValid}
               className={cx("btn-primary btn-sm btn", {
                 "btn-disabled": !isValid || isLoading || isUpdating,
-                hidden: step !== (auction?5: 6),
+                hidden:auction|| step !== (auction?5: 6),
               })}
             >
               valider
@@ -417,7 +417,7 @@ const CreateAuction = ({
             <button
               onClick={() =>
                 onPublish({
-                  state: "published" ,
+                  state:(auction?.state == "pause" &&step==5) || step==5? "published" :auction?.state||"published",
                 })
               }
               className={cx("btn-warning btn-sm btn", {

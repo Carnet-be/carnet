@@ -162,7 +162,7 @@ const Admin = () => {
         <div className="flex flex-row gap-6">
         <div
           onClick={() => router.push("/")}
-          className="cursor-pointor w-full w-[130px] rounded-lg border-white border py-2 px-1 font-semibold text-white"
+          className="cursor-pointer text-center w-full w-[130px] rounded-lg border-white border py-2 px-1 font-semibold text-white"
         >
          home
       

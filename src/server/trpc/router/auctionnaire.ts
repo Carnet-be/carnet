@@ -111,13 +111,13 @@ export const auctionnaireRouter = router({
           specs: {
             create: {
               carrosserie: data3.carrosserie,
-              cc: data3.cc!.toString(),
-              cv: data3.cv!.toString(),
-              co2: data3.co2!.toString(),
-              kilometrage: data3.kilometrage!.toString(),
+              cc: data3.cc,
+              cv: data3.cv,
+              co2: data3.co2,
+              kilometrage: data3.kilometrage,
               version: data3.version,
               transmission: data3.transmission,
-              doors: data3.doors,
+              doors:data3.doors?parseInt(data3.doors):null,
             },
           },
           options: {
@@ -194,13 +194,13 @@ export const auctionnaireRouter = router({
           where: { auction_id },
           data: {
             carrosserie: data3.carrosserie,
-            cc: data3.cc!.toString(),
-            cv: data3.cv!.toString(),
-            co2: data3.co2!.toString(),
-            kilometrage: data3.kilometrage!.toString(),
+            cc: data3.cc,
+            cv: data3.cv,
+            co2: data3.co2,
+            kilometrage: data3.kilometrage,
             version: data3.version,
             transmission: data3.transmission,
-            doors: data3.doors,
+            doors: data3.doors?parseInt(data3.doors):null,
           },
         }),
         ctx.prisma.auctionOptions.update({
