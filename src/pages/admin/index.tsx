@@ -159,12 +159,22 @@ const Admin = () => {
           <Link href="/">Password oublié?</Link>
         </div>
         <div className="h-[20px]"></div>
+        <div className="flex flex-row gap-6">
+        <div
+          onClick={() => router.push("/")}
+          className="cursor-pointor w-full w-[130px] rounded-lg border-white border py-2 px-1 font-semibold text-white"
+        >
+         home
+      
+        </div>
         <button
           type="submit"
-          className="w-full max-w-[200px] rounded-lg bg-white py-2 px-1 font-semibold text-primary"
+          className="w-full w-[130px] rounded-lg bg-white py-2 px-1 font-semibold text-primary"
         >
           {isLoading ? "Chargement..." : "Login"}
         </button>
+     
+        </div>
         <div className="h-[20px]"></div>
       </form>
     </div>

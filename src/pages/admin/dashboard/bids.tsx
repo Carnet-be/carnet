@@ -14,7 +14,25 @@ import type { ColumnsType } from "antd/es/table";
 import type { Auction } from "@prisma/client";
 import { Bid } from '@prisma/client';
 
+import { type GetServerSideProps } from 'next';
+import { getServerAuthSession } from "@server/common/get-server-auth-session";
 
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const session = await getServerAuthSession(ctx);
+    console.log(session?.user);
+    if (!session) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: true,
+        },
+      };
+    }
+
+  return {
+    props: {},
+  };
+};
 const Auctions = () => {
   const { data: bids, isLoading } = trpc.auctionnaire.getBids.useQuery({
     filter: "all",
