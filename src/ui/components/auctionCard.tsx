@@ -67,14 +67,14 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,re
     <>
     {mineAuction&& <CreateAuction auction={auction}  isEdit={true} id={auction.id} refetch={refetch}/>}
   
-    <div onClick={()=>mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)} className={cx("flex h-[250px] w-[310px] flex-col  rounded-2xl bg-base-100 p-3 drop-shadow-md z-50",{
+    <div onClick={()=>mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)} className={cx("flex h-[250px] w-[310px] flex-col gap-5  rounded-2xl bg-base-100 drop-shadow-md z-50 overflow-hidden",{
       "cursor-pointer":!mineAuction
     })}>
-      <div className="relative w-full flex-grow">
-        <Image src={cloudy.image(src).toURL()} alt="image" fill className="object-contain py-3 px-3" />
+      <div className="relative w-full flex-grow ">
+        <Image src={cloudy.image(src).toURL()} alt="image" fill className="object-cover" />
       
       </div>
-      <div className="flex  w-full flex-col justify-between gap-[0px]">
+      <div className="flex px-2 pb-2 w-full flex-col justify-between gap-[0px]">
         <div className="flex flex-row items-end justify-between gap-1  text-primary">
           <div className="flex-grow font-semibold">
             <span>{auction.name}</span>
