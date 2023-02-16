@@ -57,7 +57,7 @@ const Map = ({
           clickableIcons: false,
         }}
         onClick={onClick}
-        zoom={14}
+        zoom={20}
         center={coord}
         // mapTypeId={google.maps.MapTypeId.ROADMAP}
         mapContainerStyle={{ width: "100%", height: "100%" }}

@@ -65,13 +65,13 @@ export const auctionnaireRouter = router({
         }
       }
       console.log("images", data6.images);
-      const name=
-      BRAND[data1.brand || 0]?.title +
-      " " +
-      BRAND[data1.brand || 0]?.model[data1.model || 0] +
-      " " +
-      data1.buildYear
-      console.log("name",name)
+      const name =
+        BRAND[data1.brand || 0]?.title +
+        " " +
+        BRAND[data1.brand || 0]?.model[data1.model || 0] +
+        " " +
+        data1.buildYear;
+      console.log("name", name);
       return await ctx.prisma.auction.create({
         data: {
           id,
@@ -116,7 +116,7 @@ export const auctionnaireRouter = router({
               kilometrage: data3.kilometrage,
               version: data3.version,
               transmission: data3.transmission,
-              doors:data3.doors?parseInt(data3.doors):null,
+              doors: data3.doors ? parseInt(data3.doors) : null,
             },
           },
           options: {
@@ -153,7 +153,7 @@ export const auctionnaireRouter = router({
 
       const duration = processDate.getDuration(data6.duration);
       const end_date = processDate.endDate(duration);
-
+      let pause_date = auction.pause_date;
       console.log("images", data6.images);
       const idsImage = data6.images.map((dim) => dim.fileKey);
       const deleteImage = auction.images.filter(
@@ -165,9 +165,30 @@ export const auctionnaireRouter = router({
       );
       const auction_id = auction.id;
       const state: AuctionState = input.state;
-      const starting_price=data7.starting_price==undefined?undefined: parseFloat(data7.starting_price.toString())
-      const commission=data7.commission==undefined?undefined: parseFloat(data7.commission.toString())
-      const starting_price_with_commission=starting_price==undefined ||commission==undefined?undefined:starting_price+starting_price*commission/100
+      if(input.state=="published"){
+         if(auction.pause_date){
+             
+            const pause = new Date().getTime() - auction.pause_date.getTime();
+
+            end_date.setTime(end_date.getTime() + pause);
+         }
+      }
+      if(input.state=="pause"){
+
+         pause_date = new Date();
+      }
+      const starting_price =
+        data7.starting_price == undefined
+          ? undefined
+          : parseFloat(data7.starting_price.toString());
+      const commission =
+        data7.commission == undefined
+          ? undefined
+          : parseFloat(data7.commission.toString());
+      const starting_price_with_commission =
+        starting_price == undefined || commission == undefined
+          ? undefined
+          : starting_price + (starting_price * commission) / 100;
       return ctx.prisma.$transaction([
         ctx.prisma.auction.update({
           where: { id: auction.id },
@@ -188,10 +209,11 @@ export const auctionnaireRouter = router({
             duration,
             color: data1.color,
             end_date,
-            
+
             starting_price,
+            pause_date: pause_date,
             commission,
-starting_price_with_commission,
+            starting_price_with_commission,
             expected_price: parseFloat(data6.expected_price!.toString()),
           },
         }),
@@ -205,7 +227,7 @@ starting_price_with_commission,
             kilometrage: data3.kilometrage,
             version: data3.version,
             transmission: data3.transmission,
-            doors: data3.doors?parseInt(data3.doors):null,
+            doors: data3.doors ? parseInt(data3.doors) : null,
           },
         }),
         ctx.prisma.auctionOptions.update({
@@ -229,7 +251,7 @@ starting_price_with_commission,
   getAuctions: publicProcedure
     .input(
       z.object({
-        state: z.enum(["pending", "published", "pause"]).nullish(),
+        state: z.enum(["pending", "published", "pause","completed","confirmation"]).nullish(),
         filter: z.enum([
           "new",
           "trending",
@@ -261,7 +283,7 @@ starting_price_with_commission,
       return await ctx.prisma.auction.findMany({
         where: {
           ...condition,
-          state: input.state || undefined,
+          state:!input.state?undefined: input.state=="pause"|| input.state=="pending" ? input.state : "published",
         },
         include: {
           bids: true,
@@ -362,11 +384,11 @@ starting_price_with_commission,
       }
     }),
 
-    getFavCount: publicProcedure.query(async ({ ctx }) => {
-      const favorites = await ctx.prisma.user.findUnique({
-        where: { email: ctx.session?.user?.email || "" },
-        select: { favoris_auctions: true },
-      });
-      return favorites?.favoris_auctions.length || 0;
-    })
+  getFavCount: publicProcedure.query(async ({ ctx }) => {
+    const favorites = await ctx.prisma.user.findUnique({
+      where: { email: ctx.session?.user?.email || "" },
+      select: { favoris_auctions: true },
+    });
+    return favorites?.favoris_auctions.length || 0;
+  }),
 });

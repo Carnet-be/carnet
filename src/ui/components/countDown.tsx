@@ -6,49 +6,80 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import cx from "classnames";
 
-export function executeEverySecond(endDate:Date,initDate?:Date) {
- 
+export function executeEverySecond(endDate: Date) {
   const process = new ProcessDate(endDate);
-  const secondLeft = process.getSecondsFronmNow(initDate);
+  const secondLeft = process.getSecondsFromDate();
 
-  return  moment.duration(secondLeft<=0?0:secondLeft, "s");
+  return moment.duration(secondLeft <= 0 ? 0 : secondLeft, "s");
 }
 const CountDown = ({
   endDate,
   onTimeOut,
-  variant
+  variant,
 }: {
   endDate: Date;
-  onTimeOut: () => void;variant:"primary"|"secondary"
+  onTimeOut: () => void;
+  variant: "primary" | "secondary";
 }) => {
-  const [leftTime, setleft] = useState<moment.Duration>(executeEverySecond(endDate));
-
+  const [leftTime, setleft] = useState<moment.Duration>(
+    executeEverySecond(endDate)
+  );
 
   useEffect(() => {
-    const interval = setInterval(() =>leftTime.asSeconds()>0&& setleft(executeEverySecond(endDate)), 1000);
+    const interval = setInterval(
+      () => leftTime.asSeconds() > 0 && setleft(executeEverySecond(endDate)),
+      1000
+    );
     return () => {
       clearInterval(interval);
     };
   }, [executeEverySecond]);
-useEffect(()=>{
-
-  if(leftTime.asSeconds()<=0){
-    console.log("Testing isTime out")
-    onTimeOut()
+  
+  useEffect(() => {
+    if (leftTime.asSeconds() <= 0) {
+      console.log("Testing isTime out");
+      onTimeOut();
+    }
+  }, [leftTime]);
+  if (variant == "primary") {
+    return (
+      <div
+        className={cx(
+          "flex flex-row items-center justify-center gap-1 px-3 py-6 text-2xl font-semibold",
+          leftTime.asSeconds() <= 0 ? "text-red-500" : " text-primary"
+        )}
+      >
+        <TimerIcon className="text-2xl" />
+        <span>
+          {leftTime?.days()}
+          <span className="text-base font-light">days</span>
+        </span>
+        <span>
+          {leftTime?.hours()}
+          <span className="text-base font-light">h</span>
+        </span>
+        <span>
+          {leftTime?.minutes()}
+          <span className="text-base font-light">m</span>
+        </span>
+        <span>
+          {leftTime?.seconds()}
+          <span className="text-base font-light">s</span>
+        </span>
+      </div>
+    );
   }
-},[leftTime])
- if(variant=="primary"){
   return (
     <div
       className={cx(
-        "flex flex-row items-center justify-center gap-1 px-3 py-6 font-semibold text-2xl",
-        leftTime.asSeconds()<=0 ? "text-red-500" : " text-primary"
+        "flex flex-row items-center justify-center gap-1 text-sm font-semibold",
+        leftTime.asSeconds() <= 0 ? "text-red-500" : " text-primary"
       )}
     >
-      <TimerIcon className="text-2xl" />
+      <TimerIcon className="text-lg" />
       <span>
         {leftTime?.days()}
-        <span className="text-base font-light">days</span>
+        <span className="text-base font-light">d</span>
       </span>
       <span>
         {leftTime?.hours()}
@@ -58,39 +89,12 @@ useEffect(()=>{
         {leftTime?.minutes()}
         <span className="text-base font-light">m</span>
       </span>
-      <span>
-        {leftTime?.seconds()}
-        <span className="text-base font-light">s</span>
-      </span>
-    </div>
-  );
- }
-  return (
-  <div
-    className={cx(
-      "flex flex-row items-center justify-center gap-1 font-semibold text-sm",
-      leftTime.asSeconds()<=0 ? "text-red-500" : " text-primary"
-    )}
-  >
-    <TimerIcon className="text-lg" />
-    <span>
-      {leftTime?.days()}
-      <span className="text-base font-light">d</span>
-    </span>
-    <span>
-      {leftTime?.hours()}
-      <span className="text-base font-light">h</span>
-    </span>
-    <span>
-      {leftTime?.minutes()}
-      <span className="text-base font-light">m</span>
-    </span>
-    {/* <span>
+      {/* <span>
       {leftTime?.seconds()}
       <span className="text-base font-light">s</span>
     </span> */}
-  </div>
-);
+    </div>
+  );
 };
 
 export default CountDown;

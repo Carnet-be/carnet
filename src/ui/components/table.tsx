@@ -50,9 +50,9 @@ export const renderDate = (date: string, format="L") => {
   return <Tag color="processing">{moment(date).format(format)}</Tag>; // <div className={cx("rounded-md px-2 py-[1px] flex justify-center",`bg-${color}-100 border border-${color}-500 text-${color}-500`)}>{moment(date).format('L')}</div>
 };
 
-export const RenderTimer = ({ date,state,initDate }: { date: Date,state:"pause"|"published"|"pending",initDate?:Date }) => {
+export const RenderTimer = ({ date,state,init}: { date: Date,state:"pause"|"published"|"pending",init:Date|undefined }) => {
   const [leftTime, setleft] = useState<moment.Duration>(
-    executeEverySecond(date,initDate)
+    executeEverySecond(date)
   );
 
   useEffect(() => {
@@ -87,6 +87,11 @@ export const RenderTimer = ({ date,state,initDate }: { date: Date,state:"pause"|
             {leftTime?.minutes()}
             <span className="text-sm font-light opacity-70">m</span>
           </span>
+          <span>
+            {leftTime?.seconds()}
+            <span className="text-sm font-light opacity-70">s</span>
+          </span>
+
          
           </>
           }

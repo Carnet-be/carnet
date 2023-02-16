@@ -195,7 +195,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
             }}
             className="-mx-10"
           >
-            <Panel header="Extra" key="1">
+            <Panel header="Extra (Optional)" key="1">
               <div className="flex flex-row gap-3">
                 <FormControl className="flex-grow">
                   <InputLabel htmlFor="model">Horse power</InputLabel>
