@@ -56,6 +56,12 @@ model Auction {
   build_year Int
   fuel       FuelType
 
+  starting_price Float?
+  commission     Float?
+  starting_price_with_commission Float?
+
+  
+
   description    String?
   duration       DurationType
   end_date       DateTime?

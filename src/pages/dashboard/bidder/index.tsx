@@ -7,6 +7,10 @@ import {
 } from "next";
 
 import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
+import { trpc } from "@utils/trpc";
+import { useBidderStore } from "../../../state";
+import { useRouter } from "next/router";
+import Loading from "@ui/loading";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -21,15 +25,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   const home="/home"
   return {
-    redirect:{
-      destination: "/dashboard/bidder/"+home,
-      permanent:true
-    }
+    props:{}
   };
 };
 const BidderDashboard: NextPage = () => {
-return <div>
-   bidder
+  const setWish=useBidderStore((state)=>state.setWishs)
+  const router=useRouter()
+  const { } =
+  trpc.auctionnaire.getFavCount.useQuery(undefined,{
+    onSuccess: (data) => {
+      console.log(data);
+      setWish(data)
+      router.replace("/dashboard/bidder/home")
+    }
+  });
+return <div className="flex items-center justify-center w-screen h-screen">
+  <Loading/>
 </div>
 };
 

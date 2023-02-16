@@ -37,7 +37,11 @@ const Step6 = ({
           defaultValue={defaultName}
           onChange={(e) => setData({ ...data, name: e.target.value })}
         />
-        <TextField
+        <div className="flex flex-col items-stretch gap-1">
+        <p className="text-[9px] italic opacity-60">
+           Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            </p>
+            <TextField
           label="Description"
           size="small"
           multiline
@@ -45,6 +49,8 @@ const Step6 = ({
           value={data.description}
           onChange={(e) => setData({ ...data, description: e.target.value })}
         />
+        </div>
+       
         <Upload
       
           value={data.images}
@@ -91,7 +97,11 @@ const Step6 = ({
         </div>
 
         <div className="flex flex-row gap-2">
+
           <div className="flex flex-grow flex-col gap-1">
+            <p className="text-[9px] italic opacity-60">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            </p>
             <TextField
               label="Adresse"
               size="small"
@@ -162,7 +172,7 @@ const Step6 = ({
               });
             }
             }}
-            containerClass={"w-[50%] h-auto bg-red-100"}
+            containerClass={"w-[40%] h-auto bg-red-100"}
           />
         </div>
       </div>

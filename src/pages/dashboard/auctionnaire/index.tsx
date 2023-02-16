@@ -32,9 +32,8 @@ const AuctionnaireDashboard: NextPage = () => {
 export default AuctionnaireDashboard;
 
 export const BannierAddAuction = () => {
-  const [hide, setHide] = useState(false);
   return (
-    <div className={cx("mx-auto flex h-[250px] max-w-[800px] flex-row items-center justify-between rounded-xl bg-primary p-10 drop-shadow-xl",hide&&"hidden")}>
+    <div className={cx("mx-auto flex h-[250px] max-w-[800px] flex-row items-center justify-between rounded-xl bg-primary p-10 drop-shadow-xl")}>
       
       <div className="flex-grow flex flex-col gap-4 max-w-[400px] space-y-6">
         <p className="text-xl font-bold text-white">

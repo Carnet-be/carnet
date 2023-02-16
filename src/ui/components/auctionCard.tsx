@@ -19,6 +19,7 @@ import cloudy from "@utils/cloudinary";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { AdvancedImage } from '@cloudinary/react';
 import CreateAuction from "@ui/createAuction";
+import { useBidderStore } from "../../state";
 type AuctionCardProps = {
   auction: TAuction;
   isFavorite?: boolean;
@@ -32,7 +33,9 @@ export const NO_IMAGE_URL="no-image_g27dbh";
 const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,refetch }: AuctionCardProps) => {
   const [fav, setfav] = useState(isFavorite);
 
-  const util = new ProcessAuction(auction);
+  const increase=useBidderStore((state)=>state.increase)
+  const decrease=useBidderStore((state)=>state.decrease)
+
   const { mutate } = trpc.auctionnaire.favorite.useMutation({
     onError: (err) => {
       console.log("Error lors d'ajout au fav", err);
@@ -45,6 +48,7 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,re
         case "add":
           toast.success(onAdd);
           setfav(true)
+          increase()
           break;
         case "remove":
           toast.success(onRemove);
@@ -52,10 +56,12 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,re
             onClickFavorite()
           }
           setfav(false)
+          decrease()
           break;
         default:
           toast.success(onAdd);
           setfav(true)
+          increase()
           break;
       }
     },
@@ -87,7 +93,7 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,re
             <span className="text-xs opacity-50 flex flex-row gap-1 items-center">{auction.bids.length<=0?"Initial bid":"Current bid"} | <span className="flex flex-row gap-1 items-center text-primary">{auction.bids.length} <AuctionIcon/></span> </span>
 
             <span className="flex flex-row items-center gap-2 font-semibold text-green">
-              <Price textStyle="text-base" value={auction.bids.length<=0?auction.expected_price/2:auction.bids[auction.bids.length-1]?.montant||0}/>
+              <Price textStyle="text-base" value={auction.bids.length<=0?auction.starting_price_with_commission:auction.bids[auction.bids.length-1]?.montant||0}/>
             </span>
           </div>
           <div className="flex flex-row rounded-full bg-[#00A369]">

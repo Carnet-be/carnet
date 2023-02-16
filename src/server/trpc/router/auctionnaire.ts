@@ -2,20 +2,19 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { BRAND } from "@data/internal";
-import { TAuction } from "@model/type";
+import type { TAuction } from "@model/type";
 import { AuctionState } from "@prisma/client";
-import { TRPCClientError } from "@trpc/client";
 import {
   type Data3,
   type Data4,
   type Data5,
   type Data6,
   type Data1,
+  type Data7,
 } from "@ui/createAuction";
 
 import { ProcessDate } from "@utils/processDate";
 import { ProcessUser } from "@utils/processUser";
-import { getRandomNumber } from "@utils/utilities";
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
@@ -146,11 +145,10 @@ export const auctionnaireRouter = router({
       const data4: Data4 = input.data4;
       delete input.data5.auction_id;
       const data5: Data5 = input.data5;
-
+      const data7: Data7 = input.data7;
       const data6: Data6 = input.data6;
 
       const processDate = new ProcessDate(auction.createAt);
-      const processUser = new ProcessUser(ctx.session!);
       //
 
       const duration = processDate.getDuration(data6.duration);
@@ -167,6 +165,9 @@ export const auctionnaireRouter = router({
       );
       const auction_id = auction.id;
       const state: AuctionState = input.state;
+      const starting_price=data7.starting_price==undefined?undefined: parseFloat(data7.starting_price.toString())
+      const commission=data7.commission==undefined?undefined: parseFloat(data7.commission.toString())
+      const starting_price_with_commission=starting_price==undefined ||commission==undefined?undefined:starting_price+starting_price*commission/100
       return ctx.prisma.$transaction([
         ctx.prisma.auction.update({
           where: { id: auction.id },
@@ -187,6 +188,10 @@ export const auctionnaireRouter = router({
             duration,
             color: data1.color,
             end_date,
+            
+            starting_price,
+            commission,
+starting_price_with_commission,
             expected_price: parseFloat(data6.expected_price!.toString()),
           },
         }),
@@ -356,4 +361,12 @@ export const auctionnaireRouter = router({
           return add();
       }
     }),
+
+    getFavCount: publicProcedure.query(async ({ ctx }) => {
+      const favorites = await ctx.prisma.user.findUnique({
+        where: { email: ctx.session?.user?.email || "" },
+        select: { favoris_auctions: true },
+      });
+      return favorites?.favoris_auctions.length || 0;
+    })
 });

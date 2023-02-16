@@ -5741,3 +5741,10 @@
   "integrity" "sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA=="
   "resolved" "https://registry.npmjs.org/zod/-/zod-3.19.1.tgz"
   "version" "3.19.1"
+
+"zustand@^4.3.3":
+  "integrity" "sha512-x2jXq8S0kfLGNwGh87nhRfEc2eZy37tSatpSoSIN+O6HIaBhgQHSONV/F9VNrNcBcKQu/E80K1DeHDYQC/zCrQ=="
+  "resolved" "https://registry.npmjs.org/zustand/-/zustand-4.3.3.tgz"
+  "version" "4.3.3"
+  dependencies:
+    "use-sync-external-store" "1.2.0"
