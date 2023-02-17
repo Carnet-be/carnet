@@ -207,7 +207,7 @@ export const auctionnaireRouter = router({
             duration,
             color: data1.color,
             //test confirmation
-           // end_date:new Date(),
+           //end_date:new Date(),
             end_date,
 
             starting_price,
@@ -396,7 +396,18 @@ export const auctionnaireRouter = router({
       where: { email: ctx.session?.user?.email || "" },
       select: { favoris_auctions: true },
     });
-    return favorites?.favoris_auctions.length || 0;
+    const fav=await ctx.prisma.auction.count({
+      where: {
+        id: {
+          in: favorites?.favoris_auctions || [],
+        },
+        isClosed: false,
+        end_date: {
+          gte: new Date(),
+        },
+      },})
+
+    return fav;
   }),
   getNeedConfirmation: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.auction.findMany({
@@ -404,6 +415,7 @@ export const auctionnaireRouter = router({
         end_date: {
           lte: new Date(),
         },
+        isClosed: false,
       },
       include: {
         bids: true,
@@ -462,4 +474,27 @@ export const auctionnaireRouter = router({
         }),
       ]);
     }),
+    relancer: publicProcedure
+    .input(
+      z.object({
+        auction_id: z.string(),
+        duration:z.enum(["ThreeDays","OneWeek","TwoWeek"]),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+
+      const processDate = new ProcessDate();
+      //
+      const end_date = processDate.endDate(input.duration);
+      return ctx.prisma.auction.update({
+
+          where: { id: input.auction_id },
+          data: {
+            state: "published",
+            pause_date: null,
+            end_date,
+            isClosed: false,
+            closedAt: null,
+          },
+        })})
 });

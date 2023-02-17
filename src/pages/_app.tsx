@@ -8,11 +8,14 @@ import "../styles/globals.css";
 import { Toaster } from "react-hot-toast";
 import Head from "next/head";
 import "rsuite/dist/rsuite.min.css";
+import { ReactNode, useEffect } from "react";
+import { useRouter } from "next/router";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+
   
   return (
     <SessionProvider session={session}>
@@ -23,26 +26,38 @@ const MyApp: AppType<{ session: Session | null }> = ({
           href="../public/assets/favicon.ico"
           type="image/x-icon"
         />
-      <link
+        <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
         <link
-  rel="stylesheet"
-  type="text/css"
-  href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-/>
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-/>
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+        />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+        />
       </Head>
+    
+      <App>
       <Component {...pageProps} />
+      </App>
       <Toaster />
     </SessionProvider>
   );
 };
+
+const App=({children}:{children:ReactNode})=>{
+  const router=useRouter()
+  useEffect(() => {
+    console.log(router.pathname)
+  }, [router.pathname])
+
+return <>{children}</>
+}
 
 export default trpc.withTRPC(MyApp);
 

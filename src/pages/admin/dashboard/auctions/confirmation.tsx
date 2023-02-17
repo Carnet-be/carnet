@@ -17,6 +17,7 @@ import MyTable, {
   ActionTable,
   TableType,
 } from "@ui/components/table";
+import { MdRestartAlt } from "react-icons/md";
 import { AuctionIcon, CheckIcon, PauseIcon, WinIcon } from "@ui/icons";
 import { trpc } from "@utils/trpc";
 import { useState } from "react";
@@ -46,7 +47,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-
 const Confirmation = () => {
   const {
     data: auctions,
@@ -57,14 +57,15 @@ const Confirmation = () => {
     trpc.auctionnaire.getBids.useQuery({
       filter: "all",
     });
-  const { mutate: deleteAuction } = trpc.global.delete.useMutation({
+
+  const { mutate: makeWinner } = trpc.auctionnaire.makeWinner.useMutation({
     onMutate: () => {
       toast.loading("In process");
     },
     onError: (err) => {
       console.log(err);
       toast.dismiss();
-      toast.error("Faild to delete");
+      toast.error("Failed");
     },
     onSuccess: () => {
       toast.dismiss();
@@ -125,7 +126,41 @@ const Confirmation = () => {
         key: "montant",
         render: (v) => <Price value={v} textStyle="text-sm leading-4" />,
       },
-      
+      {
+        title: "Actions",
+
+        dataIndex: "actions",
+        key: "actions",
+        align: "center",
+        fixed: "right",
+        render: (v, auction) => (
+          <>
+            <ActionTable
+              id={auction.id}
+              // onDelete={state=="published"?undefined: () => {
+              //   deleteAuction({ id: auction.id, table: "auction" });
+              // }}
+              // onEdit={state=="published"?undefined: () => {
+              //   console.log("edit");
+              // }}
+              onCustom={() => ({
+                icon: <WinIcon className="text-lg text-yellow-500" />,
+                tooltip: "Make winner",
+                onClick: () => {
+                  console.log("make winner");
+                  makeWinner({
+                    auction_id: auction.auction_id,
+                    bid_id: auction.id,
+                  });
+                },
+              })}
+              // onView={state!="published"?undefined:() => {
+              //   console.log("view");
+              // }}
+            />
+          </>
+        ),
+      },
     ];
     return (
       <MyTable
@@ -138,14 +173,14 @@ const Confirmation = () => {
       />
     );
   };
-  const { mutate: pauseAuction } = trpc.auctionnaire.pauseAuction.useMutation({
+  const { mutate: repubishAuction } = trpc.auctionnaire.relancer.useMutation({
     onMutate: () => {
       toast.loading("In process");
     },
     onError: (err) => {
       console.log(err);
       toast.dismiss();
-      toast.error("Faild to pause");
+      toast.error("Faild to republish");
     },
     onSuccess: () => {
       toast.dismiss();
@@ -165,10 +200,10 @@ const Confirmation = () => {
     },
 
     {
-      title: "Date pub",
+      title: "Ended at",
 
-      dataIndex: "createAt",
-      key: "createAt",
+      dataIndex: "end_date",
+      key: "end_date",
       width: "100px",
       align: "center",
       render: (v) => renderDate(v, "DD/MM/YYYY HH:mm"),
@@ -201,7 +236,7 @@ const Confirmation = () => {
       key: "expected_price",
       render: (v) => <Price value={v} textStyle="text-sm leading-4" />,
     },
-  
+
     {
       title: "Latest Bid",
       dataIndex: "latest_bid",
@@ -220,7 +255,7 @@ const Confirmation = () => {
         );
       },
     },
-    
+
     // {
     //   title: "Publish",
     //   dataIndex: "publish",
@@ -236,7 +271,40 @@ const Confirmation = () => {
     //     </Tag>
     //   ),
     // },
-    
+    {
+      title: "Actions",
+
+      dataIndex: "actions",
+      key: "actions",
+      align: "center",
+      fixed: "right",
+      render: (v, auction) => (
+        <>
+          <ActionTable
+            id={auction.id}
+            // onDelete={state=="published"?undefined: () => {
+            //   deleteAuction({ id: auction.id, table: "auction" });
+            // }}
+            // onEdit={state=="published"?undefined: () => {
+            //   console.log("edit");
+            // }}
+            onCustom={() => ({
+              icon: <MdRestartAlt className="text-lg text-primary" />,
+              tooltip: "Republish",
+              onClick: () => {
+                repubishAuction({
+                  auction_id: auction.id,
+                  duration: auction.duration,
+                });
+              },
+            })}
+            // onView={state!="published"?undefined:() => {
+            //   console.log("view");
+            // }}
+          />
+        </>
+      ),
+    },
   ];
 
   return (
@@ -269,5 +337,4 @@ const Confirmation = () => {
   );
 };
 
-
-export default Confirmation
+export default Confirmation;
