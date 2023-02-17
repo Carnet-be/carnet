@@ -53,7 +53,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       route = "/dashboard/auctionnaire";
       break;
     case "BID":
-      route = "/dashboard/bidder";
+      if(user.isActive){
+        route = "/dashboard/bidder";
+      }else{
+        route = "/pages/inactive";
+      }
+     
       break;
     default:
       route = "/admin/dashboard";

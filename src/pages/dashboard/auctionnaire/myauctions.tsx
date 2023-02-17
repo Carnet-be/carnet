@@ -46,7 +46,7 @@ const Home: NextPage = () => {
               | "pause"
               | "completed"
               | "confirmation" = a.state;
-            if (a.isClosed) state = "completed";
+            if (a.isClosed || a.closedAt) state = "completed";
             if (a.state == "published") {
               if (a.end_date?.getDate()||0 < new Date().getDate())
                 state = "confirmation";

@@ -56,6 +56,9 @@ const {mutate:resend,isLoading:resending}=trpc.auth.resendVerif.useMutation({
                 <span className="text-green-500">{user?.username}</span>
               </p>
               <div className="flex w-full flex-row justify-evenly">
+                <button onClick={()=>router.reload()} className="btn btn-outlined btn-sm">
+                  refresh
+                </button>
                 <button onClick={()=>resend({email:user?.email||"",id:user?.id||""})} className={cx("btn-primary btn-sm btn",{
                     loading:resending
                 })}>

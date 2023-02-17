@@ -50,11 +50,13 @@ export const authRouter = router({
         id = Math.random().toString().slice(2, 9);
       }
     }
+    const type=input.type
     return await ctx.prisma.user
       .create({
         data: {
           id,
           ...input,
+          isActive:type!=="BID"?true:false,
           emailVerified:setEmailVerified?true:false,
           password: hashPwd,
         },
