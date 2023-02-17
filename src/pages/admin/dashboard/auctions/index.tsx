@@ -101,7 +101,7 @@ export const SwitcherAuctions = () => {
 export const AuctionsPage = ({
   state,
 }: {
-  state: "published" | "pending" | "pause" |"completed" | "confirmation";
+  state: "published" | "pending" | "pause";
 }) => {
   const {
     data: auctions,
@@ -111,7 +111,21 @@ export const AuctionsPage = ({
     filter: "all",
     state,
   });
-  const cc=state=="completed"||state=="confirmation"
+  const {mutate:makeWinner}=trpc.auctionnaire.makeWinner.useMutation({
+    onMutate: () => {
+      toast.loading("In process");
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.dismiss();
+      toast.error("Failed");
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success("Success");
+      refetch();
+    }
+  })
   const { data: bids, isLoading: isLoadingBids } =
     trpc.auctionnaire.getBids.useQuery({
       filter: "all",
@@ -209,7 +223,10 @@ export const AuctionsPage = ({
                       tooltip: "Make winner",
                       onClick: () => {
                         console.log("make winner");
-                        pauseAuction(auction.id);
+                       makeWinner({
+                         auction_id: auction.auction_id,
+                         bid_id: auction.id,
+                       })
                       },
                     })
               }
@@ -314,7 +331,7 @@ export const AuctionsPage = ({
         );
       },
     },
-    {...(!cc&&{
+    {
       title: "Time Left",
       width: "130px",
       dataIndex: "end_date",
@@ -328,7 +345,7 @@ export const AuctionsPage = ({
           init={state==="published"?undefined: a.pause_date||undefined}
         />
       ),
-    })},
+    },
     // {
     //   title: "Publish",
     //   dataIndex: "publish",

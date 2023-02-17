@@ -26,9 +26,40 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 const Home: NextPage = () => {
-  const { data: auctions, refetch } = trpc.auctionnaire.getMyAuctions.useQuery({
-    full: true,
-  });
+  const [auctions, setAuctions] = useState<
+    Array<{
+      auction: Auction;
+      state: "published" | "pending" | "pause" | "completed" | "confirmation";
+    }>
+  >([]);
+  const { refetch, isLoading } = trpc.auctionnaire.getMyAuctions.useQuery(
+    {
+      full: true,
+    },
+    {
+      onSuccess(data) {
+        setAuctions(
+          data.map((a) => {
+            let state:
+              | "published"
+              | "pending"
+              | "pause"
+              | "completed"
+              | "confirmation" = a.state;
+            if (a.isClosed) state = "completed";
+            if (a.state == "published") {
+              if (a.end_date?.getDate() || 0 < new Date().getDate())
+                state = "confirmation";
+            }
+            return {
+              auction: a,
+              state: state,
+            };
+          })
+        );
+      },
+    }
+  );
   const [editAuction, setEditAuction] = useState<TAuction | undefined>();
   return (
     <Dashboard type="AUC">
@@ -43,10 +74,11 @@ const Home: NextPage = () => {
             <AuctionCard
               key={i}
               refetch={refetch}
-              auction={a as TAuction}
+              auction={a.auction as TAuction}
+              state={a.state}
               mineAuction={true}
               onEdit={() => {
-                setEditAuction(a as TAuction);
+                setEditAuction(a.auction as TAuction);
               }}
             />
           ))

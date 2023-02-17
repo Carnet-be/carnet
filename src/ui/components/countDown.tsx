@@ -6,9 +6,9 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import cx from "classnames";
 
-export function executeEverySecond(endDate: Date) {
+export function executeEverySecond(endDate: Date, init?: Date) {
   const process = new ProcessDate(endDate);
-  const secondLeft = process.getSecondsFromDate();
+  const secondLeft = process.getSecondsFromDate(init);
 
   return moment.duration(secondLeft <= 0 ? 0 : secondLeft, "s");
 }

@@ -59,9 +59,10 @@ model Auction {
   starting_price Float?
   commission     Float?
   starting_price_with_commission Float?
-
   
-
+  
+  isClosed Boolean @default(false)
+  closedAt DateTime?
   description    String?
   duration       DurationType
   end_date       DateTime?
@@ -157,6 +158,8 @@ model Bid {
   //
   montant    Float
   numero     Int      @default(1)
+
+  winner     Boolean  @default(false)
   ///
   bidder_id  String
   bidder     User     @relation(fields: [bidder_id], references: [id], onDelete: Cascade)

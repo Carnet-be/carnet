@@ -23,13 +23,13 @@ const getMax=(bids:TBid[])=>{
   return max
 }
 const BidSection = ({ auction ,isTimeOut}: BidSection) => {
-  const getBidPrice = (bids: TBid[]) =>
+  const getBidPrice = (bids: TBid[],price?:number) =>
     bids.length <= 0
-      ? auction.expected_price / 2
+      ? price|| auction.expected_price / 2
       : getMax(bids);
   const [bids, setbids] = useState(auction.bids);
   const [bidPrice, setbidPrice] = useState<number | undefined>(
-    getBidPrice(auction.bids)
+    getBidPrice(auction.bids,auction.starting_price_with_commission||undefined)
   );
   const {
     data,
@@ -46,7 +46,7 @@ const BidSection = ({ auction ,isTimeOut}: BidSection) => {
   });
 
   useEffect(() => {
-    setbidPrice(getBidPrice(bids));
+    setbidPrice(getBidPrice(bids,auction.starting_price_with_commission||undefined));
   }, [bids, getBidPrice]);
 
   return (

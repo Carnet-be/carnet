@@ -165,17 +165,15 @@ export const auctionnaireRouter = router({
       );
       const auction_id = auction.id;
       const state: AuctionState = input.state;
-      if(input.state=="published"){
-         if(auction.pause_date){
-             
-            const pause = new Date().getTime() - auction.pause_date.getTime();
+      if (input.state == "published") {
+        if (auction.pause_date) {
+          const pause = new Date().getTime() - auction.pause_date.getTime();
 
-            end_date.setTime(end_date.getTime() + pause);
-         }
+          end_date.setTime(end_date.getTime() + pause);
+        }
       }
-      if(input.state=="pause"){
-
-         pause_date = new Date();
+      if (input.state == "pause") {
+        pause_date = new Date();
       }
       const starting_price =
         data7.starting_price == undefined
@@ -251,7 +249,7 @@ export const auctionnaireRouter = router({
   getAuctions: publicProcedure
     .input(
       z.object({
-        state: z.enum(["pending", "published", "pause","completed","confirmation"]).nullish(),
+        state: z.enum(["pending", "published", "pause"]).nullish(),
         filter: z.enum([
           "new",
           "trending",
@@ -279,11 +277,18 @@ export const auctionnaireRouter = router({
         default:
           break;
       }
-
+      const stateCondition =
+        input.state === "published" ? { end_date: { gte: new Date() } } : {};
       return await ctx.prisma.auction.findMany({
         where: {
           ...condition,
-          state:!input.state?undefined: input.state=="pause"|| input.state=="pending" ? input.state : "published",
+          isClosed: false,
+          ...stateCondition,
+          state: !input.state
+            ? undefined
+            : input.state == "pause" || input.state == "pending"
+            ? input.state
+            : "published",
         },
         include: {
           bids: true,
@@ -391,4 +396,68 @@ export const auctionnaireRouter = router({
     });
     return favorites?.favoris_auctions.length || 0;
   }),
+  getNeedConfirmation: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.auction.findMany({
+      where: {
+        end_date: {
+          lte: new Date(),
+        },
+      },
+      include: {
+        bids: true,
+        images: true,
+        specs: true,
+        rating: true,
+        options: true,
+        address: true,
+      },
+      orderBy: {
+        end_date: "desc",
+      },
+    });
+  }),
+
+  getCompleted: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.auction.findMany({
+      where: {
+        isClosed: true,
+      },
+      include: {
+        bids: { include: { bidder: true, auction: true } },
+        images: true,
+        specs: true,
+        rating: true,
+        options: true,
+        address: true,
+      },
+      orderBy: {
+        closedAt: "desc",
+      },
+    });
+  }),
+
+  makeWinner: publicProcedure
+    .input(
+      z.object({
+        auction_id: z.string(),
+        bid_id: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      return ctx.prisma.$transaction([
+        ctx.prisma.auction.update({
+          where: { id: input.auction_id },
+          data: {
+            isClosed: true,
+            closedAt: new Date(),
+          },
+        }),
+        ctx.prisma.bid.update({
+          where: { id: input.bid_id },
+          data: {
+            winner: true,
+          },
+        }),
+      ]);
+    }),
 });

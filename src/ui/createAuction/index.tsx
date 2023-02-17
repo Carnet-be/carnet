@@ -84,7 +84,7 @@ export type Data6 = {
 export type Data7 = {
   starting_price?: number;
   commission?: number;
-};
+}
 const CreateAuction = ({
   auction,
   isEdit,
@@ -233,10 +233,7 @@ const CreateAuction = ({
         lat: lat || undefined,
         lon: lon || undefined,
       };
-      setdata7({
-        starting_price: edit.starting_price || undefined,
-        commission: edit.commission || undefined,
-      });
+      setdata7({starting_price: edit.starting_price||undefined, commission: edit.commission||undefined});
       setdata3(d3);
       setdata4(d4);
       setdata5(d5);
@@ -326,30 +323,13 @@ const CreateAuction = ({
     });
   const onValid = () => {
     if (edit) {
-      updateAuction({
-        data1,
-        data3,
-        data4,
-        data5,
-        data6,
-        data7,
-        auction: edit,
-      });
+      updateAuction({ data1, data3, data4, data5, data6,data7, auction: edit });
     } else {
       addAuction({ data1, data3, data4, data5, data6 });
     }
   };
   const onPublish = ({ state }: { state: AuctionState }) =>
-    updateAuction({
-      data1,
-      data3,
-      data4,
-      data5,
-      data6,
-      data7,
-      auction: edit,
-      state,
-    });
+    updateAuction({ data1, data3, data4, data5, data6,data7, auction: edit, state });
   const ref = useRef<HTMLLabelElement | null>(null);
   return (
     <>
@@ -360,7 +340,7 @@ const CreateAuction = ({
       />
       <div className={cx("modal absolute top-0 left-0 z-[1000]")}>
         <div className="modal-box flex min-h-[450px] flex-col justify-between gap-6 lg:max-w-2xl">
-          {auction ? <StepperEdit step={step} /> : <Stepper step={step} />}
+          {auction ? <StepperEdit isAdmin={isAdmin} step={step} /> : <Stepper step={step} />}
 
           {auction ? (
             <>
@@ -437,7 +417,7 @@ const CreateAuction = ({
               onClick={next}
               className={cx("btn-primary btn-sm btn", {
                 "btn-disabled": !isNext,
-                hidden: (step == 2 && !auction) || step == (auction ? 6 : 6),
+                hidden: (step == 2 && !auction) || step == ( isAdmin? 6:5),
               })}
             >
               continuer
@@ -446,7 +426,7 @@ const CreateAuction = ({
               onClick={onValid}
               className={cx("btn-primary btn-sm btn", {
                 "btn-disabled": !isValid || isLoading || isUpdating,
-                hidden: auction || step !== (auction ? 6 : 6),
+                hidden: auction || step !== (isAdmin? 6:5 ),
               })}
             >
               valider
@@ -461,7 +441,7 @@ const CreateAuction = ({
                 })
               }
               className={cx("btn-warning btn-sm btn", {
-                hidden: !isAdmin,
+                hidden: !auction,
               })}
             >
               {auction?.state == "pause"
@@ -504,10 +484,10 @@ export const Stepper = ({ step }: { step: number }) => {
     </ul>
   );
 };
-export const StepperEdit = ({ step }: { step: number }) => {
+export const StepperEdit = ({ step,isAdmin }: { step: number,isAdmin?:boolean }) => {
   return (
     <ul className="steps w-full">
-      {Array.from({ length: 6 }, (_, i) => i + 1).map((k, i) => {
+      {Array.from({ length:isAdmin? 6:5 }, (_, i) => i + 1).map((k, i) => {
         return (
           <li
             key={k}
@@ -528,4 +508,5 @@ export const StepperEdit = ({ step }: { step: number }) => {
     </ul>
   );
 };
+
 export default CreateAuction;

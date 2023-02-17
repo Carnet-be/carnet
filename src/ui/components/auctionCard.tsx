@@ -26,11 +26,12 @@ type AuctionCardProps = {
   mineAuction?:boolean,
   onClickFavorite?:()=>void,
   onEdit?:()=>void,
-  refetch?:()=>void
+  refetch?:()=>void,
+  state?:"published"|"pause"| "completed"|"pending"|"confirmation"
 };
 
 export const NO_IMAGE_URL="no-image_g27dbh";
-const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,refetch }: AuctionCardProps) => {
+const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,refetch,state }: AuctionCardProps) => {
   const [fav, setfav] = useState(isFavorite);
 
   const increase=useBidderStore((state)=>state.increase)
@@ -71,7 +72,7 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,re
   console.log(src)
   return (
     <>
-    {mineAuction&& <CreateAuction auction={auction}  isEdit={true} id={auction.id} refetch={refetch}/>}
+    {mineAuction&& <CreateAuction isAdmin={false} auction={auction}  isEdit={true} id={auction.id} refetch={refetch}/>}
   
     <div onClick={()=>mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)} className={cx("flex h-[270px] w-[310px] flex-col gap-[40px]  rounded-2xl bg-base-100 drop-shadow-md z-50 overflow-hidden",{
       "cursor-pointer":!mineAuction
@@ -85,7 +86,7 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,re
           <div className="flex-grow font-semibold">
             <span className="cursor-pointer hover:underline" onClick={()=>!mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)}>{auction.name}</span>
           </div>
-        {auction.state!="published"?<span className="text-xs opacity-50">{auction.state}</span>:  <CountDown variant="secondary" onTimeOut={()=>{console.log("is time out")}} endDate={auction.end_date||auction.createAt}/>}
+        {auction.state!="published"?<span className="text-xs opacity-50">{state||auction.state}</span>:  <CountDown variant="secondary" onTimeOut={()=>{console.log("is time out")}} endDate={auction.end_date||auction.createAt}/>}
         </div>
         <hr className="my-1 h-0" />
         <div className="flex flex-row items-center justify-between">

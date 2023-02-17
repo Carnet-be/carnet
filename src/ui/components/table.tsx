@@ -52,7 +52,7 @@ export const renderDate = (date: string, format="L") => {
 
 export const RenderTimer = ({ date,state,init}: { date: Date,state:"pause"|"published"|"pending",init:Date|undefined }) => {
   const [leftTime, setleft] = useState<moment.Duration>(
-    executeEverySecond(date)
+    executeEverySecond(date,init)
   );
 
   useEffect(() => {
@@ -226,8 +226,8 @@ const  ConfirmationPause = ({
   return (
     <>
  
-      <Modal okType='danger' title="info" open={open} onOk={onValide} onCancel={()=>setOpen(false)}>
-        <p>You are about to pause this auction</p>
+      <Modal title="Warning" open={open} onOk={onValide} onCancel={()=>setOpen(false)}>
+        <p>Confirm your action please</p>
       </Modal>
     </>
   );
