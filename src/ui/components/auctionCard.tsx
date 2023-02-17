@@ -86,7 +86,7 @@ const AuctionCard = ({ auction, isFavorite,mineAuction,onClickFavorite,onEdit,re
           <div className="flex-grow font-semibold">
             <span className="cursor-pointer hover:underline" onClick={()=>!mineAuction?undefined: router.push("/dashboard/bidder/auction/" + auction.id)}>{auction.name}</span>
           </div>
-        {auction.state!="published"?<span className="text-xs opacity-50">{state||auction.state}</span>:  <CountDown variant="secondary" onTimeOut={()=>{console.log("is time out")}} endDate={auction.end_date||auction.createAt}/>}
+        {state!="published"?<span className="text-xs opacity-50">{state||auction.state}</span>:  <CountDown variant="secondary" onTimeOut={()=>{console.log("is time out")}} endDate={auction.end_date||auction.createAt}/>}
         </div>
         <hr className="my-1 h-0" />
         <div className="flex flex-row items-center justify-between">

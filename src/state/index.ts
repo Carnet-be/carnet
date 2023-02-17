@@ -22,3 +22,31 @@ export const useBidderStore = create<BidderState>()(
       )
     )
   )
+
+
+  interface TAdminDashboard {
+    published: number,
+    pending: number,
+    pause: number,
+    confirmation: number,
+    completed: number,
+
+      setWishs: (by: number) => void,
+      decrease: () => void,
+      increase: () => void,
+    }
+//   export const useAdminDashboardStore = create<TAdminDashboard>()(
+//       devtools(
+//         persist(
+//           (set) => ({
+//             wishList: 0,
+//               setWishs: (by: number) => set((state) => ({ wishList: by })),
+//              decrease: () => set((state) => ({ wishList: state.wishList-1 })),
+//             increase: () => set((state) => ({ wishList: state.wishList+1 })),
+//           }),
+//           {
+//             name: 'bidder-storage',
+//           }
+//         )
+//       )
+//     )

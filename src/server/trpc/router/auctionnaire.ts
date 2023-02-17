@@ -206,6 +206,8 @@ export const auctionnaireRouter = router({
             description: data6.description,
             duration,
             color: data1.color,
+            //test confirmation
+           // end_date:new Date(),
             end_date,
 
             starting_price,
