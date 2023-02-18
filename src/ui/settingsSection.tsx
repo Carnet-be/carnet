@@ -2,11 +2,14 @@
 import { type User } from ".prisma/client";
 import { TUser } from "@model/type";
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
+import { trpc } from "@utils/trpc";
 import { Button, Divider, FloatButton, Input } from "antd";
-import React, { createContext, useContext, useEffect, useRef } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import BigTitle from "./components/bigTitle";
 import MyUpload from "./components/myUpload";
+import cx from "classnames";
 import { CheckIcon, PersonIcon } from "./icons";
+import toast from "react-hot-toast";
 
 const UserContext = createContext<TUser | undefined>(undefined);
 const Settings = ({ user }: { user: TUser }) => {
@@ -27,10 +30,41 @@ const Settings = ({ user }: { user: TUser }) => {
 };
 
 const Profile = () => {
-  const user = useContext(UserContext);
+  
+  const [user,setuser]=useState(useContext(UserContext))
+  const {refetch}=trpc.user.get.useQuery(undefined,{
+    enabled:false,
+    onSuccess:(data)=>{
+      setuser(data as TUser|undefined)
+    }
+
+  })
   const [isUploading, setIsUploading] = React.useState(false);
   const [profile, setProfile] = React.useState<User>(user as User);
   const [imgKey, setImgKey] = React.useState<string | undefined>(undefined);
+  const { mutate: update, isLoading } = trpc.user.update.useMutation({
+    onSuccess: (data) => {
+      console.log(data);
+      toast.success("Profile updated");
+      refetch()
+    },
+    onError: (e) => {
+      console.log(e);
+      toast.error("Error");
+    },
+  });
+
+  const { mutate: updatePhoto } = trpc.user.addPhoto.useMutation({
+    onSuccess: (data) => {
+      console.log(data);
+      toast.success("Photo updated");
+    },
+    onError: (e) => {
+      console.log(e);
+      toast.error("Error");
+    },
+  });
+
   useEffect(() => {
     if (user) {
       if (user.image) {
@@ -43,6 +77,18 @@ const Profile = () => {
     return <div></div>;
   }
 
+  const isModified = () => {
+    if (user.username !== profile.username) {
+      return true;
+    }
+    if (user.email !== profile.email) {
+      return true;
+    }
+    if (user.tel !== profile.tel) {
+      return true;
+    }
+    return false;
+  };
   return (
     <div className="space-y-6">
       <div className="flex flex-row gap-10">
@@ -91,8 +137,23 @@ const Profile = () => {
         </FormControl>
         <Button>update password</Button>
 
-        <div className="mt-4 flex flex-row gap-4">
-          <Button type={"primary"}>valider</Button>
+        <div
+          className={cx("mt-4 flex flex-row gap-4", {
+            hidden: !isModified(),
+          })}
+        >
+          <Button
+            onClick={() => {
+              update({
+                username: profile.username,
+                email: profile.email,
+                tel: profile.tel,
+              });
+            }}
+            type={"primary"}
+          >
+            valider
+          </Button>
           <Button type="text">annuler</Button>
         </div>
       </div>
