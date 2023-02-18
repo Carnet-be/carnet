@@ -4,7 +4,7 @@ import {MdOutlinePassword,MdDelete,MdEdit,MdDashboard,MdRemove,MdExpandMore,MdAd
 import {BiBuildings,BiSupport,BiDollarCircle, BiImport} from "react-icons/bi"
 import {AiTwotoneSetting,AiOutlineHeart,AiFillHeart,AiOutlineUserDelete,AiFillCheckCircle} from "react-icons/ai"
 import {RiNotification2Line,RiAuctionFill, RiFileDownloadLine} from 'react-icons/ri'
-import {IoMdAdd,IoIosLogOut,IoMdArrowRoundBack,IoIosArrowDroprightCircle,IoIosArrowDropleftCircle} from 'react-icons/io'
+import {IoMdAdd,IoIosLogOut,IoMdArrowRoundBack,IoMdChatbubbles,IoIosArrowDroprightCircle,IoIosArrowDropleftCircle} from 'react-icons/io'
 import {CgMoreVertical} from 'react-icons/cg'
 import {CiSettings} from "react-icons/ci"
 import {TbClipboardList, TbFileExport} from 'react-icons/tb'
@@ -47,3 +47,4 @@ export const InportIcon=RiFileDownloadLine
 export const PauseIcon=GrPauseFill
 export const ExportIcon=TbFileExport
 export const WinIcon=FaCrown
+export const ChatIcon=IoMdChatbubbles

@@ -11,6 +11,7 @@ import {
   SettingsIcon,
   BidderIcon,
   DataIcon,
+  ChatIcon,
 } from "./icons";
 import { type UserType } from "@model/type";
 import Logo from "./components/logo";
@@ -84,6 +85,11 @@ const Dashboard = ({
         route: "/admin/dashboard/data",
         icon: <DataIcon />,
       },
+      {
+        title:"Chat",
+        route:"/admin/dashboard/chat",
+        icon:<ChatIcon />
+      }
     ],
     AUC: [
       {
@@ -96,6 +102,11 @@ const Dashboard = ({
         route: "/dashboard/auctionnaire/myauctions",
         icon: <AuctionIcon />,
       },
+      {
+        title:"Chat",
+        route:"/dashboard/auctionnaire/chat",
+        icon:<ChatIcon />
+      }
     ],
     BID: [
       {
@@ -171,7 +182,7 @@ const Dashboard = ({
               )}
               <li>
                 <Link
-                  href={"/admin/dashboard/settings"}
+                  href={"/pages/settings"}
                   className={cx(
                     "flex flex-row gap-5 rounded-lg border font-light no-underline"
                   )}

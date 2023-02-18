@@ -35,6 +35,8 @@ model User {
   image    AssetImage?
   auctions Auction[]
   bids     Bid[]
+
+  internalMessages InternalMessage[] @relation("auctioner")
 }
 
 model DemandeStaff {
@@ -199,6 +201,20 @@ model Model {
   @@unique([name, year, brand_id])
 }
 
+model InternalMessage{
+  id String @id @default(cuid())
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  // field
+  content String
+  isRead Boolean @default(false)
+  isReadByAdmin Boolean @default(false)
+
+  type IntermalMessageType @default(client)
+  // relation
+  client_id String
+  client    User @relation("auctioner", fields: [client_id], references: [id], onDelete: Cascade)
+}
 //////ENUM///////
 enum UserType {
   BID
@@ -224,4 +240,9 @@ enum AuctionState {
   published
   pending
   pause
+}
+
+enum IntermalMessageType {
+ client
+ admin
 }

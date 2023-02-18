@@ -32,7 +32,7 @@
     "bcrypt": "^5.1.0",
     "classnames": "^2.3.2",
     "cloudinary": "^1.33.0",
-    "daisyui": "^2.41.0",
+    "daisyui": "^2.50.1",
     "firebase": "^9.14.0",
     "framer-motion": "^7.6.7",
     "google-map-react": "^2.2.0",

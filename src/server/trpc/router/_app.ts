@@ -5,6 +5,7 @@ import { authRouter } from "./auth";
 import { userRouter } from "./user";
 import { bidderRouter } from './bidder';
 import { globalRouter } from "./global";
+import { messageRouter } from "./message";
 
 export const appRouter = router({
   auth: authRouter,
@@ -12,7 +13,8 @@ export const appRouter = router({
   admin:adminRouter,
   auctionnaire:auctionnaireRouter,
   bidder:bidderRouter,
-  global:globalRouter
+  global:globalRouter,
+  message:messageRouter
 });
 
 // export type definition of API

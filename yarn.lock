@@ -2262,10 +2262,10 @@
   "resolved" "https://registry.npmjs.org/csstype/-/csstype-3.1.1.tgz"
   "version" "3.1.1"
 
-"daisyui@^2.41.0":
-  "integrity" "sha512-M/MPbTERJK4iBIXRGQpQdHTmy53HRqrgca4rsbPhio1Sqq0w2GH/RJSVX8b14hYB0E9E8R+t5bHIeqW1oHT97A=="
-  "resolved" "https://registry.npmjs.org/daisyui/-/daisyui-2.41.0.tgz"
-  "version" "2.41.0"
+"daisyui@^2.50.1":
+  "integrity" "sha512-Z4GuU/ZknYoHt7qfDQSC5rrxMJ6ffNV9baQfCSbo5J/clC1DBppfrqLJXS8A3NPBRo2GbbpKwdA1ZdThWdpBtQ=="
+  "resolved" "https://registry.npmjs.org/daisyui/-/daisyui-2.50.1.tgz"
+  "version" "2.50.1"
   dependencies:
     "color" "^4.2"
     "css-selector-tokenizer" "^0.8.0"
