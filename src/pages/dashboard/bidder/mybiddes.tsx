@@ -84,7 +84,7 @@ const columns:ColumnsType<Bid>=[
       key: "end_date",
       align: "center",
       
-      render: (_,v) => <RenderTimer date={(v as any).auction.end_date} state={(v as any).state}/>,
+      render: (_,v) => <RenderTimer date={(v as any).auction.end_date} state={(v as any).state} init={(v as any).pause_date}/>,
     },
     
   ]

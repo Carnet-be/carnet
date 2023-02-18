@@ -17,7 +17,7 @@ import { useState } from 'react';
        
           value={images}
           setValue={(v) => {
-            console.log("On change : ",v)
+          
             setimages(v)
           }}
         />

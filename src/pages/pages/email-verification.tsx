@@ -5,7 +5,74 @@ import { trpc } from "@utils/trpc";
 import { toast } from 'react-hot-toast';
 import { useRouter } from "next/router";
 import cx  from 'classnames';
+import { signOut } from "next-auth/react";
+import { User } from '@prisma/client';
+import { getServerAuthSession } from '@server/common/get-server-auth-session';
+import { GetServerSideProps } from 'next';
+import React from 'react'
 
+import { prisma } from "../../server/db/client";
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const session = await getServerAuthSession(ctx);
+  
+    if (!session) {
+      return {
+        redirect: {
+          destination: "/auth/login",
+          permanent: true,
+        },
+      };
+    }
+    const user: User = await prisma.user
+      .findUnique({
+        where: {
+          email: session?.user?.email || "",
+        },
+      })
+      .then((res) => JSON.parse(JSON.stringify(res)));
+    if (!user) {
+      return {
+        redirect: {
+          destination: "/auth/login",
+          permanent: true,
+        },
+      };
+    }
+    if (!user.emailVerified) {
+      return {
+        redirect: {
+          destination: "/pages/email-verification",
+          permanent: true,
+        },
+      };
+    }
+    let route;
+  
+    switch (user.type) {
+      case "AUC":
+        route = "/dashboard/auctionnaire";
+        break;
+      case "BID":
+        if(user.isActive){
+            return {
+                props:{}
+              };
+        }else{
+          route = "/pages/inactive";
+        }
+       
+        break;
+      default:
+        route = "/admin/dashboard";
+        break;
+    }
+    return {
+      redirect: {
+        destination: route,
+        permanent: true,
+      },
+    };
+  };
 const EmailVerification: NextPage = () => {
     const router=useRouter()
 const {mutate:resend,isLoading:resending}=trpc.auth.resendVerif.useMutation({
@@ -31,6 +98,19 @@ const {mutate:resend,isLoading:resending}=trpc.auth.resendVerif.useMutation({
         }
     }
   });
+  const {mutate:cancel,isLoading:isCanceling}=trpc.auth.cancelSignIn.useMutation({
+    onError:(err) =>{
+        console.log('err', err)
+        toast.error("Failed")
+    },
+    onSuccess:()=>{
+      toast.error("Cancelled")
+      signOut({callbackUrl:"/"})
+
+    }
+  })
+
+
   return (
     <div className="relative flex h-screen w-screen flex-row items-stretch">
       <div className="flex-grow bg-primary"></div>
@@ -55,8 +135,13 @@ const {mutate:resend,isLoading:resending}=trpc.auth.resendVerif.useMutation({
                 quelques minutes, veuillez vérifier votre boîte de spam.
                 <span className="text-green-500">{user?.username}</span>
               </p>
-              <div className="flex w-full flex-row justify-evenly">
-                <button onClick={()=>router.reload()} className="btn btn-outlined btn-sm">
+              <div className="flex w-full flex-row justify-evenly mt-6">
+                <button onClick={()=>cancel()} className={cx("btn btn-ghost btn-sm",{
+                  "loading":isCanceling
+                })}>
+                  annuler
+                </button>
+                <button onClick={()=>router.reload()} className="btn btn-outline btn-sm">
                   refresh
                 </button>
                 <button onClick={()=>resend({email:user?.email||"",id:user?.id||""})} className={cx("btn-primary btn-sm btn",{
@@ -64,9 +149,9 @@ const {mutate:resend,isLoading:resending}=trpc.auth.resendVerif.useMutation({
                 })}>
                   {"Renvoyer l'email"}
                 </button>
-                <button  className={cx("loading btn-ghost btn-sm btn")}>
+                {/* <button  className={cx("loading btn-ghost btn-sm btn")}>
                   {"en attente de vérification"}
-                </button>
+                </button> */}
               </div>
             </div>
           </>

@@ -19,7 +19,7 @@ import { signOut } from "next-auth/react";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerAuthSession(context);
-  console.log(session?.user);
+ 
   if (!session) {
     return {
       props: {},

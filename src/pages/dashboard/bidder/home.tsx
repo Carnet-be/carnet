@@ -26,6 +26,16 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const user = await prisma.user
     .findUnique({ where: { email: session.user?.email || "" } })
     .then((user) => JSON.parse(JSON.stringify(user)));
+
+    if(!user.isActive){
+        return {
+            redirect: {
+              destination: "/pages/inactive",
+              permanent: true,
+            },
+          };
+
+    }
   return {
     props: {user},
   };

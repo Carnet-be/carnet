@@ -30,7 +30,7 @@ import { BiPause } from "react-icons/bi";
 import moment from "moment";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
-  console.log(session?.user);
+ 
   if (!session) {
     return {
       redirect: {

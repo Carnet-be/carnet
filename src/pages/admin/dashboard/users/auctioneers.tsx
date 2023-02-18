@@ -14,7 +14,7 @@ import { Tag } from 'antd';
 import toast from 'react-hot-toast';
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const session = await getServerAuthSession(ctx);
-    console.log(session?.user);
+
     if (!session) {
       return {
         redirect: {

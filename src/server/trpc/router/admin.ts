@@ -173,6 +173,34 @@ export const adminRouter = router({
     .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.demandeStaff.delete({ where: { id: input } });
     }),
+
+    statusUser: publicProcedure.input(z.object({user_id:z.string(),isActive:z.boolean()})).mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.user.update({
+        where: { id: input.user_id },
+        data: { isActive: input.isActive },
+      });
+    }),
+
+    ////
+    init: publicProcedure.query(async ({ ctx }) => {
+      const user=await ctx.prisma.user.findUnique({where:{email:ctx.session?.user?.email||""}})
+      if(!user) return {error:"user not found"}
+      if(!user.isActive) return {error:"user not active"}
+      const data={}
+      if(user?.type==="BID"){
+        //data.bidder=
+      }
+      if(user?.type==="AUC"){
+        //data.auctioneer=
+      }
+      if(user?.type==="STAFF"){
+        //data.staff=
+      }
+      if(user?.type==="ADMIN"){
+        //data.admin=
+      }
+      return {user}
+    })
 });
 
 const sendDemandeStaff = async (user: User | { email: string; id: string }) => {

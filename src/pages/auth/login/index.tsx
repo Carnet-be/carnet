@@ -17,7 +17,7 @@ import { type NextPage, type GetServerSideProps } from "next/types";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
-  console.log(session?.user);
+ 
   if (session) {
     return {
       redirect: {

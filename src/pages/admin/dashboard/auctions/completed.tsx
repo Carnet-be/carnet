@@ -31,7 +31,7 @@ import moment from "moment";
 import { SwitcherAuctions } from ".";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
-  console.log(session?.user);
+
   if (!session) {
     return {
       redirect: {

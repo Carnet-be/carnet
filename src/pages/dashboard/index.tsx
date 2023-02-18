@@ -15,7 +15,7 @@ import { type User } from "@prisma/client";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
-  console.log(session?.user);
+
   if (!session) {
     return {
       redirect: {
@@ -48,17 +48,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
   let route;
+  if(!user.isActive){
+    console.log("user is not active")
+    return {
+      redirect: {
+        destination: "/pages/inactive",
+        permanent: true,
+      },
+    }
+
+}
   switch (user.type) {
     case "AUC":
       route = "/dashboard/auctionnaire";
       break;
     case "BID":
-      if(user.isActive){
         route = "/dashboard/bidder";
-      }else{
-        route = "/pages/inactive";
-      }
-     
       break;
     default:
       route = "/admin/dashboard";

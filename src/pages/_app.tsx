@@ -52,9 +52,39 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
 const App=({children}:{children:ReactNode})=>{
   const router=useRouter()
-  useEffect(() => {
-    console.log(router.pathname)
-  }, [router.pathname])
+//   const {data:init,refetch,isLoading}=trpc.admin.init.useQuery(undefined,{enabled:false,
+//   onError:(err)=>{
+//     if(err.message.includes("401")){
+//       router.push("/login")
+//     }
+//     console.log(err)
+//   },
+//   onSuccess:(data)=>{
+//     console.log(data)
+//     if(data.error){
+//       if(data.error=="user not found"){
+//         router.push("/auth/login")
+//       }
+//       if(data.error=="user not verified"){
+//         router.push("/pages/email-verification")
+//       }
+//       if(data.error=="user not active"){
+//         router.push("/pages/inactive") 
+//     }
+
+
+//   }else{
+//     console.log(data.user)
+//   }
+// }
+
+//   })
+//   useEffect(() => {
+//     console.log(router.pathname)
+//     if(router.pathname.includes("/dashboard")){
+//       refetch()
+//     }
+//   }, [router.pathname])
 
 return <>{children}</>
 }

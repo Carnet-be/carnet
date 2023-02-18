@@ -6,22 +6,19 @@ import { z } from "zod";
 import { getBaseUrl } from "../../../pages/_app";
 import { router, publicProcedure } from "../trpc";
 
-
-const ZSignup=z.object({
+const ZSignup = z.object({
   username: z.string(),
   tel: z.string(),
   email: z.string(),
   nom_entreprise: z.string().nullish(),
   password: z.string(),
-  setEmailVerified:z.boolean().nullish(),
+  setEmailVerified: z.boolean().nullish(),
   type: z.enum(["BID", "AUC", "ADMIN", "STAFF"]),
-})
-export const ZAddStuff = z.object(
-  {
-    idDemande:z.string(),
-    data:ZSignup
-  }
-);
+});
+export const ZAddStuff = z.object({
+  idDemande: z.string(),
+  data: ZSignup,
+});
 export const authRouter = router({
   signUp: publicProcedure.input(ZSignup).mutation(async ({ input, ctx }) => {
     const exist = await ctx.prisma.user.findFirst({
@@ -37,8 +34,8 @@ export const authRouter = router({
     }
 
     const hashPwd = await hash(input.password, 10);
-    const {setEmailVerified}=input
-    delete input.setEmailVerified
+    const { setEmailVerified } = input;
+    delete input.setEmailVerified;
 
     let id = Math.random().toString().slice(2, 9);
     let incorrectId = true;
@@ -46,58 +43,66 @@ export const authRouter = router({
       const count = await ctx.prisma.user.count({ where: { id } });
       if (count === 0) {
         incorrectId = false;
-      }else{
+      } else {
         id = Math.random().toString().slice(2, 9);
       }
     }
-    const type=input.type
+    const type = input.type;
     return await ctx.prisma.user
       .create({
         data: {
           id,
           ...input,
-          isActive:type!=="BID"?true:false,
-          emailVerified:setEmailVerified?true:false,
+          isActive: type !== "BID" ? true : false,
+          emailVerified: setEmailVerified ? true : false,
           password: hashPwd,
         },
       })
       .then(async (res) => {
-      if(!setEmailVerified){
-        await sendVerifEmail(res);
-      }
+        if (!setEmailVerified) {
+          await sendVerifEmail(res);
+        }
         return res;
       });
   }),
-  addStaff: publicProcedure.input(ZAddStuff).mutation(async ({ input, ctx }) => {
-    const {idDemande:id,data}=input
-    const hashPwd = await hash(data.password, 10);
-    let idStaff = Math.random().toString().slice(2, 9);
-    let incorrectId = true;
-    while (incorrectId) {
-      const count = await ctx.prisma.user.count({ where: {id: idStaff } });
-      if (count === 0) {
-        incorrectId = false;
-      }else{
-        idStaff = Math.random().toString().slice(2, 9);
+  addStaff: publicProcedure
+    .input(ZAddStuff)
+    .mutation(async ({ input, ctx }) => {
+      const { idDemande: id, data } = input;
+      const hashPwd = await hash(data.password, 10);
+      let idStaff = Math.random().toString().slice(2, 9);
+      let incorrectId = true;
+      while (incorrectId) {
+        const count = await ctx.prisma.user.count({ where: { id: idStaff } });
+        if (count === 0) {
+          incorrectId = false;
+        } else {
+          idStaff = Math.random().toString().slice(2, 9);
+        }
       }
-    }
-    return await ctx.prisma.$transaction([
-      ctx.prisma.demandeStaff.delete({where:{id}}),
-      ctx.prisma.user.create({
-        data: {
-          id:idStaff,
-          ...data,
-          password: hashPwd,
-          emailVerified: true,
-        },
-      }),
-    ]);
-  }),
+      return await ctx.prisma.$transaction([
+        ctx.prisma.demandeStaff.delete({ where: { id } }),
+        ctx.prisma.user.create({
+          data: {
+            id: idStaff,
+            ...data,
+            password: hashPwd,
+            emailVerified: true,
+          },
+        }),
+      ]);
+    }),
   resendVerif: publicProcedure
     .input(z.object({ email: z.string(), id: z.string() }))
     .mutation(async ({ input }) => {
       return await sendVerifEmail(input);
     }),
+
+  cancelSignIn: publicProcedure.mutation(async ({ ctx }) => {
+    return await ctx.prisma.user.delete({
+      where: { email: ctx.session?.user?.email || "" },
+    });
+  }),
 });
 
 const sendVerifEmail = async (user: User | { email: string; id: string }) => {

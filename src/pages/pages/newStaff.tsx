@@ -19,7 +19,7 @@ import { signIn } from "next-auth/react";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
-  console.log(session?.user);
+
   const id = ctx.query.id as string;
   if (!id) {
     return {

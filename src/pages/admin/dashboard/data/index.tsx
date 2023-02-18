@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Router, { useRouter } from 'next/router';
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const session = await getServerAuthSession(ctx);
-    console.log(session?.user);
+ 
     if (!session) {
       return {
         redirect: {
