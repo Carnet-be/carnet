@@ -1,9 +1,11 @@
-import type { User } from '@prisma/client';
-import { getServerAuthSession } from '@server/common/get-server-auth-session';
-import type{ GetServerSideProps } from 'next';
-import React from 'react'
-
+import { User } from ".prisma/client";
+import { TUser } from "@model/type";
+import { getServerAuthSession } from "@server/common/get-server-auth-session";
+import Dashboard from "@ui/dashboard";
+import SettingsSection from "@ui/settingsSection";
+import { GetServerSideProps } from "next";
 import { prisma } from "../../server/db/client";
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -20,6 +22,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       where: {
         email: session?.user?.email || "",
       },
+      include:{
+        image:true
+      }
     })
     .then((res) => JSON.parse(JSON.stringify(res)));
   if (!user) {
@@ -38,30 +43,27 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
-  let route;
-  if(!user.isActive){
-    console.log("user is not active")
+  if (!user.isActive) {
+    console.log("user is not active");
     return {
       redirect: {
         destination: "/pages/inactive",
         permanent: true,
       },
-    }
-
-}
-  let isAdmin = false;
-  if(user.type === "ADMIN"){
-    isAdmin = true;
+    };
   }
+
   return {
    props:{
-    id:user.id,
-    isAdmin}
+      user
+   }
   };
 };
-const Settings = (props: { id: string, isAdmin: boolean }) => {
-  const {id,isAdmin} = props;
-  return <div></div>
-}
+const ProfilePage = (props:{user:TUser}) => {
+  const {user} = props;
+  return <Dashboard type={user.type}>
+       <SettingsSection user={user}/>
+  </Dashboard>;
+};
 
-export default Settings
+export default ProfilePage;
