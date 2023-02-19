@@ -34,17 +34,20 @@ const beforeUpload = (file: RcFile) => {
   }
   return isJpgOrPng && isLt2M;
 };
+
+export type TImage={
+    fileKey:string,
+    name:string,
+    url:string
+}
 const MyUpload = ({
   onSuccess,
-  isUploading,
-  setUploading,
+  setPreviewImage
 }: {
-  onSuccess: (img: {fileKey:string,name:string,url:string}) => void;
-  setUploading: (b: boolean) => void;
-  isUploading: boolean;
+  onSuccess: (img: TImage) => void;
+   setPreviewImage: (img: TImage) => void;
 }) => {
-  const [imageUrl, setImageUrl] = useState<string | undefined>();
-
+  const [isUploading, setUploading] = useState(false);
   const handleChange: UploadProps["onChange"] = (
     info: UploadChangeParam<UploadFile>
   ) => {
@@ -56,15 +59,18 @@ const MyUpload = ({
     console.log(info.file.percent)
     if (info.file.status === "done") {
       // Get this url from response in real world.
-      onSuccess({
-        fileKey: info.file.response.public_id,
-        url: info.file.response.secure_url,
-        name: info.file.name, 
-      });
-      getBase64(info.file.originFileObj as RcFile, (url) => {
         setUploading(false);
-        setImageUrl(url);
-      });
+        const img={
+            fileKey: info.file.response.public_id,
+            url: info.file.response.secure_url,
+            name: info.file.name, 
+          }
+      setPreviewImage(img)
+      onSuccess(img);
+    //   getBase64(info.file.originFileObj as RcFile, (url) => {
+    //     setUploading(false);
+    //     setImageUrl(url);
+    //   });
     }
   };
 

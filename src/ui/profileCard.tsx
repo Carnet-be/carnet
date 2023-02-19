@@ -20,8 +20,8 @@ const Avatar = ({username,user,isLoading,session}:{username?:boolean,user:TUser|
   }
   return (
     <div className="avatar">
-      <div className="w-24 rounded-full">
-        <Image src={cloudy.image(user.image.fileKey).resize(fill(50,60)).toURL()} width={50} height={60} alt="profile" />
+      <div className="w-8 rounded-full">
+        <Image src={user.image.url} width={30} height={30} alt="profile" />
       </div>
     </div>
   );
@@ -43,6 +43,9 @@ import { type Session } from "next-auth";
 import { TUser } from "@model/type";
 import cloudy from "@utils/cloudinary";
 import { fill } from "@cloudinary/url-gen/actions/resize";
+import { useState } from "react";
+import { Drawer } from "antd";
+import { Profile } from "./settingsSection";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -99,6 +102,18 @@ export default function CustomizedMenus() {
   const router = useRouter();
   const { data: user, isLoading } = trpc.user.get.useQuery();
   const {data:session}=useSession()
+  const [openProfil, setOpenProfil] = useState(false);
+
+  const showDrawer = () => {
+    handleClose()
+    setOpenProfil(true);
+  };
+
+  const onClose = () => {
+    setOpenProfil(false);
+  };
+
+  //<Profile usert={user} />
   return (
     <div>
       <Button
@@ -126,7 +141,7 @@ export default function CustomizedMenus() {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose} disableRipple className="menu-item">
+         <MenuItem onClick={showDrawer} disableRipple className="menu-item">
           <PersonIcon />
           Account
         </MenuItem>
@@ -147,6 +162,16 @@ export default function CustomizedMenus() {
           Logout
         </MenuItem>
       </StyledMenu>
+      <Drawer
+        title={`Profile`}
+        placement="right"
+       // size={"large"}
+        onClose={onClose}
+        open={openProfil}
+        width={450}
+      >
+       {user&&<Profile usert={user} /> }
+      </Drawer>
     </div>
   );
 }

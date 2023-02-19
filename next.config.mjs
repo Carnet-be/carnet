@@ -14,7 +14,18 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ['lh3.googleusercontent.com','firebasestorage.googleapis.com','res.cloudinary.com','placehold.jp'],
+    domains: ['lh3.googleusercontent.com','firebasestorage.googleapis.com','res.cloudinary.com','placehold.jp',"via.placeholder.com"],
+  },
+  webpack: (config) => {
+    config.resolve = {
+      ...config.resolve,
+      fallback: {
+        "fs": false,
+        "path": false,
+        "os": false,
+      }
+    }
+    return config
   },
 };
 export default config;

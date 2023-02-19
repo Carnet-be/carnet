@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
+import bcrypt from 'bcrypt';
+import { bcryptHash } from "@utils/bcrypt";
 
 export const userRouter = router({
   get: publicProcedure.query(async ({ ctx }) => {
@@ -49,16 +51,32 @@ export const userRouter = router({
     changePwd: publicProcedure
     .input(
       z.object({
+        current: z.string(),
+        old: z.string(),
         newPwd: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      
+      const isSame=await bcrypt.compare(input.old,input.current)
+      if(!isSame) throw new Error("Old password is not correct")
+      const hash=(await bcryptHash(input.newPwd)) as string
       return await ctx.prisma.user.update({
         where: { email: ctx.session?.user?.email || "" },
         data: {
-          password:input.newPwd
+          password:hash
         },
       });
-    })
+    }),
+    removePhoto: publicProcedure
+    .mutation(async ({ ctx }) => {
+      return await ctx.prisma.user.update({
+        where: { email: ctx.session?.user?.email || "" },
+        data: {
+          image: {
+            delete: true,
+          },
+        },
+      });
+    }
+    ),
 });

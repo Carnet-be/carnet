@@ -215,6 +215,23 @@ model InternalMessage{
   client_id String
   client    User @relation("auctioner", fields: [client_id], references: [id], onDelete: Cascade)
 }
+
+
+
+model AppSettings {
+  id String @id @default("appSettings")
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  // field
+  contactEmail String?
+  contactPhone String?
+  contactAddress String?
+   ////
+  confirmNewBidderAccount Boolean @default(true)
+
+}
+
+
 //////ENUM///////
 enum UserType {
   BID

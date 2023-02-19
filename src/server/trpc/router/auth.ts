@@ -1,4 +1,4 @@
-import { type User } from "@prisma/client";
+import { AppSettings, type User } from "@prisma/client";
 import * as trpc from "@trpc/server";
 import { Transporter } from "@utils/nodemailer";
 import { hash } from "bcrypt";
@@ -48,12 +48,15 @@ export const authRouter = router({
       }
     }
     const type = input.type;
+    const settings:AppSettings|null=await ctx.prisma.appSettings.findFirst()
+
+    const isActive = type !== "BID" ? true : settings? !settings.confirmNewBidderAccount : false;
     return await ctx.prisma.user
       .create({
         data: {
           id,
           ...input,
-          isActive: type !== "BID" ? true : false,
+          isActive,
           emailVerified: setEmailVerified ? true : false,
           password: hashPwd,
         },

@@ -200,7 +200,7 @@ export const adminRouter = router({
         //data.admin=
       }
       return {user}
-    })
+    }),
 });
 
 const sendDemandeStaff = async (user: User | { email: string; id: string }) => {
