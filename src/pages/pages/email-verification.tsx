@@ -40,10 +40,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
     if (!user.emailVerified) {
       return {
-        redirect: {
-          destination: "/pages/email-verification",
-          permanent: true,
-        },
+       props:{}
       };
     }
     let route;

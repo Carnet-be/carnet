@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Modal, Table, Tag, Tooltip } from "antd";
+import { Button, InputNumber, Modal, Select, Table, Tag, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import cx from "classnames";
 import { DeleteIcon, EditIcon, ViewIcon } from "@ui/icons";
@@ -12,7 +12,7 @@ import moment from "moment";
 import { User } from "next-auth";
 import { executeEverySecond } from "./countDown";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-
+const { Option } = Select;
 interface Props<T> {
   columns: ColumnsType<T>;
   data: T[];
@@ -28,11 +28,10 @@ const MyTable: React.FC<Props<TableType>> = ({
   options,
   rowSelection,
 }) => {
-  const [parent] = useAutoAnimate(/* optional config */)
+  const [parent] = useAutoAnimate(/* optional config */);
   return (
     <Table
       size="small"
-      
       className="w-full"
       rowSelection={rowSelection}
       rowKey={(record) => record.id}
@@ -46,18 +45,31 @@ const MyTable: React.FC<Props<TableType>> = ({
 
 export default MyTable;
 
-export const renderDate = (date: string, format="L") => {
+export const renderDate = (date: string, format = "L") => {
   return <Tag color="processing">{moment(date).format(format)}</Tag>; // <div className={cx("rounded-md px-2 py-[1px] flex justify-center",`bg-${color}-100 border border-${color}-500 text-${color}-500`)}>{moment(date).format('L')}</div>
 };
 
-export const RenderTimer = ({ date,state,init}: { date: Date,state:"pause"|"published"|"pending",init:Date|undefined }) => {
+export const RenderTimer = ({
+  date,
+  state,
+  init,
+  onAddTime,
+}: {
+  date: Date;
+  state: "pause" | "published" | "pending";
+  init: Date | undefined;
+  onAddTime?: (type:"day"|"hour"|"minute"|"week",time:number) => void;
+}) => {
   const [leftTime, setleft] = useState<moment.Duration>(
-    executeEverySecond(date,init)
+    executeEverySecond(date, init)
   );
 
   useEffect(() => {
     const interval = setInterval(
-      () =>state=="published"&& leftTime.asSeconds() > 0  && setleft(executeEverySecond(date)),
+      () =>
+        state == "published" &&
+        leftTime.asSeconds() > 0 &&
+        setleft(executeEverySecond(date)),
       1000
     );
     return () => {
@@ -67,15 +79,51 @@ export const RenderTimer = ({ date,state,init}: { date: Date,state:"pause"|"publ
   useEffect(() => {
     console.log(leftTime);
   }, [leftTime]);
+  const [type, setType] = useState<"day"|"week"|"hour"|"minute">("day");
+  const [value, setValue] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const showModal = () => {
+    setIsOpen(true);
+  };
+
+  const handleOk = () => {
+    onAddTime && onAddTime(type,value);
+    setIsOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsOpen(false);
+  };
+  const selectAfter = (
+    <Select value={type} onChange={(v) => setType(v)} style={{ width: 140 }}>
+      <Option value="day">Day(s)</Option>
+      <Option value="hour">Hour(s)</Option>
+      <Option value="minute">Minute(s)</Option>
+      <Option value="week">Week(s)</Option>
+    </Select>
+  );
   return (
-    <Tag
-      color={leftTime?.asSeconds() <= 0 ? "error" :state=="pause"?"yellow":state=="published"?"green": "default"}
-      className="flex flex-row items-end justify-center gap-1 font-semibold"
+    <>
+     <Tag
+     onClick={showModal}
+      color={
+        leftTime?.asSeconds() <= 0
+          ? "error"
+          : state == "pause"
+          ? "yellow"
+          : state == "published"
+          ? "green"
+          : "default"
+      }
+      className="flex flex-row items-end justify-center gap-1 font-semibold cursor-pointer"
     >
       {leftTime?.asSeconds() <= 0 ? (
         "Expired"
-      ) : 
-            state=="pending"? <span className="">Pending</span>:   <><span>
+      ) : state == "pending" ? (
+        <span className="">Pending</span>
+      ) : (
+        <>
+          <span>
             {leftTime?.days()}
             <span className="text-sm font-light opacity-70">d</span>
           </span>
@@ -91,13 +139,24 @@ export const RenderTimer = ({ date,state,init}: { date: Date,state:"pause"|"publ
             {leftTime?.seconds()}
             <span className="text-sm font-light opacity-70">s</span>
           </span>
-
-         
-          </>
-          }
-      
-      
+        </>
+      )}
     </Tag>
+    <Modal
+      title="Add Time"
+      open={onAddTime? isOpen:false}
+      onOk={handleOk}
+      onCancel={handleCancel}
+    >
+      <InputNumber
+        addonAfter={selectAfter}
+        defaultValue={0}
+        value={value}
+        onChange={(e) => setValue(e || 0)}
+      />
+    </Modal>
+  </>
+   
   );
 };
 
@@ -106,14 +165,18 @@ export const ActionTable = ({
   onDelete,
   onEdit,
   id,
-  onCustom
+  onCustom,
 }: {
   id?: string;
   onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
   onDeleteModal?: () => void;
-  onCustom?:()=>{icon:React.ReactNode;onClick:()=>void,tooltip:string}
+  onCustom?: () => {
+    icon: React.ReactNode;
+    onClick: () => void;
+    tooltip: string;
+  };
 }) => {
   const ref = useRef<HTMLLabelElement>(null);
   const refDelete = useRef<HTMLLabelElement>(null);
@@ -121,8 +184,22 @@ export const ActionTable = ({
   const [openEdit, setOpenEdit] = useState(false);
   return (
     <div className="flex flex-row items-center justify-center gap-1">
-     {id && onDelete&& <ConfirmationDelete open={openDelete} setOpen={setOpenDelete} id={id} onDelete={onDelete} />}
-     {id && onCustom&& <ConfirmationPause open={openEdit} setOpen={setOpenEdit} id={id} onValide={onCustom().onClick} />}
+      {id && onDelete && (
+        <ConfirmationDelete
+          open={openDelete}
+          setOpen={setOpenDelete}
+          id={id}
+          onDelete={onDelete}
+        />
+      )}
+      {id && onCustom && (
+        <ConfirmationPause
+          open={openEdit}
+          setOpen={setOpenEdit}
+          id={id}
+          onValide={onCustom().onClick}
+        />
+      )}
       <label ref={ref} hidden={true} htmlFor={id}></label>
       <label ref={refDelete} hidden={true} htmlFor={"delete" + id}></label>
       {onView && (
@@ -153,14 +230,14 @@ export const ActionTable = ({
           />
         </Tooltip>
       )}
-{onCustom && (
+      {onCustom && (
         <Tooltip
           title={onCustom().tooltip}
           className="flex flex-row items-center justify-center text-primary"
         >
           <Button
             onClick={() => {
-              setOpenEdit(true)
+              setOpenEdit(true);
             }}
             shape="circle"
             icon={onCustom().icon}
@@ -174,61 +251,65 @@ export const ActionTable = ({
         >
           <Button
             onClick={() => {
-            setOpenDelete(true)
+              setOpenDelete(true);
             }}
             shape="circle"
             icon={<DeleteIcon className="text-lg" />}
           />
         </Tooltip>
       )}
-
-
     </div>
   );
 };
 
-
-const  ConfirmationDelete = ({
+const ConfirmationDelete = ({
   id,
   onDelete,
-  open,setOpen
+  open,
+  setOpen,
 }: {
-  id: string|number;
+  id: string | number;
   onDelete: () => void;
   open: boolean;
   setOpen: (open: boolean) => void;
 }) => {
-
-
   return (
     <>
- 
-      <Modal okType='danger' title="Warning" open={open} onOk={onDelete} onCancel={()=>setOpen(false)}>
+      <Modal
+        okType="danger"
+        title="Warning"
+        open={open}
+        onOk={onDelete}
+        onCancel={() => setOpen(false)}
+      >
         <p>You are about to delete this element</p>
       </Modal>
     </>
   );
 };
 
-
-const  ConfirmationPause = ({
+const ConfirmationPause = ({
   id,
   onValide,
-  open,setOpen
+  open,
+  setOpen,
 }: {
-  id: string|number;
+  id: string | number;
   onValide: () => void;
   open: boolean;
   setOpen: (open: boolean) => void;
 }) => {
-
-
   return (
     <>
- 
-      <Modal title="Warning" open={open} onOk={onValide} onCancel={()=>setOpen(false)}>
+      <Modal
+        title="Warning"
+        open={open}
+        onOk={onValide}
+        onCancel={() => setOpen(false)}
+      >
         <p>Confirm your action please</p>
       </Modal>
     </>
   );
 };
+

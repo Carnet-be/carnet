@@ -28,9 +28,10 @@ import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { BiPause } from "react-icons/bi";
 import moment from "moment";
+import LogAuction from "@ui/components/logAuction";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
- 
+
   if (!session) {
     return {
       redirect: {
@@ -79,7 +80,7 @@ export const SwitcherAuctions = () => {
       route: "/admin/dashboard/auctions/completed",
     },
   ];
- 
+
   return (
     <div className="tabs tabs-boxed my-4 gap-4 px-3 py-1">
       {routers.map((r, i) => {
@@ -111,7 +112,7 @@ export const AuctionsPage = ({
     filter: "all",
     state,
   });
-  const {mutate:makeWinner}=trpc.auctionnaire.makeWinner.useMutation({
+  const { mutate: makeWinner } = trpc.auctionnaire.makeWinner.useMutation({
     onMutate: () => {
       toast.loading("In process");
     },
@@ -124,8 +125,8 @@ export const AuctionsPage = ({
       toast.dismiss();
       toast.success("Success");
       refetch();
-    }
-  })
+    },
+  });
   const { data: bids, isLoading: isLoadingBids } =
     trpc.auctionnaire.getBids.useQuery({
       filter: "all",
@@ -223,10 +224,10 @@ export const AuctionsPage = ({
                       tooltip: "Make winner",
                       onClick: () => {
                         console.log("make winner");
-                       makeWinner({
-                         auction_id: auction.auction_id,
-                         bid_id: auction.id,
-                       })
+                        makeWinner({
+                          auction_id: auction.auction_id,
+                          bid_id: auction.id,
+                        });
                       },
                     })
               }
@@ -264,6 +265,22 @@ export const AuctionsPage = ({
       refetch();
     },
   });
+  const { mutate: addTime } = trpc.auctionnaire.addTime.useMutation({
+    onMutate: () => {
+      toast.loading("In process");
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.dismiss();
+      toast.error("Faild to add time");
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success("Success");
+      refetch();
+    },
+  });
+
   const columns: ColumnsType<Auction> = [
     {
       title: "Id",
@@ -312,7 +329,6 @@ export const AuctionsPage = ({
       key: "expected_price",
       render: (v) => <Price value={v} textStyle="text-sm leading-4" />,
     },
-  
     {
       title: "Latest Bid",
       dataIndex: "latest_bid",
@@ -338,11 +354,28 @@ export const AuctionsPage = ({
       key: "end_date",
       align: "center",
 
-      render: (v, a) => (
+      render: (v, a) => state!="pending"?(
+       <div className="flex flex-row items-center">
+        <RenderTimer
+          onAddTime={(type, time) => {
+            const end_date = moment(a.end_date).add(time, type);
+            addTime({
+              auction_id: a.id,
+              time: end_date.toDate(),
+            });
+            console.log("add time");
+          }}
+          date={v}
+          state={state}
+          init={state === "published" ? undefined : a.pause_date || undefined}
+        />
+        <LogAuction id={a.id}/>
+       </div>
+      ):(
         <RenderTimer
           date={v}
           state={state}
-          init={state==="published"?undefined: a.pause_date||undefined}
+          init={a.pause_date || undefined}
         />
       ),
     },

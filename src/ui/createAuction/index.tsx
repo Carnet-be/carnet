@@ -417,7 +417,7 @@ const CreateAuction = ({
               onClick={next}
               className={cx("btn-primary btn-sm btn", {
                 "btn-disabled": !isNext,
-                hidden: (step == 2 && !auction) || step == ( isAdmin? 6:5),
+                hidden: (step == 2 && !auction) || step == ( isAdmin? 6:6),
               })}
             >
               continuer
@@ -426,7 +426,7 @@ const CreateAuction = ({
               onClick={onValid}
               className={cx("btn-primary btn-sm btn", {
                 "btn-disabled": !isValid || isLoading || isUpdating,
-                hidden: auction || step !== (isAdmin? 6:5 ),
+                hidden: auction || step !== (isAdmin? 6:6 ),
               })}
             >
               valider

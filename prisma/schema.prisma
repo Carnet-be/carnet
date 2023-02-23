@@ -30,6 +30,10 @@ model User {
   //
   createAt         DateTime @default(now())
   updateAt         DateTime @updatedAt
+   
+
+   logsAuctions LogAuction[]
+  
 
   // relation
   image    AssetImage?
@@ -79,6 +83,8 @@ model Auction {
   address        Address?
   bids           Bid[]
   images         AssetImage[]
+
+  logs          LogAuction[]
 
   auctionnaire_id String
   auctionnaire    User   @relation(fields: [auctionnaire_id], references: [id], onDelete: Cascade)
@@ -231,7 +237,18 @@ model AppSettings {
 
 }
 
-
+model LogAuction {
+  id String @id @default(cuid())
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  // field
+  action String
+  // relation
+  auction_id String
+  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  user_id String
+  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
 //////ENUM///////
 enum UserType {
   BID
@@ -257,6 +274,8 @@ enum AuctionState {
   published
   pending
   pause
+  confirmation
+  completed
 }
 
 enum IntermalMessageType {

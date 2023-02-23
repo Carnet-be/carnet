@@ -30,9 +30,10 @@ import Image from "next/image";
 import { BiPause } from "react-icons/bi";
 import moment from "moment";
 import { SwitcherAuctions } from ".";
+import LogAuction from "@ui/components/logAuction";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
- 
+
   if (!session) {
     return {
       redirect: {
@@ -206,7 +207,12 @@ const Confirmation = () => {
       key: "end_date",
       width: "100px",
       align: "center",
-      render: (v) => renderDate(v, "DD/MM/YYYY HH:mm"),
+      render: (v, a) => (
+        <div className="flex flex-row items-center">
+          {renderDate(v, "DD/MM/YYYY HH:mm:ss")}
+          <LogAuction id={a.id} />
+        </div>
+      ),
     },
     {
       title: "Name",

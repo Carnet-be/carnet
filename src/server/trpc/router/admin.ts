@@ -9,108 +9,106 @@ export const ZStaff = z.object({
   email: z.string().email(),
 });
 
-const ZBrand=z.object({
-    id:z.number().optional(),
-    name: z.string(),
-    country: z.string().optional(),
-    description: z.string().optional(),
-  })
-  const ZModel=z.object({
-    id:z.number().optional(),
-    name: z.string(),
-    year: z.number(),
-    description: z.string().optional(),
-  })
+const ZBrand = z.object({
+  id: z.number().optional(),
+  name: z.string(),
+  country: z.string().optional(),
+  description: z.string().optional(),
+});
+const ZModel = z.object({
+  id: z.number().optional(),
+  name: z.string(),
+  year: z.number(),
+  description: z.string().optional(),
+});
 export const adminRouter = router({
   getBrand: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.brand.findMany({
       include: { models: { select: { id: true } } },
-      orderBy:{
-        id:'desc'
-      }
+      orderBy: {
+        id: "desc",
+      },
     });
   }),
-  removeBrand: publicProcedure.input(z.array(z.number())).mutation(async ({ input,ctx }) => {
-    return await ctx.prisma.brand.deleteMany({
-      where: {
-        id: {
-          in: input,
+  removeBrand: publicProcedure
+    .input(z.array(z.number()))
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.brand.deleteMany({
+        where: {
+          id: {
+            in: input,
           },
-      }}
-    )
-  }),
-  removeModel: publicProcedure.input(z.array(z.number())).mutation(async ({ input,ctx }) => {
-    return await ctx.prisma.model.deleteMany({
-      where: {
-        id: {
-          in: input,
+        },
+      });
+    }),
+  removeModel: publicProcedure
+    .input(z.array(z.number()))
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.model.deleteMany({
+        where: {
+          id: {
+            in: input,
           },
-      }}
-    )
-  }),
+        },
+      });
+    }),
   addBrand: publicProcedure
     .input(
-     z.object(
-      {
-        init:z.array(ZBrand),
-        brands:z.array(ZBrand)
-      }
-     )
+      z.object({
+        init: z.array(ZBrand),
+        brands: z.array(ZBrand),
+      })
     )
     .mutation(async ({ input, ctx }) => {
       const brands: any = input.init;
       for (const b of input.brands) {
-        if (!brands.map((b:Brand) => b.name).includes(b.name)) {
+        if (!brands.map((b: Brand) => b.name).includes(b.name)) {
           brands.push(b);
         }
       }
-      console.log(brands)
-      await ctx.prisma.brand.deleteMany({})
+      console.log(brands);
+      await ctx.prisma.brand.deleteMany({});
       return await ctx.prisma.brand.createMany({
-        data:brands,skipDuplicates:false
-      })
+        data: brands,
+        skipDuplicates: false,
+      });
     }),
-    updateBrand: publicProcedure
+  updateBrand: publicProcedure
     .input(
-     z.object(
-     {
-      data:ZBrand,
-      id:z.number()
-     }
-     )
+      z.object({
+        data: ZBrand,
+        id: z.number(),
+      })
     )
     .mutation(async ({ input, ctx }) => {
-      
       return await ctx.prisma.brand.update({
-        where:{
-          id:input.id
+        where: {
+          id: input.id,
         },
-        data:input.data
-      })
+        data: input.data,
+      });
     }),
   getModel: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.model.findMany({
-      include: { brand: true, },   orderBy:{
-        id:'desc'
-      }
+      include: { brand: true },
+      orderBy: {
+        id: "desc",
+      },
     });
   }),
   addModel: publicProcedure
     .input(
-     z.object(
-      {
-        brandId:z.number(),
-        models:z.array(ZModel)
-      }
-     )
+      z.object({
+        brandId: z.number(),
+        models: z.array(ZModel),
+      })
     )
     .mutation(async ({ input, ctx }) => {
-      
       return await ctx.prisma.model.createMany({
-        data:input.models.map((m)=>({...m,brand_id:input.brandId}))
-      })
+        data: input.models.map((m) => ({ ...m, brand_id: input.brandId })),
+      });
     }),
- 
+
   getStaff: publicProcedure.query(async ({ ctx }) => {
     const { prisma } = ctx;
 
@@ -174,32 +172,50 @@ export const adminRouter = router({
       return await ctx.prisma.demandeStaff.delete({ where: { id: input } });
     }),
 
-    statusUser: publicProcedure.input(z.object({user_id:z.string(),isActive:z.boolean()})).mutation(async ({ input, ctx }) => {
+  statusUser: publicProcedure
+    .input(z.object({ user_id: z.string(), isActive: z.boolean() }))
+    .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.user.update({
         where: { id: input.user_id },
         data: { isActive: input.isActive },
       });
     }),
 
-    ////
-    init: publicProcedure.query(async ({ ctx }) => {
-      const user=await ctx.prisma.user.findUnique({where:{email:ctx.session?.user?.email||""}})
-      if(!user) return {error:"user not found"}
-      if(!user.isActive) return {error:"user not active"}
-      const data={}
-      if(user?.type==="BID"){
-        //data.bidder=
-      }
-      if(user?.type==="AUC"){
-        //data.auctioneer=
-      }
-      if(user?.type==="STAFF"){
-        //data.staff=
-      }
-      if(user?.type==="ADMIN"){
-        //data.admin=
-      }
-      return {user}
+  ////
+  init: publicProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { email: ctx.session?.user?.email || "" },
+    });
+    if (!user) return { error: "user not found" };
+    if (!user.isActive) return { error: "user not active" };
+    const data = {};
+    if (user?.type === "BID") {
+      //data.bidder=
+    }
+    if (user?.type === "AUC") {
+      //data.auctioneer=
+    }
+    if (user?.type === "STAFF") {
+      //data.staff=
+    }
+    if (user?.type === "ADMIN") {
+      //data.admin=
+    }
+    return { user };
+  }),
+
+  getLogAuctions: publicProcedure
+    .input(z.string())
+    .query(async ({ input, ctx }) => {
+      return await ctx.prisma.logAuction.findMany({
+        where: { auction_id: input },
+        include:{
+          user:true
+        },
+        orderBy: {
+         createAt:"desc"
+        },
+      });
     }),
 });
 

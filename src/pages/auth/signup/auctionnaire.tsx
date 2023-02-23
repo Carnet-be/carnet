@@ -101,14 +101,14 @@ const Auctionnaire = () => {
                 }),
               }}
             />
-            <Input
+            {/* <Input
               label="Tél"
               error={errors.tel}
               controler={{
                 ...register("tel", { required: "Champs obligatoire" }),
               }}
               icon={<TelIcon />}
-            />
+            /> */}
           </div>
           <div className="flex flex-row gap-4">
             <Input

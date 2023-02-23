@@ -70,20 +70,16 @@ const Bidders = (
   });
 
   const columns: ColumnsType<User> = [
-    {
-      title: "Id",
-      width: "100px",
-      dataIndex: "id",
-      key: "id",
-      render: (v) => (
-        <span className="text-[12px] italic text-primary">#{v}</span>
-      ),
-    },
+  
     {
       title: "Username",
       dataIndex: "username",
       key: "username",
-      render: (v) => <h6>{v}</h6>,
+      render: (v,u) => <div className="flex flex-col">
+        <h6>{v}</h6>
+        <span className="text-[12px] italic text-primary">#{u.id}</span>
+      
+      </div>,
     },
     {
       title: "Phone",

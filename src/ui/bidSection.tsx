@@ -67,6 +67,7 @@ const BidSection = ({ auction ,isTimeOut}: BidSection) => {
         onAddBidSucces={() => {
           refetch();
         }}
+        commission={auction.commission||undefined}
         number={auction.bids.length}
         auctionId={auction.id}
       />}
@@ -91,10 +92,13 @@ type AddBidPros = {
   start: number;
   onAddBidSucces: () => void;
   auctionId: string;
-  number:number
+  number:number,
+  commission: number|undefined;
 };
-const AddBid = ({ start, onAddBidSucces, auctionId,number }: AddBidPros) => {
-  const [price, setprice] = useState(start + 100);
+
+const AddBid = ({ start, onAddBidSucces, auctionId,number,commission=0 }: AddBidPros) => {
+  const incrWithCommission = (price: number) => price + price * commission / 100;
+  const [price, setprice] = useState(start + incrWithCommission(100));
   const { mutate: addBid, isLoading } = trpc.bidder.add.useMutation({
     onError(error) {
       console.log("error lors d'un nouveau bid", error);
@@ -105,28 +109,29 @@ const AddBid = ({ start, onAddBidSucces, auctionId,number }: AddBidPros) => {
       onAddBidSucces();
     },
   });
-  const onAddBid = () => addBid({ price, auctionId,number:number+1 });
+ 
+  const onAddBid = () => addBid({ price:price, auctionId,number:number+1 });
   return (
     <>
       {" "}
       <div className="flex w-[70%] flex-row items-center justify-between gap-2">
         <button
-          onClick={() => setprice(price - 100)}
+          onClick={() => setprice(price - incrWithCommission(100))}
           className={cx("btn-primary btn-sm btn-circle btn", {
-            "btn-disabled": price <= start + 100,
+            "btn-disabled": price <= start + incrWithCommission(100),
           })}
         >
           <MoinsIcon className="text-lg" />
         </button>
         <Price value={price} textStyle="font-semibold text-xl text-primary" />
         <button
-          onClick={() => setprice(price + 100)}
+          onClick={() => setprice(price + incrWithCommission(100))}
           className={cx("btn-primary btn-sm btn-circle btn")}
         >
           <AddIcon className="text-lg" />
         </button>
       </div>
-      <span className="text-sm italic">Must be in $100 increments</span>
+      <span className="text-sm italic">Must be in ${incrWithCommission(100)}increments</span>
       <button
         onClick={onAddBid}
         className={cx("btn-primary btn-wide btn my-2", {

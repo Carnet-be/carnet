@@ -9,6 +9,8 @@ import { type GetServerSideProps, type NextPage } from "next";
 import { useState } from "react";
 import { BannierAddAuction } from ".";
 import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
+import { isConfirmation } from '../../../functions/date';
+import { FullStatus, getStatus } from "../../../functions";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -29,7 +31,7 @@ const Home: NextPage = () => {
   const [auctions, setAuctions] = useState<
     Array<{
       auction: Auction;
-      state: "published" | "pending" | "pause" | "completed" | "confirmation";
+      state:FullStatus;
     }>
   >([]);
   const { refetch, isLoading } = trpc.auctionnaire.getMyAuctions.useQuery(
@@ -40,20 +42,10 @@ const Home: NextPage = () => {
       onSuccess(data) {
         setAuctions(
           data.map((a) => {
-            let state:
-              | "published"
-              | "pending"
-              | "pause"
-              | "completed"
-              | "confirmation" = a.state;
-            if (a.isClosed || a.closedAt) state = "completed";
-            if (a.state == "published") {
-              if (a.end_date?.getDate()||0 < new Date().getDate())
-                state = "confirmation";
-            }
+           
             return {
               auction: a,
-              state: state,
+              state: getStatus(a),
             };
           })
         );
