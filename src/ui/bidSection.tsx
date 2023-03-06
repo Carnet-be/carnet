@@ -97,7 +97,7 @@ type AddBidPros = {
 };
 
 const AddBid = ({ start, onAddBidSucces, auctionId,number,commission=0 }: AddBidPros) => {
-  const incrWithCommission = (price: number) => price + price * commission / 100;
+  const incrWithCommission = (price: number) => price //price + price * commission / 100;
   const [price, setprice] = useState(start + incrWithCommission(100));
   const { mutate: addBid, isLoading } = trpc.bidder.add.useMutation({
     onError(error) {
@@ -131,7 +131,7 @@ const AddBid = ({ start, onAddBidSucces, auctionId,number,commission=0 }: AddBid
           <AddIcon className="text-lg" />
         </button>
       </div>
-      <span className="text-sm italic">Must be in ${incrWithCommission(100)}increments</span>
+      <span className="text-sm italic">Must be in ${incrWithCommission(100)} increments</span>
       <button
         onClick={onAddBid}
         className={cx("btn-primary btn-wide btn my-2", {

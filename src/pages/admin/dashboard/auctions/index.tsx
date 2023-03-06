@@ -29,6 +29,7 @@ import Image from "next/image";
 import { BiPause } from "react-icons/bi";
 import moment from "moment";
 import LogAuction from "@ui/components/logAuction";
+import { useAdminDashboardStore } from "../../../../state";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -57,26 +58,32 @@ const Auctions = (
 export default Auctions;
 
 export const SwitcherAuctions = () => {
+  const {pause,pending,published,confirmation,completed}=useAdminDashboardStore(state=>state)
   const router = useRouter();
   const routers = [
     {
       title: "Published",
+      value:published,
       route: "/admin/dashboard/auctions/published",
     },
     {
       title: "Pending",
+      value:pending,
       route: "/admin/dashboard/auctions/pending",
     },
     {
       title: "Pause",
+      value:pause,
       route: "/admin/dashboard/auctions/pause",
     },
     {
       title: "Confirmation",
+      value:confirmation,
       route: "/admin/dashboard/auctions/confirmation",
     },
     {
       title: "Completed",
+      value:completed,
       route: "/admin/dashboard/auctions/completed",
     },
   ];
@@ -89,9 +96,10 @@ export const SwitcherAuctions = () => {
           <Link
             key={i}
             href={r.route}
-            className={cx("tab no-underline", { "tab-active": isActive })}
+            className={cx("tab gap-3 no-underline flex flex-row items-center", { "tab-active": isActive })}
           >
             {r.title}
+            {/* <span className={cx("text-[11px] font-bold px-1 rounded-full",isActive?"bg-white text-primary":"bg-primary text-white opacity-50")}>{r.value}</span> */}
           </Link>
         );
       })}

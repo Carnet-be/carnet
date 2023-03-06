@@ -227,8 +227,8 @@ export const auctionnaireRouter = router({
             duration,
             color: data1.color,
             //test confirmation
-            end_date: new Date(),
-            // end_date,
+            //end_date: new Date(),
+             end_date,
 
             starting_price,
             pause_date: pause_date,

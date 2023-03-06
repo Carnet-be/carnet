@@ -207,16 +207,32 @@ export const adminRouter = router({
   getLogAuctions: publicProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
-      return await ctx.prisma.logAuction.findMany({
-        where: { auction_id: input },
-        include:{
-          user:true
-        },
-        orderBy: {
-         createAt:"desc"
-        },
-      });
+      return ctx.prisma.$transaction([
+         ctx.prisma.auction.findUnique({where:{id:input}}),
+        ctx.prisma.logAuction.findMany({
+          where: { auction_id: input },
+          include:{
+            user:true
+          },
+          orderBy: {
+           createAt:"desc"
+          },
+        })
+      ])
+    
     }),
+    getAuctionsCount: publicProcedure.query(async ({ ctx }) => {
+      const { prisma } = ctx;
+      const auctions= await prisma.auction.findMany()
+      return {
+        published: auctions.filter(a=>a.state==="published"&&a.isClosed===false&&(a.end_date?.getTime()||0>=new Date().getTime())).length,
+        pause: auctions.filter(a=>a.state==="pause").length,
+        pending: auctions.filter(a=>a.state==="pending").length,
+        completed: auctions.filter(a=>a.isClosed).length,
+        confirmation: auctions.filter(a=>a.isClosed===false&&(a.end_date?.getTime()||0<new Date().getTime())).length,
+      }
+    }),
+    
 });
 
 const sendDemandeStaff = async (user: User | { email: string; id: string }) => {

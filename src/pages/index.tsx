@@ -200,8 +200,8 @@ const ProfileButton = ({ user }: { user: User }) => {
 };
 const Overlay = () => {
   return (
-    <div className="absolute top-0 right-0 z-10 flex h-[140vh] w-[150vh] translate-x-[30vw] -translate-y-[100px] -rotate-[10deg] items-center justify-center rounded-[100px] bg-[#196EBD]/50 shadow-lg">
-      <div className="flex h-[70%] w-[70%] translate-x-[50px] -translate-y-[100px] items-center justify-center rounded-[80px] bg-[#196EBD] shadow-lg">
+    <div className="absolute top-0 right-0 z-10 flex h-[90vh] w-[100vh] translate-x-[5vw] translate-y-[10vh] -rotate-[10deg] items-center justify-center rounded-[100px] bg-[#196EBD]/50 shadow-lg">
+      <div className="flex h-[70%] w-[70%] translate-x-[50px]  items-center justify-center rounded-[80px] bg-[#196EBD] shadow-lg">
         <div className="h-[60%] w-[60%] translate-x-[20px] -translate-y-[20px] rounded-[70px] bg-[#181BAA] shadow-lg"></div>
       </div>
     </div>

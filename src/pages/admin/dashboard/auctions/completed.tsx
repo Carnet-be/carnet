@@ -31,6 +31,7 @@ import moment from "moment";
 import { SwitcherAuctions } from ".";
 import { MdOutlineCancel } from "react-icons/md";
 import LogAuction from "@ui/components/logAuction";
+import { useAdminDashboardStore } from "../../../../state";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -54,92 +55,7 @@ const Completed = () => {
     isLoading,
     refetch,
   } = trpc.auctionnaire.getCompleted.useQuery();
-  const { data: bids, isLoading: isLoadingBids } =
-    trpc.auctionnaire.getBids.useQuery({
-      filter: "all",
-    });
-
-  //   const expandedColumns = (record: Auction) => {
-  //     const columns: ColumnsType<Bid> = [
-  //       {
-  //         title: "Numero",
-  //         width: "80px",
-  //         dataIndex: "numero",
-  //         key: "numero",
-  //         align: "center",
-  //         render: (v) => (
-  //           <div className="mx-auto flex h-[20px] w-[20px] items-center justify-center rounded-full bg-primary/60 text-white">
-  //             <h6>{v}</h6>
-  //           </div>
-  //         ),
-  //       },
-  //       {
-  //         title: "Id",
-  //         width: "150px",
-  //         dataIndex: "id",
-  //         key: "id",
-  //         render: (v) => (
-  //           <span className="text-[12px] italic text-primary">#{v}</span>
-  //         ),
-  //       },
-  //       {
-  //         title: "Date",
-  //         width: "150px",
-  //         dataIndex: "createAt",
-  //         key: "createAt",
-  //         align: "center",
-  //         render: (v) => renderDate(v, "DD/MM/YYYY HH:mm:ss"),
-  //       },
-  //       {
-  //         title: "Bidder",
-
-  //         dataIndex: "bidder",
-  //         key: "bidder",
-  //         render: (_, v) => (
-  //           <div>
-  //             <h6>{(v as any).bidder.username}</h6>
-  //             <span className="text-[12px] italic text-primary">
-  //               #{(v as any).bidder.id}
-  //             </span>
-  //           </div>
-  //         ),
-  //       },
-
-  //       {
-  //         title: "Value",
-  //         dataIndex: "montant",
-
-  //         key: "montant",
-  //         render: (v) => <Price value={v} textStyle="text-sm leading-4" />,
-  //       },
-
-  //     ];
-  //     return (
-  //       <MyTable
-  //         loading={isLoadingBids}
-  //         columns={columns as ColumnsType<TableType>}
-  //         data={(bids || [])
-  //           .map((b, i) => ({ ...b, key: b.auction_id }))
-  //           .filter((f) => f.auction_id == record.id)}
-  //         options={{ pagination: false }}
-  //       />
-  //     );
-  //   };
-  //   const { mutate: pauseAuction } = trpc.auctionnaire.pauseAuction.useMutation({
-  //     onMutate: () => {
-  //       toast.loading("In process");
-  //     },
-  //     onError: (err) => {
-  //       console.log(err);
-  //       toast.dismiss();
-  //       toast.error("Faild to pause");
-  //     },
-  //     onSuccess: () => {
-  //       toast.dismiss();
-  //       toast.success("Success");
-  //       refetch();
-  //     },
-  //   });
+  const {reload}=useAdminDashboardStore(state=>state)
   const { mutate: cancelWinner } = trpc.auctionnaire.cancelWinner.useMutation({
     onMutate: () => {
       toast.loading("In process");
@@ -153,6 +69,7 @@ const Completed = () => {
       toast.dismiss();
       toast.success("Success");
       refetch();
+      reload()
     },
   });
   const columns: ColumnsType<Auction> = [

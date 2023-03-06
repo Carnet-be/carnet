@@ -43,11 +43,15 @@ const LogAuction = ({ id }: { id: string }) => {
         onOk={handleOk}
         cancelButtonProps={{ hidden: true }}
         onCancel={handleCancel}
-      >
+      >  
+     {logs?.[0] &&   <div className="my-2">
+       <h6>{logs[0].name}</h6>
+       <span className="text-[10px] text-primary">#{logs[0].id}</span>
+       </div>}
         <div className={cx("flex flex-col items-stretch gap-1",{
             "max-h-96 overflow-y-scroll":true
         })}>
-          {logs?.map((log, k) => {
+          {logs?.[1]?.map((log, k) => {
             let color = "blue";
             if (log.action === "creation") color = "green";
             if (log.action === "published") color = "orange";
@@ -68,8 +72,8 @@ const LogAuction = ({ id }: { id: string }) => {
               >
                 <Tag color={color}>{log.action}</Tag>
               <div className="flex flex-col items-end">
-              <span>{moment(log.createAt).format("LLL")}</span>
-              <span className="text-[10px] opacity-70 italic">{moment(log.createAt).fromNow()}</span>
+              <span className="text-[11px]">{moment(log.createAt).fromNow()}</span>
+              <span className="text-[10px] opacity-70 italic">{moment(log.createAt).format("d/mm/yyyy hh:mm")}</span>
               </div>
               </div>
             );

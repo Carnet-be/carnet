@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 
 import {
@@ -7,6 +7,11 @@ import {
 import { type User } from "@prisma/client";
 import { prisma } from '../../../server/db/client';
 import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
+import { trpc } from "@utils/trpc";
+import { useRouter } from "next/router";
+import { LoadingSpinPage } from "@ui/loading";
+import { useAdminDashboardStore } from "../../../state";
+import { toast } from "react-hot-toast";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -43,16 +48,34 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const home="/users/auctioneers"
+  //const home="/users/auctioneers"
   return {
-    redirect:{
-      destination: "/admin/dashboard"+home,
-      permanent:true
-    }
+    props:{}
   };
 };
 const AdminDashboard: NextPage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-return <div></div>
+  const {setNums,setReload}=useAdminDashboardStore(state=>state)
+  const {data,refetch}=trpc.admin.getAuctionsCount.useQuery(undefined,{onError(err) {
+    console.log(err);
+    
+  },
+  onSuccess(data){
+    setNums(data)
+    setReload(()=>{refetch()})
+  },
+  onSettled(data){
+   toast.dismiss()
+  }
+});
+const router=useRouter();
+useEffect(() => {
+  toast.loading("Loading data...")
+  router.push("/admin/dashboard/users/auctioneers")
+}, [])
+
+return <div className="flex items-center justify-center w-screen h-screen">
+<LoadingSpinPage/>
+</div>
 };
 
 export default AdminDashboard;
