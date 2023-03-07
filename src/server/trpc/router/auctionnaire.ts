@@ -17,6 +17,7 @@ import { ProcessDate } from "@utils/processDate";
 import { ProcessUser } from "@utils/processUser";
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
+import moment from "moment";
 
 export const auctionnaireRouter = router({
   get: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
@@ -227,8 +228,8 @@ export const auctionnaireRouter = router({
             duration,
             color: data1.color,
             //test confirmation
-            //end_date: new Date(),
-             end_date,
+            end_date: new Date(),
+            // end_date,
 
             starting_price,
             pause_date: pause_date,
@@ -480,7 +481,26 @@ export const auctionnaireRouter = router({
       },
     });
   }),
-
+  resume: publicProcedure.input(z.object({ id: z.string() })).mutation(
+    async ({ input, ctx }) => {
+      return await ctx.prisma.auction.update({
+        where: { id: input.id },
+        data: {
+          state: "published",
+          logs: {
+            create: {
+              action: "resume",
+              user: {
+                connect: {
+                  email: ctx.session?.user?.email || "",
+                },
+              },
+            },
+          },
+        },
+      });
+    }
+  ),
   makeWinner: publicProcedure
     .input(
       z.object({
@@ -519,18 +539,17 @@ export const auctionnaireRouter = router({
     .input(
       z.object({
         auction_id: z.string(),
-        duration: z.enum(["ThreeDays", "OneWeek", "TwoWeek"]),
+        duration:z.date(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const processDate = new ProcessDate();
       //
-      const end_date = processDate.endDate(input.duration);
+      const end_date =input.duration
       return ctx.prisma.auction.update({
         where: { id: input.auction_id },
         data: {
-          state: "published",
-          pause_date: null,
+          state: "pause",
+          pause_date: new Date(),
           end_date,
           isClosed: false,
           closedAt: null,

@@ -50,28 +50,31 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   //const home="/users/auctioneers"
   return {
-    props:{}
+    redirect: {
+      destination: "/admin/dashboard/users/auctioneers",
+      permanent: true,
+    },
   };
 };
 const AdminDashboard: NextPage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const {setNums,setReload}=useAdminDashboardStore(state=>state)
-  const {data,refetch}=trpc.admin.getAuctionsCount.useQuery(undefined,{onError(err) {
-    console.log(err);
+//   const {data,refetch}=trpc.admin.getAuctionsCount.useQuery(undefined,{onError(err) {
+//     console.log(err);
     
-  },
-  onSuccess(data){
-    setNums(data)
-    setReload(()=>{refetch()})
-  },
-  onSettled(data){
-   toast.dismiss()
-  }
-});
-const router=useRouter();
-useEffect(() => {
-  toast.loading("Loading data...")
-  router.push("/admin/dashboard/users/auctioneers")
-}, [])
+//   },
+//   onSuccess(data){
+//     setNums(data)
+//     setReload(()=>{refetch()})
+//   },
+//   onSettled(data){
+//    toast.dismiss()
+//   }
+// });
+// const router=useRouter();
+// useEffect(() => {
+//   toast.loading("Loading data...")
+//   router.push("/admin/dashboard/users/auctioneers")
+// }, [])
 
 return <div className="flex items-center justify-center w-screen h-screen">
 <LoadingSpinPage/>

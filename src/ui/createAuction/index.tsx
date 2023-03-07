@@ -435,7 +435,7 @@ const CreateAuction = ({
               onClick={() =>
                 onPublish({
                   state:
-                    (auction?.state == "pause" && step == 6) || step == 6
+                    auction?.state == "pause"?"pause": step == 6
                       ? "published"
                       : auction?.state || "published",
                 })
@@ -445,9 +445,7 @@ const CreateAuction = ({
               })}
             >
               {auction?.state == "pause"
-                ? step == 6
-                  ? "save & resume"
-                  : "save"
+                ? "save"
                 : step == 6
                 ? "save & publish"
                 : "save"}

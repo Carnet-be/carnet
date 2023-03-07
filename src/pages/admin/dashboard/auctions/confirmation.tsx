@@ -10,7 +10,7 @@ import { Auction, Bid } from "@prisma/client";
 import { TAuction } from "@model/type";
 import BigTitle from "@ui/components/bigTitle";
 import Price from "@ui/components/price";
-import App from "antd";
+import App, { InputNumber, Modal } from "antd";
 import MyTable, {
   renderDate,
   RenderTimer,
@@ -49,6 +49,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 const Confirmation = () => {
+  const [open,setOpen]=useState(false)
+  const [id,setId]=useState<string|undefined>(undefined)
   const {
     data: auctions,
     isLoading,
@@ -298,10 +300,8 @@ const Confirmation = () => {
               icon: <MdRestartAlt className="text-lg text-primary" />,
               tooltip: "Republish",
               onClick: () => {
-                repubishAuction({
-                  auction_id: auction.id,
-                  duration: auction.duration,
-                });
+                setId(auction.id)
+               setOpen(true)
               },
             })}
             // onView={state!="published"?undefined:() => {
@@ -325,7 +325,9 @@ const Confirmation = () => {
           refetch={refetch}
         />
       ))}
-
+   <GetTime onAddTime={(a,b)=>{
+      repubishAuction({auction_id:id||"",duration:moment().add(a,"days").add(b,"hours").toDate()})
+   }} isOpen={open && id!==undefined} setOpen={(b)=>setOpen(b)}/>
       <Dashboard type="ADMIN">
         <BigTitle title="Management of auctions" />
         <SwitcherAuctions />
@@ -344,3 +346,55 @@ const Confirmation = () => {
 };
 
 export default Confirmation;
+
+export const GetTime = ({
+isOpen,setOpen,
+  onAddTime,
+}: {
+isOpen: boolean;
+setOpen: (value: boolean) => void;
+  onAddTime: (value:number,hour:number) => void;
+}) => {
+ 
+  const [value, setValue] = useState(0);
+  const [hour, setHour] = useState(0);
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const handleOk = () => {
+   onAddTime(value,hour);
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  return (
+    <>
+    <Modal
+      title="Add Time"
+      open={isOpen}
+      onOk={handleOk}
+      onCancel={handleCancel}
+    >
+     <div className="flex flex-row gap-4">
+     <InputNumber
+        addonAfter={"Day(s)"}
+        defaultValue={0}
+        value={value}
+        onChange={(e) => setValue(e || 0)}
+      />
+       <InputNumber
+        addonAfter={"Hour(s)"}
+        defaultValue={0}
+        value={hour}
+        onChange={(e) => setHour(e || 0)}
+      />
+     </div>
+    </Modal>
+  </>
+   
+  );
+};

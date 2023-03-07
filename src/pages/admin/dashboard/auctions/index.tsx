@@ -289,6 +289,21 @@ export const AuctionsPage = ({
     },
   });
 
+  const {mutate:resume}=trpc.auctionnaire.resume.useMutation({
+    onMutate: () => {
+      toast.loading("In process");
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.dismiss();
+      toast.error("Faild to resume");
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success("Success");
+      refetch();
+    },
+  })
   const columns: ColumnsType<Auction> = [
     {
       title: "Id",
@@ -366,7 +381,7 @@ export const AuctionsPage = ({
        <div className="flex flex-row items-center">
         <RenderTimer
           onAddTime={(type, time) => {
-            const end_date = moment(a.end_date).add(time, type);
+            const end_date = moment(a.end_date).add(type,"days").add(time,"hours");
             addTime({
               auction_id: a.id,
               time: end_date.toDate(),
@@ -444,6 +459,13 @@ export const AuctionsPage = ({
                 ? undefined
                 : () => {
                     console.log("view");
+                  }
+            }
+            onPlay={
+              state != "pause"
+                ? undefined
+                : () => {
+                   resume({id:auction.id})
                   }
             }
           />

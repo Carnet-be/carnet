@@ -12,6 +12,7 @@ import moment from "moment";
 import { User } from "next-auth";
 import { executeEverySecond } from "./countDown";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import {GrResume} from "react-icons/gr"
 const { Option } = Select;
 interface Props<T> {
   columns: ColumnsType<T>;
@@ -58,7 +59,7 @@ export const RenderTimer = ({
   date: Date;
   state: "pause" | "published" | "pending";
   init: Date | undefined;
-  onAddTime?: (type:"day"|"hour"|"minute"|"week",time:number) => void;
+  onAddTime?: (value:number,hour:number) => void;
 }) => {
   const [leftTime, setleft] = useState<moment.Duration>(
     executeEverySecond(date, init)
@@ -79,29 +80,22 @@ export const RenderTimer = ({
   useEffect(() => {
     console.log(leftTime);
   }, [leftTime]);
-  const [type, setType] = useState<"day"|"week"|"hour"|"minute">("day");
   const [value, setValue] = useState(0);
+  const [hour, setHour] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const showModal = () => {
     setIsOpen(true);
   };
 
   const handleOk = () => {
-    onAddTime && onAddTime(type,value);
+    onAddTime && onAddTime(value,hour);
     setIsOpen(false);
   };
 
   const handleCancel = () => {
     setIsOpen(false);
   };
-  const selectAfter = (
-    <Select value={type} onChange={(v) => setType(v)} style={{ width: 140 }}>
-      <Option value="day">Day(s)</Option>
-      <Option value="hour">Hour(s)</Option>
-      <Option value="minute">Minute(s)</Option>
-      <Option value="week">Week(s)</Option>
-    </Select>
-  );
+
   return (
     <>
      <Tag
@@ -148,12 +142,20 @@ export const RenderTimer = ({
       onOk={handleOk}
       onCancel={handleCancel}
     >
-      <InputNumber
-        addonAfter={selectAfter}
+     <div className="flex flex-row gap-4">
+     <InputNumber
+        addonAfter={"Day(s)"}
         defaultValue={0}
         value={value}
         onChange={(e) => setValue(e || 0)}
       />
+       <InputNumber
+        addonAfter={"Hour(s)"}
+        defaultValue={0}
+        value={hour}
+        onChange={(e) => setHour(e || 0)}
+      />
+     </div>
     </Modal>
   </>
    
@@ -165,6 +167,7 @@ export const ActionTable = ({
   onDelete,
   onEdit,
   id,
+  onPlay,
   onCustom,
 }: {
   id?: string;
@@ -177,11 +180,13 @@ export const ActionTable = ({
     onClick: () => void;
     tooltip: string;
   };
+  onPlay?:()=>void
 }) => {
   const ref = useRef<HTMLLabelElement>(null);
   const refDelete = useRef<HTMLLabelElement>(null);
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const [openPlay, setOpenPlay] = useState(false);
   return (
     <div className="flex flex-row items-center justify-center gap-1">
       {id && onDelete && (
@@ -200,8 +205,30 @@ export const ActionTable = ({
           onValide={onCustom().onClick}
         />
       )}
+            {id && onPlay && (
+        <ConfirmationPause
+          open={openPlay}
+          setOpen={setOpenPlay}
+          id={id}
+          onValide={()=>onPlay()}
+        />
+      )}
       <label ref={ref} hidden={true} htmlFor={id}></label>
       <label ref={refDelete} hidden={true} htmlFor={"delete" + id}></label>
+      {onPlay && (
+        <Tooltip
+          title="Resume"
+          className="flex flex-row items-center justify-center"
+        >
+          <Button
+            onClick={()=>{
+              setOpenPlay(true)
+            }}
+            shape="circle"
+            icon={<GrResume className="text-lg" />}
+          />
+        </Tooltip>
+      )}
       {onView && (
         <Tooltip
           title="View"
