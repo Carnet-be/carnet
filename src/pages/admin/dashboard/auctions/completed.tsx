@@ -10,14 +10,14 @@ import { Auction, Bid } from "@prisma/client";
 import { TAuction, TUser } from "@model/type";
 import BigTitle from "@ui/components/bigTitle";
 import Price from "@ui/components/price";
-import App from "antd";
+import App, { Button, Tooltip } from "antd";
 import MyTable, {
   renderDate,
   RenderTimer,
   ActionTable,
   TableType,
 } from "@ui/components/table";
-import { AuctionIcon, CheckIcon, PauseIcon, WinIcon } from "@ui/icons";
+import { AuctionIcon, CheckIcon, EmailIcon, PauseIcon, WinIcon } from "@ui/icons";
 import { trpc } from "@utils/trpc";
 import { useState } from "react";
 
@@ -96,7 +96,13 @@ const Completed = () => {
       align: "center",
       render: (v, a) => (
         <div className="flex flex-row items-center">
-          {renderDate(v, "DD/MM/YYYY HH:mm:ss")}
+          <div>
+          {renderDate(v, "DD/MM/YYYY")}
+          <div className="flex gap-1">
+            at:
+          {renderDate(v, "HH:mm:ss")}
+          </div>
+          </div>
           <LogAuction id={a.id} />
         </div>
       ),
@@ -148,19 +154,32 @@ const Completed = () => {
       dataIndex: "auctionnaire",
       key: "auctionnaire",
       render: (a, v) => (
+        <div className="flex flex-row gap-1">
+      
+        <Tooltip
+          title="Contact"
+          className="flex flex-row items-center justify-center text-primary"
+        >
+          <Button
+         
+            shape="circle"
+            icon={<EmailIcon className="text-lg" />}
+          />
+        </Tooltip>
         <div className="flex flex-col">
+
+       
           <h6>
             {
             
               (a as TUser).username
             }
           </h6>
+       
           <span className="text-[12px] italic text-primary">
             #{(a as TUser).id}
           </span>
-          <button className="btn btn-xs btn-outline block">
-    contact
-          </button>
+          </div>
         </div>
       ),
     },
@@ -171,7 +190,21 @@ const Completed = () => {
       dataIndex: "bid",
       key: "bid",
       render: (_, v) => (
+        <div className="flex flex-row gap-1">
+      
+        <Tooltip
+          title="Contact"
+          className="flex flex-row items-center justify-center text-primary"
+        >
+          <Button
+         
+            shape="circle"
+            icon={<EmailIcon className="text-lg" />}
+          />
+        </Tooltip>
         <div className="flex flex-col">
+
+       
           <h6>
             {
               (v as TAuction).bids.find((d) => d.winner == true)?.bidder
@@ -181,9 +214,7 @@ const Completed = () => {
           <span className="text-[12px] italic text-primary">
             #{(v as TAuction).bids.find((d) => d.winner == true)?.bidder.id}
           </span>
-          <button className="btn btn-xs btn-outline  block-inline">
-    contact
-          </button>
+         </div>
         </div>
       ),
     },

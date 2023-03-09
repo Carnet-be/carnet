@@ -84,7 +84,7 @@ const Home = (props:InferGetServerSidePropsType<typeof getServerSideProps>) => {
         {!auctions ? (
           <span>No data</span>
         ) : (
-          auctions.map((a, i) => <AuctionCard key={i} auction={a as TAuction} isFavorite={user.favoris_auctions.includes(a.id)}/>)
+          auctions.map((a, i) => <AuctionCard key={i} auction={a as any} isFavorite={user.favoris_auctions.includes(a.id)}/>)
         )}
       </div>
     </Dashboard>

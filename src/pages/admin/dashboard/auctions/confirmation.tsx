@@ -193,12 +193,16 @@ const Confirmation = () => {
   });
   const columns: ColumnsType<Auction> = [
     {
-      title: "Id",
-      width: "80px",
-      dataIndex: "id",
-      key: "id",
-      render: (v) => (
-        <span className="text-[12px] italic text-primary">#{v}</span>
+      title: "Name",
+
+      // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
+      dataIndex: "name",
+      key: "name",
+      render: (v, record) => (
+        <div>
+          <h6 className="text-[12px] lg:text-base">{v}</h6>
+          <span className="text-[12px] italic text-primary">#{record.id}</span>
+        </div>
       ),
     },
 
@@ -216,13 +220,7 @@ const Confirmation = () => {
         </div>
       ),
     },
-    {
-      title: "Name",
-
-      // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
-      dataIndex: "name",
-      key: "name",
-    },
+  
 
     {
       title: "Bids",
@@ -296,14 +294,11 @@ const Confirmation = () => {
             // onEdit={state=="published"?undefined: () => {
             //   console.log("edit");
             // }}
-            onCustom={() => ({
-              icon: <MdRestartAlt className="text-lg text-primary" />,
-              tooltip: "Republish",
-              onClick: () => {
-                setId(auction.id)
-               setOpen(true)
-              },
-            })}
+            onRepublish={() => {
+              setId(auction.id);
+              setOpen(true);
+            }}
+            
             // onView={state!="published"?undefined:() => {
             //   console.log("view");
             // }}

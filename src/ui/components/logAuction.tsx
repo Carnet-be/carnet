@@ -6,6 +6,7 @@ import { trpc } from "@utils/trpc";
 import toast from "react-hot-toast";
 import moment from "moment";
 import cx from "classnames";
+import { AuctionIcon } from "@ui/icons";
 const LogAuction = ({ id }: { id: string }) => {
   const showModal = () => {
     setIsModalOpen(true);
@@ -45,7 +46,13 @@ const LogAuction = ({ id }: { id: string }) => {
         onCancel={handleCancel}
       >  
      {logs?.[0] &&   <div className="my-2">
-       <h6>{logs[0].name}</h6>
+      <div className="flex flex-row justify-between">
+      <h6>{logs[0].name}</h6>
+       <div className="flex flex-row items-center justify-end gap-1 text-sm text-primary">
+          {(logs[0]as any).bids.length}
+          <AuctionIcon />
+        </div>
+      </div>
        <span className="text-[10px] text-primary">#{logs[0].id}</span>
        </div>}
         <div className={cx("flex flex-col items-stretch gap-1",{

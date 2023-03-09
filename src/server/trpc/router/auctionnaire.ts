@@ -228,8 +228,8 @@ export const auctionnaireRouter = router({
             duration,
             color: data1.color,
             //test confirmation
-            end_date: new Date(),
-            // end_date,
+           // end_date: new Date(),
+            end_date,
 
             starting_price,
             pause_date: pause_date,
@@ -238,7 +238,7 @@ export const auctionnaireRouter = router({
             expected_price: parseFloat(data6.expected_price!.toString()),
             logs: {
               create: {
-                action: state,
+                action:input.log|| "edit",
                 user: {
                   connect: {
                     email: ctx.session?.user?.email || "",
@@ -328,6 +328,7 @@ export const auctionnaireRouter = router({
           images: true,
           specs: true,
           rating: true,
+          auctionnaire: true,
           options: true,
           address: true,
         },
@@ -482,12 +483,19 @@ export const auctionnaireRouter = router({
       },
     });
   }),
-  resume: publicProcedure.input(z.object({ id: z.string() })).mutation(
+  resume: publicProcedure.input(z.object({ id: z.string(),end_date:z.date(),pause_date:z.date() })).mutation(
     async ({ input, ctx }) => {
+       const end_date=input.end_date
+        const pause = new Date().getTime() - input.pause_date.getTime();
+
+        end_date.setTime(end_date.getTime() + pause);
+      
       return await ctx.prisma.auction.update({
         where: { id: input.id },
         data: {
+          end_date: end_date,
           state: "published",
+
           logs: {
             create: {
               action: "resume",

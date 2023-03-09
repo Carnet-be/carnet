@@ -323,13 +323,13 @@ const CreateAuction = ({
     });
   const onValid = () => {
     if (edit) {
-      updateAuction({ data1, data3, data4, data5, data6,data7, auction: edit });
+      updateAuction({ data1, data3, data4, data5, data6,data7, auction: edit,log:"edit" });
     } else {
       addAuction({ data1, data3, data4, data5, data6 });
     }
   };
-  const onPublish = ({ state }: { state: AuctionState }) =>
-    updateAuction({ data1, data3, data4, data5, data6,data7, auction: edit, state });
+  const onPublish = ({ state,log }: { state: AuctionState,log:string }) =>
+    updateAuction({ data1, data3, data4, data5, data6,data7, auction: edit, state,log });
   const ref = useRef<HTMLLabelElement | null>(null);
   return (
     <>
@@ -434,6 +434,9 @@ const CreateAuction = ({
             <button
               onClick={() =>
                 onPublish({
+                  log:      auction?.state == "pause"?"edit": step == 6
+                  ? "published"
+                  : "edit",
                   state:
                     auction?.state == "pause"?"pause": step == 6
                       ? "published"

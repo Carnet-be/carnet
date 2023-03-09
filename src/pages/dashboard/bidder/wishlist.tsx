@@ -52,7 +52,7 @@ const WishList = () => {
           {auctions.map((a, i) => (
             <AuctionCard
               key={i}
-              auction={a as TAuction}
+              auction={a as unknown as TAuction}
               isFavorite={true}
               onClickFavorite={() => refetch()}
             />

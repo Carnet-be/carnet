@@ -208,7 +208,7 @@ export const adminRouter = router({
     .input(z.string())
     .query(async ({ input, ctx }) => {
       return ctx.prisma.$transaction([
-         ctx.prisma.auction.findUnique({where:{id:input}}),
+         ctx.prisma.auction.findUnique({where:{id:input},include:{bids:true}}),
         ctx.prisma.logAuction.findMany({
           where: { auction_id: input },
           include:{

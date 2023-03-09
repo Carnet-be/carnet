@@ -13,6 +13,8 @@ import { User } from "next-auth";
 import { executeEverySecond } from "./countDown";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import {GrResume} from "react-icons/gr"
+import {BsFillPlayFill} from "react-icons/bs"
+import { MdRestartAlt } from "react-icons/md";
 const { Option } = Select;
 interface Props<T> {
   columns: ColumnsType<T>;
@@ -169,6 +171,7 @@ export const ActionTable = ({
   id,
   onPlay,
   onCustom,
+  onRepublish
 }: {
   id?: string;
   onView?: () => void;
@@ -180,7 +183,8 @@ export const ActionTable = ({
     onClick: () => void;
     tooltip: string;
   };
-  onPlay?:()=>void
+  onPlay?:()=>void,
+  onRepublish?:()=>void
 }) => {
   const ref = useRef<HTMLLabelElement>(null);
   const refDelete = useRef<HTMLLabelElement>(null);
@@ -215,6 +219,22 @@ export const ActionTable = ({
       )}
       <label ref={ref} hidden={true} htmlFor={id}></label>
       <label ref={refDelete} hidden={true} htmlFor={"delete" + id}></label>
+      {onRepublish && (
+        <Tooltip
+
+          title="Republish"
+          className="flex flex-row items-center justify-center"
+        >
+          <Button
+
+            onClick={onRepublish}
+            shape="circle"
+            icon={<MdRestartAlt className="text-lg" />}
+          />
+         
+        </Tooltip>
+        
+      )}
       {onPlay && (
         <Tooltip
           title="Resume"
@@ -225,7 +245,7 @@ export const ActionTable = ({
               setOpenPlay(true)
             }}
             shape="circle"
-            icon={<GrResume className="text-lg" />}
+            icon={<BsFillPlayFill className="text-lg" />}
           />
         </Tooltip>
       )}

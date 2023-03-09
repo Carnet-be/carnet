@@ -7,17 +7,17 @@ import { useRouter } from "next/router";
 import cx from "classnames";
 import { ColumnsType } from "antd/es/table";
 import { Auction, Bid } from "@prisma/client";
-import { TAuction } from "@model/type";
+import { TAuction, TUser } from "@model/type";
 import BigTitle from "@ui/components/bigTitle";
 import Price from "@ui/components/price";
-import App from "antd";
+import App, { Button, Tooltip } from "antd";
 import MyTable, {
   renderDate,
   RenderTimer,
   ActionTable,
   TableType,
 } from "@ui/components/table";
-import { AuctionIcon, CheckIcon, PauseIcon, WinIcon } from "@ui/icons";
+import { AuctionIcon, CheckIcon, EmailIcon, PauseIcon, WinIcon } from "@ui/icons";
 import { trpc } from "@utils/trpc";
 import { useState } from "react";
 
@@ -306,12 +306,16 @@ export const AuctionsPage = ({
   })
   const columns: ColumnsType<Auction> = [
     {
-      title: "Id",
-      width: "80px",
-      dataIndex: "id",
-      key: "id",
-      render: (v) => (
-        <span className="text-[12px] italic text-primary">#{v}</span>
+      title: "Name",
+
+      // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
+      dataIndex: "name",
+      key: "name",
+      render: (v, record) => (
+        <div>
+          <h6 className="text-[12px] lg:text-base">{v}</h6>
+          <span className="text-[12px] italic text-primary">#{record.id}</span>
+        </div>
       ),
     },
 
@@ -322,21 +326,18 @@ export const AuctionsPage = ({
       key: "createAt",
       width: "100px",
       align: "center",
-      render: (v) => renderDate(v, "DD/MM/YYYY HH:mm"),
+      render: (v) => <div>
+        {renderDate(v, "DD/MM/YYYY")}
+    <span className="flex gap-1"> at:   {renderDate(v, "HH:mm:ss")}</span>
+      </div>,
     },
-    {
-      title: "Name",
-
-      // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
-      dataIndex: "name",
-      key: "name",
-    },
-
+ 
     {
       title: "Bids",
       dataIndex: "bids",
       align: "right",
       key: "bids",
+      className:state==="pending"?"hidden":"",
       width: "70px",
       render: (v) => (
         <div className="flex flex-row items-center justify-end gap-1 text-sm text-primary">
@@ -355,6 +356,7 @@ export const AuctionsPage = ({
     {
       title: "Latest Bid",
       dataIndex: "latest_bid",
+      className:state==="pending"?"hidden":"",
       align: "right",
       key: "latest_bid",
       render: (v, auction) => {
@@ -364,6 +366,7 @@ export const AuctionsPage = ({
           "--"
         ) : (
           <Price
+            
             value={bids[bids.length - 1]?.montant || 0}
             textStyle="text-sm leading-4"
           />
@@ -400,6 +403,43 @@ export const AuctionsPage = ({
           state={state}
           init={a.pause_date || undefined}
         />
+      ),
+    },
+    {
+      title: "Auctioner",
+
+      // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
+      dataIndex: "auctionnaire",
+      key: "auctionnaire",
+      className:state!=="pending"?"hidden":"",
+      render: (a, v) => (
+        <div className="flex flex-row gap-1">
+      
+        <Tooltip
+          title="Contact"
+          className="flex flex-row items-center justify-center text-primary"
+        >
+          <Button
+         
+            shape="circle"
+            icon={<EmailIcon className="text-lg" />}
+          />
+        </Tooltip>
+        <div className="flex flex-col">
+
+       
+          <h6>
+            {
+            
+              (a as TUser).username
+            }
+          </h6>
+       
+          <span className="text-[12px] italic text-primary">
+            #{(a as TUser).id}
+          </span>
+          </div>
+        </div>
       ),
     },
     // {
@@ -465,7 +505,7 @@ export const AuctionsPage = ({
               state != "pause"
                 ? undefined
                 : () => {
-                   resume({id:auction.id})
+                   resume({id:auction.id,end_date:auction.end_date||new Date(),pause_date:auction.pause_date||new Date()})
                   }
             }
           />
@@ -482,7 +522,7 @@ export const AuctionsPage = ({
         <CreateAuction
           isAdmin
           key={i}
-          auction={auc as TAuction}
+          auction={auc as any}
           isEdit={true}
           id={auc.id}
           refetch={refetch}
