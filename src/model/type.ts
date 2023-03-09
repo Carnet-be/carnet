@@ -9,7 +9,6 @@ export type TLogin={
 export type PSignup={
   username:string,
   email:string,
-  tel:string
 }
 export type TSignup = PSignup&{
     confirmPassword:string

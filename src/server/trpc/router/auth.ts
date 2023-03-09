@@ -8,7 +8,7 @@ import { router, publicProcedure } from "../trpc";
 
 const ZSignup = z.object({
   username: z.string(),
-  tel: z.string(),
+  tel: z.string().optional(),
   email: z.string(),
   nom_entreprise: z.string().nullish(),
   password: z.string(),
