@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import cx from "classnames";
 import { ColumnsType } from "antd/es/table";
 import { Auction, Bid } from "@prisma/client";
-import { TAuction } from "@model/type";
+import { TAuction, TUser } from "@model/type";
 import BigTitle from "@ui/components/bigTitle";
 import Price from "@ui/components/price";
 import App from "antd";
@@ -142,6 +142,29 @@ const Completed = () => {
       },
     },
     {
+      title: "Auctioner",
+
+      // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
+      dataIndex: "auctionnaire",
+      key: "auctionnaire",
+      render: (a, v) => (
+        <div className="flex flex-col">
+          <h6>
+            {
+            
+              (a as TUser).username
+            }
+          </h6>
+          <span className="text-[12px] italic text-primary">
+            #{(a as TUser).id}
+          </span>
+          <button className="btn btn-xs btn-outline block">
+    contact
+          </button>
+        </div>
+      ),
+    },
+    {
       title: "Bidder",
 
       // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
@@ -158,6 +181,9 @@ const Completed = () => {
           <span className="text-[12px] italic text-primary">
             #{(v as TAuction).bids.find((d) => d.winner == true)?.bidder.id}
           </span>
+          <button className="btn btn-xs btn-outline  block-inline">
+    contact
+          </button>
         </div>
       ),
     },

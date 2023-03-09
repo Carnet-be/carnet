@@ -469,9 +469,10 @@ export const auctionnaireRouter = router({
         isClosed: true,
       },
       include: {
-        bids: { include: { bidder: true, auction: true } },
+        bids: { include: { bidder: true } },
         images: true,
         specs: true,
+        auctionnaire: true,
         rating: true,
         options: true,
         address: true,
