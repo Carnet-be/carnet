@@ -51,9 +51,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   //const home="/users/auctioneers"
  return {
-  redirect: {
-    destination: "/admin/dashboard/users/auctioneers",
- }}
+  props:{}
+  }
 };
 const AdminDashboard: NextPage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const {setNums,setReload}=useAdminDashboardStore(state=>state)
@@ -91,8 +90,8 @@ async function runOneSignal() {
 }
 
 useEffect(() => {
-  
-  runOneSignal()
+  router.push("/admin/dashboard/users/auctioneers")
+ // runOneSignal()
   // if (typeof window !== undefined) {
   //   window.OneSignal = window.OneSignal || [];
   //   OneSignal.push(function () {
