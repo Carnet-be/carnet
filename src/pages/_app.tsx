@@ -13,14 +13,10 @@ import { useRouter } from "next/router";
 import { messaging, msgKey } from "@utils/firebase";
 import { getToken } from "firebase/messaging";
 import { useTokenStore } from "../state";
-import OneSignal from 'react-onesignal';
+import OneSignal from "react-onesignal";
+import { useNotifyMe } from "./hooks";
 
-const MyApp= ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
-
-  
+const MyApp = ({ Component, pageProps: { session, ...pageProps } }:any) => {
   return (
     <SessionProvider session={session}>
       <Head>
@@ -45,27 +41,22 @@ const MyApp= ({
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
         />
       </Head>
-    
+
       <App>
-      <Component {...pageProps} />
+        <Component {...pageProps} />
       </App>
       <Toaster />
     </SessionProvider>
   );
 };
 
-const App=({children})=>{
-  const router=useRouter()
+const App = ({ children }:{children:ReactNode}) => {
+  const router = useRouter();
 
-useEffect(() => {
-  console.log(router.pathname)
+  useNotifyMe({uid:"naim"})
 
-}, [])
-
-
-
-return <>{children}</>
-}
+  return <>{children}</>;
+};
 
 export default trpc.withTRPC(MyApp);
 

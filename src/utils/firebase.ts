@@ -23,7 +23,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-const db = getFirestore(app)
+export const db = getFirestore(app)
 
 // try to add analytics
 export const analytics =
