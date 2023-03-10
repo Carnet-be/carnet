@@ -33,3 +33,19 @@ export type TSignupBidder = TSignup&{
 export type TAuction=Auction &{specs:AuctionSpecs,address:Address,options:AuctionOptions,rating:AuctionRating,bids:TBid[],bidder:TUser,images:AssetImage[]}
 export type TUser=User &{auctions:Auction[],image:AssetImage|null}
 export type TBid=Bid &{bidder:TUser}
+
+
+export type TAudience={
+  id:string,
+  name:string,
+  hasRead:boolean,
+  type: UserType
+}
+export type TNotification={
+  id:string,
+  title:string,
+  body:string,
+  date:string,
+  audiences:TAuction[]
+
+}

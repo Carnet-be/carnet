@@ -1,5 +1,5 @@
-import { type AppType } from "next/app";
-import { type Session } from "next-auth";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { SessionProvider } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
@@ -10,8 +10,12 @@ import Head from "next/head";
 import "rsuite/dist/rsuite.min.css";
 import { ReactNode, useEffect } from "react";
 import { useRouter } from "next/router";
+import { messaging, msgKey } from "@utils/firebase";
+import { getToken } from "firebase/messaging";
+import { useTokenStore } from "../state";
+import OneSignal from 'react-onesignal';
 
-const MyApp: AppType<{ session: Session | null }> = ({
+const MyApp= ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
@@ -50,41 +54,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
   );
 };
 
-const App=({children}:{children:ReactNode})=>{
+const App=({children})=>{
   const router=useRouter()
-//   const {data:init,refetch,isLoading}=trpc.admin.init.useQuery(undefined,{enabled:false,
-//   onError:(err)=>{
-//     if(err.message.includes("401")){
-//       router.push("/login")
-//     }
-//     console.log(err)
-//   },
-//   onSuccess:(data)=>{
-//     console.log(data)
-//     if(data.error){
-//       if(data.error=="user not found"){
-//         router.push("/auth/login")
-//       }
-//       if(data.error=="user not verified"){
-//         router.push("/pages/email-verification")
-//       }
-//       if(data.error=="user not active"){
-//         router.push("/pages/inactive") 
-//     }
+
+useEffect(() => {
+  console.log(router.pathname)
+
+}, [])
 
 
-//   }else{
-//     console.log(data.user)
-//   }
-// }
-
-//   })
-//   useEffect(() => {
-//     console.log(router.pathname)
-//     if(router.pathname.includes("/dashboard")){
-//       refetch()
-//     }
-//   }, [router.pathname])
 
 return <>{children}</>
 }

@@ -57,3 +57,22 @@ export const useAdminDashboardStore = create<TAdminDashboard>()(
     )
   )
 );
+
+
+interface TokenMessageState {
+  token: string|undefined;
+  setToken: (by: string) => void;
+}
+export const useTokenStore = create<TokenMessageState>()(
+  devtools(
+    persist(
+      (set) => ({
+        token: undefined,
+        setToken: (by: string) => set((state) => ({ token: by })),
+      }),
+      {
+        name: "bidder-storage",
+      }
+    )
+  )
+);
