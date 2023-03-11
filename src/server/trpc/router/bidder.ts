@@ -44,14 +44,18 @@ export const bidderRouter = router({
         auction:true
         
       }
-    }).then((res) => {
+    }).then(async(res) => {
+      const getLastBidder = await ctx.prisma.bid.findFirst({
+        where: { auction_id: res.auction_id, numero: res.numero - 1 },
+      }) 
       sendNotification({
         type:"new bid", 
         date: new Date(),
-        auction_id: res.id,
+        auction_id: res.auction_id,
         bidder_id: res.bidder_id,
+        last_bidder_id: getLastBidder?.bidder_id,
         montant: res.montant,
-        
+        auction_name: res.auction.name,
         auctionnaire_id: res.auction.auctionnaire_id,
        })
        return res

@@ -279,7 +279,18 @@ export const auctionnaireRouter = router({
             address: data6.address,
           },
         }),
-      ]);
+      ]).then((auction) => {
+        const res=auction[0];
+        sendNotification({
+          type:"auction modified",
+          type_2:input.log|| "edit",
+          date: new Date(),
+          auction_id: res.id,
+          auction_name: res.name,
+          auctionnaire_id: res.auctionnaire_id,
+         })
+        return auction
+      });
     }),
   getAuctions: publicProcedure
     .input(
@@ -515,6 +526,7 @@ export const auctionnaireRouter = router({
           type_2:"resume",
           date: new Date(),
           auction_id: res.id,
+          auction_name: res.name,
           auctionnaire_id: res.auctionnaire_id,
          })
          return res
@@ -561,6 +573,7 @@ export const auctionnaireRouter = router({
           auction_id: res[0].id,
           auctionnaire_id: res[0].auctionnaire_id,
           winner_id: res[1].bidder_id,
+          auction_name: res[0].name,
          })
          return res
       });
@@ -600,6 +613,7 @@ export const auctionnaireRouter = router({
           type_2:"republished",
           date: new Date(),
           auction_id: res.id,
+          auction_name: res.name,
           auctionnaire_id: res.auctionnaire_id,
          })
          return res
@@ -634,13 +648,14 @@ export const auctionnaireRouter = router({
           type_2:"add time",
           date: new Date(),
           auction_id: res.id,
+          auction_name: res.name,
           auctionnaire_id: res.auctionnaire_id,
          })
          return res
       });
     }),
     cancelWinner:publicProcedure.input(z.object({ auction_id: z.string() })).mutation(async ({ input, ctx }) => {
-      return ctx.prisma.$transaction([
+      return await ctx.prisma.$transaction([
         ctx.prisma.auction.update({
           where: { id: input.auction_id },
           data: {
@@ -655,8 +670,11 @@ export const auctionnaireRouter = router({
                   },
                 },
               },
+              
             },
+            
           },
+        
         }),
         ctx.prisma.bid.updateMany({
           where: { auction_id: input.auction_id },
@@ -664,6 +682,16 @@ export const auctionnaireRouter = router({
             winner: false,
           },
         }),
-      ]);
+      ]).then((res) => {
+        sendNotification({
+          type:"auction modified",
+          type_2:"cancel winner",
+          date: new Date(),
+          auction_id: res[0].id,
+          auctionnaire_id: res[0].auctionnaire_id,
+          auction_name: res[0].name,
+         })
+         return res
+      });
     })
 });
