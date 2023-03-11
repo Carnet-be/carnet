@@ -59,19 +59,19 @@ export const useAdminDashboardStore = create<TAdminDashboard>()(
 );
 
 
-interface TokenMessageState {
-  token: string|undefined;
-  setToken: (by: string) => void;
+interface TNotificationSeen {
+  notifs:string[],
+  add: (by: string) => void;
 }
-export const useTokenStore = create<TokenMessageState>()(
+export const useNotifStore = create<TNotificationSeen>()(
   devtools(
     persist(
       (set) => ({
-        token: undefined,
-        setToken: (by: string) => set((state) => ({ token: by })),
+        notifs: [],
+       add: (by: string) => set((state) => ({ notifs: [...state.notifs, by]})),
       }),
       {
-        name: "bidder-storage",
+        name: "notification-storage",
       }
     )
   )

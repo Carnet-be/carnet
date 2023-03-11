@@ -3,6 +3,10 @@
 import { SessionProvider } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
+import { db } from "@utils/firebase";
+import { query, collection, where, onSnapshot } from "firebase/firestore";
+
+import { toast } from 'react-toastify';
 
 import "../styles/globals.css";
 import { Toaster } from "react-hot-toast";
@@ -12,13 +16,15 @@ import { ReactNode, useEffect } from "react";
 import { useRouter } from "next/router";
 import { messaging, msgKey } from "@utils/firebase";
 import { getToken } from "firebase/messaging";
-import { useTokenStore } from "../state";
 import OneSignal from "react-onesignal";
-import { useNotifyMe } from "./hooks";
+import { ToastContainer } from 'react-toastify';
+import {  useNotifyMe } from "./hooks";
 
+import 'react-toastify/dist/ReactToastify.css';
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }:any) => {
   return (
     <SessionProvider session={session}>
+      
       <Head>
         <title>CARNET</title>
         <link
@@ -46,16 +52,24 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }:any) => {
         <Component {...pageProps} />
       </App>
       <Toaster />
+      <ToastContainer position="bottom-right" autoClose={8000}/>
+      <audio
+         
+        id="audio"
+        controls
+        src="/audio/notification_v2.mp3"
+        className="absolute top-0 left-0 z-[-10000]"
+      ></audio>
     </SessionProvider>
   );
 };
 
 const App = ({ children }:{children:ReactNode}) => {
   const router = useRouter();
-
-  useNotifyMe({uid:"naim"})
-
-  return <>{children}</>;
+   useNotifyMe({uid:"123456"})
+  return <>{children}
+  
+  </>;
 };
 
 export default trpc.withTRPC(MyApp);

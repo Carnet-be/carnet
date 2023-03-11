@@ -51,8 +51,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   //const home="/users/auctioneers"
  return {
-  props:{}
-  }
+  redirect: {
+    destination: "/admin/dashboard/users/auctioneers",
+    permanent: true,
+ }
+}
 };
 const AdminDashboard: NextPage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const {setNums,setReload}=useAdminDashboardStore(state=>state)

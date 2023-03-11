@@ -91,7 +91,7 @@ export const auctionnaireRouter = router({
             },
           },
           color: data1.color,
-
+          //auctionnaire_id: auctionnaire_id||"",
           auctionnaire: {
             connect: { id: auctionnaire_id },
           },
@@ -134,7 +134,8 @@ export const auctionnaireRouter = router({
             },
           },
         },
-      });
+        
+      }).then((auction) => ({...auction,auctionnaire_id:auctionnaire_id||""}));
     }),
   pauseAuction: publicProcedure
     .input(z.string())

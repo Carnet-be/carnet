@@ -12,6 +12,13 @@ export const userRouter = router({
       include: { image: true },
     });
   }),
+  // getUserForNotif: publicProcedure.query(async ({ ctx }) => {
+  //   return await ctx.prisma.user.findUnique({
+  //     where: {
+  //       email: ctx.session?.user?.email || "",
+  //     },
+  //   });
+  // }),
   update: publicProcedure
 
     .input(

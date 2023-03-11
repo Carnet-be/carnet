@@ -20,6 +20,7 @@ import { Router, useRouter } from "next/router";
 import { TAuction } from "@model/type";
 import { ProcessDate } from "@utils/processDate";
 import Step7 from "./step7";
+import { sendNotification } from "../../repository";
 
 export type Data1 = {
   brand?: number;
@@ -296,7 +297,12 @@ const CreateAuction = ({
       onSuccess: (data) => {
         toast.dismiss();
         toast.success("Opération réussi");
-
+        sendNotification({
+         type:"new auction",
+         date: new Date(),
+         auction_id: data.id,
+         auctioner_id: data.auctionnaire_id,
+        })
         router.push("/dashboard/auctionnaire/myauctions");
         ref.current?.click();
       },

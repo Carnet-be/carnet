@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type {Address, Auction, AuctionOptions, AuctionRating, AuctionSpecs, User,Bid, AssetImage } from "@prisma/client";
 
@@ -35,6 +36,8 @@ export type TUser=User &{auctions:Auction[],image:AssetImage|null}
 export type TBid=Bid &{bidder:TUser}
 
 
+export type TypeNotification = "new user"|"new auction"|"new message"|"higher bid"|"auction completed"|"new bid"
+
 export type TAudience={
   id:string,
   name:string,
@@ -42,10 +45,7 @@ export type TAudience={
   type: UserType
 }
 export type TNotification={
-  id:string,
-  title:string,
-  body:string,
-  date:string,
-  audiences:TAuction[]
-
+  type:  TypeNotification;
+  date: Date;
+  [key: string]: any;
 }
