@@ -44,10 +44,16 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
         content.link =
           "/admin/dashboard/auctions/pending?id=" + notification.auction_id;
         break;
+      case "new user":
+        const isBid=notification.user_type==="BID"
+        content.title = "New User"
+        content.body=`There is a new ${isBid?"bidder":"auctioneer"}`
+        content.link=`/admin/dashboard/users/${isBid?"bidder":"auctioneers"}?id=`+notification.user_id
+
       default:
         break;
     }
-
+  console.log("content", content)
     ///
     playNotificationSound();
     toast(<Msg content={content} />, {
@@ -58,8 +64,8 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
   const isIllegible = (notification: TNotification) => {
     switch (notification.type) {
       case "new auction":
+      case  "new user":
         return user?.type === "ADMIN" || user?.type === "STAFF"; //TODO: check if user is admin or staff
-
       default:
         return false;
     }
@@ -67,7 +73,7 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
   useEffect(() => {
     let unsubscribe;
     if (user) {
-      const dateLimit=new Date(moment().subtract(10, "minutes").format())
+      const dateLimit=new Date(moment().subtract(20, "minutes").format())
       console.log('dateLimit', dateLimit)
       const q = query(
         collection(db, "notifications"),
@@ -81,7 +87,7 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
         console.log("Notifications: ", querySnapshot.docs.map((doc) => doc.data()))
         querySnapshot.docChanges()
         //.filter((qs,i)=>i===0)
-        .filter((qs)=>!notifs.includes(qs.doc.id))
+       // .filter((qs)=>!notifs.includes(qs.doc.id))
         .forEach(async (change) => {
           if (change.type === "added") {
             console.log("New city: ", change.doc.data());
@@ -98,3 +104,9 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
     return unsubscribe;
   }, [user]);
 };
+
+export default function Notification() {
+  return (
+   <div></div>
+  );
+}

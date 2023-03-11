@@ -18,6 +18,7 @@ import { ProcessUser } from "@utils/processUser";
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 import moment from "moment";
+import { sendNotification } from "@repository/index";
 
 export const auctionnaireRouter = router({
   get: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
@@ -508,6 +509,15 @@ export const auctionnaireRouter = router({
             },
           },
         },
+      }).then((res) => {
+        sendNotification({
+          type:"auction modified",
+          type_2:"resume",
+          date: new Date(),
+          auction_id: res.id,
+          auctionnaire_id: res.auctionnaire_id,
+         })
+         return res
       });
     }
   ),
@@ -519,7 +529,7 @@ export const auctionnaireRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      return ctx.prisma.$transaction([
+      return await ctx.prisma.$transaction([
         ctx.prisma.auction.update({
           where: { id: input.auction_id },
           data: {
@@ -543,7 +553,17 @@ export const auctionnaireRouter = router({
             winner: true,
           },
         }),
-      ]);
+      ]).then((res) => {
+        sendNotification({
+          type:"winner",
+          date: new Date(),
+          montant: res[1].montant,
+          auction_id: res[0].id,
+          auctionnaire_id: res[0].auctionnaire_id,
+          winner_id: res[1].bidder_id,
+         })
+         return res
+      });
     }),
   relancer: publicProcedure
     .input(
@@ -574,6 +594,15 @@ export const auctionnaireRouter = router({
             },
           },
         },
+      }).then((res) => {
+        sendNotification({
+          type:"auction modified", 
+          type_2:"republished",
+          date: new Date(),
+          auction_id: res.id,
+          auctionnaire_id: res.auctionnaire_id,
+         })
+         return res
       });
     }),
   addTime: publicProcedure
@@ -599,6 +628,15 @@ export const auctionnaireRouter = router({
             },
           },
         },
+      }).then((res) => {
+        sendNotification({
+          type:"auction modified", 
+          type_2:"add time",
+          date: new Date(),
+          auction_id: res.id,
+          auctionnaire_id: res.auctionnaire_id,
+         })
+         return res
       });
     }),
     cancelWinner:publicProcedure.input(z.object({ auction_id: z.string() })).mutation(async ({ input, ctx }) => {

@@ -25,6 +25,7 @@
       "@trpc/route/*":["./src/server/trpc/router/*"],
       "@data/*":["./src/data/*"],
       "@hooks/*":["./src/hooks/*"],
+      "@repository/*":["./src/repository/*"],
       "@env/*":["./src/env/*"],
       "@server/*":["./src/server/*"],
       "@types/*":["./src/model/type.ts"],

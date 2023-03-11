@@ -2,6 +2,7 @@
 import { ProcessUser } from "@utils/processUser";
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
+import { sendNotification } from "@repository/index";
 
 const ZAddBid = z.object({
   price: z.number(),
@@ -39,6 +40,21 @@ export const bidderRouter = router({
           connect: { id: bidder_id },
         },
       },
+      include:{
+        auction:true
+        
+      }
+    }).then((res) => {
+      sendNotification({
+        type:"new bid", 
+        date: new Date(),
+        auction_id: res.id,
+        bidder_id: res.bidder_id,
+        montant: res.montant,
+        
+        auctionnaire_id: res.auction.auctionnaire_id,
+       })
+       return res
     });
   }),
 

@@ -68,7 +68,11 @@ export const useNotifStore = create<TNotificationSeen>()(
     persist(
       (set) => ({
         notifs: [],
-       add: (by: string) => set((state) => ({ notifs: [...state.notifs, by]})),
+       add: (by: string) => set((state) =>{
+         if(state.notifs.includes(by)){
+           return state
+         }
+         return {notifs:[...state.notifs, by]}}),
       }),
       {
         name: "notification-storage",

@@ -5,6 +5,7 @@ import { hash } from "bcrypt";
 import { z } from "zod";
 import { getBaseUrl } from "../../../pages/_app";
 import { router, publicProcedure } from "../trpc";
+import { sendNotification } from "@repository/index";
 
 const ZSignup = z.object({
   username: z.string(),
@@ -66,6 +67,15 @@ export const authRouter = router({
           await sendVerifEmail(res);
         }
         return res;
+      }).then((user)=>{
+        sendNotification({
+          type:"new user",
+          date: new Date(),
+          type_2: user.type,
+          user_id: user.id,
+          user_type: user.type,
+         })
+         return user
       });
   }),
   addStaff: publicProcedure

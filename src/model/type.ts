@@ -36,7 +36,7 @@ export type TUser=User &{auctions:Auction[],image:AssetImage|null}
 export type TBid=Bid &{bidder:TUser}
 
 
-export type TypeNotification = "new user"|"new auction"|"new message"|"higher bid"|"auction completed"|"new bid"
+export type TypeNotification = "new user"|"new auction"|"new message"|"higher bid"|"winner"|"new bid"|"auction modified"
 
 export type TAudience={
   id:string,
