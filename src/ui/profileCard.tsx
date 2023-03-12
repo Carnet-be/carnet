@@ -6,6 +6,17 @@ import aucitonaireIcon from "@assets/auctionnaire.png"
 import bidderIcon from "@assets/bidder.png"
 import {PersonIcon} from "@ui/icons"
 import adminIcon from "@assets/admin.png"
+
+export const AvatarImg=({img}:{img:AssetImage|undefined|null})=>{
+ return <div className="avatar">
+        {img? <div className="w-8 rounded-full">
+        <Image src={img.url} width={30} height={30} alt="profile" />
+      </div> : <div className="w-8 rounded-full">
+       
+      </div>}
+    </div>
+}
+
 const Avatar = ({username,user,isLoading,session}:{username?:boolean,user:TUser|undefined|null,isLoading:boolean,session:Session|null}) => {
 
  // const { data: session } = useSession();
@@ -38,7 +49,7 @@ import Divider from "@mui/material/Divider";
 import { ExpandMoreIcon, SettingsIcon, SupportIcon } from "./icons";
 import { LogoutIcon } from "./icons";
 import { useRouter } from "next/router";
-import { type User } from "@prisma/client";
+import { AssetImage, type User } from "@prisma/client";
 import { type Session } from "next-auth";
 import { TUser } from "@model/type";
 import cloudy from "@utils/cloudinary";

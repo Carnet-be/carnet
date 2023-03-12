@@ -1,4 +1,4 @@
-import React, { type ReactNode } from "react";
+import React, { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
@@ -21,6 +21,10 @@ import { AddIcon } from "@ui/icons";
 import CreateAuction from "@ui/createAuction";
 import { trpc } from "@utils/trpc";
 import { useBidderStore } from "../state";
+import { useGetNotifications } from "../pages/hooks";
+import { Drawer } from "antd";
+import moment from "moment";
+import { Timestamp } from "firebase/firestore";
 
 type TSide = {
   route: string;
@@ -37,6 +41,7 @@ type DashboardType = {
   notification?: ReactNode;
   background?: string;
   wishListNumber?: number;
+  hideNav?: boolean;
 };
 type TMenu = {
   ADMIN: Array<TSide>;
@@ -48,10 +53,11 @@ type TMenu = {
 const Dashboard = ({
   children,
   type,
+  hideNav = false,
   background = "bg-background",
 }: DashboardType) => {
   const router = useRouter();
- 
+
   const wishs = useBidderStore((state) => state.wishList);
   const menu: TMenu = {
     ADMIN: [
@@ -86,10 +92,10 @@ const Dashboard = ({
         icon: <DataIcon />,
       },
       {
-        title:"Chat",
-        route:"/admin/dashboard/chat",
-        icon:<ChatIcon />
-      }
+        title: "Chat",
+        route: "/admin/dashboard/chat",
+        icon: <ChatIcon />,
+      },
     ],
     AUC: [
       {
@@ -103,10 +109,10 @@ const Dashboard = ({
         icon: <AuctionIcon />,
       },
       {
-        title:"Chat",
-        route:"/dashboard/auctionnaire/chat",
-        icon:<ChatIcon />
-      }
+        title: "Chat",
+        route: "/dashboard/auctionnaire/chat",
+        icon: <ChatIcon />,
+      },
     ],
     BID: [
       {
@@ -125,6 +131,11 @@ const Dashboard = ({
         icon: <ClipIcon />,
         count: wishs,
       },
+      {
+        title: "Chat",
+        route: "/dashboard/bidder/chat",
+        icon: <ChatIcon />,
+      },
     ],
     STAFF: [],
   };
@@ -135,18 +146,26 @@ const Dashboard = ({
       <div className="drawer-mobile drawer">
         <input id="drawer" type="checkbox" className="drawer-toggle" />
         <div className={cx("drawer-content relative", background)}>
-          <div className="sticky top-0 right-0 z-50 flex h-[60px] w-full  flex-row items-center gap-3 px-3 backdrop-blur-md">
+          <div
+            className={cx(
+              "sticky top-0 right-0 z-50 flex h-[60px] w-full  flex-row items-center gap-3 px-3 backdrop-blur-md",
+              {
+                hidden: hideNav,
+              }
+            )}
+          >
             <div className="flex-grow"></div>
-            <div className="btn-ghost btn flex flex-row gap-1 hover:bg-primary/10">
-              <span className="indicator-start badge-error badge indicator-item text-sm text-white">
-                2
-              </span>
-              <NotifIcon className="text-2xl text-primary" />
-            </div>
+            <NotificationComponent />
             <ProfileCard />
           </div>
           {/* <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label> */}
-          <div className="p-3 lg:p-6 lg:px-14">{children}</div>
+          <div
+            className={cx("", {
+              "p-3 lg:p-6 lg:px-14": !hideNav,
+            })}
+          >
+            {children}
+          </div>
         </div>
         <div className="drawer-side w-[300px]">
           <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
@@ -160,7 +179,13 @@ const Dashboard = ({
                   router.pathname == m.route ||
                   router.pathname.includes(m.route);
                 return (
-                  <Side key={i} side={m} active={active} count={m.count} isLoading={m.isLoading}/>
+                  <Side
+                    key={i}
+                    side={m}
+                    active={active}
+                    count={m.count}
+                    isLoading={m.isLoading}
+                  />
                 );
               })}
             </ul>
@@ -224,12 +249,72 @@ const Side = ({
         )}
       >
         <div className="text-xl">{side.icon}</div> {side.title}
-     
-        <div className={cx("flex-grow justify-end text-end font-bold",active&&"text-white")}>
-         {count}
+        <div
+          className={cx(
+            "flex-grow justify-end text-end font-bold",
+            active && "text-white"
+          )}
+        >
+          {count}
         </div>
       </Link>
     </li>
   );
 };
 export default Dashboard;
+
+const NotificationComponent = () => {
+  const { notifications, num,onSeenNotifications,newNotifs } = useGetNotifications();
+  const [open, setOpen] = useState(false);
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+
+    onSeenNotifications()
+  };
+  const router=useRouter()
+  return (
+    <>
+      <button
+        onClick={showDrawer}
+        className="btn-ghost btn flex flex-row gap-1 hover:bg-primary/10"
+      >
+        {num > 0 && (
+          <div className="flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-white">
+            
+          </div>
+        )}
+        <NotifIcon className="text-2xl" />
+      </button>
+      <Drawer
+        title="Notifications"
+        placement="right"
+        onClose={onClose}
+        open={open}
+      >
+        {notifications.sort((a,b)=>b.date.getTime()-a.date.getTime()).map((n, i) => {
+
+          return (
+            <div onClick={()=>{
+            router.push(n.link)
+            onClose()
+            }} key={i} className={cx("rounded-md border p-3 cursor-pointer mb-3",{
+              "text-primary":newNotifs.map((n)=>n.uid).includes(n.uid||""),
+            })}>
+              
+                <div className="flex flex-col">
+                  <div className="text-sm font-bold">{n.title}</div>
+                  <div className="text-xs">{n.body}</div>
+                  <div className="self-end italic text-[10px]">{moment(n.date).fromNow()}</div>
+              </div>
+            </div>
+          );
+        })}
+      </Drawer>
+    </>
+  );
+};

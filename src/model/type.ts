@@ -47,5 +47,8 @@ export type TAudience={
 export type TNotification={
   type:  TypeNotification;
   date: Date;
+  uid?:string,
+  hasRead?:string[],
   [key: string]: any;
 }
+

@@ -37,3 +37,12 @@
 }
 
 
+.chaty{
+  overflow-y: scroll;
+  overscroll-behavior-y: contain;
+  scroll-snap-type: y proximity;
+}
+
+.chaty > div:last-child {
+  scroll-snap-align: end;
+}

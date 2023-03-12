@@ -2,6 +2,7 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 import bcrypt from 'bcrypt';
 import { bcryptHash } from "@utils/bcrypt";
+import { TMessage } from "@repository/index";
 
 export const userRouter = router({
   get: publicProcedure.query(async ({ ctx }) => {
@@ -86,4 +87,43 @@ export const userRouter = router({
       });
     }
     ),
+    getUsersFromMessages: publicProcedure
+    .input(z.array(z.any())).query(async ({input,ctx})=>{
+      let idUsers:string[]=input.filter((el:TMessage)=>{
+          if(el.sender=="ADMIN" || el.receiver=="ADMIN"){
+            return true
+          }
+          return false
+      }).map((el:TMessage)=>{
+        if(el.sender=="ADMIN"){
+          return el.receiver
+        }
+        return el.sender
+      })
+
+      idUsers=[...new Set(idUsers)]
+      return await ctx.prisma.user.findMany({
+        where:{
+          id:{
+            in:idUsers
+          }
+        },
+        include:{
+          image:true
+        }
+      }).then((res)=>{
+        return res.map((el)=>{
+          return {
+            ...el,
+            messages:(input as TMessage[]).filter((el2:TMessage)=>{
+              if(el2.sender==el.id || el2.receiver==el.id){
+                return true
+              }
+              return false
+            })
+          }
+        })
+      })
+    })
+
 });
