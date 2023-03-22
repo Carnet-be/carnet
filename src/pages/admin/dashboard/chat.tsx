@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { InternalMessage } from "@prisma/client";
@@ -8,7 +9,7 @@ import { Button, Divider, Input } from "antd";
 import { GetServerSideProps } from "next";
 import cx from "classnames";
 import { prisma } from "../../../server/db/client";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import Lottie from "@ui/components/lottie";
 
 import animationEmpty from "../../../../public/animations/mo_message.json";
@@ -24,6 +25,7 @@ import toast from "react-hot-toast";
 import aucitonaireIcon from "@assets/auctionnaire.png";
 import bidderIcon from "@assets/bidder.png";
 import Image from "next/image";
+import { DeleteIcon } from "@ui/icons";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -107,7 +109,7 @@ const Chat = (props: { user: any }) => {
           }
         }),
       }));
-     if (!selected) setselected(users[0]?.user);
+      if (!selected) setselected(users[0]?.user);
       setusers(users);
     },
   });
@@ -127,9 +129,6 @@ const Chat = (props: { user: any }) => {
   const onSelectedUser = (user: TUser) => {
     setselected(user);
   };
-  useEffect(() => {
-    console.log("selected", selected);
-  }, [selected]);
   return (
     <Dashboard type={"ADMIN"} hideNav>
       <div className="flex h-screen flex-row items-stretch">
@@ -141,7 +140,22 @@ const Chat = (props: { user: any }) => {
           />
         </div>
 
-     {users.length>0 && <RightSide userMessage={users.filter((u)=>u.user.id===selected?.id)[0]||users[0] as TUser}/>}
+        <RightSide
+          userMessage={
+            selected
+              ? {
+                  user: selected,
+                  messages: messages.filter((message) => {
+                    if (message.receiver === "ADMIN") {
+                      return message.sender === selected.id;
+                    } else {
+                      return message.receiver === selected.id;
+                    }
+                  }),
+                }
+              : undefined
+          }
+        />
       </div>
     </Dashboard>
   );
@@ -215,7 +229,7 @@ const LeftSide = ({
         )}
         {users.map((u, i) => {
           const { user: user, messages } = u;
-          console.log('messages[0]', messages[0])
+          console.log("messages[0]", messages[0]);
           return (
             <button
               key={i}
@@ -229,16 +243,19 @@ const LeftSide = ({
             >
               <AvatarImg img={user.image} size={40} />
               <div className="flex w-full flex-col items-stretch">
-                <div className="flex flex-row gap-2 items-center">
-
-             
-              <Image src={user.type==="AUC"?aucitonaireIcon:bidderIcon} alt="type" width={20} height={30}/>
-                <div className="">
-                <div className="text-sm font-semibold ">
-                 
-                 {user.username}</div>
-               <div className="text-xs text-gray-500">{user.email}</div>
-                </div>
+                <div className="flex flex-row items-center gap-2">
+                  <Image
+                    src={user.type === "AUC" ? aucitonaireIcon : bidderIcon}
+                    alt="type"
+                    width={20}
+                    height={30}
+                  />
+                  <div className="">
+                    <div className="text-sm font-semibold ">
+                      {user.username}
+                    </div>
+                    <div className="text-xs text-gray-500">{user.email}</div>
+                  </div>
                 </div>
                 {messages.length > 0 && (
                   <>
@@ -247,7 +264,7 @@ const LeftSide = ({
                       {messages[0]?.content || ""}
                     </span>
                     <span className="self-end text-xs italic opacity-40 ">
-                      {moment((messages[0]?.date)).fromNow()}
+                      {moment(messages[0]?.date).fromNow()}
                     </span>
                   </>
                 )}
@@ -260,7 +277,11 @@ const LeftSide = ({
   );
 };
 
-const RightSide = ({userMessage:user}:{userMessage:UserMessage}) => {
+const RightSide = ({
+  userMessage: user,
+}: {
+  userMessage: UserMessage | undefined;
+}) => {
   const [text, setText] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const onSubmit = (e: any) => {
@@ -273,17 +294,15 @@ const RightSide = ({userMessage:user}:{userMessage:UserMessage}) => {
       receiver: user?.user.id || "ADMIN",
     }).then((res) => {
       setText("");
+      setIsLoading(false);
     });
   };
   return (
-    <div
-      className={cx(
-        "flex h-full w-full flex-col-reverse items-center gap-6 py-6 px-10 "
-      )}
-    >
+    <div className={cx("flex h-full w-full flex-col-reverse items-center")}>
       <form
+        hidden={user === undefined}
         onSubmit={onSubmit}
-        className="flex w-full flex-row items-center  items-center justify-center rounded-md bg-white p-4 shadow-md lg:max-w-[700px]"
+        className="flex w-full w-full flex-row  items-center items-center justify-center rounded-md bg-white p-4 shadow-md"
       >
         <Input.Group className="flex w-full flex-grow flex-row items-center gap-3">
           <Input.TextArea
@@ -304,8 +323,12 @@ const RightSide = ({userMessage:user}:{userMessage:UserMessage}) => {
           </button>
         </Input.Group>
       </form>
-      <div className={cx("w-full flex-grow overflow-scroll lg:max-w-[700px]")}>
-        <DisplayMessage name={user?.user.username ||""} items={user?.messages || []} id={"ADMIN"} />
+      <div className={cx("w-fullflex-grow w-full overflow-scroll px-4")}>
+        <DisplayMessage
+          user={user?.user}
+          items={user?.messages || []}
+          id={"ADMIN"}
+        />
       </div>
     </div>
   );
@@ -315,33 +338,52 @@ const RightSide = ({userMessage:user}:{userMessage:UserMessage}) => {
 
 const DisplayMessage = ({
   items,
-  id,name
-
+  id,
+  user,
 }: {
   items: TMessage[];
   id: "ADMIN" | string;
-  name:string
-
+  user: TUser | undefined;
 }) => {
+  const lastId = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (lastId.current) {
+      lastId.current.scrollIntoView();
+    }
+  }, [items]);
   return (
-    <div className="chaty flex w-full flex-col items-stretch">
+    <div className="flex w-full flex-col items-stretch justify-end">
       {items.length === 0 && (
-        <div className="mx-auto w-[300px]">
+        <div className="mx-auto w-[60%]">
           <Lottie animationData={animationEmpty} />
         </div>
       )}
       {items.map((message, i) => {
+        const mine = message.sender === id ? true : false;
         return (
           <div
             key={i}
-            className={cx("chat", {
-              // "snap-proximity": i===0,
-              "chat-start": message.receiver === id ? true : false,
-              "chat-end": message.receiver === id ? false : true,
-            })}
+            ref={i === items.length - 1 ? lastId : null}
+            className={cx(
+              "chat bg-opacity-20 group",
+              mine ? "chat-end" : "chat-start"
+            )}
           >
-            <span>{name}</span>
+            <div hidden={!mine} className="chat-image avatar transition-all scale-0 group-hover:scale-100">
+            
+                <Button danger icon={<DeleteIcon className="text-lg mx-auto"/>}/>
+          
+            </div>
+            <div className="chat-header flex flex-row items-center gap-4">
+              <span hidden={mine}>{user?.username}</span>
+              <time className="text-xs opacity-50">
+                {moment(message.date).fromNow()}
+              </time>
+            </div>
             <div className="chat-bubble">{message.content}</div>
+            <div hidden={!mine} className="chat-footer opacity-50">
+              {message.receiverRead ? "seen" : "delivered"}
+            </div>
           </div>
         );
       })}
