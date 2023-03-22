@@ -2,24 +2,47 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { trpc } from "../utils/trpc";
 import Image from "next/image";
-import aucitonaireIcon from "@assets/auctionnaire.png"
-import bidderIcon from "@assets/bidder.png"
-import {PersonIcon} from "@ui/icons"
-import adminIcon from "@assets/admin.png"
-
-export const AvatarImg=({img}:{img:AssetImage|undefined|null})=>{
- return <div className="avatar">
-        {img? <div className="w-8 rounded-full">
-        <Image src={img.url} width={30} height={30} alt="profile" />
-      </div> : <div className="w-8 rounded-full">
-       
-      </div>}
+import aucitonaireIcon from "@assets/auctionnaire.png";
+import bidderIcon from "@assets/bidder.png";
+import { PersonIcon } from "@ui/icons";
+import adminIcon from "@assets/admin.png";
+import cx from "classnames";
+export const AvatarImg = ({
+  img,
+  size = 30,
+}: {
+  img: AssetImage | undefined | null;
+  size?: number;
+}) => {
+  return (
+    <div
+      className={cx("avatar flex items-center justify-center", `w-[${size}]`)}
+    >
+      {img ? (
+        <div className={cx("rounded-full", `w-[${size}]`)}>
+          <Image src={img.url} width={size} height={size} alt="profile" />
+        </div>
+      ) : (
+        <div className={cx("rounded-full ", `w-[${size}]`)}>
+          <PersonIcon style={{ fontSize: size }} />
+        </div>
+      )}
     </div>
-}
+  );
+};
 
-const Avatar = ({username,user,isLoading,session}:{username?:boolean,user:TUser|undefined|null,isLoading:boolean,session:Session|null}) => {
-
- // const { data: session } = useSession();
+const Avatar = ({
+  username,
+  user,
+  isLoading,
+  session,
+}: {
+  username?: boolean;
+  user: TUser | undefined | null;
+  isLoading: boolean;
+  session: Session | null;
+}) => {
+  // const { data: session } = useSession();
   if (isLoading || !user?.image) {
     return (
       <div className="placeholder avatar">
@@ -112,11 +135,11 @@ export default function CustomizedMenus() {
   };
   const router = useRouter();
   const { data: user, isLoading } = trpc.user.get.useQuery();
-  const {data:session}=useSession()
+  const { data: session } = useSession();
   const [openProfil, setOpenProfil] = useState(false);
 
   const showDrawer = () => {
-    handleClose()
+    handleClose();
     setOpenProfil(true);
   };
 
@@ -137,10 +160,25 @@ export default function CustomizedMenus() {
         disableRipple
         className="rounded-lg hover:bg-primary/10"
         onClick={handleClick}
-        startIcon={user&&<Image src={user.type=="AUC"? aucitonaireIcon:user.type=="BID"?bidderIcon:adminIcon} width={25} height={25} alt="icon"/>}
+        startIcon={
+          user && (
+            <Image
+              src={
+                user.type == "AUC"
+                  ? aucitonaireIcon
+                  : user.type == "BID"
+                  ? bidderIcon
+                  : adminIcon
+              }
+              width={25}
+              height={25}
+              alt="icon"
+            />
+          )
+        }
         endIcon={<ExpandMoreIcon className="text-xl" />}
       >
-        <Avatar session={session} isLoading={isLoading} user={user as TUser}/>
+        <Avatar session={session} isLoading={isLoading} user={user as TUser} />
       </Button>
 
       <StyledMenu
@@ -152,7 +190,7 @@ export default function CustomizedMenus() {
         open={open}
         onClose={handleClose}
       >
-         <MenuItem onClick={showDrawer} disableRipple className="menu-item">
+        <MenuItem onClick={showDrawer} disableRipple className="menu-item">
           <PersonIcon />
           Account
         </MenuItem>
@@ -176,15 +214,13 @@ export default function CustomizedMenus() {
       <Drawer
         title={`Profile`}
         placement="right"
-       // size={"large"}
+        // size={"large"}
         onClose={onClose}
         open={openProfil}
         width={450}
       >
-       {user&&<Profile usert={user} /> }
+        {user && <Profile usert={user} />}
       </Drawer>
     </div>
   );
 }
-
-

@@ -157,6 +157,17 @@ export const auctionnaireRouter = router({
             },
           },
         },
+      }).then((auction) => {
+        const res=auction;
+        sendNotification({
+          type:"auction modified",
+          type_2:"pause",
+          date: new Date(),
+          auction_id: res.id,
+          auction_name: res.name,
+          auctionnaire_id: res.auctionnaire_id,
+         })
+        return auction
       });
     }),
   updateAuction: publicProcedure
@@ -210,7 +221,7 @@ export const auctionnaireRouter = router({
         starting_price == undefined || commission == undefined
           ? undefined
           : starting_price + (starting_price * commission) / 100;
-      return ctx.prisma.$transaction([
+      return await ctx.prisma.$transaction([
         ctx.prisma.auction.update({
           where: { id: auction.id },
           data: {
@@ -230,8 +241,8 @@ export const auctionnaireRouter = router({
             duration,
             color: data1.color,
             //test confirmation
-           // end_date: new Date(),
-            end_date,
+           //end_date: new Date(),
+           end_date,
 
             starting_price,
             pause_date: pause_date,
@@ -281,6 +292,7 @@ export const auctionnaireRouter = router({
         }),
       ]).then((auction) => {
         const res=auction[0];
+        console.log('notif', input.log)
         sendNotification({
           type:"auction modified",
           type_2:input.log|| "edit",

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 import { bcryptHash } from "@utils/bcrypt";
 import { TMessage } from "@repository/index";
 
@@ -55,8 +55,8 @@ export const userRouter = router({
         },
       });
     }),
-  
-    changePwd: publicProcedure
+
+  changePwd: publicProcedure
     .input(
       z.object({
         current: z.string(),
@@ -65,65 +65,67 @@ export const userRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const isSame=await bcrypt.compare(input.old,input.current)
-      if(!isSame) throw new Error("Old password is not correct")
-      const hash=(await bcryptHash(input.newPwd)) as string
+      const isSame = await bcrypt.compare(input.old, input.current);
+      if (!isSame) throw new Error("Old password is not correct");
+      const hash = (await bcryptHash(input.newPwd)) as string;
       return await ctx.prisma.user.update({
         where: { email: ctx.session?.user?.email || "" },
         data: {
-          password:hash
+          password: hash,
         },
       });
     }),
-    removePhoto: publicProcedure
-    .mutation(async ({ ctx }) => {
-      return await ctx.prisma.user.update({
-        where: { email: ctx.session?.user?.email || "" },
-        data: {
-          image: {
-            delete: true,
+  removePhoto: publicProcedure.mutation(async ({ ctx }) => {
+    return await ctx.prisma.user.update({
+      where: { email: ctx.session?.user?.email || "" },
+      data: {
+        image: {
+          delete: true,
+        },
+      },
+    });
+  }),
+  search: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
+    return await ctx.prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            username: {
+              contains: input,
+              mode: "insensitive",
+            },
           },
+          {
+            email: {
+              contains: input,
+              mode: "insensitive",
+            },
+          },
+        ],
+        type: {
+          in: ["AUC", "BID"],
         },
-      });
-    }
-    ),
-    getUsersFromMessages: publicProcedure
-    .input(z.array(z.any())).query(async ({input,ctx})=>{
-      let idUsers:string[]=input.filter((el:TMessage)=>{
-          if(el.sender=="ADMIN" || el.receiver=="ADMIN"){
-            return true
-          }
-          return false
-      }).map((el:TMessage)=>{
-        if(el.sender=="ADMIN"){
-          return el.receiver
-        }
-        return el.sender
-      })
-
-      idUsers=[...new Set(idUsers)]
-      return await ctx.prisma.user.findMany({
-        where:{
-          id:{
-            in:idUsers
-          }
-        },
-        include:{
-          image:true
-        }
-      }).then((res)=>{
-        return res.map((el)=>{
-          return {
-            ...el,
-            messages:(input as TMessage[]).filter((el2:TMessage)=>{
-              if(el2.sender==el.id || el2.receiver==el.id){
-                return true
-              }
-              return false
-            })
-          }
+        isActive: true,
+      },
+      include: {
+        image: true,
+      },
+    });
+  }),
+  getUsersFromMessages: publicProcedure
+    .input(z.array(z.string()))
+    .query(async ({ input, ctx }) => {
+      
+      return await ctx.prisma.user
+        .findMany({
+          where: {
+            id: {
+              in: input,
+            },
+          },
+          include: {
+            image: true,
+          },
         })
-      })
-    })
-
+    }),
 });

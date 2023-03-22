@@ -48,6 +48,6 @@ export const getMessages = async ({
       .map((d) => ({
         ...d.data(),
       })).sort((a, b) => a.date - b.date);
-    setMessage(msg as TMessage[]);
+    setMessage(msg.map((m)=>({...m,date:m.date.toDate()})) as TMessage[]);
   });
 };
