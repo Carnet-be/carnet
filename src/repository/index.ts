@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TNotification } from "@model/type";
 import { db } from "@utils/firebase";
-import { addDoc, collection, onSnapshot, Timestamp } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, Timestamp, Unsubscribe } from "firebase/firestore";
 
 //function that add a doc to firestore
-
+type Collection= "notifications" | "messages"
 export const sendNotification = async (data: TNotification) =>
   addDoc(collection(db, "notifications"), {
     ...data,
@@ -15,6 +15,7 @@ export const sendNotification = async (data: TNotification) =>
 type TId = "ADMIN" | string;
 export type TMessage = {
   date: Date;
+  uid: string;
   sender: TId;
   receiver: TId;
   content: string;
@@ -33,21 +34,30 @@ export const sendMessage = (data: {
     receiverRead: false,
   });
 
-export const getMessages = async ({
+export const getMessages = ({
   id,
   setMessage,
 }: {
   id: TId;
   setMessage: (msg: TMessage[]) => void;
-}) => {
+}):Unsubscribe => {
   const messages = collection(db, "messages");
 
-  onSnapshot(messages, (querySnapshot) => {
-    const msg = querySnapshot.docs
+  const unsubscribe=onSnapshot(messages, (querySnapshot) => {
+    const msg:TMessage[] = querySnapshot.docs
       .filter((d) => d.data().receiver === id || d.data().sender === id)
       .map((d) => ({
+        uid: d.id,
         ...d.data(),
-      })).sort((a, b) => a.date - b.date);
-    setMessage(msg.map((m)=>({...m,date:m.date.toDate()})) as TMessage[]);
+      }) as TMessage).sort((a:any, b:any) => a.date - b.date);
+    setMessage(msg.map((m)=>({...m,date:(m.date as any).toDate()})) as TMessage[]);
   });
+  return unsubscribe
+};
+
+
+//delete a doc from firestore
+
+export const deleteDocument = async (col:Collection,id:string) => {
+  await deleteDoc(doc(db, col, id));
 };

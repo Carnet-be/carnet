@@ -40,7 +40,7 @@ const Chat = (props: { user: any }) => {
   const { user } = props;
   console.log("user", user);
   return (
-    <Dashboard type={"BID"}>
+    <Dashboard type={"BID"} hideNav={true} >
       <ChatPage id={user.id} />
     </Dashboard>
   );

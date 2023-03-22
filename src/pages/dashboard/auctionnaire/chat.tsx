@@ -8,6 +8,7 @@ import { GetServerSideProps } from "next";
 import cx from "classnames";
 import ChatPage from "@ui/chatPage";
 import { prisma } from "../../../server/db/client";
+import { RightSide } from "../../admin/dashboard/chat";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -39,8 +40,9 @@ const Chat = (props: { user: any }) => {
   const { user } = props;
   console.log("user", user);
   return (
-    <Dashboard type={"AUC"}>
+    <Dashboard type={"AUC"} hideNav>
       <ChatPage id={user.id} />
+     
     </Dashboard>
   );
 };

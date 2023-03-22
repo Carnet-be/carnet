@@ -13,7 +13,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import Lottie from "@ui/components/lottie";
 
 import animationEmpty from "../../../../public/animations/mo_message.json";
-import { TMessage, getMessages, sendMessage } from "@repository/index";
+import { TMessage, deleteDocument, getMessages, sendMessage } from "@repository/index";
 import { TRPCClient } from "@trpc/client";
 import moment from "moment";
 import { AvatarImg } from "@ui/profileCard";
@@ -110,12 +110,24 @@ const Chat = (props: { user: any }) => {
         }),
       }));
       if (!selected) setselected(users[0]?.user);
-      setusers(users);
+
+      const index=users.map((user)=>{
+        const ind=messages.findIndex((message)=>{
+    
+          if (message.receiver === "ADMIN") {
+            return message.sender === user.user.id;
+          } else {
+            return message.receiver === user.user.id;
+          }
+        })
+        return {ind,user}
+      })
+      setusers(index.sort((a,b)=>b.ind-a.ind).map((item)=>item.user));
     },
   });
 
   useEffect(() => {
-    getMessages({
+   const unsubscribe= getMessages({
       id: "ADMIN",
       setMessage: (messages) => {
         setMessages(messages);
@@ -124,6 +136,9 @@ const Chat = (props: { user: any }) => {
         refetch();
       },
     });
+    return ()=>{
+      unsubscribe()
+    }
   }, []);
 
   const onSelectedUser = (user: TUser) => {
@@ -261,10 +276,10 @@ const LeftSide = ({
                   <>
                     <hr className="my-[2px]" />
                     <span className="text-xs line-clamp-2">
-                      {messages[0]?.content || ""}
+                      {messages[messages.length-1]?.content || ""}
                     </span>
                     <span className="self-end text-xs italic opacity-40 ">
-                      {moment(messages[0]?.date).fromNow()}
+                      {moment(messages[messages.length-1]?.date).fromNow()}
                     </span>
                   </>
                 )}
@@ -277,7 +292,7 @@ const LeftSide = ({
   );
 };
 
-const RightSide = ({
+export const RightSide = ({
   userMessage: user,
 }: {
   userMessage: UserMessage | undefined;
@@ -336,13 +351,15 @@ const RightSide = ({
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-const DisplayMessage = ({
+export const DisplayMessage = ({
   items,
   id,
   user,
+  isAdmin
 }: {
   items: TMessage[];
   id: "ADMIN" | string;
+  isAdmin?: boolean;
   user: TUser | undefined;
 }) => {
   const lastId = useRef<HTMLDivElement>(null);
@@ -371,19 +388,21 @@ const DisplayMessage = ({
           >
             <div hidden={!mine} className="chat-image avatar transition-all scale-0 group-hover:scale-100">
             
-                <Button danger icon={<DeleteIcon className="text-lg mx-auto"/>}/>
+                <Button onClick={()=>{
+                  deleteDocument("messages", message.uid)
+                }} danger icon={<DeleteIcon className="text-lg mx-auto"/>}/>
           
             </div>
             <div className="chat-header flex flex-row items-center gap-4">
-              <span hidden={mine}>{user?.username}</span>
+              <span hidden={mine}>{user?.username||"CARNET" }</span>
               <time className="text-xs opacity-50">
                 {moment(message.date).fromNow()}
               </time>
             </div>
             <div className="chat-bubble">{message.content}</div>
-            <div hidden={!mine} className="chat-footer opacity-50">
+            {/* <div hidden={!mine} className="chat-footer opacity-50">
               {message.receiverRead ? "seen" : "delivered"}
-            </div>
+            </div> */}
           </div>
         );
       })}

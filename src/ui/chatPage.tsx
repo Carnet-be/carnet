@@ -8,6 +8,7 @@ import cx from "classnames";
 
 import animationEmpty from "../../public/animations/mo_message.json";
 import { TMessage, getMessages, sendMessage } from "@repository/index";
+import { DisplayMessage } from "../pages/admin/dashboard/chat";
 const ChatPage = ({
   id,
   receiver = "ADMIN",
@@ -17,6 +18,7 @@ const ChatPage = ({
   receiver?: "ADMIN" | string;
   isAdmin?: boolean;
 }) => {
+
   const [text, setText] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const onSubmit = (e: any) => {
@@ -25,37 +27,30 @@ const ChatPage = ({
     setIsLoading(true);
     sendMessage({
       content: text,
-      sender: id,
-      receiver,
-    })
-      .then((res) => {
-        setText("");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      sender:id,
+      receiver: "ADMIN",
+    }).then((res) => {
+      setText("");
+      setIsLoading(false);
+    });
   };
   const [messages, setMessages] = useState<TMessage[]>([]);
   useEffect(() => {
-    getMessages({
+    const unsubscribe= getMessages({
       id,
       setMessage: (messages) => {
         setMessages(messages);
       },
     });
+    return ()=>{
+      unsubscribe()
+    }
   }, []);
-
   return (
-    <div
-      className={cx({
-        "absolute bottom-0 left-0 flex h-[100vh] w-full flex-col-reverse items-center gap-6 py-6 px-10 ":
-          !isAdmin,
-        "flex h-full w-full flex-col-reverse items-center gap-6 py-6 px-10 overflow-hidden":isAdmin
-      })}
-    >
+    <div className={cx("flex mx-auto h-screen w-full lg:max-w-[800px] flex-col-reverse items-center")}>
       <form
         onSubmit={onSubmit}
-        className="flex w-full flex-row items-center  items-center justify-center rounded-md bg-white p-4 shadow-md lg:max-w-[700px]"
+        className="flex w-full w-full lg:max-w-[800px] flex-row  items-center items-center justify-center rounded-md bg-white p-4 shadow-md"
       >
         <Input.Group className="flex w-full flex-grow flex-row items-center gap-3">
           <Input.TextArea
@@ -76,47 +71,15 @@ const ChatPage = ({
           </button>
         </Input.Group>
       </form>
-      <div className={cx("w-full flex-grow overflow-scroll lg:max-w-[700px]")}>
-        <DisplayMessage items={messages || []} id={id} />
+      <div className={cx("w-fullflex-grow w-full overflow-scroll px-4")}>
+        <DisplayMessage
+          user={undefined}
+          isAdmin
+          items={messages || []}
+          id={id}
+        />
       </div>
-    </div>
-  );
-};
-
-export const DisplayMessage = ({
-  items,
-  id,
-}: {
-  items: TMessage[];
-  id: "ADMIN" | string;
-}) => {
-  return (
-    <div className="chaty flex w-full flex-col items-stretch">
-      {items.length === 0 && (
-        <div className="mx-auto w-[300px]">
-          <Lottie animationData={animationEmpty} />
-        </div>
-      )}
-      {items.map((message, i) => {
-        return (
-          <div
-            key={i}
-            className={cx("chat", {
-              // "snap-proximity": i===0,
-              "chat-start": message.receiver === id ? true : false,
-              "chat-end": message.receiver === id ? false : true,
-            })}
-          >
-            <div className="chat-bubble">{message.content}</div>
-          </div>
-        );
-      })}
-
-      <div className="flex flex-row items-center gap-2">
-        <div className="flex flex-col items-start"></div>
-      </div>
-    </div>
-  );
+    </div>)
 };
 
 export default ChatPage;
