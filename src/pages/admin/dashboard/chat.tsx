@@ -394,7 +394,7 @@ export const DisplayMessage = ({
           
             </div>
             <div className="chat-header flex flex-row items-center gap-4">
-              <span hidden={mine}>{user?.username||"CARNET" }</span>
+              <span className="text-primary" hidden={mine}>{user?.username||"CARNET" }</span>
               <time className="text-xs opacity-50">
                 {moment(message.date).fromNow()}
               </time>
