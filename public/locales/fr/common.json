@@ -1,0 +1,18 @@
+{
+    "input":{
+        "placeholder":"saisir",
+        "invalid":"invalide",
+        "required":"Ce champs est requis",
+        "min6":"Ce champs doit contenir au moins 6 caractères",
+        "no conform":"Les mots de passe ne correspondent pas"
+    },
+    "toast":{
+
+    },
+    "text":{
+        "terms and conditions":"Conditions générales",
+        "privacy policy":"Politique de confidentialité"
+    }
+
+
+}

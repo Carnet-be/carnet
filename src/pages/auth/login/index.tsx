@@ -13,7 +13,9 @@ import Auth from "@ui/auth";
 import { signIn } from "next-auth/react";
 
 import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
-import { type NextPage, type GetServerSideProps } from "next/types";
+import { type NextPage, type GetServerSideProps, InferGetServerSidePropsType } from "next/types";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { LangCommonContext, LangContext, useLang } from "../../hooks";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -26,10 +28,20 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
-  return { props: {} };
+  const {locale}=ctx
+    return {
+      props: {
+        ...(await serverSideTranslations(locale||"fr", ["common","pages"])),
+      },
+    };
 };
 const Login: NextPage = () => {
   const router = useRouter();
+  const {text}=useLang({
+    file:"pages",
+    selector:"auth"
+  })
+  const {text:common}=useLang(undefined)
   const [isLoading, setisLoading] = useState(false);
   const [remember, setremember] = useState(true);
   const { register, handleSubmit, formState } = useForm<TLogin>({
@@ -70,16 +82,18 @@ const Login: NextPage = () => {
       });
   };
   return (
+    <LangContext.Provider value={text}>
+      <LangCommonContext.Provider value={common}>
     <Auth>
       <div className="flex flex-grow flex-col justify-center gap-2">
         <div className="h-[30px]"></div>
 
         <h1 className="text-3xl font-semibold  text-primary">
-          Vendez votre voiture avec CarNet
+          {text("login.title")}
         </h1>
 
         <p className="py-3 text-opacity-70">
-          Welcome back! Please login to your account.
+          {text("login.subtitle")}
         </p>
         <div className="h-[30px]"></div>
 
@@ -88,32 +102,32 @@ const Login: NextPage = () => {
           className="flex max-w-lg flex-col"
         >
           <Input
-            label="Email"
+            label={text("form.email")}
             error={errors.email}
             icon={<EmailIcon />}
             controler={{
               ...register("email", {
-                required: "Champs obligatoire",
+                required: common("input.required"),
                 pattern: {
                   value:
                     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                  message: "Email invalide",
+                  message:common("input.invalid"),
                 },
               }),
             }}
           />
 
           <Input
-            label="Password"
+            label={text("form.password")}
             error={errors.password}
             type="password"
             icon={<PasswordIcon />}
             controler={{
               ...register("password", {
-                required: "Champs obligatoire",
+                required: common("input.required"),
                 minLength: {
                   value: 6,
-                  message: "La taille doit dépasser 6 caractères",
+                  message: common("input.min6"),
                 },
               }),
             }}
@@ -121,15 +135,9 @@ const Login: NextPage = () => {
 
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-center gap-3 text-opacity-75">
-              <input
-                type="checkbox"
-                checked={remember}
-                onChange={(v) => setremember(v.currentTarget.checked)}
-                className="checkbox-primary checkbox  checkbox-sm"
-              />
-              <span>Remember Me</span>
+              
             </div>
-            <Link href="/">Forgot Password?</Link>
+            <Link href="/">{text("forget password")}</Link>
           </div>
           <div className="h-[10px]"></div>
 
@@ -140,18 +148,21 @@ const Login: NextPage = () => {
               loading: isLoading,
             })}
           >
-            Login
+            {text("login.button")}
           </button>
           <div className="h-[20px]"></div>
           <p>
-            Don’t have an account ?{" "}
+              {text("login.footer.no account")}{" "}
             <Link href="/auth/signup/bidder" className="text-primary">
-              Register
+              {text("login.footer.link")}
             </Link>
           </p>
         </form>
       </div>
     </Auth>
+
+    </LangCommonContext.Provider>
+    </LangContext.Provider>
   );
 };
 

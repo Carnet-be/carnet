@@ -1,65 +1,102 @@
 {
-    "home":{
-       "navbar":{
-            "menu":{
-                "home":"Accueil",
-                "how it works":"Comment ça marche ?",
-                "about us":"Apropos de nous",
-                "contact us":"Contact",
-                "blog":"Blog"
-            },
-            "login button":"Se connecter"
-       },
-        "hero":{
-            "title":"Vendez votre voiture avec",
-            "subtitle":"Recevez une offre gratuite et sans engagement pour votre voiture !",
-            "button":"Annoncez votre voiture !!"
-        },
-        "how it works":{
-            "title":"Comment ça marche ?",
-            "subtitle":"Vendez votre voiture en 3 étapes simples",
-            "step1":{
-                "title":"1. Annoncez votre voiture",
-                "subtitle":"Remplissez le formulaire en ligne et recevez une offre gratuite et sans engagement pour votre voiture."
-            },
-            "step2":{
-                "title":"2. Recevez votre offre",
-                "subtitle":"Nous vous contacterons pour convenir d'un rendez-vous pour inspecter votre voiture."
-            },
-            "step3":{
-                "title":"3. Vendez votre voiture",
-                "subtitle":"Nous vous payons immédiatement en espèces ou par virement bancaire."
-            }
-        },
-        "about us":{
-            "title":"Qui sommes-nous ?",
-            "subtitle":"Nous sommes une équipe de passionnés de voitures qui ont décidé de se lancer dans l'achat et la vente de voitures d'occasion. Nous sommes basés à Paris et nous achetons des voitures dans toute la France."
-        },
-        "contact us":{
-            "title":"Contactez-nous",
-            "subtitle":"Vous avez des questions ? Vous souhaitez nous rencontrer ? N'hésitez pas à nous contacter !",
-            "address":"Adresse",
-            "phone":"Téléphone",
-            "email":"Email",
-            "form":{
-                "name":"Nom",
-                "email":"Email",
-                "message":"Message",
-                "button":"Envoyer"
-            }
-        },
-        "footer":{
-            "menu":{
-                "home":"Accueil",
+  "home": {
+    "navbar": {
+      "menu": {
+        "home": "Accueil",
+        "how it works": "Comment ça marche ?",
+        "about us": "Apropos de nous",
+        "contact us": "Contact",
+        "blog": "Blog"
+      },
+      "login button": "Se connecter"
+    },
+    "hero": {
+      "title": "Vendez votre voiture avec",
+      "subtitle": "Recevez une offre gratuite et sans engagement pour votre voiture !",
+      "button": "Annoncez votre voiture !!"
+    },
+    "how it works": {
+      "title": "Comment ça marche ?",
+      "subtitle": "Vendez votre voiture en 3 étapes simples",
+      "step1": {
+        "title": "1. Annoncez votre voiture",
+        "subtitle": "Remplissez le formulaire en ligne et recevez une offre gratuite et sans engagement pour votre voiture."
+      },
+      "step2": {
+        "title": "2. Recevez votre offre",
+        "subtitle": "Nous vous contacterons pour convenir d'un rendez-vous pour inspecter votre voiture."
+      },
+      "step3": {
+        "title": "3. Vendez votre voiture",
+        "subtitle": "Nous vous payons immédiatement en espèces ou par virement bancaire."
+      }
+    },
+    "about us": {
+      "title": "Qui sommes-nous ?",
+      "subtitle": "Nous sommes une équipe de passionnés de voitures qui ont décidé de se lancer dans l'achat et la vente de voitures d'occasion. Nous sommes basés à Paris et nous achetons des voitures dans toute la France."
+    },
+    "contact us": {
+      "title": "Contactez-nous",
+      "subtitle": "Vous avez des questions ? Vous souhaitez nous rencontrer ? N'hésitez pas à nous contacter !",
+      "address": "Adresse",
+      "phone": "Téléphone",
+      "email": "Email",
+      "form": {
+        "name": "Nom",
+        "email": "Email",
+        "message": "Message",
+        "button": "Envoyer"
+      }
+    },
+    "footer": {
+      "menu": {
+        "home": "Accueil",
 
-                "how it works":"Comment ça marche ?",
-                "about us":"Qui sommes-nous ?",
-                "contact us":"Contactez-nous",
-                "blog":"Blog",
-                "terms and conditions":"Conditions générales",
-                "privacy policy":"Politique de confidentialité"
-                
-            }
-        }
+        "how it works": "Comment ça marche ?",
+        "about us": "Qui sommes-nous ?",
+        "contact us": "Contactez-nous",
+        "blog": "Blog",
+        "terms and conditions": "Conditions générales",
+        "privacy policy": "Politique de confidentialité"
+      }
     }
+  },
+  "auth": {
+    "login": {
+      "title": "Vendez votre voiture avec CarNet",
+      "subtitle": "Connectez-vous à votre compte",
+      "button": "Se connecter",
+      "footer": {
+        "no account": "Vous n'avez pas de compte ?",
+        "link": "S'inscrire"
+      }
+    },
+
+    "register": {
+      "title": "Vendez votre voiture avec CarNet",
+    
+      "subtitle": "Créez votre compte",
+      "menu": {
+        "bidder": "Acheteur",
+        "auctioneer": "Vendeur"
+      },
+      "footer": {
+        "have account": "Vous avez déjà un compte ?",
+        "link": "Se connecter"
+      },
+      "button": "S'inscrire"
+    },
+
+    "forget password": "Mot de passe oublié ?",
+    
+    "form": {
+      "email": "Email",
+      "password": "Mot de passe",
+      "telephone": "Téléphone",
+      "confirm password": "Confirmer le mot de passe",
+      "username": "Nom d'utilisateur",
+      "company name": "Nom de la société"
+    },
+    "accept terms and privacy": "J'accepte les"
+  }
 }

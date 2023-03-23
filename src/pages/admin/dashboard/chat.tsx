@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { InternalMessage } from "@prisma/client";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import Dashboard from "@ui/dashboard";
 import { trpc } from "@utils/trpc";

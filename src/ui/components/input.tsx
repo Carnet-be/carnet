@@ -1,15 +1,16 @@
-import React, { type FunctionComponent, type ReactNode } from "react";
+import React, { useContext, type FunctionComponent, type ReactNode } from "react";
 import cx from "classnames";
 import { type FieldError } from "react-hook-form";
+import { LangCommonContext, useLang } from "../../pages/hooks";
 
 type InputProps = {
   label?: string;
   icon?: ReactNode;
   type?: "text" | "password" | "email";
   placeholder?: string;
-  
+
   // eslint-disable-next-line @typescript-eslint/ban-types
-  props?:Object,
+  props?: Object;
   // eslint-disable-next-line @typescript-eslint/ban-types
   controler: Object;
   error: FieldError | undefined;
@@ -18,37 +19,37 @@ const Input: FunctionComponent<InputProps> = ({
   label,
   icon,
   type = "text",
-  placeholder = "Saisir",
+  placeholder,
   controler,
   error,
-  props
+  props,
 }) => {
- 
+  const {text:common}=useLang(undefined)
   return (
     <div className="w-full ">
       <div
         className={cx(
-          "border w-full  py-1 px-3 rounded-2xl flex flex-row gap-3 transition-all items-center hover:border-l-4",
+          "flex w-full  flex-row items-center gap-3 rounded-2xl border py-1 px-3 transition-all hover:border-l-4",
           error
             ? "border-red-500  hover:border-l-red-500"
             : "border-[#C1BBBB]  hover:border-l-primary"
         )}
       >
-        <div className="text-[#C1BBBB] text-2xl">{icon}</div>
-        <div className="flex flex-col flex-grow">
+        <div className="text-2xl text-[#C1BBBB]">{icon}</div>
+        <div className="flex flex-grow flex-col">
           <span hidden={!label} className="label-text text-opacity-60">
             {label}
           </span>
           <input
             type={type}
-            placeholder={placeholder}
+            placeholder={placeholder||common("input.placeholder")}
             {...controler}
             {...props}
-            className="text-semibold text-primary w-full"
+            className="text-semibold w-full text-primary"
           />
         </div>
       </div>
-      <span className="text-red-500 italic text-sm pl-3">
+      <span className="pl-3 text-sm italic text-red-500">
         {error && error.message}
       </span>
     </div>

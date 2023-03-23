@@ -387,16 +387,17 @@ export const useGetNotifications = () => {
 };
 
 type FileLang = "common" | "pages" | "dashboard";
-export const useLang = ({
-  selector,
-  file = "common",
-}: {
-  selector: string;
-  file?: FileLang;
-}) => {
-  const { t } = useTranslation(file);
-  const text = (s: string) => t(selector + "." + s);
+export const useLang = (
+  params: {
+        selector: string;
+        file: FileLang;
+      }
+    | undefined 
+) => {
+  const { t } = useTranslation(params?.file);
+  const text = (s: string) => t(params ? params.selector + "." + s : s);
   return { text };
 };
 
-export const LangContext=createContext<(s:string)=>string>(()=>"")
+export const LangContext = createContext<(s: string) => string>(() => "");
+export const LangCommonContext = createContext<(s: string) => string>(() => "");
