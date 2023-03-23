@@ -14,11 +14,12 @@ import {
 } from "firebase/firestore";
 import moment from "moment";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNotifStore } from "../state";
 import { getPrice } from "@ui/components/price";
 import { User } from "@prisma/client";
+import { useTranslation } from "next-i18next";
 
 const playNotificationSound = () => {
   const audio = document.getElementById("audio") as HTMLAudioElement;
@@ -200,7 +201,7 @@ export default function Notification() {
 
 export const useGetNotifications = () => {
   const [notifications, setNotifications] = useState<
-    { title: string; body: string; link: string; date: Date,uid:string }[]
+    { title: string; body: string; link: string; date: Date; uid: string }[]
   >([]);
   const [newNotifs, setnewNotifs] = useState<TNotification[]>([]);
   const { data: user } = trpc.user.get.useQuery();
@@ -211,7 +212,7 @@ export const useGetNotifications = () => {
       body: "",
       link: "#",
       date: new Date(),
-      uid:notification.uid ||""
+      uid: notification.uid || "",
     };
     ////
     let title = "";
@@ -324,7 +325,9 @@ export const useGetNotifications = () => {
 
     // Define the documents to update
     for (const i of newNotifs) {
-      batch.update(doc(db, "notifications", i.uid || ""), { hasRead:arrayUnion(user?.id) });
+      batch.update(doc(db, "notifications", i.uid || ""), {
+        hasRead: arrayUnion(user?.id),
+      });
     }
     // Commit the write batch
     batch
@@ -369,12 +372,31 @@ export const useGetNotifications = () => {
             return true;
           })
         );
-        
       });
     }
 
     return unsubscribe;
   }, [user]);
 
-  return { notifications, newNotifs,onSeenNotifications,num:newNotifs.length };
+  return {
+    notifications,
+    newNotifs,
+    onSeenNotifications,
+    num: newNotifs.length,
+  };
 };
+
+type FileLang = "common" | "pages" | "dashboard";
+export const useLang = ({
+  selector,
+  file = "common",
+}: {
+  selector: string;
+  file?: FileLang;
+}) => {
+  const { t } = useTranslation(file);
+  const text = (s: string) => t(selector + "." + s);
+  return { text };
+};
+
+export const LangContext=createContext<(s:string)=>string>(()=>"")

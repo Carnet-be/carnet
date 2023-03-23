@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // @ts-check
+
+import { i18n } from "next-i18next";
+
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
  * This is especially useful for Docker builds.
@@ -9,10 +13,10 @@
 const config = {
   reactStrictMode: false,
   swcMinify: true,
-  i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
-  },
+  i18n:{
+    locales: ["en", "fr"],
+    defaultLocale: "fr",
+},
   images: {
     domains: ['lh3.googleusercontent.com','firebasestorage.googleapis.com','res.cloudinary.com','placehold.jp',"via.placeholder.com"],
   },

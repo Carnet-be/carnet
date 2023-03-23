@@ -7,7 +7,7 @@ import { db } from "@utils/firebase";
 import { query, collection, where, onSnapshot } from "firebase/firestore";
 
 import { toast } from 'react-toastify';
-
+import { appWithTranslation } from 'next-i18next'
 import "../styles/globals.css";
 import { Toaster } from "react-hot-toast";
 import Head from "next/head";
@@ -19,10 +19,23 @@ import { getToken } from "firebase/messaging";
 import OneSignal from "react-onesignal";
 import { ToastContainer } from 'react-toastify';
 import {  useNotifyMe } from "./hooks";
+import { IntlProvider } from "react-intl";
 
+// import en from "../lang/en.json";
+// import fr from "../lang/fr.json";
+// const messages = {
+
+//   en,
+//   fr,
+// };
 import 'react-toastify/dist/ReactToastify.css';
+import i18next from "i18next";
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }:any) => {
+  const { locale } = useRouter();
+  //i18next.reloadResources();
+
   return (
+    // <IntlProvider locale={locale||"fr"}  messages={messages[locale as Locale||"fr"]}>
     <SessionProvider session={session}>
       
       <Head>
@@ -61,6 +74,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }:any) => {
         className="absolute top-0 left-0 z-[-10000]"
       ></audio>
     </SessionProvider>
+    // </IntlProvider>
   );
 };
 
@@ -72,7 +86,7 @@ const App = ({ children }:{children:ReactNode}) => {
   </>;
 };
 
-export default trpc.withTRPC(MyApp);
+export default trpc.withTRPC(appWithTranslation(MyApp));
 
 export const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url

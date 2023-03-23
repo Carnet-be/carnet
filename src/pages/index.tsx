@@ -16,16 +16,27 @@ import { prisma } from "../server/db/client";
 import { type User } from "@prisma/client";
 import CreateAuction from "@ui/createAuction";
 import { signOut } from "next-auth/react";
-import { ReactNode } from "react";
+import { ReactNode, useContext } from "react";
 import { EditIcon } from "@ui/icons";
 import { FaCarAlt } from "react-icons/fa";
 import { GiTakeMyMoney } from "react-icons/gi";
+import { useIntl } from "react-intl";
+
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { i18n, useTranslation } from "next-i18next";
+import { LangContext, useLang } from './hooks';
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerAuthSession(context);
 
   if (!session) {
+    // if (process.env.NODE_ENV === "development") {
+    //   await i18n?.reloadResources();
+    // }
+    const {locale}=context
     return {
-      props: {},
+      props: {
+        ...(await serverSideTranslations(locale||"fr", ["common","pages"])),
+      },
     };
   }
   let user: User | undefined;
@@ -85,9 +96,10 @@ const Home: NextPage = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const user: User = props.user;
+const {text}=useLang({file:"pages",selector:"home"})
   //signOut()
   return (
-    <>
+    <LangContext.Provider value={text}>
       <Head>
         <title>CARNET</title>
         <link rel="shortcut icon" href="/assets/logo.png" type="image/png" />
@@ -100,17 +112,18 @@ const Home: NextPage = (
             <div className="layout mx-auto flex flex-grow  flex-row">
               <div className="flex h-auto w-full max-w-[500px] flex-col justify-center gap-10">
                 <h1 className="text-6xl font-semibold  text-white">
-                  Vendez votre voiture avec{" "}
+                  {text("hero.title")}{" "}
                   <span className="inline-block translate-y-3">
                     <Image src={Logo} height={60} alt="logo" />
                   </span>{" "}
                 </h1>
                 <p className="text-lg text-white/70">
-                  Recevez une offre gratuite et sans engagement pour votre
-                  voiture !
+                  {text("hero.subtitle")}
                 </p>
                 <br />
-                <DashBoardButton />
+                <DashBoardButton>
+                  {text("hero.button")}
+                </DashBoardButton>
               </div>
               <div className="flex-grow" />
               <div className="grid  w-1/2 content-center">
@@ -127,11 +140,12 @@ const Home: NextPage = (
         <Contact />
         <Footer />
       </div>
-    </>
+
+    </LangContext.Provider>
   );
 };
 
-const DashBoardButton = () => {
+const DashBoardButton = ({children}:{children:string}) => {
   //  const {data:user} =  useAuthUser(["user"], auth);
 
   return (
@@ -139,11 +153,12 @@ const DashBoardButton = () => {
       htmlFor="create_auction"
       className="cursor-pointer rounded-lg bg-white py-3 text-center font-bold text-black"
     >
-      Annoncez votre voiture !!
+     {children}
     </label>
   );
 };
 const Nav = ({ user }: { user: User }) => {
+  const text=useContext(LangContext)
   return (
     <div className="fixed top-0 left-0 z-[1000] flex h-[80px] w-screen bg-primary px-6 shadow-sm">
       <div className="layout mx-auto  flex flex-row items-center gap-6">
@@ -151,31 +166,31 @@ const Nav = ({ user }: { user: User }) => {
 
         <div className="flex-grow" />
         <Link scroll={true} href={"#"} className="font-semibold  text-white">
-          Accueil
+          {text("navbar.menu.home")}
         </Link>
         <Link scroll={true} href={"#how"} className="font-semibold text-white">
-          How it works ?
+          {text("navbar.menu.how it works")}
         </Link>
         <Link
           scroll={true}
           href={"#about"}
           className="font-semibold text-white"
         >
-          About
+          {text("navbar.menu.about us")}
         </Link>
         <Link
           scroll={true}
           href={"#blogs"}
           className="font-semibold text-white"
         >
-          Blogs
+          {text("navbar.menu.blog")}
         </Link>
         <Link
           scroll={true}
           href={"#contact"}
           className="font-semibold text-white"
         >
-          Contact
+          {text("navbar.menu.contact us")}
         </Link>
 
         <ProfileButton user={user} />
@@ -186,7 +201,7 @@ const Nav = ({ user }: { user: User }) => {
 
 const ProfileButton = ({ user }: { user: User }) => {
   const router = useRouter();
-
+  const text=useContext(LangContext)
   return (
     <Link
       href={"/auth/login"}
@@ -194,7 +209,7 @@ const ProfileButton = ({ user }: { user: User }) => {
         "rounded-lg bg-white px-6 py-2 text-sm font-semibold no-underline"
       )}
     >
-      Se connecter
+      {text("navbar.login button")}
     </Link>
   );
 };
@@ -210,54 +225,48 @@ const Overlay = () => {
 export default Home;
 
 const CommentCaMarche = () => {
+
+  const text=useContext(LangContext)
   const Item = ({
     icon,
-    title,
-    description,
+    index
   }: {
     icon: ReactNode;
-    title: string;
-    description: string;
+    index: number;
   }) => {
     return (
       <div className="flex w-[240px] flex-col items-center gap-3">
         <div className="flex h-[80px] w-[80px] flex-row items-center justify-center rounded-xl rounded-bl-none bg-primary p-3">
           {icon}
         </div>
-        <h6 className="text-primary">{title}</h6>
-        <p className="text-center text-[12px] opacity-70">{description}</p>
+        <h6 className="text-primary">{text(`how it works.step${index}.title`)}</h6>
+        <p className="text-center text-[12px] opacity-70">{text(`how it works.step${index}.subtitle`)}</p>
       </div>
     );
   };
   const items = [
     {
       icon: <EditIcon className="text-[40px] text-white" />,
-      title: "Annoncez votre voiture",
-      description:
-        "Saisissez tous les détails de votre voiture tels que l'année de construction, le kilométrage, etc.",
+     
     },
     {
       icon: <FaCarAlt className="text-[40px] text-white" />,
-      title: "Recevez notre offre de prix",
-      description:
-        "Nos experts se mettront au travail et vous contacteront dès que possible avec une offre de prix..",
+
     },
     {
       icon: <GiTakeMyMoney className="text-[40px] text-white" />,
-      title: "Paiement et recouvrement",
-      description:
-        "Si vous acceptez une offre concrète que nous vous ferons sans aucune obligation.",
+
     },
   ];
+
   return (
     <section
       id="how"
       className="flex flex-col items-center gap-10 rounded-t-[100px] bg-white py-[70px]"
     >
-      <h2 className="text-primary">COMMENT ÇA FONCTIONNE?</h2>
+      <h2 className="text-primary uppercase">{text("how it works.title")}</h2>
       <p>
-        It is a long established fact that a reader will be distracted by the
-        readable content of a page when looking at its layout.
+      {text("how it works.subtitle")}
       </p>
       <div className="flex flex-row items-start justify-center gap-6 py-10">
         {items.map((item, index) => (
@@ -278,9 +287,8 @@ const CommentCaMarche = () => {
             </div>
             <Item
               key={index}
+              index={index+1}
               icon={item.icon}
-              title={item.title}
-              description={item.description}
             />
           </>
         ))}
@@ -290,23 +298,17 @@ const CommentCaMarche = () => {
 };
 
 const About = () => {
+  const text=useContext(LangContext)
   return (
     <section
       id="about"
       className="flex flex-col items-center gap-10 bg-white py-10"
     >
-      <h2 className="text-primary">A propos Carnet</h2>
+      <h2 className="text-primary uppercase">{text("about us.title")} </h2>
       <div className="flex flex-row items-center gap-[60px] py-10">
         <div className="w-[500px]">
           <p>
-            {
-              "CarNet est né et nous nous sommes mis au travail. Nous avons vite compris que ce serait un exploit de transformer notre rêve en réalité... Cartographier tous les garages s'est avéré être une idée ambitieuse, en filtrant chaque garage encore plus ambitieux. Néanmoins, nous avons continué à travailler avec le résultat, aujourd'hui, d'une plateforme d'enchères en ligne très performante."
-            }
-          </p>
-          <p>
-            {
-              "Nous sommes fiers d'annoncer que chaque jour, de nombreuses personnes choisissent de vendre leur voiture par notre intermédiaire. Cette fois-ci, nous essayons de le faire avec passion, éthique et une volonté inlassable d'obtenir des résultats. Nous pensons que c'est la façon dont nous aidons et assistons les gens dans le processus de vente qui fait de nous les meilleurs sur le marché."
-            }
+          {text("about us.subtitle")}
           </p>
         </div>
 
@@ -321,6 +323,8 @@ const Blogs = () => {
 };
 
 const Contact = () => {
+  const s="contact us"
+  const text=useContext(LangContext)
   const email = "info@carnet.io";
   const nums = ["+33 6 00 00 00 00", "+33 6 00 00 00 01"];
   return (
@@ -329,16 +333,16 @@ const Contact = () => {
       className="flex flex-row items-start justify-evenly gap-[40px] bg-white py-20"
     >
       <div className="space-y-10">
-        <h2 className="text-primary">Let’s Talk</h2>
+        <h2 className="text-primary">{text(s+'.title')} </h2>
         <p>
-          {"Des questions? s'il vous plaît n'hésitez pas à nous contacter"}{" "}
+        {text(s+'.subtitle')} 
         </p>
         <div>
-          <h6 className="text-primary">Email</h6>
+          <h6 className="text-primary">{text(s+'.email')} </h6>
           <h6>{email}</h6>
         </div>
         <div>
-          <h6 className="text-primary">Numéro de téléphone</h6>
+          <h6 className="text-primary">{text(s+'.phone')} </h6>
           {nums.map((num, index) => (
             <h6 key={index}>{num}</h6>
           ))}
@@ -346,63 +350,65 @@ const Contact = () => {
       </div>
       <div className="w-[400px] space-y-4">
         <div>
-          <h6 className="text-primary">Nom</h6>
+          <h6 className="text-primary">{text(s+'.form.name')} </h6>
           <input
             type="text"
             className="mt-1 h-[40px] w-full rounded-sm bg-[#F7F7F7] px-2"
           />
         </div>
         <div>
-          <h6 className="text-primary">Email</h6>
+          <h6 className="text-primary">{text(s+'.form.email')}</h6>
           <input
             type="text"
             className="mt-1 h-[40px] w-full rounded-sm bg-[#F7F7F7] px-2"
           />
         </div>
         <div>
-          <h6 className="text-primary">Message</h6>
+          <h6 className="text-primary">{text(s+'.form.message')}</h6>
           <textarea
             rows={6}
             className=" mt-1 w-full rounded-sm bg-[#F7F7F7] px-2 py-2"
           />
         </div>
-        <button className="btn-primary btn-wide btn w-full">envoyer</button>
+        <button className="btn-primary btn-wide btn w-full">{text(s+'.form.button')}</button>
       </div>
     </section>
   );
 };
 
 const Footer = () => {
+  const s="footer.menu"
+  const text=useContext(LangContext)
   return (
     <footer className="flex flex-col items-center gap-2 py-3">
       <Image src={"/assets/logo.png"} alt="logo" width={200} height={100} className={"my-6"}/>
-      <div className="flex flex-row justify-center items-center gap-10 text-lg">
+      <div className="flex flex-row justify-center items-center gap-10 ">
       <Link scroll={true} href={"#"} className="font-semibold  text-white">
-          Accueil
+           {text(s+'.home')}
         </Link>
         <Link scroll={true} href={"#how"} className="font-semibold text-white">
-          How it works ?
+        {text(s+'.how it works')}
         </Link>
         <Link
           scroll={true}
           href={"#about"}
           className="font-semibold text-white"
         >
-          About
+        {text(s+'.about us')}
         </Link>
         <Link
           scroll={true}
           href={"#blogs"}
           className="font-semibold text-white"
         >
-          Blogs
+        {text(s+'.blog')}
         </Link>
         <Link
           scroll={true}
           href={"#contact"}
           className="font-semibold text-white"
         >
-          Contact
+        {text(s+'.contact us')}
         </Link>
 
         <Link
@@ -410,19 +416,21 @@ const Footer = () => {
           href={"#terms_conditions"}
           className="font-semibold text-white"
         >
-         Termes et conditions
+         
+         {text(s+'.terms and conditions')}
+
         </Link>
         <Link
           scroll={true}
           href={"#privacy_policy"}
           className="font-semibold text-white"
         >
-          Politique de confidentialité
+        {text(s+'.privacy policy')}
         </Link>
       </div>
       <div className="max-w-[1300px] border-t-[2px] border-white w-full flex flex-row items-center justify-between py-6">
         <span> </span>
-        <span className="text-white opacity-70 text-sm">Copyright © 2023 Upload by Carnet</span>
+        <span className="text-white opacity-70 text-sm">Copyright © 2023 Carnet</span>
       </div>
     </footer>
   );
