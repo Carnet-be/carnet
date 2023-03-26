@@ -14,13 +14,14 @@
             "options":"Options",
             "rating":"Évaluation",
             "validation":"Validation",
-            "login/registration":"Connexion/Inscription"
+            "login/registration":"Connexion/Inscription",
+            "finalisation":"Finalisation"
         },
         "fields":{ 
-            "mark":"Marque",
+            "brand":"Marque",
             "model":"Modèle",
-            "year":"Année",
-            "carburation":"Carburant",
+            "build year":"Année de fabrication",
+            "fuel":"Carburant",
             "mileage":"Kilométrage",
             "doors":"Portes",
             "transmission":"Transmission",
@@ -65,7 +66,11 @@
             "brown":"Marron",
             "gold":"Or",
             "silver":"Argent",
-            "other":"Autre"
+            "other":"Autre",
+            "beige":"Beige",
+            "maroon":"Bordeaux"
+             
+           
         },
         "type of car":{
             "sedan":"Berline",

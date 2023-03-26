@@ -10,18 +10,31 @@ import Slider from "react-slick";
 import { SampleNextArrow, SamplePrevArrow } from "./step3";
 import cx from "classnames";
 import { BsCheck } from "react-icons/bs";
-import { AiFillCheckCircle } from 'react-icons/ai';
+import { AiFillCheckCircle } from "react-icons/ai";
 import { useEffect, useState } from "react";
-const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:boolean }) => {
-
- const [time, setTime] = useState(Date.now());
+import { useLang } from "../../pages/hooks";
+const Step1 = ({
+  data,
+  setData,
+  disabled,
+}: {
+  data: Data1;
+  setData: any;
+  disabled: boolean;
+}) => {
+  const { text } = useLang({
+    file: "dashboard",
+    selector: "auction",
+  });
+  const field = (name: string) => text(`fields.${name}`);
+  const [time, setTime] = useState(Date.now());
 
   useEffect(() => {
-  const interval = setInterval(() => setTime(Date.now()), 100);
-  return () => {
-    clearInterval(interval);
-  };
-}, []);
+    const interval = setInterval(() => setTime(Date.now()), 100);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
   const settings = {
     dots: true,
     infinite: false,
@@ -34,15 +47,15 @@ const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:
   return (
     <div className="flex flex-col items-center gap-4">
       <Image alt="image" src={image} height={60} />
-      <h5>Vous voulez vendre votre voiture?</h5>
+      <h5>{text("steps.title")}</h5>
       <div className="flex w-full flex-col gap-4 py-4  lg:w-[80%]">
         <div className="flex flex-row gap-3">
           <FormControl required className="w-1/2">
-            <InputLabel htmlFor="brand">Marque</InputLabel>
+            <InputLabel htmlFor="brand">{field("brand")}</InputLabel>
             <Select
               value={data.brand}
               disabled={disabled}
-              label="Marque"
+              label={field("brand")}
               defaultValue={data.brand}
               onChange={(e) => {
                 console.log(typeof e.target.value);
@@ -51,7 +64,8 @@ const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:
                   ...data,
                   brand: e.target.value,
                   model: 0,
-                  buildYear: BRAND[e.target.value as number||0]?.buildYear[0],
+                  buildYear:
+                    BRAND[(e.target.value as number) || 0]?.buildYear[0],
                 });
               }}
             >
@@ -63,13 +77,20 @@ const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:
             </Select>
           </FormControl>
           <FormControl required className="w-1/2">
-            <InputLabel htmlFor="model">Modèle</InputLabel>
+            <InputLabel htmlFor="model">{field("model")}</InputLabel>
             <Select
               value={data.model}
               labelId="model"
-              label="Modèle"
-            
-              disabled={disabled?true:data.brand ? false : data.brand == 0 ? false : true}
+              label={field("model")}
+              disabled={
+                disabled
+                  ? true
+                  : data.brand
+                  ? false
+                  : data.brand == 0
+                  ? false
+                  : true
+              }
               onChange={(e) => setData({ ...data, model: e.target.value })}
             >
               {BRAND[data.brand || 0]?.model.map((o, i) => (
@@ -82,12 +103,14 @@ const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:
         </div>
 
         <div className="flex flex-row gap-3">
-          <FormControl  required className="w-1/2">
-            <InputLabel htmlFor="brand">Année</InputLabel>
+          <FormControl required className="w-1/2">
+            <InputLabel htmlFor="brand">{field("build year")}</InputLabel>
             <Select
               value={data.buildYear}
-              label="Année"
-              disabled={disabled?true:data.brand === undefined ? true : false}
+              label={field("build year")}
+              disabled={
+                disabled ? true : data.brand === undefined ? true : false
+              }
               onChange={(e) =>
                 setData({
                   ...data,
@@ -106,10 +129,10 @@ const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:
             </Select>
           </FormControl>
           <FormControl required className="w-1/2">
-            <InputLabel htmlFor="model">Carburant</InputLabel>
+            <InputLabel htmlFor="model">{field("fuel")}</InputLabel>
             <Select
               value={data.fuel}
-              label="Cardurant"
+              label={field("fuel")}
               disabled={disabled}
               onChange={(e) => setData({ ...data, fuel: e.target.value })}
             >
@@ -145,21 +168,29 @@ const Step1 = ({ data, setData,disabled }: { data: Data1; setData: any,disabled:
 type BodyItemProps = {
   isActive: boolean;
   color: string;
-name:string,
+  name: string;
   onClick: () => void;
 };
-const BodyItem = ({ isActive, color, onClick,name }: BodyItemProps) => {
+const BodyItem = ({ isActive, color, onClick, name }: BodyItemProps) => {
+  const { text } = useLang({ file: "dashboard", selector: "auction" });
   return (
-   <div className="flex flex-col items-center gap-1">
-     <div
-      onClick={onClick}
-      style={{ backgroundColor: color }}
-      className={cx("h-[50px] w-[50px] cursor-pointer rounded-full  border", {
-        "border-[3px] border-primary": isActive,
-      })}
-    ></div>
-      <span className={cx("text-[10px]",isActive&&"text-white bg-primary rounded-md px-2 py-[1px]")}>{name}</span>
-   </div>
+    <div className="flex flex-col items-center gap-1">
+      <div
+        onClick={onClick}
+        style={{ backgroundColor: color }}
+        className={cx("h-[50px] w-[50px] cursor-pointer rounded-full  border", {
+          "border-[3px] border-primary": isActive,
+        })}
+      ></div>
+      <span
+        className={cx(
+          "text-[10px]",
+          isActive && "rounded-md bg-primary px-2 py-[1px] text-white"
+        )}
+      >
+        {text("color." + name.toLowerCase())}
+      </span>
+    </div>
   );
 };
 export default Step1;

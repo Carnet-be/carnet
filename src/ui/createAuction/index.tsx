@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import cx from "classnames";
 import { BackIcon } from "../icons";
 import { type TFuel } from "@data/internal";
@@ -21,6 +21,7 @@ import { TAuction } from "@model/type";
 import { ProcessDate } from "@utils/processDate";
 import Step7 from "./step7";
 import { sendNotification } from "../../repository";
+import { LangCommonContext, LangContext, useLang } from "../../pages/hooks";
 
 export type Data1 = {
   brand?: number;
@@ -101,6 +102,11 @@ const CreateAuction = ({
   refetch?: () => void;
   isAdmin?: boolean;
 }) => {
+  const {text}=useLang({
+    file:"dashboard",
+    selector:"auction"
+  })
+  const {text:common}=useLang(undefined)
   const [edit, setedit] = useState(auction);
   const [step, setstep] = useState(1);
   const next = () => {
@@ -338,7 +344,8 @@ const CreateAuction = ({
     updateAuction({ data1, data3, data4, data5, data6,data7, auction: edit, state,log });
   const ref = useRef<HTMLLabelElement | null>(null);
   return (
-    <>
+    <LangContext.Provider value={text}>
+      <LangCommonContext.Provider value={common}>
       <input
         type="checkbox"
         id={id || "create_auction"}
@@ -408,7 +415,7 @@ const CreateAuction = ({
               htmlFor={id || "create_auction"}
               className="btn-ghost btn-sm btn"
             >
-              annuler
+               {common("button.cancel")}
             </label>
             <div className="flex-grow"></div>
             <button
@@ -426,7 +433,7 @@ const CreateAuction = ({
                 hidden: (step == 2 && !auction) || step == ( isAdmin? 6:6),
               })}
             >
-              continuer
+               {common("button.next")}
             </button>
             <button
               onClick={onValid}
@@ -435,7 +442,7 @@ const CreateAuction = ({
                 hidden: auction || step !== (isAdmin? 6:6 ),
               })}
             >
-              valider
+              {common("button.validate")}
             </button>
             <button
               onClick={() =>
@@ -453,21 +460,24 @@ const CreateAuction = ({
                 hidden: !auction,
               })}
             >
-              {auction?.state == "pause"
+              {common("button."+auction?.state == "pause"
                 ? "save"
                 : step == 6
                 ? "save & publish"
-                : "save"}
+                : "save")}
             </button>
           </div>
         </div>
       </div>
-    </>
+      </LangCommonContext.Provider>
+    </LangContext.Provider>
   );
 };
 
 export const Stepper = ({ step }: { step: number }) => {
   const { data: session } = useSession();
+  const t=useContext(LangContext)
+  const text=(key:string)=>t(`steps.${key}`)
   return (
     <ul className="steps w-full">
       {Array.from({ length: 6 }, (_, i) => i + 1).map((k, i) => {
@@ -479,12 +489,12 @@ export const Stepper = ({ step }: { step: number }) => {
               hidden: session && k == 2,
             })}
           >
-            {k === 1 && "Identify"}
-            {k === 2 && "Login / Registration"}
-            {k === 3 && "Specs"}
-            {k === 4 && "Options"}
-            {k === 5 && "Rating"}
-            {k === 6 && "Validation"}
+            {k === 1 && text("identify")}
+            {k === 2 && text("login/registration")}
+            {k === 3 &&  text("specs")}
+            {k === 4 && text("options")}
+            {k === 5 && text("rating")}
+            {k === 6 &&  text("validation")}
           </li>
         );
       })}
@@ -492,6 +502,8 @@ export const Stepper = ({ step }: { step: number }) => {
   );
 };
 export const StepperEdit = ({ step,isAdmin }: { step: number,isAdmin?:boolean }) => {
+  const t=useContext(LangContext)
+  const text=(key:string)=>t(`steps.${key}`)
   return (
     <ul className="steps w-full">
       {Array.from({ length:isAdmin? 6:5 }, (_, i) => i + 1).map((k, i) => {
@@ -502,13 +514,15 @@ export const StepperEdit = ({ step,isAdmin }: { step: number,isAdmin?:boolean })
               "step-primary": k <= step,
             })}
           >
-            {k === 1 && "Identify"}
+       
 
-            {k === 2 && "Specs"}
-            {k === 3 && "Options"}
-            {k === 4 && "Rating"}
-            {k === 5 && "Validation"}
-            {k === 6 && "Finalisation"}
+            {k === 1 && text("identify")}
+            {k === 2 &&  text("specs")}
+            {k === 3 && text("options")}
+            {k === 4 && text("rating")}
+
+            {k === 5 &&  text("validation")}
+            {k === 6 &&  text("finalisation")}
           </li>
         );
       })}

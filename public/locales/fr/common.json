@@ -17,7 +17,12 @@
         "add":"Ajouter",
         "close":"Fermer",
         "validate":"Valider",
-        "next":"Suivant"
+        "next":"Suivant",
+        "previous":"Précédent",
+        "publish":"Publier",
+        "save and publish":"Enregistrer et publier",
+        "save and continue":"Enregistrer et continuer"
+
     },
     "text":{
         "terms and conditions":"Conditions générales",
