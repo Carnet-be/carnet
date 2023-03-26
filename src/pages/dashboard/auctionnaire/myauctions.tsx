@@ -11,6 +11,7 @@ import { BannierAddAuction } from ".";
 import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
 import { isConfirmation } from '../../../functions/date';
 import { FullStatus, getStatus } from "../../../functions";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -23,8 +24,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  const { locale } = ctx;
   return {
-    props: {},
+    props: {
+      ...(await serverSideTranslations(locale || "fr", ["common", "pages"])),
+    },
   };
 };
 const Home: NextPage = () => {

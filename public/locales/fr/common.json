@@ -9,10 +9,42 @@
     "toast":{
 
     },
+    "button":{
+        "cancel":"Annuler",
+        "save":"Enregistrer",
+        "delete":"Supprimer",
+        "edit":"Modifier",
+        "add":"Ajouter",
+        "close":"Fermer",
+        "validate":"Valider",
+        "next":"Suivant"
+    },
     "text":{
         "terms and conditions":"Conditions générales",
-        "privacy policy":"Politique de confidentialité"
+        "privacy policy":"Politique de confidentialité",
+        "home":"Accueil",
+        "auctions":"Enchères",
+        "bids":"Offres",
+        "users":"Utilisateurs",
+        "staffs":"Personnels",
+        "data":"Données",
+        "chat":"Chat",
+        "settings":"Paramètres",
+        "my auctions":"Mes enchères",
+        "my bids":"Mes offres",
+        "wishlist":"Liste de souhaits",
+        "new auction":"Nouvelle enchère",
+        "days":"Jours",
+        "hours":"Heures",
+        "minutes":"Minutes",
+        "seconds":"Secondes",
+        "week":"Semaine",
+        "weeks":"Semaines"
+
+
+
     }
+
 
 
 }

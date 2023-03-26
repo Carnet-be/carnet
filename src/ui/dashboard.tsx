@@ -21,7 +21,7 @@ import { AddIcon } from "@ui/icons";
 import CreateAuction from "@ui/createAuction";
 import { trpc } from "@utils/trpc";
 import { useBidderStore } from "../state";
-import { useGetNotifications } from "../pages/hooks";
+import { useGetNotifications, useLang } from "../pages/hooks";
 import { Drawer } from "antd";
 import moment from "moment";
 import { Timestamp } from "firebase/firestore";
@@ -57,82 +57,82 @@ const Dashboard = ({
   background = "bg-background",
 }: DashboardType) => {
   const router = useRouter();
-
+   const {text:common}=useLang(undefined)
   const wishs = useBidderStore((state) => state.wishList);
   const menu: TMenu = {
     ADMIN: [
       {
-        title: "Accueil",
+        title: common("text.home"),
         route: "/admin/dashboard/accueil",
         icon: <DashboardIcon />,
       },
       {
-        title: "Auctions",
+        title:  common("text.auctions"),
         route: "/admin/dashboard/auctions",
         icon: <AuctionIcon />,
       },
       {
-        title: "Bids",
+        title:  common("text.bids"),
         route: "/admin/dashboard/bids",
         icon: <BidderIcon />,
       },
       {
-        title: "Users",
+        title: common("text.users"),
         route: "/admin/dashboard/users",
         icon: <PeopleIcon />,
       },
       {
-        title: "Staff",
+        title:  common("text.staffs"),
         route: "/admin/dashboard/staffs",
         icon: <PeopleIcon />,
       },
       {
-        title: "Data",
+        title: common("text.data"),
         route: "/admin/dashboard/data",
         icon: <DataIcon />,
       },
       {
-        title: "Chat",
+        title:  common("text.chat"),
         route: "/admin/dashboard/chat",
         icon: <ChatIcon />,
       },
     ],
     AUC: [
       {
-        title: "Home",
+        title:  common("text.home"),
         route: "/dashboard/auctionnaire/home",
         icon: <DashboardIcon />,
       },
       {
-        title: "My Auctions",
+        title:  common("text.my auctions"),
         route: "/dashboard/auctionnaire/myauctions",
         icon: <AuctionIcon />,
       },
       {
-        title: "Chat",
+        title:  common("text.chat"),
         route: "/dashboard/auctionnaire/chat",
         icon: <ChatIcon />,
       },
     ],
     BID: [
       {
-        title: "Home",
+        title: common("text.home"),
         route: "/dashboard/bidder/home",
         icon: <DashboardIcon />,
       },
       {
-        title: "My biddes",
+        title:  common("text.my bids"),
         route: "/dashboard/bidder/mybiddes",
         icon: <BidderIcon />,
       },
       {
-        title: "Wish list",
+        title:  common("text.wishlist"),
         route: "/dashboard/bidder/wishlist",
         icon: <ClipIcon />,
         count: wishs,
       },
       {
-        title: "Chat",
+        title:  common("text.chat"),
         route: "/dashboard/bidder/chat",
         icon: <ChatIcon />,
       },
@@ -201,7 +201,7 @@ const Dashboard = ({
                     <div className="text-xl">
                       <AddIcon />
                     </div>
-                    New Auction
+                   {common("text.new auction")}
                   </label>
                 </li>
               )}
@@ -215,7 +215,7 @@ const Dashboard = ({
                   <div className="text-xl">
                     <SettingsIcon />
                   </div>
-                  Settings
+                  {common("text.settings")}
                 </Link>
               </li>
             </ul>

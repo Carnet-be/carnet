@@ -9,6 +9,7 @@ import cx from "classnames";
 import ChatPage from "@ui/chatPage";
 import { prisma } from "../../../server/db/client";
 import { RightSide } from "../../admin/dashboard/chat";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -29,8 +30,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     })
     .then((res) => JSON.parse(JSON.stringify(res)));
 
+    const { locale } = ctx;
+
   return {
     props: {
+      ...(await serverSideTranslations(locale || "fr", ["common", "pages"])),
       user,
     },
   };

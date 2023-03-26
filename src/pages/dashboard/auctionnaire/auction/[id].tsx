@@ -32,6 +32,7 @@ import { StarIcon } from "@ui/icons";
 import cloudy from "@utils/cloudinary";
 import { NO_IMAGE_URL } from "@ui/components/auctionCard";
 import { fill } from "@cloudinary/url-gen/actions/resize";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -54,8 +55,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  
   return {
-    props: { id },
+    props: { 
+      ...(await serverSideTranslations(ctx.locale || "fr", ["common", "pages"])),
+      id },
   };
 };
 const Home = (
