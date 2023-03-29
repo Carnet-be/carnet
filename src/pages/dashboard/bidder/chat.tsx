@@ -9,6 +9,7 @@ import animationEmpty from "../../../../public/animations/mo_message.json";
 import cx from "classnames";
 import ChatPage from "@ui/chatPage";
 import { prisma } from "../../../server/db/client";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -28,10 +29,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     })
     .then((res) => JSON.parse(JSON.stringify(res)));
-
+  const { locale } = ctx;
   return {
     props: {
       user,
+      ...(await serverSideTranslations(locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
     },
   };
 };
@@ -40,7 +45,7 @@ const Chat = (props: { user: any }) => {
   const { user } = props;
   console.log("user", user);
   return (
-    <Dashboard type={"BID"} hideNav={true} >
+    <Dashboard type={"BID"} hideNav={true}>
       <ChatPage id={user.id} />
     </Dashboard>
   );

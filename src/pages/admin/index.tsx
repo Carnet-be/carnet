@@ -11,18 +11,20 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 import { prisma } from "../../server/db/client";
+import { useLang } from "../hooks";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
   if (session) {
-    const user=await prisma.user.findUnique({
-      where:{email:session.user?.email||""}
+    const user = await prisma.user.findUnique({
+      where: { email: session.user?.email || "" },
     });
- 
+
     return {
       redirect: {
-        destination: user?.type=="ADMIN"?"/admin/dashboard":"/",
+        destination: user?.type == "ADMIN" ? "/admin/dashboard" : "/",
         permanent: true,
       },
     };
@@ -30,12 +32,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const user = {
     username: "Naim Abdelkerim",
     type: "ADMIN" as UserType,
-  
+
     email: "naimdev@gmail.com",
     emailVerified: true,
- 
   };
-const pwd= await hash("123456", 10);
+  const pwd = await hash("123456", 10);
   const count = await prisma.user.count({
     where: {
       email: user.email,
@@ -43,14 +44,18 @@ const pwd= await hash("123456", 10);
   });
 
   if (count === 0) {
- 
-  await prisma.user.create({
-    data: {
-      ...user,password:pwd
+    await prisma.user.create({
+      data: {
+        ...user,
+        password: pwd,
+      },
+    });
+  }
+  return {
+    props: {
+      ...(await serverSideTranslations(ctx.locale || "fr", ["common"])),
     },
-  });
-}
-  return { props: {} };
+  };
 };
 const Admin = () => {
   const [remember, setremember] = useState(true);
@@ -61,6 +66,7 @@ const Admin = () => {
   } = useForm<TLogin>({
     //  mode: "onChange",
   });
+  const { text: common } = useLang(undefined);
   const router = useRouter();
   const [isLoading, setisLoading] = useState(false);
   const onSubmit: SubmitHandler<TLogin> = (data) => {
@@ -73,21 +79,22 @@ const Admin = () => {
     })
       .then((data) => {
         if (data?.ok) {
-          toast.success("Vous êtes connectés avec succès");
+          toast.success(common("toast.auth.success"));
           router.replace("/admin/dashboard");
         } else {
           switch (data?.error) {
             case "Password invalid":
-              toast.error("Password invalide");
+              toast.error(common("toast.auth.password invalid"));
+
               break;
             case "User not exist":
-              toast.error("Compte inexistant, veuillez en créer un");
+              toast.error(common("toast.auth.user not exist"));
               break;
             case "User not admin":
-              toast.error("Ce compte n'est ni admin ni staff");
+              toast.error(common("toast.auth.user not admin"));
               break;
             default:
-              toast.error("Erreur lors du login");
+              toast.error(common("toast.auth.failed"));
               break;
           }
         }
@@ -105,75 +112,61 @@ const Admin = () => {
         <div className="h-[20px]"></div>
         <Logo size={70} type={"2"} />
         <div className="h-[20px]"></div>
-        <h1 className="text-2xl font-semibold text-white">Connexion</h1>
+        <h1 className="text-2xl font-semibold text-white">
+          {common("button.login")}
+        </h1>
         <div className="flex w-full max-w-[300px] flex-col gap-1 rounded-md bg-primary p-3">
           <div className="flex flex-row gap-3">
             <EmailIcon className="text-2xl text-white " />
             <input
-              placeholder="Email"
+              placeholder={common("input.email")}
               {...register("email", {
-                required: "Champs obligatoire",
+                required: common("input.required"),
                 pattern: {
                   value:
                     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                  message: "Email invalide",
+                  message: common("input.invalid"),
                 },
               })}
               className="text-semibold w-full bg-transparent text-white"
             />
           </div>
-          <span className="pl-7 text-sm italic text-red-500">
-            {errors && errors.email?.message}
-          </span>
         </div>
         <div className="flex w-full max-w-[300px] flex-col gap-1 rounded-md bg-primary p-3">
           <div className="flex flex-row gap-3">
             <PasswordIcon className="text-2xl text-white " />
             <input
               type={"password"}
-              placeholder="Password"
+              placeholder={common("input.password")}
               {...register("password", {
-                required: "Champs obligatoire",
+                required: common("input.required"),
                 minLength: {
                   value: 6,
-                  message: "La taille doit dépasser 6 caractères",
+                  message: common("input.min6"),
                 },
               })}
               className="text-semibold w-full bg-transparent text-white"
             />
           </div>
-          <span className="pl-7 text-sm italic text-red-500">
-            {errors && errors.password?.message}
-          </span>
         </div>
         <div className="flex w-full max-w-[300px] flex-row justify-between text-sm text-white">
-          <div className="flex flex-row items-center gap-3 text-opacity-75">
-            <input
-              type="checkbox"
-              checked={remember}
-              onChange={(v) => setremember(v.currentTarget.checked)}
-              className="checkbox-primary checkbox checkbox-sm  bg-white"
-            />
-            <span>Remember Me</span>
-          </div>
-          <Link href="/">Password oublié?</Link>
+          <div className="flex flex-row items-center gap-3 text-opacity-75"></div>
+          <Link href="/">{common("text.password forget")}?</Link>
         </div>
         <div className="h-[20px]"></div>
         <div className="flex flex-row gap-6">
-        <div
-          onClick={() => router.push("/")}
-          className="cursor-pointer text-center w-full w-[130px] rounded-lg border-white border py-2 px-1 font-semibold text-white"
-        >
-         home
-      
-        </div>
-        <button
-          type="submit"
-          className="w-full w-[130px] rounded-lg bg-white py-2 px-1 font-semibold text-primary"
-        >
-          {isLoading ? "Chargement..." : "Login"}
-        </button>
-     
+          <div
+            onClick={() => router.push("/")}
+            className="w-full w-[130px] cursor-pointer rounded-lg border border-white py-2 px-1 text-center font-semibold text-white"
+          >
+            {common("text.home")}
+          </div>
+          <button
+            type="submit"
+            className="w-full w-[130px] rounded-lg bg-white py-2 px-1 font-semibold text-primary"
+          >
+            {common("button.login")}
+          </button>
         </div>
         <div className="h-[20px]"></div>
       </form>

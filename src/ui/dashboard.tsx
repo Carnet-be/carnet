@@ -21,7 +21,11 @@ import { AddIcon } from "@ui/icons";
 import CreateAuction from "@ui/createAuction";
 import { trpc } from "@utils/trpc";
 import { useBidderStore } from "../state";
-import { useGetNotifications, useLang } from "../pages/hooks";
+import {
+  LangCommonContext,
+  useGetNotifications,
+  useLang,
+} from "../pages/hooks";
 import { Drawer } from "antd";
 import moment from "moment";
 import { Timestamp } from "firebase/firestore";
@@ -57,7 +61,7 @@ const Dashboard = ({
   background = "bg-background",
 }: DashboardType) => {
   const router = useRouter();
-   const {text:common}=useLang(undefined)
+  const { text: common } = useLang(undefined);
   const wishs = useBidderStore((state) => state.wishList);
   const menu: TMenu = {
     ADMIN: [
@@ -67,12 +71,12 @@ const Dashboard = ({
         icon: <DashboardIcon />,
       },
       {
-        title:  common("text.auctions"),
+        title: common("text.auctions"),
         route: "/admin/dashboard/auctions",
         icon: <AuctionIcon />,
       },
       {
-        title:  common("text.bids"),
+        title: common("text.bids"),
         route: "/admin/dashboard/bids",
         icon: <BidderIcon />,
       },
@@ -82,7 +86,7 @@ const Dashboard = ({
         icon: <PeopleIcon />,
       },
       {
-        title:  common("text.staffs"),
+        title: common("text.staffs"),
         route: "/admin/dashboard/staffs",
         icon: <PeopleIcon />,
       },
@@ -92,24 +96,24 @@ const Dashboard = ({
         icon: <DataIcon />,
       },
       {
-        title:  common("text.chat"),
+        title: common("text.chat"),
         route: "/admin/dashboard/chat",
         icon: <ChatIcon />,
       },
     ],
     AUC: [
       {
-        title:  common("text.home"),
+        title: common("text.home"),
         route: "/dashboard/auctionnaire/home",
         icon: <DashboardIcon />,
       },
       {
-        title:  common("text.my auctions"),
+        title: common("text.my auctions"),
         route: "/dashboard/auctionnaire/myauctions",
         icon: <AuctionIcon />,
       },
       {
-        title:  common("text.chat"),
+        title: common("text.chat"),
         route: "/dashboard/auctionnaire/chat",
         icon: <ChatIcon />,
       },
@@ -121,18 +125,18 @@ const Dashboard = ({
         icon: <DashboardIcon />,
       },
       {
-        title:  common("text.my bids"),
+        title: common("text.my bids"),
         route: "/dashboard/bidder/mybiddes",
         icon: <BidderIcon />,
       },
       {
-        title:  common("text.wishlist"),
+        title: common("text.wishlist"),
         route: "/dashboard/bidder/wishlist",
         icon: <ClipIcon />,
         count: wishs,
       },
       {
-        title:  common("text.chat"),
+        title: common("text.chat"),
         route: "/dashboard/bidder/chat",
         icon: <ChatIcon />,
       },
@@ -141,7 +145,7 @@ const Dashboard = ({
   };
 
   return (
-    <>
+    <LangCommonContext.Provider value={common}>
       <CreateAuction />
       <div className="drawer-mobile drawer">
         <input id="drawer" type="checkbox" className="drawer-toggle" />
@@ -201,7 +205,7 @@ const Dashboard = ({
                     <div className="text-xl">
                       <AddIcon />
                     </div>
-                   {common("text.new auction")}
+                    {common("text.new auction")}
                   </label>
                 </li>
               )}
@@ -222,7 +226,7 @@ const Dashboard = ({
           </div>
         </div>
       </div>
-    </>
+    </LangCommonContext.Provider>
   );
 };
 
@@ -264,7 +268,8 @@ const Side = ({
 export default Dashboard;
 
 const NotificationComponent = () => {
-  const { notifications, num,onSeenNotifications,newNotifs } = useGetNotifications();
+  const { notifications, num, onSeenNotifications, newNotifs } =
+    useGetNotifications();
   const [open, setOpen] = useState(false);
 
   const showDrawer = () => {
@@ -274,9 +279,9 @@ const NotificationComponent = () => {
   const onClose = () => {
     setOpen(false);
 
-    onSeenNotifications()
+    onSeenNotifications();
   };
-  const router=useRouter()
+  const router = useRouter();
   return (
     <>
       <button
@@ -284,9 +289,7 @@ const NotificationComponent = () => {
         className="btn-ghost btn flex flex-row gap-1 hover:bg-primary/10"
       >
         {num > 0 && (
-          <div className="flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-white">
-            
-          </div>
+          <div className="flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-white"></div>
         )}
         <NotifIcon className="text-2xl" />
       </button>
@@ -296,24 +299,32 @@ const NotificationComponent = () => {
         onClose={onClose}
         open={open}
       >
-        {notifications.sort((a,b)=>b.date.getTime()-a.date.getTime()).map((n, i) => {
-
-          return (
-            <div onClick={()=>{
-            router.push(n.link)
-            onClose()
-            }} key={i} className={cx("rounded-md border p-3 cursor-pointer mb-3",{
-              "text-primary":newNotifs.map((n)=>n.uid).includes(n.uid||""),
-            })}>
-              
+        {notifications
+          .sort((a, b) => b.date.getTime() - a.date.getTime())
+          .map((n, i) => {
+            return (
+              <div
+                onClick={() => {
+                  router.push(n.link);
+                  onClose();
+                }}
+                key={i}
+                className={cx("mb-3 cursor-pointer rounded-md border p-3", {
+                  "text-primary": newNotifs
+                    .map((n) => n.uid)
+                    .includes(n.uid || ""),
+                })}
+              >
                 <div className="flex flex-col">
                   <div className="text-sm font-bold">{n.title}</div>
                   <div className="text-xs">{n.body}</div>
-                  <div className="self-end italic text-[10px]">{moment(n.date).fromNow()}</div>
+                  <div className="self-end text-[10px] italic">
+                    {moment(n.date).fromNow()}
+                  </div>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </Drawer>
     </>
   );

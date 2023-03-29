@@ -15,13 +15,13 @@ const Loading = () => {
 export default Loading;
 
 export const LoadingSpin = () => {
-  return <Spin tip="Loading" size="large"></Spin>;
+  return <Spin size="large"></Spin>;
 };
 
 export const LoadingSpinPage = () => {
   return (
     <div className="flex flex-row items-center justify-center">
-      <Spin tip="Loading" size="large"></Spin>
+      <Spin size="large"></Spin>
     </div>
   );
 };

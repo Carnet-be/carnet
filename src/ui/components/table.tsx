@@ -12,9 +12,10 @@ import moment from "moment";
 import { User } from "next-auth";
 import { executeEverySecond } from "./countDown";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import {GrResume} from "react-icons/gr"
-import {BsFillPlayFill} from "react-icons/bs"
+import { GrResume } from "react-icons/gr";
+import { BsFillPlayFill } from "react-icons/bs";
 import { MdRestartAlt } from "react-icons/md";
+import { useLang } from "../../pages/hooks";
 const { Option } = Select;
 interface Props<T> {
   columns: ColumnsType<T>;
@@ -61,8 +62,9 @@ export const RenderTimer = ({
   date: Date;
   state: "pause" | "published" | "pending";
   init: Date | undefined;
-  onAddTime?: (value:number,hour:number) => void;
+  onAddTime?: (value: number, hour: number) => void;
 }) => {
+  const { text: common } = useLang(undefined);
   const [leftTime, setleft] = useState<moment.Duration>(
     executeEverySecond(date, init)
   );
@@ -90,7 +92,7 @@ export const RenderTimer = ({
   };
 
   const handleOk = () => {
-    onAddTime && onAddTime(value,hour);
+    onAddTime && onAddTime(value, hour);
     setIsOpen(false);
   };
 
@@ -100,67 +102,66 @@ export const RenderTimer = ({
 
   return (
     <>
-     <Tag
-     onClick={showModal}
-      color={
-        leftTime?.asSeconds() <= 0
-          ? "error"
-          : state == "pause"
-          ? "yellow"
-          : state == "published"
-          ? "green"
-          : "default"
-      }
-      className="flex flex-row items-end justify-center gap-1 font-semibold cursor-pointer"
-    >
-      {leftTime?.asSeconds() <= 0 ? (
-        "Expired"
-      ) : state == "pending" ? (
-        <span className="">Pending</span>
-      ) : (
-        <>
-          <span>
-            {leftTime?.days()}
-            <span className="text-sm font-light opacity-70">d</span>
-          </span>
-          <span>
-            {leftTime?.hours()}
-            <span className="text-sm font-light opacity-70">h</span>
-          </span>
-          <span>
-            {leftTime?.minutes()}
-            <span className="text-sm font-light opacity-70">m</span>
-          </span>
-          <span>
-            {leftTime?.seconds()}
-            <span className="text-sm font-light opacity-70">s</span>
-          </span>
-        </>
-      )}
-    </Tag>
-    <Modal
-      title="Add Time"
-      open={onAddTime? isOpen:false}
-      onOk={handleOk}
-      onCancel={handleCancel}
-    >
-     <div className="flex flex-row gap-4">
-     <InputNumber
-        addonAfter={"Day(s)"}
-        defaultValue={0}
-        value={value}
-        onChange={(e) => setValue(e || 0)}
-      />
-       <InputNumber
-        addonAfter={"Hour(s)"}
-        defaultValue={0}
-        value={hour}
-        onChange={(e) => setHour(e || 0)}
-      />
-     </div>
-    </Modal>
-  </>
-   
+      <Tag
+        onClick={showModal}
+        color={
+          leftTime?.asSeconds() <= 0
+            ? "error"
+            : state == "pause"
+            ? "yellow"
+            : state == "published"
+            ? "green"
+            : "default"
+        }
+        className="flex cursor-pointer flex-row items-end justify-center gap-1 font-semibold"
+      >
+        {leftTime?.asSeconds() <= 0 ? (
+          common("table.expired")
+        ) : state == "pending" ? (
+          <span className="">Pending</span>
+        ) : (
+          <>
+            <span>
+              {leftTime?.days()}
+              <span className="text-sm font-light opacity-70">d</span>
+            </span>
+            <span>
+              {leftTime?.hours()}
+              <span className="text-sm font-light opacity-70">h</span>
+            </span>
+            <span>
+              {leftTime?.minutes()}
+              <span className="text-sm font-light opacity-70">m</span>
+            </span>
+            <span>
+              {leftTime?.seconds()}
+              <span className="text-sm font-light opacity-70">s</span>
+            </span>
+          </>
+        )}
+      </Tag>
+      <Modal
+        title={common("text.add time")}
+        open={onAddTime ? isOpen : false}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <div className="flex flex-row gap-4">
+          <InputNumber
+            addonAfter={common("text.days")}
+            defaultValue={0}
+            value={value}
+            onChange={(e) => setValue(e || 0)}
+          />
+          <InputNumber
+            addonAfter={common("text.hours")}
+            defaultValue={0}
+            value={hour}
+            onChange={(e) => setHour(e || 0)}
+          />
+        </div>
+      </Modal>
+    </>
   );
 };
 
@@ -171,7 +172,7 @@ export const ActionTable = ({
   id,
   onPlay,
   onCustom,
-  onRepublish
+  onRepublish,
 }: {
   id?: string;
   onView?: () => void;
@@ -183,8 +184,8 @@ export const ActionTable = ({
     onClick: () => void;
     tooltip: string;
   };
-  onPlay?:()=>void,
-  onRepublish?:()=>void
+  onPlay?: () => void;
+  onRepublish?: () => void;
 }) => {
   const ref = useRef<HTMLLabelElement>(null);
   const refDelete = useRef<HTMLLabelElement>(null);
@@ -209,31 +210,27 @@ export const ActionTable = ({
           onValide={onCustom().onClick}
         />
       )}
-            {id && onPlay && (
+      {id && onPlay && (
         <ConfirmationPause
           open={openPlay}
           setOpen={setOpenPlay}
           id={id}
-          onValide={()=>onPlay()}
+          onValide={() => onPlay()}
         />
       )}
       <label ref={ref} hidden={true} htmlFor={id}></label>
       <label ref={refDelete} hidden={true} htmlFor={"delete" + id}></label>
       {onRepublish && (
         <Tooltip
-
           title="Republish"
           className="flex flex-row items-center justify-center"
         >
           <Button
-
             onClick={onRepublish}
             shape="circle"
             icon={<MdRestartAlt className="text-lg" />}
           />
-         
         </Tooltip>
-        
       )}
       {onPlay && (
         <Tooltip
@@ -241,8 +238,8 @@ export const ActionTable = ({
           className="flex flex-row items-center justify-center"
         >
           <Button
-            onClick={()=>{
-              setOpenPlay(true)
+            onClick={() => {
+              setOpenPlay(true);
             }}
             shape="circle"
             icon={<BsFillPlayFill className="text-lg" />}
@@ -359,4 +356,3 @@ const ConfirmationPause = ({
     </>
   );
 };
-

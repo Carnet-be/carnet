@@ -19,7 +19,7 @@ import Image from "next/image";
 import cx from "classnames";
 import CountDown from "@ui/components/countDown";
 import BidSection from "@ui/bidSection";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRef } from "react";
 import { SampleNextArrow, SamplePrevArrow } from "@ui/createAuction/step3";
 import { Chip } from "@mui/material";
@@ -32,6 +32,8 @@ import { StarIcon } from "@ui/icons";
 import cloudy from "@utils/cloudinary";
 import { NO_IMAGE_URL } from "@ui/components/auctionCard";
 import { fill } from "@cloudinary/url-gen/actions/resize";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { LangCommonContext, LangContext, useLang } from "../../../hooks";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -55,36 +57,49 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-    props: { id },
+    props: {
+      id,
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
+    },
   };
 };
 const Home = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
+  const { text } = useLang({ file: "dashboard", selector: "auction" });
+  const { text: common } = useLang(undefined);
   const { data: auction } = trpc.auctionnaire.get.useQuery(props.id, {
     onError: (err) => {
       console.log(err);
-      toast.error("Error lors de la recupération des données");
+      toast.error("");
     },
   });
+
   return (
     <Dashboard type="BID" background="bg-[#FCFCFF]">
       {!auction ? (
         <Loading classContainer="h-[80vh]" />
       ) : (
-        <>
-          <BigTitle title={auction.name} />
-          <div className="flex flex-wrap justify-center gap-6">
-            <LeftSide auction={auction as TAuction} />
-            <RightSide auction={auction as TAuction} />
-          </div>
-        </>
+        <LangCommonContext.Provider value={common}>
+          <LangContext.Provider value={text}>
+            <BigTitle title={auction.name} />
+            <div className="flex flex-wrap justify-center gap-6">
+              <LeftSide auction={auction as TAuction} />
+              <RightSide auction={auction as TAuction} />
+            </div>
+          </LangContext.Provider>
+        </LangCommonContext.Provider>
       )}
     </Dashboard>
   );
 };
 
 const LeftSide = ({ auction }: { auction: TAuction }) => {
+  const text = useContext(LangContext);
+  const common = useContext(LangCommonContext);
   const noImg = auction.images.length <= 0;
   const [imgP, setImgP] = useState(0);
   const [imgSize, setimgSize] = useState(0);
@@ -105,22 +120,22 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
   };
   const rating = [
     {
-      title: "Handling",
+      title: text("fields.handling"),
       list: HANDLING,
       rate: auction.rating.handling,
     },
     {
-      title: "Exterior",
+      title: text("fields.exterior"),
       list: EXTERIOR,
       rate: auction.rating.exterior,
     },
     {
-      title: "Interior",
+      title: text("fields.interior"),
       list: INTERIOR,
       rate: auction.rating.interior,
     },
     {
-      title: "Tires",
+      title: text("fields.tires"),
       list: TIRES,
       rate: auction.rating.tires,
     },
@@ -167,11 +182,11 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
         </Slider>
       </div>
       <div className="my-3 flex flex-col gap-3 bg-white p-2">
-        <h4 className="text-primary">Description</h4>
+        <h4 className="text-primary">{text("text.description")}</h4>
         <p>{auction.description}</p>
       </div>
       <div className="my-3 flex flex-col gap-3 bg-white p-2">
-        <h4 className="text-primary">Options</h4>
+        <h4 className="text-primary">{text("steps.options")}</h4>
         <div className="flex flex-wrap gap-3">
           {Object.keys(auction.options)
             .filter((o) => auction.options[o as keyof AuctionOptions] === true)
@@ -181,7 +196,7 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
         </div>
       </div>
       <div className="my-3 flex flex-col gap-3 bg-white p-2">
-        <h4 className="text-primary">Rating</h4>
+        <h4 className="text-primary">{text("steps.rating")}</h4>
         {rating
           .filter((r) => r.rate !== null)
           .map((r, i) => {
@@ -217,6 +232,7 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
 };
 
 const RightSide = ({ auction }: { auction: TAuction }) => {
+  const text = useContext(LangContext);
   const [isTimeOut, setisTimeOut] = useState(false);
   const model = BRAND[auction.brand]?.model[auction.model];
   const carrosserie = CARROSSERIE[auction.specs.carrosserie || 0];
@@ -245,63 +261,63 @@ const RightSide = ({ auction }: { auction: TAuction }) => {
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={94}
-            title="Carrosserie"
+            title={text("fields.carossery")}
             img={"/assets/step2/" + carrosserie?.img + ".svg"}
             value={carrosserie?.title || ""}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title="Fuel"
+            title={text("fields.fuel")}
             img={"/assets/fuel.png"}
             value={auction.fuel}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title={"Color"}
+            title={text("fields.color")}
             value={auction.color || "#fffff"}
             isColor
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title="Transmission"
+            title={text("fields.transmission")}
             img={"/assets/transmission.png"}
             value={TRANSMISSION[auction.specs.transmission || 0] || ""}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title="Horse Power"
+            title={text("fields.horse power")}
             img={"/assets/horse.png"}
             value={auction.specs.cv ? auction.specs.cv?.toString() : "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title="Mileage"
+            title={text("fields.mileage")}
             img={"/assets/mileage.png"}
             value={auction.specs.kilometrage || "-" + " km/h"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%] text-primary"
             size={110}
-            title="Emission co2"
+            title={text("fields.co2 emission")}
             img={"/assets/CO2.svg"}
             value={auction.specs.co2 || "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title="Doors"
+            title={text("fields.doors")}
             img={"/assets/Doors.svg"}
             value={auction.specs.doors?.toString() || "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title="Engine Size "
+            title={text("fields.engine size")}
             img={"/assets/engine.svg"}
             value={auction.specs.cc || "-"}
           />
@@ -365,8 +381,7 @@ const MiniCard = (props: {
             className={cx("h-8 w-8 rounded-full border")}
           ></div>
           <span className="text-[12px]">
-            {COLORS.filter((c) => c.value === value)[0]?.name ||
-              ""}
+            {COLORS.filter((c) => c.value === value)[0]?.name || ""}
           </span>
         </>
       ) : (

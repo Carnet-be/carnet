@@ -16,6 +16,7 @@ import moment from "moment";
 import { useRouter } from "next/router";
 import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { toast as notif } from "react-hot-toast";
 import { useNotifStore } from "../state";
 import { getPrice } from "@ui/components/price";
 import { User } from "@prisma/client";
@@ -385,8 +386,8 @@ export const useGetNotifications = () => {
     num: newNotifs.length,
   };
 };
-
-type FileLang = "common" | "pages" | "dashboard";
+type TypeLang = "common" | "pages" | "dashboard";
+type FileLang = "common" | "pages" | "dashboard" | TypeLang[];
 export const useLang = (
   params:
     | {
@@ -407,11 +408,11 @@ export const useNotif = () => {
   const { text: common } = useLang(undefined);
   return {
     error(callback?: () => void) {
-      toast.error(common("toast.error"));
+      notif.error(common("toast.error"));
       if (callback) callback();
     },
     succes(callback?: () => void) {
-      toast.success(common("toast.success"));
+      notif.success(common("toast.success"));
       if (callback) callback();
     },
   };

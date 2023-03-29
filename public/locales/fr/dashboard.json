@@ -1,8 +1,17 @@
 {
+  "admin": {},
   "auctioneer": {
     "new auction card": {
       "title": "Rejoignez l'excitation : créez votre propre enchère et regardez les enchères arriver !",
       "button": "Créer une enchère"
+    }
+  },
+  "bidder": {
+    "filter": {
+      "new": "Nouveau",
+      "feature": "En vedette",
+      "trending": "Tendance",
+      "buy now": "Acheter maintenant"
     }
   },
   "auction": {
@@ -23,6 +32,7 @@
       "fuel": "Carburant",
       "mileage": "Kilométrage",
       "doors": "Portes",
+      "carossery": "Carrosserie",
       "transmission": "Transmission",
       "engine size": "Cylindrée",
       "horse power": "Puissance",
@@ -42,7 +52,8 @@
       "address description": "Adresse de la voiture",
       "city": "Ville",
       "zip code": "Code postal",
-      "country": "Pays"
+      "country": "Pays",
+      "color": "Couleur"
     },
     "option title": "Cocher les critères de votre voiture",
     "text": {
@@ -50,7 +61,9 @@
       "optianal": "Optionnel",
       "initial bid": "Enchère de départ",
       "starting price": "Prix de départ",
-      "current bid": "Enchère actuelle"
+      "current bid": "Enchère actuelle",
+      "description": "Description",
+      "incremental text": "L'enchère sera augmentée de"
     },
     "status": {
       "active": "En cours",

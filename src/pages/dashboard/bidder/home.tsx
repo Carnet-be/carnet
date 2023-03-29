@@ -1,7 +1,11 @@
 import BigTitle from "@ui/components/bigTitle";
 import Dashboard from "@ui/dashboard";
 import { InDevelopmentMini } from "@ui/inDevelopment";
-import { type InferGetServerSidePropsType, type GetServerSideProps, type NextPage } from "next";
+import {
+  type InferGetServerSidePropsType,
+  type GetServerSideProps,
+  type NextPage,
+} from "next";
 import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
 import cx from "classnames";
 import { useState } from "react";
@@ -11,6 +15,8 @@ import AuctionCard from "@ui/components/auctionCard";
 import { UserType } from "@prisma/client";
 import { prisma } from "../../../server/db/client";
 import type { TAuction, TUser } from "@model/type";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useLang } from "../../hooks";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -27,25 +33,37 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     .findUnique({ where: { email: session.user?.email || "" } })
     .then((user) => JSON.parse(JSON.stringify(user)));
 
-    if(!user.isActive){
-        return {
-            redirect: {
-              destination: "/pages/inactive",
-              permanent: true,
-            },
-          };
+  if (!user.isActive) {
+    return {
+      redirect: {
+        destination: "/pages/inactive",
+        permanent: true,
+      },
+    };
+  }
 
-    }
   return {
-    props: {user},
+    props: {
+      user,
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
+    },
   };
 };
 type TFilterBidde = "new" | "feature" | "trending" | "buy now";
-const Home = (props:InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Home = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+) => {
   const router = useRouter();
-  const user:TUser=props.user
+  const user: TUser = props.user;
+  const { text } = useLang({ file: "dashboard", selector: "bidder" });
   const filter = (router.query.filter as TFilterBidde) || "new";
-  const { data: auctions } = trpc.auctionnaire.getAuctions.useQuery({ filter,state:"published" });
+  const { data: auctions } = trpc.auctionnaire.getAuctions.useQuery({
+    filter,
+    state: "published",
+  });
   return (
     <Dashboard type="BID">
       <BigTitle />
@@ -74,17 +92,23 @@ const Home = (props:InferGetServerSidePropsType<typeof getServerSideProps>) => {
                   "btn-ghost": !isActive,
                 })}
               >
-                {f}
+                {text("filter." + f)}
               </button>
             );
           }
         )}
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-6">
+      <div className="flex flex-wrap items-center  gap-6">
         {!auctions ? (
           <span>No data</span>
         ) : (
-          auctions.map((a, i) => <AuctionCard key={i} auction={a as any} isFavorite={user.favoris_auctions.includes(a.id)}/>)
+          auctions.map((a, i) => (
+            <AuctionCard
+              key={i}
+              auction={a as any}
+              isFavorite={user.favoris_auctions.includes(a.id)}
+            />
+          ))
         )}
       </div>
     </Dashboard>

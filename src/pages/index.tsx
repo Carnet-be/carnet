@@ -24,7 +24,7 @@ import { useIntl } from "react-intl";
 
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { i18n, useTranslation } from "next-i18next";
-import { LangContext, useLang } from './hooks';
+import { LangContext, useLang } from "./hooks";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerAuthSession(context);
 
@@ -32,10 +32,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // if (process.env.NODE_ENV === "development") {
     //   await i18n?.reloadResources();
     // }
-    const {locale}=context
+    const { locale } = context;
     return {
       props: {
-        ...(await serverSideTranslations(locale||"fr", ["common","pages"])),
+        ...(await serverSideTranslations(locale || "fr", [
+          "common",
+          "pages",
+          "dashboard",
+        ])),
       },
     };
   }
@@ -96,7 +100,7 @@ const Home: NextPage = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const user: User = props.user;
-const {text}=useLang({file:"pages",selector:"home"})
+  const { text } = useLang({ file: "pages", selector: "home" });
   //signOut()
   return (
     <LangContext.Provider value={text}>
@@ -117,13 +121,9 @@ const {text}=useLang({file:"pages",selector:"home"})
                     <Image src={Logo} height={60} alt="logo" />
                   </span>{" "}
                 </h1>
-                <p className="text-lg text-white/70">
-                  {text("hero.subtitle")}
-                </p>
+                <p className="text-lg text-white/70">{text("hero.subtitle")}</p>
                 <br />
-                <DashBoardButton>
-                  {text("hero.button")}
-                </DashBoardButton>
+                <DashBoardButton>{text("hero.button")}</DashBoardButton>
               </div>
               <div className="flex-grow" />
               <div className="grid  w-1/2 content-center">
@@ -140,12 +140,11 @@ const {text}=useLang({file:"pages",selector:"home"})
         <Contact />
         <Footer />
       </div>
-
     </LangContext.Provider>
   );
 };
 
-const DashBoardButton = ({children}:{children:string}) => {
+const DashBoardButton = ({ children }: { children: string }) => {
   //  const {data:user} =  useAuthUser(["user"], auth);
 
   return (
@@ -153,12 +152,12 @@ const DashBoardButton = ({children}:{children:string}) => {
       htmlFor="create_auction"
       className="cursor-pointer rounded-lg bg-white py-3 text-center font-bold text-black"
     >
-     {children}
+      {children}
     </label>
   );
 };
 const Nav = ({ user }: { user: User }) => {
-  const text=useContext(LangContext)
+  const text = useContext(LangContext);
   return (
     <div className="fixed top-0 left-0 z-[1000] flex h-[80px] w-screen bg-primary px-6 shadow-sm">
       <div className="layout mx-auto  flex flex-row items-center gap-6">
@@ -201,7 +200,7 @@ const Nav = ({ user }: { user: User }) => {
 
 const ProfileButton = ({ user }: { user: User }) => {
   const router = useRouter();
-  const text=useContext(LangContext)
+  const text = useContext(LangContext);
   return (
     <Link
       href={"/auth/login"}
@@ -225,37 +224,31 @@ const Overlay = () => {
 export default Home;
 
 const CommentCaMarche = () => {
-
-  const text=useContext(LangContext)
-  const Item = ({
-    icon,
-    index
-  }: {
-    icon: ReactNode;
-    index: number;
-  }) => {
+  const text = useContext(LangContext);
+  const Item = ({ icon, index }: { icon: ReactNode; index: number }) => {
     return (
       <div className="flex w-[240px] flex-col items-center gap-3">
         <div className="flex h-[80px] w-[80px] flex-row items-center justify-center rounded-xl rounded-bl-none bg-primary p-3">
           {icon}
         </div>
-        <h6 className="text-primary">{text(`how it works.step${index}.title`)}</h6>
-        <p className="text-center text-[12px] opacity-70">{text(`how it works.step${index}.subtitle`)}</p>
+        <h6 className="text-primary">
+          {text(`how it works.step${index}.title`)}
+        </h6>
+        <p className="text-center text-[12px] opacity-70">
+          {text(`how it works.step${index}.subtitle`)}
+        </p>
       </div>
     );
   };
   const items = [
     {
       icon: <EditIcon className="text-[40px] text-white" />,
-     
     },
     {
       icon: <FaCarAlt className="text-[40px] text-white" />,
-
     },
     {
       icon: <GiTakeMyMoney className="text-[40px] text-white" />,
-
     },
   ];
 
@@ -264,10 +257,8 @@ const CommentCaMarche = () => {
       id="how"
       className="flex flex-col items-center gap-10 rounded-t-[100px] bg-white py-[70px]"
     >
-      <h2 className="text-primary uppercase">{text("how it works.title")}</h2>
-      <p>
-      {text("how it works.subtitle")}
-      </p>
+      <h2 className="uppercase text-primary">{text("how it works.title")}</h2>
+      <p>{text("how it works.subtitle")}</p>
       <div className="flex flex-row items-start justify-center gap-6 py-10">
         {items.map((item, index) => (
           <>
@@ -285,11 +276,7 @@ const CommentCaMarche = () => {
                 alt="path"
               />
             </div>
-            <Item
-              key={index}
-              index={index+1}
-              icon={item.icon}
-            />
+            <Item key={index} index={index + 1} icon={item.icon} />
           </>
         ))}
       </div>
@@ -298,18 +285,16 @@ const CommentCaMarche = () => {
 };
 
 const About = () => {
-  const text=useContext(LangContext)
+  const text = useContext(LangContext);
   return (
     <section
       id="about"
       className="flex flex-col items-center gap-10 bg-white py-10"
     >
-      <h2 className="text-primary uppercase">{text("about us.title")} </h2>
+      <h2 className="uppercase text-primary">{text("about us.title")} </h2>
       <div className="flex flex-row items-center gap-[60px] py-10">
         <div className="w-[500px]">
-          <p>
-          {text("about us.subtitle")}
-          </p>
+          <p>{text("about us.subtitle")}</p>
         </div>
 
         <Image src="/assets/about.png" alt="about" width={400} height={400} />
@@ -323,8 +308,8 @@ const Blogs = () => {
 };
 
 const Contact = () => {
-  const s="contact us"
-  const text=useContext(LangContext)
+  const s = "contact us";
+  const text = useContext(LangContext);
   const email = "info@carnet.io";
   const nums = ["+33 6 00 00 00 00", "+33 6 00 00 00 01"];
   return (
@@ -333,16 +318,14 @@ const Contact = () => {
       className="flex flex-row items-start justify-evenly gap-[40px] bg-white py-20"
     >
       <div className="space-y-10">
-        <h2 className="text-primary">{text(s+'.title')} </h2>
-        <p>
-        {text(s+'.subtitle')} 
-        </p>
+        <h2 className="text-primary">{text(s + ".title")} </h2>
+        <p>{text(s + ".subtitle")}</p>
         <div>
-          <h6 className="text-primary">{text(s+'.email')} </h6>
+          <h6 className="text-primary">{text(s + ".email")} </h6>
           <h6>{email}</h6>
         </div>
         <div>
-          <h6 className="text-primary">{text(s+'.phone')} </h6>
+          <h6 className="text-primary">{text(s + ".phone")} </h6>
           {nums.map((num, index) => (
             <h6 key={index}>{num}</h6>
           ))}
@@ -350,65 +333,73 @@ const Contact = () => {
       </div>
       <div className="w-[400px] space-y-4">
         <div>
-          <h6 className="text-primary">{text(s+'.form.name')} </h6>
+          <h6 className="text-primary">{text(s + ".form.name")} </h6>
           <input
             type="text"
             className="mt-1 h-[40px] w-full rounded-sm bg-[#F7F7F7] px-2"
           />
         </div>
         <div>
-          <h6 className="text-primary">{text(s+'.form.email')}</h6>
+          <h6 className="text-primary">{text(s + ".form.email")}</h6>
           <input
             type="text"
             className="mt-1 h-[40px] w-full rounded-sm bg-[#F7F7F7] px-2"
           />
         </div>
         <div>
-          <h6 className="text-primary">{text(s+'.form.message')}</h6>
+          <h6 className="text-primary">{text(s + ".form.message")}</h6>
           <textarea
             rows={6}
             className=" mt-1 w-full rounded-sm bg-[#F7F7F7] px-2 py-2"
           />
         </div>
-        <button className="btn-primary btn-wide btn w-full">{text(s+'.form.button')}</button>
+        <button className="btn-primary btn-wide btn w-full">
+          {text(s + ".form.button")}
+        </button>
       </div>
     </section>
   );
 };
 
 const Footer = () => {
-  const s="footer.menu"
-  const text=useContext(LangContext)
+  const s = "footer.menu";
+  const text = useContext(LangContext);
   return (
     <footer className="flex flex-col items-center gap-2 py-3">
-      <Image src={"/assets/logo.png"} alt="logo" width={200} height={100} className={"my-6"}/>
-      <div className="flex flex-row justify-center items-center gap-10 ">
-      <Link scroll={true} href={"#"} className="font-semibold  text-white">
-           {text(s+'.home')}
+      <Image
+        src={"/assets/logo.png"}
+        alt="logo"
+        width={200}
+        height={100}
+        className={"my-6"}
+      />
+      <div className="flex flex-row items-center justify-center gap-10 ">
+        <Link scroll={true} href={"#"} className="font-semibold  text-white">
+          {text(s + ".home")}
         </Link>
         <Link scroll={true} href={"#how"} className="font-semibold text-white">
-        {text(s+'.how it works')}
+          {text(s + ".how it works")}
         </Link>
         <Link
           scroll={true}
           href={"#about"}
           className="font-semibold text-white"
         >
-        {text(s+'.about us')}
+          {text(s + ".about us")}
         </Link>
         <Link
           scroll={true}
           href={"#blogs"}
           className="font-semibold text-white"
         >
-        {text(s+'.blog')}
+          {text(s + ".blog")}
         </Link>
         <Link
           scroll={true}
           href={"#contact"}
           className="font-semibold text-white"
         >
-        {text(s+'.contact us')}
+          {text(s + ".contact us")}
         </Link>
 
         <Link
@@ -416,21 +407,21 @@ const Footer = () => {
           href={"#terms_conditions"}
           className="font-semibold text-white"
         >
-         
-         {text(s+'.terms and conditions')}
-
+          {text(s + ".terms and conditions")}
         </Link>
         <Link
           scroll={true}
           href={"#privacy_policy"}
           className="font-semibold text-white"
         >
-        {text(s+'.privacy policy')}
+          {text(s + ".privacy policy")}
         </Link>
       </div>
-      <div className="max-w-[1300px] border-t-[2px] border-white w-full flex flex-row items-center justify-between py-6">
+      <div className="flex w-full max-w-[1300px] flex-row items-center justify-between border-t-[2px] border-white py-6">
         <span> </span>
-        <span className="text-white opacity-70 text-sm">Copyright © 2023 Carnet</span>
+        <span className="text-sm text-white opacity-70">
+          Copyright © 2023 Carnet
+        </span>
       </div>
     </footer>
   );

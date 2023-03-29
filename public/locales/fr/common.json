@@ -5,13 +5,29 @@
     "required": "Ce champs est requis",
     "min6": "Ce champs doit contenir au moins 6 caractères",
     "no conform": "Les mots de passe ne correspondent pas",
-    "placeholder message": "Saisir votre message"
+    "placeholder message": "Saisir votre message",
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirm password": "Confirmer le mot de passe",
+    "username": "Nom d'utilisateur"
   },
   "toast": {
     "failed": "Opération échouée",
     "success": "Opération réussie",
-    "error": "Erreur rencontrée"
+    "error": "Erreur rencontrée",
+    "auth": {
+      "success": "Vous êtes connectés avec succès",
+      "failed": "Echec de la connexion",
+      "logout": "Vous êtes déconnectés avec succès",
+
+      "password invalid": "Mot de passe invalide",
+      "email invalid": "Email invalide",
+      "email not found": "Email non trouvé",
+      "user not exist": "Compte inexistant, veuillez en créer un",
+      "user not admin": "Ce compte n'est ni l'admin ni un personnel"
+    }
   },
+
   "button": {
     "cancel": "Annuler",
     "save": "Enregistrer",
@@ -28,11 +44,16 @@
     "send": "Envoyer",
     "bid now": "Faire une offre",
     "account": "Compte",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "login": "Connexion"
+  },
+  "quotes": {
+    "big title": "Achetez Votre Voiture avec"
   },
   "text": {
     "terms and conditions": "Conditions générales",
     "privacy policy": "Politique de confidentialité",
+    "password forget": "Mot de passe oublié",
     "home": "Accueil",
     "auctions": "Enchères",
     "bids": "Offres",
@@ -50,6 +71,25 @@
     "minutes": "Minutes",
     "seconds": "Secondes",
     "week": "Semaine",
-    "weeks": "Semaines"
+    "weeks": "Semaines",
+    "no data": "Aucune donnée",
+    "add time": "Ajouter du temps"
+  },
+  "table": {
+    "id": "ID",
+    "name": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "date": "Date",
+    "status": "Statut",
+    "action": "Action",
+    "title": "Titre",
+    "number of bids": "Nombre d'offres",
+    "numero": "Numéro",
+    "price": "Prix",
+    "value": "Valeur",
+    "time left": "Temps restant",
+    "expired": "Expiré",
+    "auction": "Enchère"
   }
 }
