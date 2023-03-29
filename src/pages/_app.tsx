@@ -29,10 +29,22 @@ import { IntlProvider } from "react-intl";
 //   fr,
 // };
 import 'react-toastify/dist/ReactToastify.css';
-import i18next from "i18next";
+import moment from "moment";
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }:any) => {
   const { locale } = useRouter();
   //i18next.reloadResources();
+  //init moment locale
+  useEffect(() => {
+    if (locale) {
+      if(locale=="en"){
+        moment.locale("en");
+      }else{
+      import(`moment/locale/${locale}`).then(() => {
+        moment.locale(locale);
+      });
+    }
+    }
+  }, [locale]);
 
   return (
     // <IntlProvider locale={locale||"fr"}  messages={messages[locale as Locale||"fr"]}>

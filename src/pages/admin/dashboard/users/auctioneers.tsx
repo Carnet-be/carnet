@@ -88,7 +88,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         fixed:"right",
         render: (_,user) => <ActionTable id={user.id} onDelete={()=>{
           deleteUser({id:user.id,table:"user"})
-        }} onEdit={()=>{console.log('edit')}} onView={()=>{console.log('view')}}/>,
+        }} 
+        //onEdit={()=>{console.log('edit')}} onView={()=>{console.log('view')}}
+        />,
       },
     ]
   return (

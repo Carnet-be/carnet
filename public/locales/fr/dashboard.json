@@ -1,92 +1,98 @@
 {
-    "auctioneer":{
-        "new auction card":{
-            "title":"Rejoignez l'excitation : créez votre propre enchère et regardez les enchères arriver !",
-            "button":"Créer une enchère"
-        }
-    },
-    "auction":{
-        "steps":{
-
-            "title":"Vous voulez vendre votre voiture ?",
-            "identify":"Identifier",
-            "specs":"Spécifications",
-            "options":"Options",
-            "rating":"Évaluation",
-            "validation":"Validation",
-            "login/registration":"Connexion/Inscription",
-            "finalisation":"Finalisation"
-        },
-        "fields":{ 
-            "brand":"Marque",
-            "model":"Modèle",
-            "build year":"Année de fabrication",
-            "fuel":"Carburant",
-            "mileage":"Kilométrage",
-            "doors":"Portes",
-            "transmission":"Transmission",
-            "engine size":"Cylindrée",
-            "horse power":"Puissance",
-            "co2 emission":"Émission de CO2",
-            "version":"Version",
-            "Exterior":"Extérieur",
-            "Interior":"Intérieur",
-            "tires":"Pneus",
-            "handling":"Maniabilité",
-            "name":"Nom de l'auction",
-            "description":"Description",
-            "description description":"Décrivez votre voiture, ses options, son état, etc.",
-            "pick photos":"Choisissez des photos",
-            "expected price":"Prix attendu",
-            "auction duration":"Durée de l'enchère",
-            "address":"Adresse",
-            "address description":"Adresse de la voiture",
-            "city":"Ville",
-            "zip code":"Code postal",
-            "country":"Pays"
-          
-
-        },
-        "option title":"Cocher les critères de votre voiture",
-        "text":{
-            "extra":"Extra",
-            "optianal":"Optionnel"
-        },
-        "color":{
-            "red":"Rouge",
-            "blue":"Bleu",
-            "green":"Vert",
-            "yellow":"Jaune",
-            "orange":"Orange",
-            "purple":"Violet",
-            "pink":"Rose",
-            "black":"Noir",
-            "white":"Blanc",
-            "grey":"Gris",
-            "brown":"Marron",
-            "gold":"Or",
-            "silver":"Argent",
-            "other":"Autre",
-            "beige":"Beige",
-            "maroon":"Bordeaux"
-             
-           
-        },
-        "type of car":{
-            "sedan":"Berline",
-            "coupe":"Coupé",
-            "convertible":"Cabriolet",
-            "hatchback":"Break",
-            "wagon":"Monospace",
-            "suv":"SUV",
-            "van":"Fourgon",
-            "truck":"Camion",
-            "other":"Autre"
-        },
-        "options":{
-            
-        }
-        
+  "auctioneer": {
+    "new auction card": {
+      "title": "Rejoignez l'excitation : créez votre propre enchère et regardez les enchères arriver !",
+      "button": "Créer une enchère"
     }
-
+  },
+  "auction": {
+    "steps": {
+      "title": "Vous voulez vendre votre voiture ?",
+      "identify": "Identifier",
+      "specs": "Spécifications",
+      "options": "Options",
+      "rating": "Évaluation",
+      "validation": "Validation",
+      "login/registration": "Connexion/Inscription",
+      "finalisation": "Finalisation"
+    },
+    "fields": {
+      "brand": "Marque",
+      "model": "Modèle",
+      "build year": "Année de fabrication",
+      "fuel": "Carburant",
+      "mileage": "Kilométrage",
+      "doors": "Portes",
+      "transmission": "Transmission",
+      "engine size": "Cylindrée",
+      "horse power": "Puissance",
+      "co2 emission": "Émission de CO2",
+      "version": "Version",
+      "Exterior": "Extérieur",
+      "Interior": "Intérieur",
+      "tires": "Pneus",
+      "handling": "Maniabilité",
+      "name": "Nom de l'auction",
+      "description": "Description",
+      "description description": "Décrivez votre voiture, ses options, son état, etc.",
+      "pick photos": "Choisissez des photos",
+      "expected price": "Prix attendu",
+      "auction duration": "Durée de l'enchère",
+      "address": "Adresse",
+      "address description": "Adresse de la voiture",
+      "city": "Ville",
+      "zip code": "Code postal",
+      "country": "Pays"
+    },
+    "option title": "Cocher les critères de votre voiture",
+    "text": {
+      "extra": "Extra",
+      "optianal": "Optionnel",
+      "initial bid": "Enchère de départ",
+      "starting price": "Prix de départ",
+      "current bid": "Enchère actuelle"
+    },
+    "status": {
+      "active": "En cours",
+      "finished": "Terminé",
+      "cancelled": "Annulé",
+      "pending": "En attente",
+      "sold": "Vendu",
+      "not sold": "Non vendu",
+      "completed": "Terminé",
+      "published": "Publié",
+      "paused": "En pause",
+      "confirmation": "Confirmation"
+    },
+    "color": {
+      "red": "Rouge",
+      "blue": "Bleu",
+      "green": "Vert",
+      "yellow": "Jaune",
+      "orange": "Orange",
+      "purple": "Violet",
+      "pink": "Rose",
+      "black": "Noir",
+      "white": "Blanc",
+      "grey": "Gris",
+      "brown": "Marron",
+      "gold": "Or",
+      "silver": "Argent",
+      "other": "Autre",
+      "beige": "Beige",
+      "maroon": "Bordeaux"
+    },
+    "type of car": {
+      "sedan": "Berline",
+      "coupe": "Coupé",
+      "convertible": "Cabriolet",
+      "hatchback": "Break",
+      "wagon": "Monospace",
+      "suv": "SUV",
+      "van": "Fourgon",
+      "truck": "Camion",
+      "other": "Autre"
+    },
+    "options": {}
+  }
 }

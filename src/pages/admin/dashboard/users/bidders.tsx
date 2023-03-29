@@ -138,9 +138,9 @@ const Bidders = (
           onDelete={() => {
             deleteUser({ id: user.id, table: "user" });
           }}
-          onEdit={() => {
-            console.log("edit");
-          }}
+          // onEdit={() => {
+          //   console.log("edit");
+          // }}
         />
       ),
     },

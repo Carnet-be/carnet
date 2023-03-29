@@ -20,6 +20,7 @@ import { fill } from "@cloudinary/url-gen/actions/resize";
 import { AdvancedImage } from "@cloudinary/react";
 import CreateAuction from "@ui/createAuction";
 import { useBidderStore } from "../../state";
+import { useLang, useNotif } from "../../pages/hooks";
 type AuctionCardProps = {
   auction: TAuction;
   isFavorite?: boolean;
@@ -40,6 +41,9 @@ const AuctionCard = ({
   refetch,
   state,
 }: AuctionCardProps) => {
+  const { text } = useLang({ file: "dashboard", selector: "auction" });
+  const { text: common } = useLang(undefined);
+  const { error, succes } = useNotif();
   const [fav, setfav] = useState(isFavorite);
 
   const increase = useBidderStore((state) => state.increase);
@@ -48,19 +52,16 @@ const AuctionCard = ({
   const { mutate } = trpc.auctionnaire.favorite.useMutation({
     onError: (err) => {
       console.log("Error lors d'ajout au fav", err);
-      toast.error("Echec de l'opération");
+      error();
     },
     onSuccess(data, variables) {
-      const onAdd = "Vous avec ajouté au favori";
-      const onRemove = "Vous avec retiré des favoris";
+      succes();
       switch (variables.action) {
         case "add":
-          toast.success(onAdd);
           setfav(true);
           increase();
           break;
         case "remove":
-          toast.success(onRemove);
           if (onClickFavorite) {
             onClickFavorite();
           }
@@ -68,7 +69,6 @@ const AuctionCard = ({
           decrease();
           break;
         default:
-          toast.success(onAdd);
           setfav(true);
           increase();
           break;
@@ -119,7 +119,9 @@ const AuctionCard = ({
                 onClick={() =>
                   !mineAuction
                     ? undefined
-                    : router.push("/dashboard/auctionnaire/auction/" + auction.id)
+                    : router.push(
+                        "/dashboard/auctionnaire/auction/" + auction.id
+                      )
                 }
               >
                 {auction.name}
@@ -127,7 +129,7 @@ const AuctionCard = ({
             </div>
             {mineAuction && state != "published" ? (
               <span className="text-xs opacity-50">
-                {state || auction.state}
+                {text("status." + state || auction.state)}
               </span>
             ) : (
               <CountDown
@@ -143,7 +145,10 @@ const AuctionCard = ({
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col">
               <span className="flex flex-row items-center gap-1 text-xs opacity-50">
-                {auction.bids.length <= 0 ? "Initial bid" : "Current bid"} |{" "}
+                {auction.bids.length <= 0
+                  ? text("text.initial bid")
+                  : text("text.current bid")}{" "}
+                |{" "}
                 <span className="flex flex-row items-center gap-1 text-primary">
                   {auction.bids.length} <AuctionIcon />
                 </span>{" "}
@@ -169,7 +174,7 @@ const AuctionCard = ({
                     "cursor-pointer rounded-full bg-primary p-[5px] px-3 text-white"
                   )}
                 >
-                  Edit
+                  {common("button.edit")}
                 </label>
               ) : (
                 <>
@@ -177,7 +182,7 @@ const AuctionCard = ({
                     href={"/dashboard/bidder/auction/" + auction.id}
                     className="rounded-full bg-green p-[5px] px-3 text-[13px] font-semibold text-white no-underline"
                   >
-                    Bid Now
+                    {common("button.bid now")}
                   </Link>
                   <button
                     onClick={(event) => {

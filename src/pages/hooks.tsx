@@ -388,11 +388,12 @@ export const useGetNotifications = () => {
 
 type FileLang = "common" | "pages" | "dashboard";
 export const useLang = (
-  params: {
+  params:
+    | {
         selector: string;
         file: FileLang;
       }
-    | undefined 
+    | undefined
 ) => {
   const { t } = useTranslation(params?.file);
   const text = (s: string) => t(params ? params.selector + "." + s : s);
@@ -401,3 +402,17 @@ export const useLang = (
 
 export const LangContext = createContext<(s: string) => string>(() => "");
 export const LangCommonContext = createContext<(s: string) => string>(() => "");
+
+export const useNotif = () => {
+  const { text: common } = useLang(undefined);
+  return {
+    error(callback?: () => void) {
+      toast.error(common("toast.error"));
+      if (callback) callback();
+    },
+    succes(callback?: () => void) {
+      toast.success(common("toast.success"));
+      if (callback) callback();
+    },
+  };
+};

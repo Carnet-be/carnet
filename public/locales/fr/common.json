@@ -1,55 +1,55 @@
 {
-    "input":{
-        "placeholder":"saisir",
-        "invalid":"invalide",
-        "required":"Ce champs est requis",
-        "min6":"Ce champs doit contenir au moins 6 caractères",
-        "no conform":"Les mots de passe ne correspondent pas"
-    },
-    "toast":{
-
-    },
-    "button":{
-        "cancel":"Annuler",
-        "save":"Enregistrer",
-        "delete":"Supprimer",
-        "edit":"Modifier",
-        "add":"Ajouter",
-        "close":"Fermer",
-        "validate":"Valider",
-        "next":"Suivant",
-        "previous":"Précédent",
-        "publish":"Publier",
-        "save and publish":"Enregistrer et publier",
-        "save and continue":"Enregistrer et continuer"
-
-    },
-    "text":{
-        "terms and conditions":"Conditions générales",
-        "privacy policy":"Politique de confidentialité",
-        "home":"Accueil",
-        "auctions":"Enchères",
-        "bids":"Offres",
-        "users":"Utilisateurs",
-        "staffs":"Personnels",
-        "data":"Données",
-        "chat":"Chat",
-        "settings":"Paramètres",
-        "my auctions":"Mes enchères",
-        "my bids":"Mes offres",
-        "wishlist":"Liste de souhaits",
-        "new auction":"Nouvelle enchère",
-        "days":"Jours",
-        "hours":"Heures",
-        "minutes":"Minutes",
-        "seconds":"Secondes",
-        "week":"Semaine",
-        "weeks":"Semaines"
-
-
-
-    }
-
-
-
+  "input": {
+    "placeholder": "saisir",
+    "invalid": "invalide",
+    "required": "Ce champs est requis",
+    "min6": "Ce champs doit contenir au moins 6 caractères",
+    "no conform": "Les mots de passe ne correspondent pas",
+    "placeholder message": "Saisir votre message"
+  },
+  "toast": {
+    "failed": "Opération échouée",
+    "success": "Opération réussie",
+    "error": "Erreur rencontrée"
+  },
+  "button": {
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "close": "Fermer",
+    "validate": "Valider",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "publish": "Publier",
+    "save and publish": "Enregistrer et publier",
+    "save and continue": "Enregistrer et continuer",
+    "send": "Envoyer",
+    "bid now": "Faire une offre",
+    "account": "Compte",
+    "logout": "Déconnexion"
+  },
+  "text": {
+    "terms and conditions": "Conditions générales",
+    "privacy policy": "Politique de confidentialité",
+    "home": "Accueil",
+    "auctions": "Enchères",
+    "bids": "Offres",
+    "users": "Utilisateurs",
+    "staffs": "Personnels",
+    "data": "Données",
+    "chat": "Chat",
+    "settings": "Paramètres",
+    "my auctions": "Mes enchères",
+    "my bids": "Mes offres",
+    "wishlist": "Liste de souhaits",
+    "new auction": "Nouvelle enchère",
+    "days": "Jours",
+    "hours": "Heures",
+    "minutes": "Minutes",
+    "seconds": "Secondes",
+    "week": "Semaine",
+    "weeks": "Semaines"
+  }
 }

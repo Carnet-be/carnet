@@ -80,6 +80,7 @@ import { fill } from "@cloudinary/url-gen/actions/resize";
 import { useState } from "react";
 import { Drawer } from "antd";
 import { Profile } from "./settingsSection";
+import { useLang } from "../pages/hooks";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -125,6 +126,7 @@ const StyledMenu = styled((props: MenuProps) => (
 }));
 
 export default function CustomizedMenus() {
+  const { text: common } = useLang(undefined);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -192,12 +194,12 @@ export default function CustomizedMenus() {
       >
         <MenuItem onClick={showDrawer} disableRipple className="menu-item">
           <PersonIcon />
-          Account
+          {common("button.account")}
         </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple className="menu-item">
+        {/* <MenuItem onClick={handleClose} disableRipple className="menu-item">
           <SupportIcon />
           Supports
-        </MenuItem>
+        </MenuItem> */}
         <Divider sx={{ my: 0.5 }} />
 
         <MenuItem
@@ -208,7 +210,7 @@ export default function CustomizedMenus() {
           className="menu-item"
         >
           <LogoutIcon className="text-red-500" />
-          Logout
+          {common("button.logout")}
         </MenuItem>
       </StyledMenu>
       <Drawer

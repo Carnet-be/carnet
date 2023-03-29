@@ -9,6 +9,7 @@ import cx from "classnames";
 import animationEmpty from "../../public/animations/mo_message.json";
 import { TMessage, getMessages, sendMessage } from "@repository/index";
 import { DisplayMessage } from "../pages/admin/dashboard/chat";
+import { useLang } from "../pages/hooks";
 const ChatPage = ({
   id,
   receiver = "ADMIN",
@@ -18,7 +19,7 @@ const ChatPage = ({
   receiver?: "ADMIN" | string;
   isAdmin?: boolean;
 }) => {
-
+  const { text: common } = useLang(undefined);
   const [text, setText] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const onSubmit = (e: any) => {
@@ -27,7 +28,7 @@ const ChatPage = ({
     setIsLoading(true);
     sendMessage({
       content: text,
-      sender:id,
+      sender: id,
       receiver: "ADMIN",
     }).then((res) => {
       setText("");
@@ -36,21 +37,25 @@ const ChatPage = ({
   };
   const [messages, setMessages] = useState<TMessage[]>([]);
   useEffect(() => {
-    const unsubscribe= getMessages({
+    const unsubscribe = getMessages({
       id,
       setMessage: (messages) => {
         setMessages(messages);
       },
     });
-    return ()=>{
-      unsubscribe()
-    }
+    return () => {
+      unsubscribe();
+    };
   }, []);
   return (
-    <div className={cx("flex mx-auto h-screen w-full lg:max-w-[800px] flex-col-reverse items-center")}>
+    <div
+      className={cx(
+        "mx-auto flex h-screen w-full flex-col-reverse items-center lg:max-w-[800px]"
+      )}
+    >
       <form
         onSubmit={onSubmit}
-        className="flex w-full w-full lg:max-w-[800px] flex-row  items-center items-center justify-center rounded-md bg-white p-4 shadow-md"
+        className="flex w-full w-full flex-row items-center  items-center justify-center rounded-md bg-white p-4 shadow-md lg:max-w-[800px]"
       >
         <Input.Group className="flex w-full flex-grow flex-row items-center gap-3">
           <Input.TextArea
@@ -58,7 +63,7 @@ const ChatPage = ({
             value={text}
             onChange={(e) => setText(e.target.value)}
             size="large"
-            placeholder="Type your message here..."
+            placeholder={common("input.placeholder message")}
             className="flex-grow"
             style={{ width: "calc(100% - 200px)" }}
           />
@@ -67,7 +72,7 @@ const ChatPage = ({
               loading: isLoading,
             })}
           >
-            send
+            {common("button.send")}
           </button>
         </Input.Group>
       </form>
@@ -79,7 +84,8 @@ const ChatPage = ({
           id={id}
         />
       </div>
-    </div>)
+    </div>
+  );
 };
 
 export default ChatPage;
