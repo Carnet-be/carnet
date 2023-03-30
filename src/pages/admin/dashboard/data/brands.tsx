@@ -24,9 +24,10 @@ import { TableRowSelection } from "antd/es/table/interface";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import Image from "next/image";
 import axios from "axios";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
- 
+
   if (!session) {
     return {
       redirect: {
@@ -37,12 +38,16 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-    props: {},
+    props: {
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
+    },
   };
 };
 
-
-export function CheckImage(path:string) {
+export function CheckImage(path: string) {
   axios
     .get(path)
     .then(() => {
@@ -55,7 +60,7 @@ export function CheckImage(path:string) {
 const Brands = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  const [edit,setedit]=useState<Brand|undefined>(undefined)
+  const [edit, setedit] = useState<Brand | undefined>(undefined);
   const [open, setOpen] = useState<boolean | undefined>(false);
   const [modal, contextHolder] = Modal.useModal();
   const { data: brands, isLoading, refetch } = trpc.admin.getBrand.useQuery();
@@ -71,43 +76,43 @@ const Brands = (
       },
       onSuccess: () => {
         toast.success("Brand(s) added");
-        setOpen(false)
+        setOpen(false);
         refetch();
       },
     });
-   
-    const { mutate: updateBrand } =
-    trpc.admin.updateBrand.useMutation({
-      onError: (err) => {
-        console.log("error message", err.message);
-        if (err.message.includes("Unique constraint failed on the fields")) {
-          toast.error("Brand already exists");
-        } else {
-          toast.error("Error encountered");
-        }
-      },
-      onSuccess: () => {
-        toast.success("Brand updated");
-        setedit(undefined);
-        refetch();
-      },
-    });
-    const { mutate: removeBrand, isLoading: isRemoving } =
+
+  const { mutate: updateBrand } = trpc.admin.updateBrand.useMutation({
+    onError: (err) => {
+      console.log("error message", err.message);
+      if (err.message.includes("Unique constraint failed on the fields")) {
+        toast.error("Brand already exists");
+      } else {
+        toast.error("Error encountered");
+      }
+    },
+    onSuccess: () => {
+      toast.success("Brand updated");
+      setedit(undefined);
+      refetch();
+    },
+  });
+  const { mutate: removeBrand, isLoading: isRemoving } =
     trpc.admin.removeBrand.useMutation({
       onError: (err) => {
         console.log("error message", err.message);
-          toast.error("Error encountered");
+        toast.error("Error encountered");
       },
       onSuccess: () => {
         toast.success("Brand(s) removed");
-       
+
         refetch();
       },
     });
   const fileRef = useRef<HTMLInputElement>(null);
-  const { data: models, isLoading:isLoadingModels } = trpc.admin.getModel.useQuery();
+  const { data: models, isLoading: isLoadingModels } =
+    trpc.admin.getModel.useQuery();
 
-  const expandedColumns =(record: Brand)=>{
+  const expandedColumns = (record: Brand) => {
     const columns: ColumnsType<Model> = [
       {
         title: "Id",
@@ -130,16 +135,21 @@ const Brands = (
         dataIndex: "year",
         width: "150px",
         key: "year",
-        align:"center",
+        align: "center",
         render: (v) => <Tag color="green">{v}</Tag>,
       },
-     
-    ]
-    return  <MyTable
-    loading={isLoadingModels}
-    columns={columns as ColumnsType<TableType>}
-    data={(models || []).map((b)=>({...b,key:b.id})).filter((f)=>f.brand_id==record.id)} options={{pagination:false}}  />;
-  }
+    ];
+    return (
+      <MyTable
+        loading={isLoadingModels}
+        columns={columns as ColumnsType<TableType>}
+        data={(models || [])
+          .map((b) => ({ ...b, key: b.id }))
+          .filter((f) => f.brand_id == record.id)}
+        options={{ pagination: false }}
+      />
+    );
+  };
   const columns: ColumnsType<Brand> = [
     {
       title: "Id",
@@ -155,11 +165,18 @@ const Brands = (
       width: "80px",
       dataIndex: "logo",
       key: "logo",
-      render: (_,v) => <Image onError={(e)=>{
-        console.log(e)
-        e.currentTarget.hidden=true
-      }} 
-       src={"/assets/Cars/"+v.name+".svg"} alt="logo" width={60} height={60}/>,
+      render: (_, v) => (
+        <Image
+          onError={(e) => {
+            console.log(e);
+            e.currentTarget.hidden = true;
+          }}
+          src={"/assets/Cars/" + v.name + ".svg"}
+          alt="logo"
+          width={60}
+          height={60}
+        />
+      ),
     },
     {
       title: "Name",
@@ -173,16 +190,16 @@ const Brands = (
       dataIndex: "country",
       width: "150px",
       key: "country",
-      render: (v) => v||"---",
+      render: (v) => v || "---",
     },
     {
       title: "Description",
       dataIndex: "description",
-    
+
       key: "description",
-      render: (v) => <p className="text-[12px] opacity-50">{v||"---"}</p>,
+      render: (v) => <p className="text-[12px] opacity-50">{v || "---"}</p>,
     },
-    
+
     {
       title: "Models",
       dataIndex: "models",
@@ -202,7 +219,7 @@ const Brands = (
           id={user.id.toString()}
           onDelete={() => removeBrand([user.id])}
           onEdit={() => {
-            setedit(user)
+            setedit(user);
           }}
         />
       ),
@@ -230,8 +247,8 @@ const Brands = (
           /* Update state */
           toast.dismiss();
           const lines = data.map((d: any) => ({
-            name: d.name|| d.Name,
-            country:d.country || d.Country,
+            name: d.name || d.Name,
+            country: d.country || d.Country,
             description: d.description || d.Description,
           }));
           console.log(data);
@@ -254,7 +271,6 @@ const Brands = (
   };
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
- 
   const rowSelection: TableRowSelection<Brand> = {
     selectedRowKeys,
     // onChange: onSelectChange,
@@ -268,34 +284,36 @@ const Brands = (
 
     selections: [Table.SELECTION_ALL],
   };
-  const onExport=()=>{
-    const exportInstance = new tableExport(brands||[], [
+  const onExport = () => {
+    const exportInstance = new tableExport(brands || [], [
       {
-      title: "Name",
-      dataIndex: "name",
+        title: "Name",
+        dataIndex: "name",
       },
-          {
-      title: "Country",
-      dataIndex: "country",
-    },
-        {
-      title: "Description",
-      dataIndex: "description",
-    },
-   
-  ], );
-  exportInstance.download("brands", "xlsx");
-  }
+      {
+        title: "Country",
+        dataIndex: "country",
+      },
+      {
+        title: "Description",
+        dataIndex: "description",
+      },
+    ]);
+    exportInstance.download("brands", "xlsx");
+  };
   return (
     <Dashboard type="ADMIN">
       <SwitcherData />
 
       <div className="mt-6 flex flex-col">
         <div className="flex flex-row items-center justify-end gap-6 py-3">
-          <button onClick={()=>removeBrand(selectedRowKeys as number[])} className={cx("btn btn-error btn-sm",{
-            hidden:selectedRowKeys.length===0
-          })}>
-            <DeleteIcon className="text-lg"/>
+          <button
+            onClick={() => removeBrand(selectedRowKeys as number[])}
+            className={cx("btn-error btn-sm btn", {
+              hidden: selectedRowKeys.length === 0,
+            })}
+          >
+            <DeleteIcon className="text-lg" />
           </button>
           <div className="flex-grow"></div>
           <button
@@ -304,12 +322,10 @@ const Brands = (
           >
             add Brand
           </button>
-         
+
           <button
             onClick={onPickfile}
-            className={cx("btn-sm btn items-center gap-2", {
-           
-            })}
+            className={cx("btn-sm btn items-center gap-2", {})}
           >
             <input
               onChange={onImport}
@@ -323,8 +339,8 @@ const Brands = (
           </button>
           <button
             onClick={onExport}
-            hidden={(brands||[]).length===0}
-            className="btn-secondary btn-outline btn-sm btn gap-2"
+            hidden={(brands || []).length === 0}
+            className="btn-outline btn-secondary btn-sm btn gap-2"
           >
             <ExportIcon className="text-lg" />
             Export
@@ -335,7 +351,7 @@ const Brands = (
           loading={isLoading}
           data={brands || []}
           // xScroll={1000}
-          options={{expandedRowRender:expandedColumns}}
+          options={{ expandedRowRender: expandedColumns }}
           columns={columns as ColumnsType<TableType>}
           // columns={columns.filter((c)=>options.includes(c.key))}
         />
@@ -345,7 +361,12 @@ const Brands = (
         onClose={() => setOpen(false)}
         onValide={(b: FBrand) => addBrand({ init: [], brands: [b] })}
       />
-      <ModelBrandUpdate open={edit!=undefined}  brand={edit}  onClose={() => setedit(undefined)}   onValide={(b: FBrand) => updateBrand({id:edit?.id||1,data:b})}/>
+      <ModelBrandUpdate
+        open={edit != undefined}
+        brand={edit}
+        onClose={() => setedit(undefined)}
+        onValide={(b: FBrand) => updateBrand({ id: edit?.id || 1, data: b })}
+      />
     </Dashboard>
   );
 };
@@ -370,7 +391,6 @@ const ModelBrand = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
 
   const { errors } = formState;
 
-
   const onSubmit: SubmitHandler<FBrand> = (data) => onValide(data);
 
   return (
@@ -382,7 +402,7 @@ const ModelBrand = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
         onCancel={onClose}
         footer={[
           <button
-          key={"ok"}
+            key={"ok"}
             onClick={() => onValide(getValues())}
             className={cx("btn-primary btn-sm btn", {
               "btn-disabled": !watch("name"),
@@ -417,43 +437,44 @@ const ModelBrand = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
   );
 };
 
-
-const ModelBrandUpdate = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
-  const  defaultValues= {
+const ModelBrandUpdate = ({
+  brand,
+  open,
+  onClose,
+  onValide,
+}: ModelBrandProps) => {
+  const defaultValues = {
     name: brand?.name,
-    country: brand?.country||"",
-    description: brand?.description||"",
-  }
-  const { register, watch, formState, getValues,setValue } =
-    useForm<FBrand>({
-      defaultValues
-    });
+    country: brand?.country || "",
+    description: brand?.description || "",
+  };
+  const { register, watch, formState, getValues, setValue } = useForm<FBrand>({
+    defaultValues,
+  });
 
   const { errors } = formState;
 
-useEffect(() => {
-  if(brand){
-    console.log('brand', brand)
-    setValue("name",brand.name)
-    setValue("country",brand.country||undefined)
-    setValue("description",brand.description||undefined)
-  }
-
-}, [brand])
-
+  useEffect(() => {
+    if (brand) {
+      console.log("brand", brand);
+      setValue("name", brand.name);
+      setValue("country", brand.country || undefined);
+      setValue("description", brand.description || undefined);
+    }
+  }, [brand]);
 
   const onSubmit: SubmitHandler<FBrand> = (data) => onValide(data);
-const isEditable=()=>{
-  if(watch("name")!==defaultValues.name){
-    return true
-  }
-  if(watch("country")!==defaultValues.country){
-    return true
-  }
-  if(watch("description")!==defaultValues.description){
-    return true
-  }
-}
+  const isEditable = () => {
+    if (watch("name") !== defaultValues.name) {
+      return true;
+    }
+    if (watch("country") !== defaultValues.country) {
+      return true;
+    }
+    if (watch("description") !== defaultValues.description) {
+      return true;
+    }
+  };
   return (
     <>
       <Modal
@@ -463,7 +484,7 @@ const isEditable=()=>{
         onCancel={onClose}
         footer={[
           <button
-          key={"ok"}
+            key={"ok"}
             onClick={() => onValide(getValues())}
             className={cx("btn-primary btn-sm btn", {
               "btn-disabled": !isEditable(),

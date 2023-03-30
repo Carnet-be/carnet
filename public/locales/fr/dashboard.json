@@ -1,5 +1,9 @@
 {
-  "admin": {},
+  "admin": {
+    "text": {
+      "auction page title": "Gestion des enchères"
+    }
+  },
   "auctioneer": {
     "new auction card": {
       "title": "Rejoignez l'excitation : créez votre propre enchère et regardez les enchères arriver !",
@@ -75,6 +79,7 @@
       "completed": "Terminé",
       "published": "Publié",
       "paused": "En pause",
+      "pause": "En pause",
       "confirmation": "Confirmation"
     },
     "color": {

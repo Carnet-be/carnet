@@ -1,26 +1,32 @@
-import { AuctionsPage } from "."
+import { AuctionsPage } from ".";
 
-import { type GetServerSideProps } from 'next';
+import { type GetServerSideProps } from "next";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const session = await getServerAuthSession(ctx);
- 
-    if (!session) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: true,
-        },
-      };
-    }
+  const session = await getServerAuthSession(ctx);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: true,
+      },
+    };
+  }
 
   return {
-    props: {},
+    props: {
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
+    },
   };
 };
-const Pending=()=>{
-    return <AuctionsPage state="published"/>
-}
+const Pending = () => {
+  return <AuctionsPage state="published" />;
+};
 
-export default Pending
+export default Pending;

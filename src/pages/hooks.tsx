@@ -415,5 +415,9 @@ export const useNotif = () => {
       notif.success(common("toast.success"));
       if (callback) callback();
     },
+    loading(callback?: () => void) {
+      notif.loading(common("toast.loading"));
+      if (callback) callback();
+    },
   };
 };

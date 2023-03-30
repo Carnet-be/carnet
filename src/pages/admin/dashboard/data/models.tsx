@@ -18,6 +18,7 @@ import { DeleteIcon, InportIcon } from "@ui/icons";
 import cx from "classnames";
 import { type TableRowSelection } from "antd/es/table/interface";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -32,26 +33,28 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-    props: {},
+    props: {
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
+    },
   };
 };
-const Models = (
-) => {
-
+const Models = () => {
   const { data: models, isLoading, refetch } = trpc.admin.getModel.useQuery();
 
-  const { mutate: removeBrand } =
-    trpc.admin.removeModel.useMutation({
-      onError: (err) => {
-        console.log("error message", err.message);
-        toast.error("Error encountered");
-      },
-      onSuccess: () => {
-        toast.success("Brand(s) removed");
+  const { mutate: removeBrand } = trpc.admin.removeModel.useMutation({
+    onError: (err) => {
+      console.log("error message", err.message);
+      toast.error("Error encountered");
+    },
+    onSuccess: () => {
+      toast.success("Brand(s) removed");
 
-        refetch();
-      },
-    });
+      refetch();
+    },
+  });
   const columns: ColumnsType<Model> = [
     {
       title: "Id",
@@ -74,7 +77,7 @@ const Models = (
       dataIndex: "year",
       width: "150px",
       key: "year",
-      align:"center",
+      align: "center",
       render: (v) => <Tag>{v}</Tag>,
     },
     {
@@ -183,28 +186,25 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
     setIsModalOpen(true);
   };
 
-
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  const { data: brands } =
-    trpc.admin.getBrand.useQuery();
-  const { mutate: addModel } =
-    trpc.admin.addModel.useMutation({
-      onError: (err) => {
-        console.log("error message", err.message);
-        if (err.message.includes("Unique constraint failed on the fields")) {
-          toast.error("Brand already exists");
-        } else {
-          toast.error("Error encountered");
-        }
-      },
-      onSuccess: () => {
-        toast.success("Brand(s) added");
-        onSuccess();
-        handleCancel()
-      },
-    });
+  const { data: brands } = trpc.admin.getBrand.useQuery();
+  const { mutate: addModel } = trpc.admin.addModel.useMutation({
+    onError: (err) => {
+      console.log("error message", err.message);
+      if (err.message.includes("Unique constraint failed on the fields")) {
+        toast.error("Brand already exists");
+      } else {
+        toast.error("Error encountered");
+      }
+    },
+    onSuccess: () => {
+      toast.success("Brand(s) added");
+      onSuccess();
+      handleCancel();
+    },
+  });
   const onImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log(event.currentTarget.files);
 
@@ -226,14 +226,13 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
           /* Update state */
           toast.dismiss();
           const lines = data.map((d: any) => ({
-            name: (d.name||"blank").toString(),
+            name: (d.name || "blank").toString(),
             year: d.year,
             description: d.description,
           }));
           console.log(data);
-    
-    
-          addModel({ brandId:brandSelected?.id||1,models: lines });
+
+          addModel({ brandId: brandSelected?.id || 1, models: lines });
         }
       };
       reader.readAsBinaryString(file);
@@ -242,9 +241,9 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
   const [brandSelected, setbrandSelected] = useState<Brand | undefined>(
     undefined
   );
-  const [search, setsearch] = useState("")
+  const [search, setsearch] = useState("");
   const onPickfile = () => fileRef.current?.click();
-  const [parent]=useAutoAnimate()
+  const [parent] = useAutoAnimate();
   return (
     <>
       <button
@@ -257,19 +256,18 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
       <Modal
         title="Choose Brand"
         open={isModalOpen}
-       
         destroyOnClose={false}
         onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>
-         cancel
-        </Button>,
+            cancel
+          </Button>,
           <Button
-          key={"ok"}
-          type="primary"
+            key={"ok"}
+            type="primary"
             onClick={onPickfile}
             disabled={!brandSelected}
-           >
+          >
             <input
               onChange={onImport}
               hidden
@@ -277,30 +275,39 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
               type="file"
               accept=".xlsx, .xls"
             />
-           
-           confirm
-          </Button>
+            confirm
+          </Button>,
         ]}
-        
       >
-        <Input value={search} onChange={(e)=>setsearch(e.target.value)} width={"200px"} placeholder="Search" />
-        <div ref={parent as any} className="mx-auto my-3 flex w-[90%]  flex-wrap items-center gap-3 border-dashed">
-          {brands&& brands.filter((b)=>b.name.includes(search)).map((b, i) => {
-              return (
-                <Tag
-                key={i}
-                  onClick={() => setbrandSelected(b)}
-                  color={
-                    brandSelected && brandSelected.id == b.id
-                      ? "blue"
-                      : "magenta"
-                  }
-                  className="my-0 cursor-pointer"
-                >
-                  {b.name}
-                </Tag>
-              );
-            })}
+        <Input
+          value={search}
+          onChange={(e) => setsearch(e.target.value)}
+          width={"200px"}
+          placeholder="Search"
+        />
+        <div
+          ref={parent as any}
+          className="mx-auto my-3 flex w-[90%]  flex-wrap items-center gap-3 border-dashed"
+        >
+          {brands &&
+            brands
+              .filter((b) => b.name.includes(search))
+              .map((b, i) => {
+                return (
+                  <Tag
+                    key={i}
+                    onClick={() => setbrandSelected(b)}
+                    color={
+                      brandSelected && brandSelected.id == b.id
+                        ? "blue"
+                        : "magenta"
+                    }
+                    className="my-0 cursor-pointer"
+                  >
+                    {b.name}
+                  </Tag>
+                );
+              })}
         </div>
       </Modal>
     </>

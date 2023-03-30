@@ -15,6 +15,7 @@
     "failed": "Opération échouée",
     "success": "Opération réussie",
     "error": "Erreur rencontrée",
+    "loading": "En cours",
     "auth": {
       "success": "Vous êtes connectés avec succès",
       "failed": "Echec de la connexion",
@@ -73,7 +74,8 @@
     "week": "Semaine",
     "weeks": "Semaines",
     "no data": "Aucune donnée",
-    "add time": "Ajouter du temps"
+    "add time": "Ajouter du temps",
+    "make winner": "Choisir le gagnant"
   },
   "table": {
     "id": "ID",
@@ -83,6 +85,7 @@
     "date": "Date",
     "status": "Statut",
     "action": "Action",
+    "actions": "Actions",
     "title": "Titre",
     "number of bids": "Nombre d'offres",
     "numero": "Numéro",
@@ -90,6 +93,21 @@
     "value": "Valeur",
     "time left": "Temps restant",
     "expired": "Expiré",
-    "auction": "Enchère"
+    "auction": "Enchère",
+    "auctions": "Enchères",
+    "bidder": "Offreur",
+    "date pub": "Date pub",
+    "bids": "Offres",
+    "expected price": "Prix attendu",
+    "latest bid": "Dernière offre",
+    "auctioneer": "Enchérisseur",
+    "completed at": "Terminé",
+    "starting price": "Prix de départ",
+    "commission": "Commission",
+    "ended at": "Terminé"
+  },
+  "tooltip": {
+    "contact": "contact",
+    "cancel winner": "Annuler le gagnant"
   }
 }

@@ -6,8 +6,8 @@ import { trpc } from "../utils/trpc";
 import { db } from "@utils/firebase";
 import { query, collection, where, onSnapshot } from "firebase/firestore";
 
-import { toast } from 'react-toastify';
-import { appWithTranslation } from 'next-i18next'
+import { toast } from "react-toastify";
+import { appWithTranslation } from "next-i18next";
 import "../styles/globals.css";
 import { Toaster } from "react-hot-toast";
 import Head from "next/head";
@@ -17,10 +17,10 @@ import { useRouter } from "next/router";
 import { messaging, msgKey } from "@utils/firebase";
 import { getToken } from "firebase/messaging";
 import OneSignal from "react-onesignal";
-import { ToastContainer } from 'react-toastify';
-import {  useNotifyMe } from "./hooks";
+import { ToastContainer } from "react-toastify";
+import { useNotifyMe } from "./hooks";
 import { IntlProvider } from "react-intl";
-
+import "@utils/i18n";
 // import en from "../lang/en.json";
 // import fr from "../lang/fr.json";
 // const messages = {
@@ -28,28 +28,27 @@ import { IntlProvider } from "react-intl";
 //   en,
 //   fr,
 // };
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
-const MyApp = ({ Component, pageProps: { session, ...pageProps } }:any) => {
+const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
   const { locale } = useRouter();
   //i18next.reloadResources();
   //init moment locale
   useEffect(() => {
     if (locale) {
-      if(locale=="en"){
+      if (locale == "en") {
         moment.locale("en");
-      }else{
-      import(`moment/locale/${locale}`).then(() => {
-        moment.locale(locale);
-      });
-    }
+      } else {
+        import(`moment/locale/${locale}`).then(() => {
+          moment.locale(locale);
+        });
+      }
     }
   }, [locale]);
 
   return (
     // <IntlProvider locale={locale||"fr"}  messages={messages[locale as Locale||"fr"]}>
     <SessionProvider session={session}>
-      
       <Head>
         <title>CARNET</title>
         <link
@@ -77,9 +76,8 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }:any) => {
         <Component {...pageProps} />
       </App>
       <Toaster />
-      <ToastContainer position="bottom-right" autoClose={8000}/>
+      <ToastContainer position="bottom-right" autoClose={8000} />
       <audio
-         
         id="audio"
         controls
         src="/audio/notification_v2.mp3"
@@ -90,12 +88,10 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }:any) => {
   );
 };
 
-const App = ({ children }:{children:ReactNode}) => {
+const App = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-   useNotifyMe({uid:"123456"})
-  return <>{children}
-  
-  </>;
+  useNotifyMe({ uid: "123456" });
+  return <>{children}</>;
 };
 
 export default trpc.withTRPC(appWithTranslation(MyApp));

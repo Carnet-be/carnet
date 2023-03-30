@@ -25,6 +25,7 @@ import aucitonaireIcon from "@assets/auctionnaire.png";
 import bidderIcon from "@assets/bidder.png";
 import Image from "next/image";
 import { DeleteIcon } from "@ui/icons";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -48,6 +49,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       user,
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "dashboard",
+      ]))
     },
   };
 };

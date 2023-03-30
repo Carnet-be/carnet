@@ -17,21 +17,27 @@ import { type User } from "@prisma/client";
 import { Drawer } from "rsuite";
 import { TelIcon } from "../../../ui/icons";
 import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const session = await getServerAuthSession(ctx);
+  const session = await getServerAuthSession(ctx);
 
-    if (!session) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: true,
-        },
-      };
-    }
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: true,
+      },
+    };
+  }
 
   return {
-    props: {},
+    props: {
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
+    },
   };
 };
 const AdminDashboard: NextPage = () => {
@@ -54,7 +60,6 @@ const AdminDashboard: NextPage = () => {
       onError: (err) => {
         console.log("err", err);
         toast.error("Echec de la suppression");
-
       },
       onSuccess() {
         toast.success("Suppression réussi");
@@ -83,43 +88,72 @@ const AdminDashboard: NextPage = () => {
         }
         hasData={data ? true : false}
       >
-        <h6 className={cx("pt-[20px] pb-[10px] italic opacity-30",{
-          hidden:data?.staffs.filter(s=>s.isActive).length==0
-        })}>
+        <h6
+          className={cx("pt-[20px] pb-[10px] italic opacity-30", {
+            hidden: data?.staffs.filter((s) => s.isActive).length == 0,
+          })}
+        >
           Comptes actifs
         </h6>
-        <ul ref={animateStaff as any} className="flex flex-col gap-4 z-0">
-          {data?.staffs.filter(s=>s.isActive).map((d, i) => {
-            return <StaffItem key={i} item={d} onClick={() => setitem(d)} />;
-          })}
+        <ul ref={animateStaff as any} className="z-0 flex flex-col gap-4">
+          {data?.staffs
+            .filter((s) => s.isActive)
+            .map((d, i) => {
+              return <StaffItem key={i} item={d} onClick={() => setitem(d)} />;
+            })}
         </ul>
-        <h6 className={cx("pt-[20px] pb-[10px] italic opacity-30",{
-          hidden:data?.staffs.filter(s=>!s.isActive).length==0
-        })}>
+        <h6
+          className={cx("pt-[20px] pb-[10px] italic opacity-30", {
+            hidden: data?.staffs.filter((s) => !s.isActive).length == 0,
+          })}
+        >
           Comptes inactifs
         </h6>
-        <ul ref={animateStaff as any} className="flex flex-col gap-4 opacity-80">
-          {data?.staffs.filter(s=>!s.isActive).map((d, i) => {
-            return <StaffItem key={i} item={d} onClick={() => setitem(d)} />;
-          })}
-        
+        <ul
+          ref={animateStaff as any}
+          className="flex flex-col gap-4 opacity-80"
+        >
+          {data?.staffs
+            .filter((s) => !s.isActive)
+            .map((d, i) => {
+              return <StaffItem key={i} item={d} onClick={() => setitem(d)} />;
+            })}
         </ul>
-        <h6 className={cx("pt-[20px] pb-[10px] italic opacity-30",{
-          hidden:data?.demandes.length===0
-        })}>En attente</h6>
+        <h6
+          className={cx("pt-[20px] pb-[10px] italic opacity-30", {
+            hidden: data?.demandes.length === 0,
+          })}
+        >
+          En attente
+        </h6>
         <ul ref={animateDemande as any} className="flex flex-col gap-4">
           {data?.demandes.map((d, i) => {
             return (
-              <div key={i} className="rounded-lg bg-white py-4 px-2 flex flex-row justify-between group">
-                       <h6 className="flex items-center py-2">{d.username}(<p className="text-sm italic text-amber-600 opacity-75">{d.email}</p>)</h6>
-                 <button onClick={()=>{
-                    supprimer(d.id)
-                  }} className={cx("btn btn-error btn-outline flex-row gap-2  hidden btn-sm group-hover:flex",{
-                  loading:suppressionLoading
-                 })}>
-                  <DeleteUserIcon  className="icon"/>
+              <div
+                key={i}
+                className="group flex flex-row justify-between rounded-lg bg-white py-4 px-2"
+              >
+                <h6 className="flex items-center py-2">
+                  {d.username}(
+                  <p className="text-sm italic text-amber-600 opacity-75">
+                    {d.email}
+                  </p>
+                  )
+                </h6>
+                <button
+                  onClick={() => {
+                    supprimer(d.id);
+                  }}
+                  className={cx(
+                    "btn-outline btn-error btn-sm btn hidden  flex-row gap-2 group-hover:flex",
+                    {
+                      loading: suppressionLoading,
+                    }
+                  )}
+                >
+                  <DeleteUserIcon className="icon" />
                   supprimer
-                 </button>
+                </button>
               </div>
             );
           })}

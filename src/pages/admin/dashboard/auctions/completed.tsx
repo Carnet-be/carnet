@@ -17,7 +17,13 @@ import MyTable, {
   ActionTable,
   TableType,
 } from "@ui/components/table";
-import { AuctionIcon, CheckIcon, EmailIcon, PauseIcon, WinIcon } from "@ui/icons";
+import {
+  AuctionIcon,
+  CheckIcon,
+  EmailIcon,
+  PauseIcon,
+  WinIcon,
+} from "@ui/icons";
 import { trpc } from "@utils/trpc";
 import { useState } from "react";
 
@@ -32,6 +38,8 @@ import { SwitcherAuctions } from ".";
 import { MdOutlineCancel } from "react-icons/md";
 import LogAuction from "@ui/components/logAuction";
 import { useAdminDashboardStore } from "../../../../state";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useLang, useNotif } from "../../../hooks";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -45,36 +53,44 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-    props: {},
+    props: {
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
+    },
   };
 };
 
 const Completed = () => {
+  const { text: common } = useLang(undefined);
+  const tab = (s: string) => common(`table.${s}`);
+  const { text } = useLang({
+    file: "dashboard",
+    selector: "admin",
+  });
+  const { loading, succes, error } = useNotif();
   const {
     data: auctions,
     isLoading,
     refetch,
   } = trpc.auctionnaire.getCompleted.useQuery();
-  const {reload}=useAdminDashboardStore(state=>state)
+  const { reload } = useAdminDashboardStore((state) => state);
   const { mutate: cancelWinner } = trpc.auctionnaire.cancelWinner.useMutation({
-    onMutate: () => {
-      toast.loading("In process");
-    },
     onError: (err) => {
       console.log(err);
-      toast.dismiss();
-      toast.error("Faild to cancel");
+      error();
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Success");
+      succes();
       refetch();
-      reload()
+      reload();
     },
   });
   const columns: ColumnsType<Auction> = [
     {
-      title: "Name",
+      title: tab("name"),
 
       // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
       dataIndex: "name",
@@ -88,7 +104,7 @@ const Completed = () => {
     },
 
     {
-      title: "Completed At",
+      title: tab("completed at"),
 
       dataIndex: "closedAt",
       key: "createAt",
@@ -97,11 +113,11 @@ const Completed = () => {
       render: (v, a) => (
         <div className="flex flex-row items-center">
           <div>
-          {renderDate(v, "DD/MM/YYYY")}
-          <div className="flex gap-1">
-            at:
-          {renderDate(v, "HH:mm:ss")}
-          </div>
+            {renderDate(v, "DD/MM/YYYY")}
+            <div className="flex gap-1">
+              at:
+              {renderDate(v, "HH:mm:ss")}
+            </div>
           </div>
           <LogAuction id={a.id} />
         </div>
@@ -109,7 +125,7 @@ const Completed = () => {
     },
 
     {
-      title: "Starting Price",
+      title: tab("starting price"),
       dataIndex: "starting_price",
       align: "right",
       key: "starting_price",
@@ -117,7 +133,7 @@ const Completed = () => {
     },
 
     {
-      title: "Value",
+      title: tab("value"),
       dataIndex: "value",
       align: "right",
       key: "value",
@@ -129,7 +145,7 @@ const Completed = () => {
       ),
     },
     {
-      title: "Commission",
+      title: tab("commission"),
       dataIndex: "profit",
       align: "right",
       key: "profit",
@@ -148,78 +164,59 @@ const Completed = () => {
       },
     },
     {
-      title: "Auctioner",
+      title: tab("auctioneer"),
 
       // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
       dataIndex: "auctionnaire",
       key: "auctionnaire",
       render: (a, v) => (
         <div className="flex flex-row gap-1">
-      
-        <Tooltip
-          title="Contact"
-          className="flex flex-row items-center justify-center text-primary"
-        >
-          <Button
-         
-            shape="circle"
-            icon={<EmailIcon className="text-lg" />}
-          />
-        </Tooltip>
-        <div className="flex flex-col">
+          <Tooltip
+            title="Contact"
+            className="flex flex-row items-center justify-center text-primary"
+          >
+            <Button shape="circle" icon={<EmailIcon className="text-lg" />} />
+          </Tooltip>
+          <div className="flex flex-col">
+            <h6>{(a as TUser).username}</h6>
 
-       
-          <h6>
-            {
-            
-              (a as TUser).username
-            }
-          </h6>
-       
-          <span className="text-[12px] italic text-primary">
-            #{(a as TUser).id}
-          </span>
+            <span className="text-[12px] italic text-primary">
+              #{(a as TUser).id}
+            </span>
           </div>
         </div>
       ),
     },
     {
-      title: "Bidder",
+      title: tab("bidder"),
 
       // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
       dataIndex: "bid",
       key: "bid",
       render: (_, v) => (
         <div className="flex flex-row gap-1">
-      
-        <Tooltip
-          title="Contact"
-          className="flex flex-row items-center justify-center text-primary"
-        >
-          <Button
-         
-            shape="circle"
-            icon={<EmailIcon className="text-lg" />}
-          />
-        </Tooltip>
-        <div className="flex flex-col">
-
-       
-          <h6>
-            {
-              (v as TAuction).bids.find((d) => d.winner == true)?.bidder
-                .username
-            }
-          </h6>
-          <span className="text-[12px] italic text-primary">
-            #{(v as TAuction).bids.find((d) => d.winner == true)?.bidder.id}
-          </span>
-         </div>
+          <Tooltip
+            title={common("tooltip.contact")}
+            className="flex flex-row items-center justify-center text-primary"
+          >
+            <Button shape="circle" icon={<EmailIcon className="text-lg" />} />
+          </Tooltip>
+          <div className="flex flex-col">
+            <h6>
+              {
+                (v as TAuction).bids.find((d) => d.winner == true)?.bidder
+                  .username
+              }
+            </h6>
+            <span className="text-[12px] italic text-primary">
+              #{(v as TAuction).bids.find((d) => d.winner == true)?.bidder.id}
+            </span>
+          </div>
         </div>
       ),
     },
     {
-      title: "Actions",
+      title: tab("actions"),
 
       dataIndex: "actions",
       key: "actions",
@@ -231,9 +228,8 @@ const Completed = () => {
             id={auction.id}
             onCustom={() => ({
               icon: <MdOutlineCancel className="text-lg text-yellow-500" />,
-              tooltip: "Cancel winner",
+              tooltip: common("tootlip.cancel winner"),
               onClick: () => {
-                console.log("make winner");
                 cancelWinner({
                   auction_id: auction.id,
                 });
@@ -263,7 +259,7 @@ const Completed = () => {
   return (
     <>
       <Dashboard type="ADMIN">
-        <BigTitle title="Management of auctions" />
+        <BigTitle title={text("text.auction page title")} />
         <SwitcherAuctions />
         <div className="mt-6 flex w-full flex-col items-end">
           <MyTable

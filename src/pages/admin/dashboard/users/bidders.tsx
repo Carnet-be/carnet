@@ -14,6 +14,7 @@ import { Tag } from "antd";
 import toast from "react-hot-toast";
 import { CheckIcon } from "@ui/icons";
 import cx from "classnames";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -27,7 +28,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-    props: {},
+    props: {
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
+    },
   };
 };
 const Bidders = (
@@ -70,16 +76,16 @@ const Bidders = (
   });
 
   const columns: ColumnsType<User> = [
-  
     {
       title: "Username",
       dataIndex: "username",
       key: "username",
-      render: (v,u) => <div className="flex flex-col">
-        <h6>{v}</h6>
-        <span className="text-[12px] italic text-primary">#{u.id}</span>
-      
-      </div>,
+      render: (v, u) => (
+        <div className="flex flex-col">
+          <h6>{v}</h6>
+          <span className="text-[12px] italic text-primary">#{u.id}</span>
+        </div>
+      ),
     },
     {
       title: "Phone",
@@ -120,7 +126,7 @@ const Bidders = (
             setUserStatus({ isActive: e.target.checked, user_id: b.id })
           }
           type="checkbox"
-          className="toggle toggle-md toggle-primary"
+          className="toggle-primary toggle toggle-md"
           checked={v}
         />
       ),

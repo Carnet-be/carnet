@@ -17,7 +17,13 @@ import MyTable, {
   ActionTable,
   TableType,
 } from "@ui/components/table";
-import { AuctionIcon, CheckIcon, EmailIcon, PauseIcon, WinIcon } from "@ui/icons";
+import {
+  AuctionIcon,
+  CheckIcon,
+  EmailIcon,
+  PauseIcon,
+  WinIcon,
+} from "@ui/icons";
 import { trpc } from "@utils/trpc";
 import { useState } from "react";
 
@@ -30,6 +36,7 @@ import { BiPause } from "react-icons/bi";
 import moment from "moment";
 import LogAuction from "@ui/components/logAuction";
 import { useAdminDashboardStore } from "../../../../state";
+import { useLang, useNotif } from "../../../hooks";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -58,32 +65,37 @@ const Auctions = (
 export default Auctions;
 
 export const SwitcherAuctions = () => {
-  const {pause,pending,published,confirmation,completed}=useAdminDashboardStore(state=>state)
+  const { text } = useLang({
+    file: "dashboard",
+    selector: "auction",
+  });
+  const { pause, pending, published, confirmation, completed } =
+    useAdminDashboardStore((state) => state);
   const router = useRouter();
   const routers = [
     {
-      title: "Published",
-      value:published,
+      title: text("status.published"),
+      value: published,
       route: "/admin/dashboard/auctions/published",
     },
     {
-      title: "Pending",
-      value:pending,
+      title: text("status.pending"),
+      value: pending,
       route: "/admin/dashboard/auctions/pending",
     },
     {
-      title: "Pause",
-      value:pause,
+      title: text("status.paused"),
+      value: pause,
       route: "/admin/dashboard/auctions/pause",
     },
     {
-      title: "Confirmation",
-      value:confirmation,
+      title: text("status.confirmation"),
+      value: confirmation,
       route: "/admin/dashboard/auctions/confirmation",
     },
     {
-      title: "Completed",
-      value:completed,
+      title: text("status.completed"),
+      value: completed,
       route: "/admin/dashboard/auctions/completed",
     },
   ];
@@ -96,7 +108,9 @@ export const SwitcherAuctions = () => {
           <Link
             key={i}
             href={r.route}
-            className={cx("tab gap-3 no-underline flex flex-row items-center", { "tab-active": isActive })}
+            className={cx("tab flex flex-row items-center gap-3 no-underline", {
+              "tab-active": isActive,
+            })}
           >
             {r.title}
             {/* <span className={cx("text-[11px] font-bold px-1 rounded-full",isActive?"bg-white text-primary":"bg-primary text-white opacity-50")}>{r.value}</span> */}
@@ -112,6 +126,13 @@ export const AuctionsPage = ({
 }: {
   state: "published" | "pending" | "pause";
 }) => {
+  const { loading, error, succes } = useNotif();
+  const { text: common } = useLang(undefined);
+  const tab = (s: string) => common(`table.${s}`);
+  const { text } = useLang({
+    file: "dashboard",
+    selector: "admin",
+  });
   const {
     data: auctions,
     isLoading,
@@ -122,16 +143,17 @@ export const AuctionsPage = ({
   });
   const { mutate: makeWinner } = trpc.auctionnaire.makeWinner.useMutation({
     onMutate: () => {
-      toast.loading("In process");
+      loading();
     },
     onError: (err) => {
       console.log(err);
       toast.dismiss();
-      toast.error("Failed");
+      error();
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Success");
+
+      succes();
       refetch();
     },
   });
@@ -141,23 +163,23 @@ export const AuctionsPage = ({
     });
   const { mutate: deleteAuction } = trpc.global.delete.useMutation({
     onMutate: () => {
-      toast.loading("In process");
+      loading();
     },
     onError: (err) => {
       console.log(err);
       toast.dismiss();
-      toast.error("Faild to delete");
+      error();
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Success");
+      succes();
       refetch();
     },
   });
   const expandedColumns = (record: Auction) => {
     const columns: ColumnsType<Bid> = [
       {
-        title: "Numero",
+        title: tab("numero"),
         width: "80px",
         dataIndex: "numero",
         key: "numero",
@@ -169,7 +191,7 @@ export const AuctionsPage = ({
         ),
       },
       {
-        title: "Id",
+        title: tab("id"),
         width: "150px",
         dataIndex: "id",
         key: "id",
@@ -178,7 +200,7 @@ export const AuctionsPage = ({
         ),
       },
       {
-        title: "Date",
+        title: tab("date"),
         width: "150px",
         dataIndex: "createAt",
         key: "createAt",
@@ -186,7 +208,7 @@ export const AuctionsPage = ({
         render: (v) => renderDate(v, "DD/MM/YYYY HH:mm:ss"),
       },
       {
-        title: "Bidder",
+        title: tab("bidder"),
 
         dataIndex: "bidder",
         key: "bidder",
@@ -201,14 +223,14 @@ export const AuctionsPage = ({
       },
 
       {
-        title: "Value",
+        title: tab("value"),
         dataIndex: "montant",
 
         key: "montant",
         render: (v) => <Price value={v} textStyle="text-sm leading-4" />,
       },
       {
-        title: "Actions",
+        title: tab("actions"),
 
         dataIndex: "actions",
         key: "actions",
@@ -229,7 +251,7 @@ export const AuctionsPage = ({
                   ? undefined
                   : () => ({
                       icon: <WinIcon className="text-lg text-yellow-500" />,
-                      tooltip: "Make winner",
+                      tooltip: common("text.make winner"),
                       onClick: () => {
                         console.log("make winner");
                         makeWinner({
@@ -260,53 +282,53 @@ export const AuctionsPage = ({
   };
   const { mutate: pauseAuction } = trpc.auctionnaire.pauseAuction.useMutation({
     onMutate: () => {
-      toast.loading("In process");
+      loading();
     },
     onError: (err) => {
       console.log(err);
       toast.dismiss();
-      toast.error("Faild to pause");
+      error();
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Success");
+      succes();
       refetch();
     },
   });
   const { mutate: addTime } = trpc.auctionnaire.addTime.useMutation({
     onMutate: () => {
-      toast.loading("In process");
+      loading();
     },
     onError: (err) => {
       console.log(err);
       toast.dismiss();
-      toast.error("Faild to add time");
+      error();
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Success");
+      succes();
       refetch();
     },
   });
 
-  const {mutate:resume}=trpc.auctionnaire.resume.useMutation({
+  const { mutate: resume } = trpc.auctionnaire.resume.useMutation({
     onMutate: () => {
-      toast.loading("In process");
+      loading();
     },
     onError: (err) => {
       console.log(err);
       toast.dismiss();
-      toast.error("Faild to resume");
+      error();
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Success");
+      succes();
       refetch();
     },
-  })
+  });
   const columns: ColumnsType<Auction> = [
     {
-      title: "Name",
+      title: tab("name"),
 
       // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
       dataIndex: "name",
@@ -320,24 +342,26 @@ export const AuctionsPage = ({
     },
 
     {
-      title: "Date pub",
+      title: tab("date pub"),
 
       dataIndex: "createAt",
       key: "createAt",
       width: "100px",
       align: "center",
-      render: (v) => <div>
-        {renderDate(v, "DD/MM/YYYY")}
-    <span className="flex gap-1"> at:   {renderDate(v, "HH:mm:ss")}</span>
-      </div>,
+      render: (v) => (
+        <div>
+          {renderDate(v, "DD/MM/YYYY")}
+          <span className="flex gap-1"> at: {renderDate(v, "HH:mm:ss")}</span>
+        </div>
+      ),
     },
- 
+
     {
-      title: "Bids",
+      title: tab("bids"),
       dataIndex: "bids",
       align: "right",
       key: "bids",
-      className:state==="pending"?"hidden":"",
+      className: state === "pending" ? "hidden" : "",
       width: "70px",
       render: (v) => (
         <div className="flex flex-row items-center justify-end gap-1 text-sm text-primary">
@@ -347,16 +371,16 @@ export const AuctionsPage = ({
       ),
     },
     {
-      title: "Expected Price",
+      title: tab("expected price"),
       dataIndex: "expected_price",
       align: "right",
       key: "expected_price",
       render: (v) => <Price value={v} textStyle="text-sm leading-4" />,
     },
     {
-      title: "Latest Bid",
+      title: tab("latest bid"),
       dataIndex: "latest_bid",
-      className:state==="pending"?"hidden":"",
+      className: state === "pending" ? "hidden" : "",
       align: "right",
       key: "latest_bid",
       render: (v, auction) => {
@@ -366,7 +390,6 @@ export const AuctionsPage = ({
           "--"
         ) : (
           <Price
-            
             value={bids[bids.length - 1]?.montant || 0}
             textStyle="text-sm leading-4"
           />
@@ -374,70 +397,63 @@ export const AuctionsPage = ({
       },
     },
     {
-      title: "Time Left",
+      title: tab("time left"),
       width: "130px",
       dataIndex: "end_date",
       key: "end_date",
       align: "center",
 
-      render: (v, a) => state!="pending"?(
-       <div className="flex flex-row items-center">
-        <RenderTimer
-          onAddTime={(type, time) => {
-            const end_date = moment(a.end_date).add(type,"days").add(time,"hours");
-            addTime({
-              auction_id: a.id,
-              time: end_date.toDate(),
-            });
-            console.log("add time");
-          }}
-          date={v}
-          state={state}
-          init={state === "published" ? undefined : a.pause_date || undefined}
-        />
-        <LogAuction id={a.id}/>
-       </div>
-      ):(
-        <RenderTimer
-          date={v}
-          state={state}
-          init={a.pause_date || undefined}
-        />
-      ),
+      render: (v, a) =>
+        state != "pending" ? (
+          <div className="flex flex-row items-center">
+            <RenderTimer
+              onAddTime={(type, time) => {
+                const end_date = moment(a.end_date)
+                  .add(type, "days")
+                  .add(time, "hours");
+                addTime({
+                  auction_id: a.id,
+                  time: end_date.toDate(),
+                });
+                console.log("add time");
+              }}
+              date={v}
+              state={state}
+              init={
+                state === "published" ? undefined : a.pause_date || undefined
+              }
+            />
+            <LogAuction id={a.id} />
+          </div>
+        ) : (
+          <RenderTimer
+            date={v}
+            state={state}
+            init={a.pause_date || undefined}
+          />
+        ),
     },
     {
-      title: "Auctioner",
+      title: tab("auctioneer"),
 
       // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
       dataIndex: "auctionnaire",
       key: "auctionnaire",
-      className:state!=="pending"?"hidden":"",
+      className: state !== "pending" ? "hidden" : "",
       render: (a, v) => (
         <div className="flex flex-row gap-1">
-      
-        <Tooltip
-          title="Contact"
-          className="flex flex-row items-center justify-center text-primary"
-        >
-          <Button
-         
-            shape="circle"
-            icon={<EmailIcon className="text-lg" />}
-          />
-        </Tooltip>
-        <div className="flex flex-col">
+          <Tooltip
+            title="Contact"
+            className="flex flex-row items-center justify-center text-primary"
+          >
+            <Button shape="circle" icon={<EmailIcon className="text-lg" />} />
+          </Tooltip>
+          <div className="flex flex-col">
+            <h6>{(a as TUser).username}</h6>
 
-       
-          <h6>
-            {
-            
-              (a as TUser).username
-            }
-          </h6>
-       
-          <span className="text-[12px] italic text-primary">
-            #{(a as TUser).id}
-          </span>
+            <span className="text-[12px] italic text-primary">
+              #{(a as TUser).id}
+            </span>
           </div>
         </div>
       ),
@@ -458,7 +474,7 @@ export const AuctionsPage = ({
     //   ),
     // },
     {
-      title: "Actions",
+      title: tab("actions"),
 
       dataIndex: "actions",
       key: "actions",
@@ -505,7 +521,11 @@ export const AuctionsPage = ({
               state != "pause"
                 ? undefined
                 : () => {
-                   resume({id:auction.id,end_date:auction.end_date||new Date(),pause_date:auction.pause_date||new Date()})
+                    resume({
+                      id: auction.id,
+                      end_date: auction.end_date || new Date(),
+                      pause_date: auction.pause_date || new Date(),
+                    });
                   }
             }
           />
@@ -518,19 +538,18 @@ export const AuctionsPage = ({
 
   return (
     <>
-      {auctions?.map((auc, i) => (
-        <CreateAuction
-          isAdmin
-          key={i}
-          auction={auc as any}
-          isEdit={true}
-          id={auc.id}
-          refetch={refetch}
-        />
-      ))}
-
       <Dashboard type="ADMIN">
-        <BigTitle title="Management of auctions" />
+        {auctions?.map((auc, i) => (
+          <CreateAuction
+            isAdmin
+            key={i}
+            auction={auc as any}
+            isEdit={true}
+            id={auc.id}
+            refetch={refetch}
+          />
+        ))}
+        <BigTitle title={text("text.auction page title")} />
         <SwitcherAuctions />
         <div className="mt-6 flex w-full flex-col items-end">
           <MyTable

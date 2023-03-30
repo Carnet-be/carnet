@@ -16,6 +16,7 @@ import { Bid } from '@prisma/client';
 
 import { type GetServerSideProps } from 'next';
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const session = await getServerAuthSession(ctx);
@@ -30,7 +31,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 
   return {
-    props: {},
+    props: {
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "dashboard",
+      ]))
+    },
   };
 };
 const Auctions = () => {

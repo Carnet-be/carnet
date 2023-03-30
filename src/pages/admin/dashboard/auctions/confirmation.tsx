@@ -31,6 +31,8 @@ import { BiPause } from "react-icons/bi";
 import moment from "moment";
 import { SwitcherAuctions } from ".";
 import LogAuction from "@ui/components/logAuction";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useLang, useNotif } from "../../../hooks";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -44,13 +46,25 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-    props: {},
+    props: {
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
+    },
   };
 };
 
 const Confirmation = () => {
-  const [open,setOpen]=useState(false)
-  const [id,setId]=useState<string|undefined>(undefined)
+  const { text: common } = useLang(undefined);
+  const tab = (s: string) => common(`table.${s}`);
+  const { text } = useLang({
+    file: "dashboard",
+    selector: "admin",
+  });
+  const { loading, succes, error } = useNotif();
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState<string | undefined>(undefined);
   const {
     data: auctions,
     isLoading,
@@ -62,24 +76,19 @@ const Confirmation = () => {
     });
 
   const { mutate: makeWinner } = trpc.auctionnaire.makeWinner.useMutation({
-    onMutate: () => {
-      toast.loading("In process");
-    },
     onError: (err) => {
       console.log(err);
-      toast.dismiss();
-      toast.error("Failed");
+      error();
     },
     onSuccess: () => {
-      toast.dismiss();
-      toast.success("Success");
+      succes();
       refetch();
     },
   });
   const expandedColumns = (record: Auction) => {
     const columns: ColumnsType<Bid> = [
       {
-        title: "Numero",
+        title: tab("numero"),
         width: "80px",
         dataIndex: "numero",
         key: "numero",
@@ -91,7 +100,7 @@ const Confirmation = () => {
         ),
       },
       {
-        title: "Id",
+        title: tab("id"),
         width: "150px",
         dataIndex: "id",
         key: "id",
@@ -100,7 +109,7 @@ const Confirmation = () => {
         ),
       },
       {
-        title: "Date",
+        title: tab("date"),
         width: "150px",
         dataIndex: "createAt",
         key: "createAt",
@@ -108,7 +117,7 @@ const Confirmation = () => {
         render: (v) => renderDate(v, "DD/MM/YYYY HH:mm:ss"),
       },
       {
-        title: "Bidder",
+        title: tab("bidder"),
 
         dataIndex: "bidder",
         key: "bidder",
@@ -123,14 +132,14 @@ const Confirmation = () => {
       },
 
       {
-        title: "Value",
+        title: tab("value"),
         dataIndex: "montant",
 
         key: "montant",
         render: (v) => <Price value={v} textStyle="text-sm leading-4" />,
       },
       {
-        title: "Actions",
+        title: tab("actions"),
 
         dataIndex: "actions",
         key: "actions",
@@ -148,9 +157,8 @@ const Confirmation = () => {
               // }}
               onCustom={() => ({
                 icon: <WinIcon className="text-lg text-yellow-500" />,
-                tooltip: "Make winner",
+                tooltip: common("text.make winner"),
                 onClick: () => {
-                  console.log("make winner");
                   makeWinner({
                     auction_id: auction.auction_id,
                     bid_id: auction.id,
@@ -177,23 +185,18 @@ const Confirmation = () => {
     );
   };
   const { mutate: repubishAuction } = trpc.auctionnaire.relancer.useMutation({
-    onMutate: () => {
-      toast.loading("In process");
-    },
     onError: (err) => {
       console.log(err);
-      toast.dismiss();
-      toast.error("Faild to republish");
+      error();
     },
     onSuccess: () => {
-      toast.dismiss();
-      toast.success("Success");
+      succes();
       refetch();
     },
   });
   const columns: ColumnsType<Auction> = [
     {
-      title: "Name",
+      title: tab("name"),
 
       // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
       dataIndex: "name",
@@ -207,7 +210,7 @@ const Confirmation = () => {
     },
 
     {
-      title: "Ended at",
+      title: tab("ended at"),
 
       dataIndex: "end_date",
       key: "end_date",
@@ -220,10 +223,9 @@ const Confirmation = () => {
         </div>
       ),
     },
-  
 
     {
-      title: "Bids",
+      title: tab("bids"),
       dataIndex: "bids",
       align: "right",
       key: "bids",
@@ -236,7 +238,7 @@ const Confirmation = () => {
       ),
     },
     {
-      title: "Expected Price",
+      title: tab("expected price"),
       dataIndex: "expected_price",
       align: "right",
       key: "expected_price",
@@ -244,7 +246,7 @@ const Confirmation = () => {
     },
 
     {
-      title: "Latest Bid",
+      title: tab("lastest bid"),
       dataIndex: "latest_bid",
       align: "right",
       key: "latest_bid",
@@ -278,7 +280,7 @@ const Confirmation = () => {
     //   ),
     // },
     {
-      title: "Actions",
+      title: tab("actions"),
 
       dataIndex: "actions",
       key: "actions",
@@ -298,7 +300,7 @@ const Confirmation = () => {
               setId(auction.id);
               setOpen(true);
             }}
-            
+
             // onView={state!="published"?undefined:() => {
             //   console.log("view");
             // }}
@@ -320,11 +322,18 @@ const Confirmation = () => {
           refetch={refetch}
         />
       ))}
-   <GetTime onAddTime={(a,b)=>{
-      repubishAuction({auction_id:id||"",duration:moment().add(a,"days").add(b,"hours").toDate()})
-   }} isOpen={open && id!==undefined} setOpen={(b)=>setOpen(b)}/>
+      <GetTime
+        onAddTime={(a, b) => {
+          repubishAuction({
+            auction_id: id || "",
+            duration: moment().add(a, "days").add(b, "hours").toDate(),
+          });
+        }}
+        isOpen={open && id !== undefined}
+        setOpen={(b) => setOpen(b)}
+      />
       <Dashboard type="ADMIN">
-        <BigTitle title="Management of auctions" />
+        <BigTitle title={text("text.auction page title")} />
         <SwitcherAuctions />
         <div className="mt-6 flex w-full flex-col items-end">
           <MyTable
@@ -343,14 +352,15 @@ const Confirmation = () => {
 export default Confirmation;
 
 export const GetTime = ({
-isOpen,setOpen,
+  isOpen,
+  setOpen,
   onAddTime,
 }: {
-isOpen: boolean;
-setOpen: (value: boolean) => void;
-  onAddTime: (value:number,hour:number) => void;
+  isOpen: boolean;
+  setOpen: (value: boolean) => void;
+  onAddTime: (value: number, hour: number) => void;
 }) => {
- 
+  const { text: common } = useLang(undefined);
   const [value, setValue] = useState(0);
   const [hour, setHour] = useState(0);
   const showModal = () => {
@@ -358,7 +368,7 @@ setOpen: (value: boolean) => void;
   };
 
   const handleOk = () => {
-   onAddTime(value,hour);
+    onAddTime(value, hour);
     setOpen(false);
   };
 
@@ -368,28 +378,27 @@ setOpen: (value: boolean) => void;
 
   return (
     <>
-    <Modal
-      title="Add Time"
-      open={isOpen}
-      onOk={handleOk}
-      onCancel={handleCancel}
-    >
-     <div className="flex flex-row gap-4">
-     <InputNumber
-        addonAfter={"Day(s)"}
-        defaultValue={0}
-        value={value}
-        onChange={(e) => setValue(e || 0)}
-      />
-       <InputNumber
-        addonAfter={"Hour(s)"}
-        defaultValue={0}
-        value={hour}
-        onChange={(e) => setHour(e || 0)}
-      />
-     </div>
-    </Modal>
-  </>
-   
+      <Modal
+        title={common("text.add time")}
+        open={isOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <div className="flex flex-row gap-4">
+          <InputNumber
+            addonAfter={"Day(s)"}
+            defaultValue={0}
+            value={value}
+            onChange={(e) => setValue(e || 0)}
+          />
+          <InputNumber
+            addonAfter={"Hour(s)"}
+            defaultValue={0}
+            value={hour}
+            onChange={(e) => setHour(e || 0)}
+          />
+        </div>
+      </Modal>
+    </>
   );
 };
