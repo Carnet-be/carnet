@@ -42,8 +42,8 @@
       "horse power": "Puissance",
       "co2 emission": "Émission de CO2",
       "version": "Version",
-      "Exterior": "Extérieur",
-      "Interior": "Intérieur",
+      "exterior": "Extérieur",
+      "interior": "Intérieur",
       "tires": "Pneus",
       "handling": "Maniabilité",
       "name": "Nom de l'auction",
@@ -57,12 +57,18 @@
       "city": "Ville",
       "zip code": "Code postal",
       "country": "Pays",
-      "color": "Couleur"
+      "color": "Couleur",
+      "commission": "Commission",
+      "starting price": "Prix de départ"
+    },
+    "duration": {
+      "1 week": "1 semaine",
+      "2 weeks": "2 semaines",
+      "3 days": "3 jours"
     },
     "option title": "Cocher les critères de votre voiture",
     "text": {
-      "extra": "Extra",
-      "optianal": "Optionnel",
+      "optionals": "Optionnels",
       "initial bid": "Enchère de départ",
       "starting price": "Prix de départ",
       "current bid": "Enchère actuelle",
@@ -111,6 +117,89 @@
       "truck": "Camion",
       "other": "Autre"
     },
-    "options": {}
+    "options": {
+      "airco": "Climatisation",
+      "airbags": "Airbags",
+      "electric_windows": "Fenêtres électriques",
+      "electric_mirrors": "Rétroviseurs électriques",
+      "climate_control": "Climatisation automatique",
+      "cruise_control": "Régulateur de vitesse",
+      "parking_sensors": "Capteurs de stationnement",
+      "panoramic_roof_or_open_roof": "Toit ouvrant",
+      "central_locking": "Verrouillage centralisé",
+      "xenon_lighting": "Xénon",
+      "light_alloy_wheels": "Jantes alliage",
+      "four_by_four": "4x4",
+      "power_steering": "Direction assistée",
+      "radio_cd": "Radio CD",
+      "on_board_computer": "Ordinateur de bord",
+      "parking_camera": "Caméra de recul",
+      "start_stop": "Start/Stop",
+      "abs": "ABS",
+      "tow_hook": "Crochet d'attelage",
+      "dead_angle_detection": "Détection de zone morte"
+    },
+    "carossery": {
+      "sedan": "Berline",
+      "coupe": "Coupé",
+      "convertible": "Cabriolet",
+      "hatchback": "Break",
+      "wagon": "Monospace",
+      "suv": "SUV",
+      "van": "Fourgon",
+      "truck": "Camion",
+      "break": "Break",
+      "minivan": "Minibus",
+      "minibus": "Minibus",
+      "off-road": "4x4",
+      "pickup truck": "Pick-up",
+      "45 km auto": "45 km auto",
+      "other": "Autre"
+    },
+    "transmission": {
+      "automatic": "Automatique",
+      "manual": "Manuelle",
+      "semi-automatic": "Semi-automatique"
+    },
+    "fuel": {
+      "diesel": "Diesel",
+      "petrol": "Essence",
+      "electric": "Electrique",
+      "hybrid": "Hybride"
+    },
+    "rating text": {
+      "handling": {
+        "1": "Très mauvais",
+        "2": "Mauvais",
+        "3": "Moyen",
+        "4": "Bon",
+        "5": "Très bon",
+        "undefined": "Non évalué"
+      },
+      "exterior": {
+        "1": "Très mauvais",
+        "2": "Mauvais",
+        "3": "Moyen",
+        "4": "Bon",
+        "5": "Très bon",
+        "undefined": "Non évalué"
+      },
+      "interior": {
+        "1": "Très mauvais",
+        "2": "Mauvais",
+        "3": "Moyen",
+        "4": "Bon",
+        "5": "Très bon",
+        "undefined": "Non évalué"
+      },
+      "tires": {
+        "1": "Très mauvais",
+        "2": "Mauvais",
+        "3": "Moyen",
+        "4": "Bon",
+        "5": "Très bon",
+        "undefined": "Non évalué"
+      }
+    }
   }
 }

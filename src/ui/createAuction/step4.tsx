@@ -4,7 +4,8 @@ import { EXTERIOR, HANDLING, INTERIOR, TIRES } from "@data/internal";
 import { type Data4 } from ".";
 
 import { StarIcon } from "@ui/icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { LangCommonContext, LangContext } from "../../pages/hooks";
 
 // handling?: number;
 // tires?: number;
@@ -16,14 +17,18 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
   const [hover2, setHover2] = useState(-1);
   const [hover3, setHover3] = useState(-1);
   const [hover4, setHover4] = useState(-1);
-
+  const common = useContext(LangCommonContext);
+  const text = useContext(LangContext);
+  const rate = (s: string) => text(`rating text.${s}`);
   return (
     <div className="flex flex-col items-center gap-4 px-8 transition-all">
-      <div className="flex w-full flex-col items-start rounded-md border px-4 py-2 h-[70px] gap-1">
-        <div className="flex flex-row gap-8 items-center">
-        <span className="w-[100px] font-semibold text-primary">Handling</span>
-        <Rating
-            value={data.handling||0}
+      <div className="flex h-[70px] w-full flex-col items-start gap-1 rounded-md border px-4 py-2">
+        <div className="flex flex-row items-center gap-8">
+          <span className="w-[100px] font-semibold text-primary">
+            {text("fields.handling")}
+          </span>
+          <Rating
+            value={data.handling || 0}
             onChange={(event, newValue) => {
               setData({ ...data, handling: newValue });
             }}
@@ -45,19 +50,20 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
             }
           />
         </div>
-        <div className="flex flex-row gap-8 items-center">
-        <span className="w-[100px] font-semibold text-primary"></span>
+        <div className="flex flex-row items-center gap-8">
+          <span className="w-[100px] font-semibold text-primary"></span>
           {data.handling !== null && (
             <span className="pl-2 text-sm italic text-black/70">
-              {HANDLING[hover1 !== -1 ? hover1 : data.handling || 1000]||""}
+              {rate(`handling.${hover1 !== -1 ? hover1 : data.handling}`)}
             </span>
           )}
-          </div>
-    
+        </div>
       </div>
-      <div className="flex w-full flex-col items-start rounded-md border px-4 py-2 h-[70px] gap-1">
-        <div className="flex flex-row gap-8 items-center">
-        <span className="w-[100px] font-semibold text-primary">Exterior</span>
+      <div className="flex h-[70px] w-full flex-col items-start gap-1 rounded-md border px-4 py-2">
+        <div className="flex flex-row items-center gap-8">
+          <span className="w-[100px] font-semibold text-primary">
+            {text("fields.exterior")}
+          </span>
 
           <Rating
             value={data.exterior}
@@ -81,19 +87,21 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
               />
             }
           />
-               </div>
-        <div className="flex flex-row gap-8 items-center">
-        <span className="w-[100px] font-semibold text-primary"></span>
+        </div>
+        <div className="flex flex-row items-center gap-8">
+          <span className="w-[100px] font-semibold text-primary"></span>
           {data.exterior !== null && (
             <span className="pl-2 text-sm italic text-black/70">
-              {EXTERIOR[hover2 !== -1 ? hover2 : data.exterior  || 1000]||""}
+              {rate(`exterior.${hover2 !== -1 ? hover2 : data.exterior}`)}
             </span>
           )}
+        </div>
       </div>
-      </div>
-      <div className="flex w-full flex-col items-start rounded-md border px-4 py-2 h-[70px] gap-1">
-        <div className="flex flex-row gap-8 items-center">
-        <span className="w-[100px] font-semibold text-primary">Interior</span>
+      <div className="flex h-[70px] w-full flex-col items-start gap-1 rounded-md border px-4 py-2">
+        <div className="flex flex-row items-center gap-8">
+          <span className="w-[100px] font-semibold text-primary">
+            {text("fields.interior")}
+          </span>
 
           <Rating
             value={data.interior}
@@ -117,22 +125,23 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
               />
             }
           />
-                         </div>
-        <div className="flex flex-row gap-8 items-center">
-        <span className="w-[100px] font-semibold text-primary"></span>
+        </div>
+        <div className="flex flex-row items-center gap-8">
+          <span className="w-[100px] font-semibold text-primary"></span>
           {data.interior !== null && (
             <span className="pl-2 text-sm italic text-black/70">
-              {INTERIOR[hover3 !== -1 ? hover3 : data.interior  || 1000]||""}
+              {rate(`interior.${hover3 !== -1 ? hover3 : data.interior}`)}
             </span>
           )}
         </div>
       </div>
 
-      <div className="flex w-full flex-col items-start rounded-md border px-4 py-2 h-[70px] gap-1">
-        <div className="flex flex-row gap-8 items-center">
-        <span className="w-[100px] font-semibold text-primary">Tires</span>
+      <div className="flex h-[70px] w-full flex-col items-start gap-1 rounded-md border px-4 py-2">
+        <div className="flex flex-row items-center gap-8">
+          <span className="w-[100px] font-semibold text-primary">
+            {text("fields.tires")}
+          </span>
 
-    
           <Rating
             value={data.tires}
             onChange={(event, newValue) => {
@@ -155,17 +164,16 @@ const Step4 = ({ data, setData }: { data: Data4; setData: any }) => {
               />
             }
           />
-                         </div>
-        <div className="flex flex-row gap-8 items-center">
-        <span className="w-[100px] font-semibold text-primary"></span>
+        </div>
+        <div className="flex flex-row items-center gap-8">
+          <span className="w-[100px] font-semibold text-primary"></span>
           {data.tires !== null && (
             <span className="pl-2 text-sm italic text-black/70">
-              {TIRES[hover4 !== -1 ? hover4 : data.tires || 0]}
+              {rate(`tires.${hover4 !== -1 ? hover4 : data.tires}`)}
             </span>
           )}
         </div>
       </div>
-
     </div>
   );
 };

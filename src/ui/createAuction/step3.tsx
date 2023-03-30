@@ -20,6 +20,8 @@ import { ArrowRightIconFill, CheckIcon } from "@ui/icons";
 import { ArrowLeftIconFill } from "../icons";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { Collapse } from "antd";
+import { useContext } from "react";
+import { LangCommonContext, LangContext } from "../../pages/hooks";
 const { Panel } = Collapse;
 // var settings = {
 //   dots: true,
@@ -84,7 +86,9 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
   };
-
+  const common = useContext(LangCommonContext);
+  const text = useContext(LangContext);
+  const fields = (s: string) => text("fields." + s);
   return (
     <>
       <div className="flex flex-col items-center gap-4">
@@ -97,7 +101,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
                 <BodyItem
                   key={i}
                   isActive={isActive}
-                  title={o.title}
+                  title={text("carossery." + o.title.toLowerCase())}
                   img={o.img}
                   onClick={() => {
                     setData({ ...data, carrosserie: i });
@@ -109,10 +113,10 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
 
           <div className="flex w-full flex-row items-center gap-3">
             <FormControl required className="w-1/2">
-              <InputLabel htmlFor="brand">Doors</InputLabel>
+              <InputLabel htmlFor="brand">{fields("doors")}</InputLabel>
               <Select
                 value={data.doors}
-                label="Doors"
+                label={fields("doors")}
                 onChange={(e) =>
                   setData({
                     ...data,
@@ -128,18 +132,18 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
               </Select>
             </FormControl>
             <FormControl required className="w-1/2">
-              <InputLabel htmlFor="model">Transmission</InputLabel>
+              <InputLabel htmlFor="model">{fields("transmission")}</InputLabel>
               <Select
                 value={data.transmission}
                 labelId="model"
-                label="Transmission"
+                label={fields("transmission")}
                 onChange={(e) =>
                   setData({ ...data, transmission: e.target.value })
                 }
               >
                 {TRANSMISSION.map((o, i) => (
                   <MenuItem key={i} value={i}>
-                    {o}
+                    {text("transmission." + o.toLowerCase())}
                   </MenuItem>
                 ))}
               </Select>
@@ -147,9 +151,9 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
           </div>
           <div className="flex w-full flex-row items-center justify-center gap-2">
             <FormControl required className="flex-grow">
-              <InputLabel htmlFor="model">Engine Size</InputLabel>
+              <InputLabel htmlFor="model">{fields("engine size")}</InputLabel>
               <OutlinedInput
-                label="Engine size"
+                label={fields("engine size")}
                 id="outlined-adornment-weight"
                 type="number"
                 value={data.cc}
@@ -163,11 +167,11 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
             </FormControl>
 
             <FormControl required className="flex-grow">
-              <InputLabel htmlFor="model">Kilométrage</InputLabel>
+              <InputLabel htmlFor="model">{fields("mileage")}</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-weight"
                 type="number"
-                label="Kilométrage"
+                label={fields("mileage")}
                 value={data.kilometrage}
                 onChange={(e) =>
                   setData({ ...data, kilometrage: e.target.value })
@@ -184,25 +188,27 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
           <Collapse
             bordered={false}
             onChange={(k) => {
-             if(k.length<=0){
-              setData({
-                ...data,
-                cv: undefined,
-                co2: undefined,
-                version: undefined,
-              });
-             }
+              if (k.length <= 0) {
+                setData({
+                  ...data,
+                  cv: undefined,
+                  co2: undefined,
+                  version: undefined,
+                });
+              }
             }}
             className="-mx-10"
           >
-            <Panel header="Extra (Optional)" key="1">
+            <Panel header={text("text.optionals")} key="1">
               <div className="flex flex-row gap-3">
                 <FormControl className="flex-grow">
-                  <InputLabel htmlFor="model">Horse power</InputLabel>
+                  <InputLabel htmlFor="model">
+                    {fields("horse power")}
+                  </InputLabel>
                   <OutlinedInput
                     id="outlined-adornment-weight"
                     type="number"
-                    label="Horse power"
+                    label={fields("horse power")}
                     value={data.cv}
                     onChange={(e) => setData({ ...data, cv: e.target.value })}
                     endAdornment={
@@ -213,11 +219,13 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
                   />
                 </FormControl>
                 <FormControl className="flex-grow">
-                  <InputLabel htmlFor="model">Emission CO₂</InputLabel>
+                  <InputLabel htmlFor="model">
+                    {fields("co2 emission")}
+                  </InputLabel>
                   <OutlinedInput
                     id="outlined-adornment-weight"
                     type="number"
-                    label="Emission CO₂"
+                    label={fields("co2 emission")}
                     value={data.co2}
                     onChange={(e) => setData({ ...data, co2: e.target.value })}
                     endAdornment={
@@ -228,7 +236,7 @@ const Step3 = ({ data, setData }: { data: Data3; setData: any }) => {
                   />
                 </FormControl>
                 <FormControl className="flex-grow">
-                  <InputLabel htmlFor="model">Version</InputLabel>
+                  <InputLabel htmlFor="model">{fields("version")}</InputLabel>
                   <OutlinedInput
                     label="Version"
                     id="outlined-adornment-weight"

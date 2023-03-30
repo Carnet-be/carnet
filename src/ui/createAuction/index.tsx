@@ -86,7 +86,7 @@ export type Data6 = {
 export type Data7 = {
   starting_price?: number;
   commission?: number;
-}
+};
 const CreateAuction = ({
   auction,
   isEdit,
@@ -102,11 +102,11 @@ const CreateAuction = ({
   refetch?: () => void;
   isAdmin?: boolean;
 }) => {
-  const {text}=useLang({
-    file:"dashboard",
-    selector:"auction"
-  })
-  const {text:common}=useLang(undefined)
+  const { text } = useLang({
+    file: "dashboard",
+    selector: "auction",
+  });
+  const { text: common } = useLang(undefined);
   const [edit, setedit] = useState(auction);
   const [step, setstep] = useState(1);
   const next = () => {
@@ -240,7 +240,10 @@ const CreateAuction = ({
         lat: lat || undefined,
         lon: lon || undefined,
       };
-      setdata7({starting_price: edit.starting_price||undefined, commission: edit.commission||undefined});
+      setdata7({
+        starting_price: edit.starting_price || undefined,
+        commission: edit.commission || undefined,
+      });
       setdata3(d3);
       setdata4(d4);
       setdata5(d5);
@@ -304,11 +307,11 @@ const CreateAuction = ({
         toast.dismiss();
         toast.success("Opération réussi");
         sendNotification({
-         type:"new auction",
-         date: new Date(),
-         auction_id: data.id,
-         auctioner_id: data.auctionnaire_id,
-        })
+          type: "new auction",
+          date: new Date(),
+          auction_id: data.id,
+          auctioner_id: data.auctionnaire_id,
+        });
         router.push("/dashboard/auctionnaire/myauctions");
         ref.current?.click();
       },
@@ -335,140 +338,171 @@ const CreateAuction = ({
     });
   const onValid = () => {
     if (edit) {
-      updateAuction({ data1, data3, data4, data5, data6,data7, auction: edit,log:"edit" });
+      updateAuction({
+        data1,
+        data3,
+        data4,
+        data5,
+        data6,
+        data7,
+        auction: edit,
+        log: "edit",
+      });
     } else {
       addAuction({ data1, data3, data4, data5, data6 });
     }
   };
-  const onPublish = ({ state,log }: { state: AuctionState,log:string }) =>
-    updateAuction({ data1, data3, data4, data5, data6,data7, auction: edit, state,log });
+  const onPublish = ({ state, log }: { state: AuctionState; log: string }) =>
+    updateAuction({
+      data1,
+      data3,
+      data4,
+      data5,
+      data6,
+      data7,
+      auction: edit,
+      state,
+      log,
+    });
   const ref = useRef<HTMLLabelElement | null>(null);
   return (
     <LangContext.Provider value={text}>
       <LangCommonContext.Provider value={common}>
-      <input
-        type="checkbox"
-        id={id || "create_auction"}
-        className="modal-toggle"
-      />
-      <div className={cx("modal absolute top-0 left-0 z-[1000]")}>
-        <div className="modal-box flex min-h-[450px] flex-col justify-between gap-6 lg:max-w-2xl">
-          {auction ? <StepperEdit isAdmin={isAdmin} step={step} /> : <Stepper step={step} />}
+        <input
+          type="checkbox"
+          id={id || "create_auction"}
+          className="modal-toggle"
+        />
+        <div className={cx("modal absolute top-0 left-0 z-[1000]")}>
+          <div className="modal-box flex min-h-[450px] flex-col justify-between gap-6 lg:max-w-2xl">
+            {auction ? (
+              <StepperEdit isAdmin={isAdmin} step={step} />
+            ) : (
+              <Stepper step={step} />
+            )}
 
-          {auction ? (
-            <>
-              {step == 1 && (
-                <Step1
-                  data={data1}
-                  setData={setdata1}
-                  disabled={auction == undefined ? false : true}
-                />
-              )}
+            {auction ? (
+              <>
+                {step == 1 && (
+                  <Step1
+                    data={data1}
+                    setData={setdata1}
+                    disabled={auction == undefined ? false : true}
+                  />
+                )}
 
-              {step == 2 && <Step3 data={data3} setData={setdata3} />}
-              {step == 3 && <Step4 data={data4} setData={setdata4} />}
-              {step == 4 && <Step5 data={data5} setData={setdata5} />}
-              {step == 5 && (
-                <Step6
-                  data={data6}
-                  uploadRef={uploadRef}
-                  setData={setdata6}
-                  defaultName={edit?.name || ""}
-                />
-              )}
-              {step == 6 && <Step7 data={data7} setData={setdata7} />}
-            </>
-          ) : (
-            <>
-              {step == 1 && (
-                <Step1
-                  data={data1}
-                  setData={setdata1}
-                  disabled={auction == undefined ? false : true}
-                />
-              )}
-              {step == 2 && <Step2 />}
-              {step == 3 && <Step3 data={data3} setData={setdata3} />}
-              {step == 5 && <Step4 data={data4} setData={setdata4} />}
-              {step == 4 && <Step5 data={data5} setData={setdata5} />}
-              {step == 6 && (
-                <Step6
-                  data={data6}
-                  uploadRef={uploadRef}
-                  setData={setdata6}
-                  defaultName={
-                    BRAND[data1.brand || 0]?.title +
-                    " " +
-                    BRAND[data1.brand || 0]?.model[data1.model || 0] +
-                    " " +
-                    data1.buildYear
-                  }
-                />
-              )}
-            </>
-          )}
+                {step == 2 && <Step3 data={data3} setData={setdata3} />}
+                {step == 3 && <Step4 data={data4} setData={setdata4} />}
+                {step == 4 && <Step5 data={data5} setData={setdata5} />}
+                {step == 5 && (
+                  <Step6
+                    data={data6}
+                    uploadRef={uploadRef}
+                    setData={setdata6}
+                    defaultName={edit?.name || ""}
+                  />
+                )}
+                {step == 6 && <Step7 data={data7} setData={setdata7} />}
+              </>
+            ) : (
+              <>
+                {step == 1 && (
+                  <Step1
+                    data={data1}
+                    setData={setdata1}
+                    disabled={auction == undefined ? false : true}
+                  />
+                )}
+                {step == 2 && <Step2 />}
+                {step == 3 && <Step3 data={data3} setData={setdata3} />}
+                {step == 5 && <Step4 data={data4} setData={setdata4} />}
+                {step == 4 && <Step5 data={data5} setData={setdata5} />}
+                {step == 6 && (
+                  <Step6
+                    data={data6}
+                    uploadRef={uploadRef}
+                    setData={setdata6}
+                    defaultName={
+                      BRAND[data1.brand || 0]?.title +
+                      " " +
+                      BRAND[data1.brand || 0]?.model[data1.model || 0] +
+                      " " +
+                      data1.buildYear
+                    }
+                  />
+                )}
+              </>
+            )}
 
-          <div className="modal-action flex flex-row items-center">
-            <label
-              ref={ref}
-              onClick={onCancel}
-              htmlFor={id || "create_auction"}
-              className="btn-ghost btn-sm btn"
-            >
-               {common("button.cancel")}
-            </label>
-            <div className="flex-grow"></div>
-            <button
-              onClick={back}
-              className={cx("btn-outline btn-primary btn-sm btn", {
-                hidden: step <= 1,
-              })}
-            >
-              <BackIcon />
-            </button>
-            <button
-              onClick={next}
-              className={cx("btn-primary btn-sm btn", {
-                "btn-disabled": !isNext,
-                hidden: (step == 2 && !auction) || step == ( isAdmin? 6:6),
-              })}
-            >
-               {common("button.next")}
-            </button>
-            <button
-              onClick={onValid}
-              className={cx("btn-primary btn-sm btn", {
-                "btn-disabled": !isValid || isLoading || isUpdating,
-                hidden: auction || step !== (isAdmin? 6:6 ),
-              })}
-            >
-              {common("button.validate")}
-            </button>
-            <button
-              onClick={() =>
-                onPublish({
-                  log:      auction?.state == "pause"?"edit": step == 6
-                  ? "published"
-                  : "edit",
-                  state:
-                    auction?.state == "pause"?"pause": step == 6
-                      ? "published"
-                      : auction?.state || "published",
-                })
-              }
-              className={cx("btn-warning btn-sm btn", {
-                hidden: !auction,
-              })}
-            >
-              {common("button."+auction?.state == "pause"
-                ? "save"
-                : step == 6
-                ? "save & publish"
-                : "save")}
-            </button>
+            <div className="modal-action flex flex-row items-center">
+              <label
+                ref={ref}
+                onClick={onCancel}
+                htmlFor={id || "create_auction"}
+                className="btn-ghost btn-sm btn"
+              >
+                {common("button.cancel")}
+              </label>
+              <div className="flex-grow"></div>
+              <button
+                onClick={back}
+                className={cx("btn-outline btn-primary btn-sm btn", {
+                  hidden: step <= 1,
+                })}
+              >
+                <BackIcon />
+              </button>
+              <button
+                onClick={next}
+                className={cx("btn-primary btn-sm btn", {
+                  "btn-disabled": !isNext,
+                  hidden: (step == 2 && !auction) || step == (isAdmin ? 6 : 6),
+                })}
+              >
+                {common("button.next")}
+              </button>
+              <button
+                onClick={onValid}
+                className={cx("btn-primary btn-sm btn", {
+                  "btn-disabled": !isValid || isLoading || isUpdating,
+                  hidden: auction || step !== (isAdmin ? 6 : 6),
+                })}
+              >
+                {common("button.validate")}
+              </button>
+              <button
+                onClick={() =>
+                  onPublish({
+                    log:
+                      auction?.state == "pause"
+                        ? "edit"
+                        : step == 6
+                        ? "published"
+                        : "edit",
+                    state:
+                      auction?.state == "pause"
+                        ? "pause"
+                        : step == 6
+                        ? "published"
+                        : auction?.state || "published",
+                  })
+                }
+                className={cx("btn-warning btn-sm btn", {
+                  hidden: !auction,
+                })}
+              >
+                {common(
+                  "button." +
+                    (auction?.state == "pause"
+                      ? "save"
+                      : step == 6
+                      ? "save and publish"
+                      : "save")
+                )}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
       </LangCommonContext.Provider>
     </LangContext.Provider>
   );
@@ -476,8 +510,8 @@ const CreateAuction = ({
 
 export const Stepper = ({ step }: { step: number }) => {
   const { data: session } = useSession();
-  const t=useContext(LangContext)
-  const text=(key:string)=>t(`steps.${key}`)
+  const t = useContext(LangContext);
+  const text = (key: string) => t(`steps.${key}`);
   return (
     <ul className="steps w-full">
       {Array.from({ length: 6 }, (_, i) => i + 1).map((k, i) => {
@@ -491,22 +525,28 @@ export const Stepper = ({ step }: { step: number }) => {
           >
             {k === 1 && text("identify")}
             {k === 2 && text("login/registration")}
-            {k === 3 &&  text("specs")}
+            {k === 3 && text("specs")}
             {k === 4 && text("options")}
             {k === 5 && text("rating")}
-            {k === 6 &&  text("validation")}
+            {k === 6 && text("validation")}
           </li>
         );
       })}
     </ul>
   );
 };
-export const StepperEdit = ({ step,isAdmin }: { step: number,isAdmin?:boolean }) => {
-  const t=useContext(LangContext)
-  const text=(key:string)=>t(`steps.${key}`)
+export const StepperEdit = ({
+  step,
+  isAdmin,
+}: {
+  step: number;
+  isAdmin?: boolean;
+}) => {
+  const t = useContext(LangContext);
+  const text = (key: string) => t(`steps.${key}`);
   return (
     <ul className="steps w-full">
-      {Array.from({ length:isAdmin? 6:5 }, (_, i) => i + 1).map((k, i) => {
+      {Array.from({ length: isAdmin ? 6 : 5 }, (_, i) => i + 1).map((k, i) => {
         return (
           <li
             key={k}
@@ -514,15 +554,13 @@ export const StepperEdit = ({ step,isAdmin }: { step: number,isAdmin?:boolean })
               "step-primary": k <= step,
             })}
           >
-       
-
             {k === 1 && text("identify")}
-            {k === 2 &&  text("specs")}
+            {k === 2 && text("specs")}
             {k === 3 && text("options")}
             {k === 4 && text("rating")}
 
-            {k === 5 &&  text("validation")}
-            {k === 6 &&  text("finalisation")}
+            {k === 5 && text("validation")}
+            {k === 6 && text("finalisation")}
           </li>
         );
       })}

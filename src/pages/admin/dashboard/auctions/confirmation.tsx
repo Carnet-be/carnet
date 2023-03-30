@@ -246,7 +246,7 @@ const Confirmation = () => {
     },
 
     {
-      title: tab("lastest bid"),
+      title: tab("latest bid"),
       dataIndex: "latest_bid",
       align: "right",
       key: "latest_bid",

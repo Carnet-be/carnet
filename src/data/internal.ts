@@ -30,7 +30,7 @@ export const CARROSSERIE = [
     img: "Hatchback",
   },
   {
-    title: " Break",
+    title: "Break",
     img: "Station Wagon",
   },
   {
@@ -102,7 +102,7 @@ export const BRAND: Array<TBrand> = [
     buildYear: [2022, 2023, 2021, 2018],
   },
 ];
-export const TRANSMISSION = ["Manual", "Automatique", "Semi-automatique"];
+export const TRANSMISSION = ["Manual", "Automatic", "Semi-automatic"];
 
 export const INTERIOR_LINING = [
   "Leather",
