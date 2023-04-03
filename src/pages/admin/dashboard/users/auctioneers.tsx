@@ -14,6 +14,7 @@ import type { ColumnsType } from "antd/es/table";
 import { Tag } from "antd";
 import toast from "react-hot-toast";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useLang, useNotif } from "../../../hooks";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -43,24 +44,31 @@ const Auctioneers = (
     isLoading,
     refetch,
   } = trpc.admin.getUsers.useQuery({ type: "AUC" });
+  const { loading, error, succes } = useNotif();
+  const { text: common } = useLang(undefined);
+  const { text } = useLang({
+    file: "dashboard",
+    selector: "admin",
+  });
+  const tab = (s: string) => common(`table.${s}`);
   const { mutate: deleteUser } = trpc.global.delete.useMutation({
     onMutate: () => {
-      toast.loading("In process");
+      loading();
     },
     onError: (err) => {
       console.log(err);
       toast.dismiss();
-      toast.error("Faild to delete");
+      error();
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Success");
+      succes();
       refetch();
     },
   });
   const columns: ColumnsType<User> = [
     {
-      title: "Id",
+      title: tab("id"),
       width: "150px",
       dataIndex: "id",
       key: "id",
@@ -69,30 +77,30 @@ const Auctioneers = (
       ),
     },
     {
-      title: "Username",
+      title: tab("username"),
       dataIndex: "username",
       key: "username",
       render: (v) => <h6>{v}</h6>,
     },
     {
-      title: "Phone",
+      title: tab("tel"),
       dataIndex: "tel",
       key: "tel",
     },
     {
-      title: "Email",
+      title: tab("email"),
       dataIndex: "email",
       key: "email",
     },
     {
-      title: "Auctions",
+      title: tab("auctions"),
       dataIndex: "auctions",
       key: "auctions",
       align: "right",
       render: (v) => <Tag>{v.length}</Tag>,
     },
     {
-      title: "Actions",
+      title: tab("actions"),
 
       dataIndex: "actions",
       key: "actions",

@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { CheckIcon } from "@ui/icons";
 import cx from "classnames";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useLang, useNotif } from "../../../hooks";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -44,40 +45,47 @@ const Bidders = (
     isLoading,
     refetch,
   } = trpc.admin.getUsers.useQuery({ type: "BID" });
+  const { text: common } = useLang(undefined);
+  const { text } = useLang({
+    file: "dashboard",
+    selector: "admin",
+  });
+  const tab = (s: string) => common(`table.${s}`);
+  const { loading, error, succes } = useNotif();
   const { mutate: deleteUser } = trpc.global.delete.useMutation({
     onMutate: () => {
-      toast.loading("In process");
+      loading();
     },
     onError: (err) => {
       console.log(err);
       toast.dismiss();
-      toast.error("Faild to delete");
+      error();
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Success");
+      succes();
       refetch();
     },
   });
   const { mutate: setUserStatus } = trpc.admin.statusUser.useMutation({
     onMutate: () => {
-      toast.loading("In process");
+      loading();
     },
     onError: (err, da) => {
       console.log(err);
       toast.dismiss();
-      toast.error("Faild to " + (da.isActive ? "activate" : "deactivate"));
+      error();
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Success");
+      succes();
       refetch();
     },
   });
 
   const columns: ColumnsType<User> = [
     {
-      title: "Username",
+      title: tab("username"),
       dataIndex: "username",
       key: "username",
       render: (v, u) => (
@@ -88,12 +96,12 @@ const Bidders = (
       ),
     },
     {
-      title: "Phone",
+      title: tab("tel"),
       dataIndex: "tel",
       key: "tel",
     },
     {
-      title: "Email",
+      title: tab("email"),
       dataIndex: "email",
       key: "email",
       render: (v, b) => (
@@ -109,14 +117,14 @@ const Bidders = (
       ),
     },
     {
-      title: "Bids",
+      title: tab("bids"),
       dataIndex: "bids",
       key: "bids",
       align: "center",
       render: (v) => <Tag>{v.length}</Tag>,
     },
     {
-      title: "Active",
+      title: tab("active"),
       dataIndex: "isActive",
       key: "isActive",
       align: "center",
@@ -132,7 +140,7 @@ const Bidders = (
       ),
     },
     {
-      title: "Actions",
+      title: tab("actions"),
 
       dataIndex: "actions",
       key: "actions",

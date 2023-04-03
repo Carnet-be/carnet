@@ -21,6 +21,7 @@ import { AddIcon } from "@ui/icons";
 import CreateAuction from "@ui/createAuction";
 import { trpc } from "@utils/trpc";
 import { useBidderStore } from "../state";
+import { FaBlog } from "react-icons/fa";
 import {
   LangCommonContext,
   useGetNotifications,
@@ -85,11 +86,11 @@ const Dashboard = ({
         route: "/admin/dashboard/users",
         icon: <PeopleIcon />,
       },
-      {
-        title: common("text.staffs"),
-        route: "/admin/dashboard/staffs",
-        icon: <PeopleIcon />,
-      },
+      // {
+      //   title: common("text.staffs"),
+      //   route: "/admin/dashboard/staffs",
+      //   icon: <PeopleIcon />,
+      // },
       {
         title: common("text.data"),
         route: "/admin/dashboard/data",
@@ -99,6 +100,11 @@ const Dashboard = ({
         title: common("text.chat"),
         route: "/admin/dashboard/chat",
         icon: <ChatIcon />,
+      },
+      {
+        title: common("text.blogs"),
+        route: "/admin/dashboard/blogs",
+        icon: <FaBlog />,
       },
     ],
     AUC: [

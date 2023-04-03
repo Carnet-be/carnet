@@ -68,11 +68,14 @@
     "wishlist": "Liste de souhaits",
     "new auction": "Nouvelle enchère",
     "days": "Jours",
+    "blogs": "Blogs",
     "hours": "Heures",
     "minutes": "Minutes",
     "seconds": "Secondes",
     "week": "Semaine",
     "weeks": "Semaines",
+    "bidders": "Offreurs",
+    "auctioneers": "Enchérisseurs",
     "no data": "Aucune donnée",
     "add time": "Ajouter du temps",
     "make winner": "Choisir le gagnant"
@@ -82,6 +85,7 @@
     "name": "Nom",
     "email": "Email",
     "phone": "Téléphone",
+    "tel": "Téléphone",
     "date": "Date",
     "status": "Statut",
     "action": "Action",
@@ -104,7 +108,9 @@
     "completed at": "Terminé",
     "starting price": "Prix de départ",
     "commission": "Commission",
-    "ended at": "Terminé"
+    "ended at": "Terminé",
+    "active": "Actif",
+    "username": "Nom d'utilisateur"
   },
   "tooltip": {
     "contact": "contact",

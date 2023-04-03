@@ -1,7 +1,9 @@
 {
   "admin": {
     "text": {
-      "auction page title": "Gestion des enchères"
+      "auction page title": "Gestion des enchères",
+      "bids page title": "Gestion des enchères",
+      "users page title": "Gestion des utilisateurs"
     }
   },
   "auctioneer": {

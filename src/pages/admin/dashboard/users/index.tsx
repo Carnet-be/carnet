@@ -1,10 +1,11 @@
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import type { InferGetServerSidePropsType } from "next";
 import { type GetServerSideProps } from "next";
-import React from "react";
+import React, { useContext } from "react";
 import cx from "classnames";
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
+import { LangCommonContext } from "../../../hooks";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -34,13 +35,14 @@ export default Users;
 
 export const Switcher = () => {
   const router = useRouter();
+  const commmon = useContext(LangCommonContext);
   const routers = [
     {
-      title: "Auctioneers",
+      title: commmon("text.auctioneers"),
       route: "/admin/dashboard/users/auctioneers",
     },
     {
-      title: "Bidders",
+      title: commmon("text.bidders"),
       route: "/admin/dashboard/users/bidders",
     },
   ];
