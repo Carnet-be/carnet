@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Button, InputNumber, Modal, Select, Table, Tag, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import cx from "classnames";
 import { DeleteIcon, EditIcon, ViewIcon } from "@ui/icons";
-import { Auction, Bid, Brand, Model } from "@prisma/client";
+import { Auction, Bid, Blog, Brand, Model } from "@prisma/client";
 import { TableRowSelection } from "antd/es/table/interface";
 import moment from "moment";
 import { User } from "next-auth";
@@ -15,7 +15,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { GrResume } from "react-icons/gr";
 import { BsFillPlayFill } from "react-icons/bs";
 import { MdRestartAlt } from "react-icons/md";
-import { useLang } from "../../pages/hooks";
+import { LangCommonContext, useLang } from "../../pages/hooks";
 const { Option } = Select;
 interface Props<T> {
   columns: ColumnsType<T>;
@@ -24,7 +24,7 @@ interface Props<T> {
   rowSelection?: TableRowSelection<TableType>;
   options?: Object;
 }
-export type TableType = Auction | Bid | User | Brand | Model;
+export type TableType = Auction | Bid | User | Brand | Model | Blog;
 const MyTable: React.FC<Props<TableType>> = ({
   columns,
   data,
@@ -174,7 +174,7 @@ export const ActionTable = ({
   onCustom,
   onRepublish,
 }: {
-  id?: string;
+  id?: string | number;
   onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -218,7 +218,11 @@ export const ActionTable = ({
           onValide={() => onPlay()}
         />
       )}
-      <label ref={ref} hidden={true} htmlFor={id}></label>
+      <label
+        ref={ref}
+        hidden={true}
+        htmlFor={id ? id.toString() : undefined}
+      ></label>
       <label ref={refDelete} hidden={true} htmlFor={"delete" + id}></label>
       {onRepublish && (
         <Tooltip
@@ -317,16 +321,17 @@ const ConfirmationDelete = ({
   open: boolean;
   setOpen: (open: boolean) => void;
 }) => {
+  const common = useContext(LangCommonContext);
   return (
     <>
       <Modal
         okType="danger"
-        title="Warning"
+        title={common("text.warning")}
         open={open}
         onOk={onDelete}
         onCancel={() => setOpen(false)}
       >
-        <p>You are about to delete this element</p>
+        <p>{common("text.modal delete")}</p>
       </Modal>
     </>
   );
@@ -343,15 +348,16 @@ const ConfirmationPause = ({
   open: boolean;
   setOpen: (open: boolean) => void;
 }) => {
+  const common = useContext(LangCommonContext);
   return (
     <>
       <Modal
-        title="Warning"
+        title={common("text.warning")}
         open={open}
         onOk={onValide}
         onCancel={() => setOpen(false)}
       >
-        <p>Confirm your action please</p>
+        <p>{common("text.modal confirm")}</p>
       </Modal>
     </>
   );

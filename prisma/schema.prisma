@@ -30,10 +30,8 @@ model User {
   //
   createAt         DateTime @default(now())
   updateAt         DateTime @updatedAt
-   
 
-   logsAuctions LogAuction[]
-  
+  logsAuctions LogAuction[]
 
   // relation
   image    AssetImage?
@@ -41,6 +39,7 @@ model User {
   bids     Bid[]
 
   internalMessages InternalMessage[] @relation("auctioner")
+  Blog             Blog[]
 }
 
 model DemandeStaff {
@@ -62,13 +61,12 @@ model Auction {
   build_year Int
   fuel       FuelType
 
-  starting_price Float?
-  commission     Float?
+  starting_price                 Float?
+  commission                     Float?
   starting_price_with_commission Float?
-  
-  
-  isClosed Boolean @default(false)
-  closedAt DateTime?
+
+  isClosed       Boolean         @default(false)
+  closedAt       DateTime?
   description    String?
   duration       DurationType
   end_date       DateTime?
@@ -84,7 +82,7 @@ model Auction {
   bids           Bid[]
   images         AssetImage[]
 
-  logs          LogAuction[]
+  logs LogAuction[]
 
   auctionnaire_id String
   auctionnaire    User   @relation(fields: [auctionnaire_id], references: [id], onDelete: Cascade)
@@ -160,19 +158,19 @@ model Address {
 }
 
 model Bid {
-  id         String   @id
-  createAt   DateTime @default(now())
-  updateAt   DateTime @updatedAt
+  id       String   @id
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
   //
-  montant    Float
-  numero     Int      @default(1)
+  montant  Float
+  numero   Int      @default(1)
 
-  winner     Boolean  @default(false)
+  winner     Boolean @default(false)
   ///
   bidder_id  String
-  bidder     User     @relation(fields: [bidder_id], references: [id], onDelete: Cascade)
+  bidder     User    @relation(fields: [bidder_id], references: [id], onDelete: Cascade)
   auction_id String
-  auction    Auction  @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 }
 
 model AssetImage {
@@ -185,6 +183,7 @@ model AssetImage {
 
   user_id String? @unique
   user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  Blog    Blog[]
 }
 
 model Brand {
@@ -207,48 +206,61 @@ model Model {
   @@unique([name, year, brand_id])
 }
 
-model InternalMessage{
-  id String @id @default(cuid())
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+model InternalMessage {
+  id            String   @id @default(cuid())
+  createAt      DateTime @default(now())
+  updateAt      DateTime @updatedAt
   // field
-  content String
-  isRead Boolean @default(false)
-  isReadByAdmin Boolean @default(false)
+  content       String
+  isRead        Boolean  @default(false)
+  isReadByAdmin Boolean  @default(false)
 
-  type IntermalMessageType @default(client)
+  type      IntermalMessageType @default(client)
   // relation
   client_id String
-  client    User @relation("auctioner", fields: [client_id], references: [id], onDelete: Cascade)
+  client    User                @relation("auctioner", fields: [client_id], references: [id], onDelete: Cascade)
 }
 
-
-
 model AppSettings {
-  id String @id @default("appSettings")
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+  id                      String   @id @default("appSettings")
+  createAt                DateTime @default(now())
+  updateAt                DateTime @updatedAt
   // field
-  contactEmail String?
-  contactPhone String?
-  contactAddress String?
-   ////
-  confirmNewBidderAccount Boolean @default(true)
-
+  contactEmail            String?
+  contactPhone            String?
+  contactAddress          String?
+  ////
+  confirmNewBidderAccount Boolean  @default(true)
 }
 
 model LogAuction {
-  id String @id @default(cuid())
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+  id         String   @id @default(cuid())
+  createAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
   // field
-  action String
+  action     String
   // relation
   auction_id String
-  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
-  user_id String
-  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  auction    Auction  @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
+
+model Blog {
+  id                Int         @id @default(autoincrement())
+  createAt          DateTime    @default(now())
+  updateAt          DateTime    @updatedAt
+  // field
+  title             String
+  locale            String?
+  image             AssetImage? @relation(fields: [assetImageFileKey], references: [fileKey], onDelete: Cascade)
+  content           String
+  // relation
+  author_id         String
+  author            User        @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  assetImageFileKey String?
+}
+
 //////ENUM///////
 enum UserType {
   BID
@@ -279,6 +291,6 @@ enum AuctionState {
 }
 
 enum IntermalMessageType {
- client
- admin
+  client
+  admin
 }

@@ -12,7 +12,9 @@
     "username": "Nom d'utilisateur",
     "search": "Rechercher",
     "search for user": "Rechercher un utilisateur",
-    "type message": "Saisir votre message"
+    "type message": "Saisir votre message",
+    "title": "Titre",
+    "fill all fields": "Veuillez remplir tous les champs"
   },
   "toast": {
     "failed": "Opération échouée",
@@ -50,7 +52,8 @@
     "bid now": "Faire une offre",
     "account": "Compte",
     "logout": "Déconnexion",
-    "login": "Connexion"
+    "login": "Connexion",
+    "new blog": "Nouveau blog"
   },
   "quotes": {
     "big title": "Achetez Votre Voiture avec"
@@ -84,11 +87,17 @@
     "add time": "Ajouter du temps",
     "add brand": "Ajouter une marque",
     "add model": "Ajouter un modèle",
-
+    "change image": "Changer l'image",
     "import data": "Importer des données",
     "export data": "Exporter des données",
     "make winner": "Choisir le gagnant",
-    "chose brand": "Choisir une marque"
+    "chose brand": "Choisir une marque",
+    "undefined": "Non défini",
+    "fr": "Français",
+    "en": "Anglais",
+    "warning": "Attention",
+    "modal delete": "Voulez-vous vraiment supprimer cet élément ?",
+    "modal confirm": "Voulez-vous vraiment confirmer cette action ?"
   },
   "table": {
     "id": "ID",
@@ -128,7 +137,9 @@
     "brands": "Marques",
     "model": "Modèle",
     "country": "Pays",
-    "description": "Description"
+    "description": "Description",
+    "image": "Image",
+    "lang": "Langue"
   },
   "tooltip": {
     "contact": "contact",

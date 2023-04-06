@@ -57,7 +57,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
       case "fr":
         return frFR;
       default:
-        return enUS;
+        return frFR;
     }
   };
   return (

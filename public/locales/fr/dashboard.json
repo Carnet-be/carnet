@@ -3,7 +3,8 @@
     "text": {
       "auction page title": "Gestion des enchères",
       "bids page title": "Gestion des enchères",
-      "users page title": "Gestion des utilisateurs"
+      "users page title": "Gestion des utilisateurs",
+      "blog page title": "Gestion des blogs"
     }
   },
   "auctioneer": {
