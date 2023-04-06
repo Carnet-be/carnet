@@ -74,7 +74,7 @@
 
     "register": {
       "title": "Vendez votre voiture avec CarNet",
-    
+
       "subtitle": "Créez votre compte",
       "menu": {
         "bidder": "Acheteur",
@@ -88,7 +88,7 @@
     },
 
     "forget password": "Mot de passe oublié ?",
-    
+
     "form": {
       "email": "Email",
       "password": "Mot de passe",
@@ -98,5 +98,10 @@
       "company name": "Nom de la société"
     },
     "accept terms and privacy": "J'accepte les"
+  },
+  "blog": {
+    "blog": "Blog",
+    "subtitle": "Découvrez nos derniers articles",
+    "read more": "Lire la suite"
   }
 }

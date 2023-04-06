@@ -53,7 +53,8 @@
     "account": "Compte",
     "logout": "Déconnexion",
     "login": "Connexion",
-    "new blog": "Nouveau blog"
+    "new blog": "Nouveau blog",
+    "edit blog": "Modifier le blog"
   },
   "quotes": {
     "big title": "Achetez Votre Voiture avec"

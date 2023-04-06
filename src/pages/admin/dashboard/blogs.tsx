@@ -1,4 +1,5 @@
-import React, { useContext } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useContext, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import "@uiw/react-md-editor/markdown-editor.css";
@@ -26,6 +27,7 @@ import { Lang } from "@model/type";
 import toast from "react-hot-toast";
 import { AdvancedImage } from "@cloudinary/react";
 import cloudy from "@utils/cloudinary";
+import { useRouter } from "next/router";
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -67,6 +69,7 @@ const Blogs = () => {
     file: "dashboard",
     selector: "admin",
   });
+  const router = useRouter();
   const { mutate: deleteBlog } = trpc.blog.deleteBlog.useMutation({
     onSuccess: () => {
       succes();
@@ -78,6 +81,9 @@ const Blogs = () => {
     },
   });
   const tab = (s: string) => common(`table.${s}`);
+  const [blog, setBlog] = useState<(Blog & { image: AssetImage }) | undefined>(
+    undefined
+  );
   const columns: ColumnsType<Blog> = [
     {
       title: tab("id"),
@@ -147,11 +153,11 @@ const Blogs = () => {
             deleteBlog({ id: b.id });
           }}
           onEdit={() => {
-            console.log("edit");
+            setBlog({ ...b, image: (b as any).image as AssetImage });
           }}
-          //   onView={() => {
-          //     console.log("view");
-          //   }}
+          onView={() => {
+            router.push(`/blogs/${b.id}?type=ADMIN`);
+          }}
         />
       ),
     },
@@ -164,8 +170,12 @@ const Blogs = () => {
           <div className="flex flex-row items-center justify-between">
             <BigTitle title={text("text.blog page title")} />
             <AddBlog
+              blog={blog}
               onSuccess={() => {
                 refetch();
+              }}
+              onClose={() => {
+                setBlog(undefined);
               }}
             />
           </div>
@@ -202,16 +212,41 @@ const Blogs = () => {
 
 export default Blogs;
 
-const AddBlog = ({ onSuccess }: { onSuccess: () => void }) => {
+const AddBlog = ({
+  onSuccess,
+  blog,
+  onClose,
+}: {
+  onSuccess: () => void;
+  blog?: Blog & {
+    image: AssetImage;
+  };
+  onClose: () => void;
+}) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-  const [title, setTitle] = useState("");
+  const [value, setValue] = useState(blog?.content || "");
+  const [title, setTitle] = useState(blog?.title || "");
   const common = useContext(LangCommonContext);
   const { error, loading, succes } = useNotif();
-  const [img, setImg] = React.useState<TImage | undefined>(undefined);
-  const [asset, setAsset] = useState<TImage | undefined>(undefined);
-  const [size, setSize] = useState<Lang | undefined>(undefined);
+  const [img, setImg] = React.useState<AssetImage | TImage | undefined>(
+    blog ? blog.image : undefined
+  );
+  const [asset, setAsset] = React.useState<AssetImage | TImage | undefined>(
+    blog ? blog.image : undefined
+  );
+  const [size, setSize] = useState<Lang | undefined>(
+    blog ? (blog.locale as Lang) : undefined
+  );
   const text = useContext(LangContext);
+
+  const clear = () => {
+    setTitle("");
+    setValue("");
+    setAsset(undefined);
+    setSize(undefined);
+    setImg(undefined);
+  };
+
   const { mutate: addBlog } = trpc.blog.addBlog.useMutation({
     onMutate: () => {
       loading();
@@ -219,7 +254,8 @@ const AddBlog = ({ onSuccess }: { onSuccess: () => void }) => {
     onSuccess: () => {
       toast.dismiss();
       succes();
-      setOpen(false);
+
+      handleClose();
       onSuccess();
     },
     onError: (e) => {
@@ -229,20 +265,52 @@ const AddBlog = ({ onSuccess }: { onSuccess: () => void }) => {
     },
   });
 
+  const { mutate: updateBlog } = trpc.blog.updateBlog.useMutation({
+    onMutate: () => {
+      loading();
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      succes();
+      handleClose();
+      onSuccess();
+    },
+    onError: (e) => {
+      toast.dismiss();
+      error();
+      console.log(e);
+    },
+  });
   const onAdd = () => {
     if (asset && title && value) {
-      addBlog({
-        blog: {
-          title,
-          locale: size,
-          content: value,
-        },
-        image: {
-          url: asset.url,
-          fileKey: asset.fileKey,
-          name: asset.name,
-        },
-      });
+      if (blog) {
+        updateBlog({
+          blog: {
+            id: blog.id,
+            title,
+            locale: size,
+            content: value,
+          },
+          image: {
+            url: asset.url,
+            fileKey: asset.fileKey,
+            name: asset.name,
+          },
+        });
+      } else {
+        addBlog({
+          blog: {
+            title,
+            locale: size,
+            content: value,
+          },
+          image: {
+            url: asset.url,
+            fileKey: asset.fileKey,
+            name: asset.name,
+          },
+        });
+      }
       return;
     }
     toast.error(common("input.fill all fields"));
@@ -258,20 +326,35 @@ const AddBlog = ({ onSuccess }: { onSuccess: () => void }) => {
   //   );
   // default is 'middle'
 
+  const handleClose = () => {
+    setOpen(false);
+    clear();
+    onClose && onClose();
+  };
+  useEffect(() => {
+    if (blog) {
+      setTitle(blog.title);
+      setValue(blog.content);
+      setImg(blog.image);
+      setAsset(blog.image);
+      setSize(blog.locale ? (blog.locale as Lang) : undefined);
+    }
+  }, [blog]);
+
   return (
     <>
       <button className="btn-primary btn" onClick={() => setOpen(true)}>
         {common("button.new blog")}
       </button>
       <Modal
-        title={common("button.new blog")}
+        title={blog ? common("button.edit blog") : common("button.new blog")}
         centered
-        open={open}
+        open={open || blog ? true : false}
         destroyOnClose
         maskClosable={false}
         closable={false}
         onOk={() => onAdd()}
-        onCancel={() => setOpen(false)}
+        onCancel={handleClose}
         width={800}
       >
         <div className="space-y-5 py-3">

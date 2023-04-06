@@ -99,7 +99,12 @@ export const blogRouter = router({
           content,
           locale,
           image: {
-            create: image,
+            connectOrCreate: {
+              where: {
+                fileKey: image.fileKey,
+              },
+              create: image,
+            },
           },
         },
       });

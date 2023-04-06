@@ -112,7 +112,7 @@ const Home: NextPage = (
       <div className="relative bg-primary">
         <div className="relative h-screen w-screen overflow-hidden bg-primary">
           <div className="absolute top-0 left-0 z-30 flex h-full w-full flex-col">
-            <Nav user={user} />
+            <MyNav />
             <div className="layout mx-auto flex flex-grow  flex-row">
               <div className="flex h-auto w-full max-w-[500px] flex-col justify-center gap-10">
                 <h1 className="text-6xl font-semibold  text-white">
@@ -156,7 +156,7 @@ const DashBoardButton = ({ children }: { children: string }) => {
     </label>
   );
 };
-const Nav = ({ user }: { user: User }) => {
+export const MyNav = () => {
   const text = useContext(LangContext);
   return (
     <div className="fixed top-0 left-0 z-[1000] flex h-[80px] w-screen bg-primary px-6 shadow-sm">
@@ -192,14 +192,13 @@ const Nav = ({ user }: { user: User }) => {
           {text("navbar.menu.contact us")}
         </Link>
 
-        <ProfileButton user={user} />
+        <ProfileButton />
       </div>
     </div>
   );
 };
 
-const ProfileButton = ({ user }: { user: User }) => {
-  const router = useRouter();
+const ProfileButton = () => {
   const text = useContext(LangContext);
   return (
     <Link

@@ -247,18 +247,18 @@ model LogAuction {
 }
 
 model Blog {
-  id                Int         @id @default(autoincrement())
-  createAt          DateTime    @default(now())
-  updateAt          DateTime    @updatedAt
+  id                Int        @id @default(autoincrement())
+  createAt          DateTime   @default(now())
+  updateAt          DateTime   @updatedAt
   // field
   title             String
   locale            String?
-  image             AssetImage? @relation(fields: [assetImageFileKey], references: [fileKey], onDelete: Cascade)
+  image             AssetImage @relation(fields: [assetImageFileKey], references: [fileKey], onDelete: Cascade)
   content           String
   // relation
   author_id         String
-  author            User        @relation(fields: [author_id], references: [id], onDelete: Cascade)
-  assetImageFileKey String?
+  author            User       @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  assetImageFileKey String
 }
 
 //////ENUM///////
