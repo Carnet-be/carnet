@@ -8,11 +8,22 @@ import { Button, Divider, Input } from "antd";
 import { GetServerSideProps } from "next";
 import cx from "classnames";
 import { prisma } from "../../../server/db/client";
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  useContext,
+} from "react";
 import Lottie from "@ui/components/lottie";
 
 import animationEmpty from "../../../../public/animations/mo_message.json";
-import { TMessage, deleteDocument, getMessages, sendMessage } from "@repository/index";
+import {
+  TMessage,
+  deleteDocument,
+  getMessages,
+  sendMessage,
+} from "@repository/index";
 import { TRPCClient } from "@trpc/client";
 import moment from "moment";
 import { AvatarImg } from "@ui/profileCard";
@@ -26,6 +37,7 @@ import bidderIcon from "@assets/bidder.png";
 import Image from "next/image";
 import { DeleteIcon } from "@ui/icons";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { LangCommonContext, useLang, useNotif } from "../../hooks";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -52,7 +64,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       ...(await serverSideTranslations(ctx.locale || "fr", [
         "common",
         "dashboard",
-      ]))
+      ])),
     },
   };
 };
@@ -84,6 +96,8 @@ type UserMessage = {
   messages: TMessage[];
 };
 const Chat = (props: { user: any }) => {
+  const { text: common } = useLang(undefined);
+  const { error, succes, loading } = useNotif();
   const { user } = props;
   const [users, setusers] = useState<UserMessage[]>([]);
   const [selected, setselected] = useState<TUser | undefined>(undefined);
@@ -98,7 +112,7 @@ const Chat = (props: { user: any }) => {
     },
     onError: () => {
       toast.dismiss();
-      toast.error("Something went wrong");
+      error();
     },
     onSuccess: (data) => {
       toast.dismiss();
@@ -115,23 +129,22 @@ const Chat = (props: { user: any }) => {
       }));
       if (!selected) setselected(users[0]?.user);
 
-      const index=users.map((user)=>{
-        const ind=messages.findIndex((message)=>{
-    
+      const index = users.map((user) => {
+        const ind = messages.findIndex((message) => {
           if (message.receiver === "ADMIN") {
             return message.sender === user.user.id;
           } else {
             return message.receiver === user.user.id;
           }
-        })
-        return {ind,user}
-      })
-      setusers(index.sort((a,b)=>b.ind-a.ind).map((item)=>item.user));
+        });
+        return { ind, user };
+      });
+      setusers(index.sort((a, b) => b.ind - a.ind).map((item) => item.user));
     },
   });
 
   useEffect(() => {
-   const unsubscribe= getMessages({
+    const unsubscribe = getMessages({
       id: "ADMIN",
       setMessage: (messages) => {
         setMessages(messages);
@@ -140,43 +153,45 @@ const Chat = (props: { user: any }) => {
         refetch();
       },
     });
-    return ()=>{
-      unsubscribe()
-    }
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const onSelectedUser = (user: TUser) => {
     setselected(user);
   };
   return (
-    <Dashboard type={"ADMIN"} hideNav>
-      <div className="flex h-screen flex-row items-stretch">
-        <div className="top-0 left-0  min-w-[330px] max-w-[330px]  border-l border-r">
-          <LeftSide
-            usersMessages={users}
-            onClick={onSelectedUser}
-            selectedUserId={selected?.id}
+    <LangCommonContext.Provider value={common}>
+      <Dashboard type={"ADMIN"} hideNav>
+        <div className="flex h-screen flex-row items-stretch">
+          <div className="top-0 left-0  min-w-[330px] max-w-[330px]  border-l border-r">
+            <LeftSide
+              usersMessages={users}
+              onClick={onSelectedUser}
+              selectedUserId={selected?.id}
+            />
+          </div>
+
+          <RightSide
+            userMessage={
+              selected
+                ? {
+                    user: selected,
+                    messages: messages.filter((message) => {
+                      if (message.receiver === "ADMIN") {
+                        return message.sender === selected.id;
+                      } else {
+                        return message.receiver === selected.id;
+                      }
+                    }),
+                  }
+                : undefined
+            }
           />
         </div>
-
-        <RightSide
-          userMessage={
-            selected
-              ? {
-                  user: selected,
-                  messages: messages.filter((message) => {
-                    if (message.receiver === "ADMIN") {
-                      return message.sender === selected.id;
-                    } else {
-                      return message.receiver === selected.id;
-                    }
-                  }),
-                }
-              : undefined
-          }
-        />
-      </div>
-    </Dashboard>
+      </Dashboard>
+    </LangCommonContext.Provider>
   );
 };
 
@@ -194,13 +209,14 @@ const LeftSide = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [seach, setseach] = useState("");
   const [users, setusers] = useState<UserMessage[]>([]);
-
+  const common = useContext(LangCommonContext);
+  const { succes, error, loading } = useNotif();
   const { refetch } = trpc.user.search.useQuery(seach, {
     enabled: seach ? true : false,
 
     onError: () => {
       toast.dismiss();
-      toast.error("Something went wrong");
+      error();
     },
     onSuccess: (data) => {
       toast.dismiss();
@@ -222,7 +238,8 @@ const LeftSide = ({
 
   const onSearch = (event: any) => {
     const { value } = event.target;
-    toast.loading("Searching...");
+
+    loading();
     if (value) {
       refetch();
     } else {
@@ -236,7 +253,7 @@ const LeftSide = ({
       <div className="p-3">
         <Input
           onChange={debouncedChangeHandler}
-          placeholder="Search for a user"
+          placeholder={common("input.search for user")}
           size="large"
         />
       </div>
@@ -280,10 +297,10 @@ const LeftSide = ({
                   <>
                     <hr className="my-[2px]" />
                     <span className="text-xs line-clamp-2">
-                      {messages[messages.length-1]?.content || ""}
+                      {messages[messages.length - 1]?.content || ""}
                     </span>
                     <span className="self-end text-xs italic opacity-40 ">
-                      {moment(messages[messages.length-1]?.date).fromNow()}
+                      {moment(messages[messages.length - 1]?.date).fromNow()}
                     </span>
                   </>
                 )}
@@ -303,6 +320,8 @@ export const RightSide = ({
 }) => {
   const [text, setText] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const common = useContext(LangCommonContext);
+  const { succes, error, loading } = useNotif();
   const onSubmit = (e: any) => {
     e.preventDefault();
     console.log(text);
@@ -329,7 +348,7 @@ export const RightSide = ({
             value={text}
             onChange={(e) => setText(e.target.value)}
             size="large"
-            placeholder="Type your message here..."
+            placeholder={common("input.type message")}
             className="flex-grow"
             style={{ width: "calc(100% - 200px)" }}
           />
@@ -338,7 +357,7 @@ export const RightSide = ({
               loading: isLoading,
             })}
           >
-            send
+            {common("button.send")}
           </button>
         </Input.Group>
       </form>
@@ -359,7 +378,7 @@ export const DisplayMessage = ({
   items,
   id,
   user,
-  isAdmin
+  isAdmin,
 }: {
   items: TMessage[];
   id: "ADMIN" | string;
@@ -386,19 +405,30 @@ export const DisplayMessage = ({
             key={i}
             ref={i === items.length - 1 ? lastId : null}
             className={cx(
-              "chat bg-opacity-20 group",
+              "group chat bg-opacity-20",
               mine ? "chat-end" : "chat-start"
             )}
           >
-            <div hidden={!mine} className="chat-image avatar transition-all scale-0 group-hover:scale-100">
-            
-                <Button onClick={()=>{
-                  deleteDocument("messages", message.uid)
-                }} danger icon={<DeleteIcon className="text-lg mx-auto"/>}/>
-          
+            <div className="chat-image avatar ">
+              {!mine ? (
+                <div className="chat-image avatar">
+                  <AvatarImg img={user?.image} size={40} />
+                </div>
+              ) : (
+                <Button
+                  onClick={() => {
+                    deleteDocument("messages", message.uid);
+                  }}
+                  danger
+                  icon={<DeleteIcon className="mx-auto text-lg" />}
+                  className=" scale-0 transition-all  group-hover:scale-100"
+                />
+              )}
             </div>
             <div className="chat-header flex flex-row items-center gap-4">
-              <span className="text-primary" hidden={mine}>{user?.username||"CARNET" }</span>
+              <span className="text-primary" hidden={mine}>
+                {user?.username || "CARNET"}
+              </span>
               <time className="text-xs opacity-50">
                 {moment(message.date).fromNow()}
               </time>

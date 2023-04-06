@@ -3,7 +3,7 @@
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import type { InferGetServerSidePropsType } from "next";
 import { type GetServerSideProps } from "next";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Dashboard from "@ui/dashboard";
 import * as XLSX from "xlsx";
 import tableExport from "antd-table-export";
@@ -25,6 +25,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import Image from "next/image";
 import axios from "axios";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { LangCommonContext, useLang, useNotif } from "../../../hooks";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -60,6 +61,9 @@ export function CheckImage(path: string) {
 const Brands = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
+  const { text: common } = useLang(undefined);
+  const tab = (s: string) => common(`table.${s}`);
+  const { error, loading, succes } = useNotif();
   const [edit, setedit] = useState<Brand | undefined>(undefined);
   const [open, setOpen] = useState<boolean | undefined>(false);
   const [modal, contextHolder] = Modal.useModal();
@@ -69,13 +73,13 @@ const Brands = (
       onError: (err) => {
         console.log("error message", err.message);
         if (err.message.includes("Unique constraint failed on the fields")) {
-          toast.error("Brand already exists");
+          common("toast.Brand already exists");
         } else {
-          toast.error("Error encountered");
+          error();
         }
       },
       onSuccess: () => {
-        toast.success("Brand(s) added");
+        succes();
         setOpen(false);
         refetch();
       },
@@ -85,13 +89,13 @@ const Brands = (
     onError: (err) => {
       console.log("error message", err.message);
       if (err.message.includes("Unique constraint failed on the fields")) {
-        toast.error("Brand already exists");
+        common("toast.Brand already exists");
       } else {
-        toast.error("Error encountered");
+        error();
       }
     },
     onSuccess: () => {
-      toast.success("Brand updated");
+      succes();
       setedit(undefined);
       refetch();
     },
@@ -100,10 +104,10 @@ const Brands = (
     trpc.admin.removeBrand.useMutation({
       onError: (err) => {
         console.log("error message", err.message);
-        toast.error("Error encountered");
+        error();
       },
       onSuccess: () => {
-        toast.success("Brand(s) removed");
+        succes();
 
         refetch();
       },
@@ -115,7 +119,7 @@ const Brands = (
   const expandedColumns = (record: Brand) => {
     const columns: ColumnsType<Model> = [
       {
-        title: "Id",
+        title: tab("id"),
         width: "100px",
         dataIndex: "id",
         key: "id",
@@ -124,14 +128,14 @@ const Brands = (
         ),
       },
       {
-        title: "Name",
+        title: tab("name"),
         dataIndex: "name",
         width: "300px",
         key: "name",
         render: (v) => <h6>{v}</h6>,
       },
       {
-        title: "Year",
+        title: tab("buildYear"),
         dataIndex: "year",
         width: "150px",
         key: "year",
@@ -152,7 +156,7 @@ const Brands = (
   };
   const columns: ColumnsType<Brand> = [
     {
-      title: "Id",
+      title: tab("id"),
       width: "50px",
       dataIndex: "id",
       key: "id",
@@ -161,7 +165,7 @@ const Brands = (
       ),
     },
     {
-      title: "Logo",
+      title: tab("logo"),
       width: "80px",
       dataIndex: "logo",
       key: "logo",
@@ -179,21 +183,21 @@ const Brands = (
       ),
     },
     {
-      title: "Name",
+      title: tab("name"),
       dataIndex: "name",
       width: "150px",
       key: "name",
       render: (v) => <h6>{v}</h6>,
     },
     {
-      title: "Country",
+      title: tab("country"),
       dataIndex: "country",
       width: "150px",
       key: "country",
       render: (v) => v || "---",
     },
     {
-      title: "Description",
+      title: tab("description"),
       dataIndex: "description",
 
       key: "description",
@@ -201,14 +205,14 @@ const Brands = (
     },
 
     {
-      title: "Models",
+      title: tab("models"),
       dataIndex: "models",
       key: "models",
       align: "right",
       render: (v) => <Tag>{v.length}</Tag>,
     },
     {
-      title: "Actions",
+      title: tab("actions"),
 
       dataIndex: "actions",
       key: "actions",
@@ -302,72 +306,74 @@ const Brands = (
     exportInstance.download("brands", "xlsx");
   };
   return (
-    <Dashboard type="ADMIN">
-      <SwitcherData />
+    <LangCommonContext.Provider value={common}>
+      <Dashboard type="ADMIN">
+        <SwitcherData />
 
-      <div className="mt-6 flex flex-col">
-        <div className="flex flex-row items-center justify-end gap-6 py-3">
-          <button
-            onClick={() => removeBrand(selectedRowKeys as number[])}
-            className={cx("btn-error btn-sm btn", {
-              hidden: selectedRowKeys.length === 0,
-            })}
-          >
-            <DeleteIcon className="text-lg" />
-          </button>
-          <div className="flex-grow"></div>
-          <button
-            onClick={() => setOpen(true)}
-            className="btn-primary btn-sm btn"
-          >
-            add Brand
-          </button>
+        <div className="mt-6 flex flex-col">
+          <div className="flex flex-row items-center justify-end gap-6 py-3">
+            <button
+              onClick={() => removeBrand(selectedRowKeys as number[])}
+              className={cx("btn-error btn-sm btn", {
+                hidden: selectedRowKeys.length === 0,
+              })}
+            >
+              <DeleteIcon className="text-lg" />
+            </button>
+            <div className="flex-grow"></div>
+            <button
+              onClick={() => setOpen(true)}
+              className="btn-primary btn-sm btn"
+            >
+              {common("text.add brand")}
+            </button>
 
-          <button
-            onClick={onPickfile}
-            className={cx("btn-sm btn items-center gap-2", {})}
-          >
-            <input
-              onChange={onImport}
-              hidden
-              ref={fileRef}
-              type="file"
-              accept=".xlsx, .xls"
-            />
-            <InportIcon className="text-lg" />
-            Import
-          </button>
-          <button
-            onClick={onExport}
-            hidden={(brands || []).length === 0}
-            className="btn-outline btn-secondary btn-sm btn gap-2"
-          >
-            <ExportIcon className="text-lg" />
-            Export
-          </button>
+            <button
+              onClick={onPickfile}
+              className={cx("btn-sm btn items-center gap-2", {})}
+            >
+              <input
+                onChange={onImport}
+                hidden
+                ref={fileRef}
+                type="file"
+                accept=".xlsx, .xls"
+              />
+              <InportIcon className="text-lg" />
+              {common("text.import data")}
+            </button>
+            <button
+              onClick={onExport}
+              hidden={(brands || []).length === 0}
+              className="btn-outline btn-secondary btn-sm btn gap-2"
+            >
+              <ExportIcon className="text-lg" />
+              {common("text.export data")}
+            </button>
+          </div>
+          <MyTable
+            rowSelection={rowSelection as TableRowSelection<TableType>}
+            loading={isLoading}
+            data={brands || []}
+            // xScroll={1000}
+            options={{ expandedRowRender: expandedColumns }}
+            columns={columns as ColumnsType<TableType>}
+            // columns={columns.filter((c)=>options.includes(c.key))}
+          />
         </div>
-        <MyTable
-          rowSelection={rowSelection as TableRowSelection<TableType>}
-          loading={isLoading}
-          data={brands || []}
-          // xScroll={1000}
-          options={{ expandedRowRender: expandedColumns }}
-          columns={columns as ColumnsType<TableType>}
-          // columns={columns.filter((c)=>options.includes(c.key))}
+        <ModelBrand
+          open={open == undefined ? false : open}
+          onClose={() => setOpen(false)}
+          onValide={(b: FBrand) => addBrand({ init: [], brands: [b] })}
         />
-      </div>
-      <ModelBrand
-        open={open == undefined ? false : open}
-        onClose={() => setOpen(false)}
-        onValide={(b: FBrand) => addBrand({ init: [], brands: [b] })}
-      />
-      <ModelBrandUpdate
-        open={edit != undefined}
-        brand={edit}
-        onClose={() => setedit(undefined)}
-        onValide={(b: FBrand) => updateBrand({ id: edit?.id || 1, data: b })}
-      />
-    </Dashboard>
+        <ModelBrandUpdate
+          open={edit != undefined}
+          brand={edit}
+          onClose={() => setedit(undefined)}
+          onValide={(b: FBrand) => updateBrand({ id: edit?.id || 1, data: b })}
+        />
+      </Dashboard>
+    </LangCommonContext.Provider>
   );
 };
 
@@ -386,19 +392,16 @@ type FBrand = {
   description?: string;
 };
 const ModelBrand = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
+  const common = useContext(LangCommonContext);
   const { register, handleSubmit, watch, formState, getValues } =
     useForm<FBrand>({});
-
-  const { errors } = formState;
-
-  const onSubmit: SubmitHandler<FBrand> = (data) => onValide(data);
 
   return (
     <>
       <Modal
         open={open}
         destroyOnClose={true}
-        title="Brand"
+        title={common("table.brand")}
         onCancel={onClose}
         footer={[
           <button
@@ -408,7 +411,7 @@ const ModelBrand = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
               "btn-disabled": !watch("name"),
             })}
           >
-            add
+            {common("button.add")}
           </button>,
         ]}
       >
@@ -416,20 +419,20 @@ const ModelBrand = ({ brand, open, onClose, onValide }: ModelBrandProps) => {
           <input
             type="text"
             {...register("name", { required: true })}
-            placeholder="Name"
+            placeholder={common("table.name")}
             className="input-bordered input w-full "
           />
           <input
             type="text"
             {...register("country")}
-            placeholder="Country"
+            placeholder={common("table.country")}
             className="input-bordered input w-full "
           />
 
           <textarea
             className="textarea-bordered textarea w-full"
             {...register("description")}
-            placeholder="Description"
+            placeholder={common("table.description")}
           ></textarea>
         </div>
       </Modal>
@@ -451,7 +454,7 @@ const ModelBrandUpdate = ({
   const { register, watch, formState, getValues, setValue } = useForm<FBrand>({
     defaultValues,
   });
-
+  const common = useContext(LangCommonContext);
   const { errors } = formState;
 
   useEffect(() => {
@@ -480,7 +483,7 @@ const ModelBrandUpdate = ({
       <Modal
         open={open}
         destroyOnClose={true}
-        title="Brand"
+        title={common("table.brand")}
         onCancel={onClose}
         footer={[
           <button
@@ -490,7 +493,7 @@ const ModelBrandUpdate = ({
               "btn-disabled": !isEditable(),
             })}
           >
-            update
+            {common("button.update")}
           </button>,
         ]}
       >
@@ -498,20 +501,20 @@ const ModelBrandUpdate = ({
           <input
             type="text"
             {...register("name", { required: true })}
-            placeholder="Name"
+            placeholder={common("table.name")}
             className="input-bordered input w-full "
           />
           <input
             type="text"
             {...register("country")}
-            placeholder="Country"
+            placeholder={common("table.country")}
             className="input-bordered input w-full "
           />
 
           <textarea
             className="textarea-bordered textarea w-full"
             {...register("description")}
-            placeholder="Description"
+            placeholder={common("table.description")}
           ></textarea>
         </div>
       </Modal>

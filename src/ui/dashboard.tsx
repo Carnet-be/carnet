@@ -156,18 +156,7 @@ const Dashboard = ({
       <div className="drawer-mobile drawer">
         <input id="drawer" type="checkbox" className="drawer-toggle" />
         <div className={cx("drawer-content relative", background)}>
-          <div
-            className={cx(
-              "sticky top-0 right-0 z-50 flex h-[60px] w-full  flex-row items-center gap-3 px-3 backdrop-blur-md",
-              {
-                hidden: hideNav,
-              }
-            )}
-          >
-            <div className="flex-grow"></div>
-            <NotificationComponent />
-            <ProfileCard />
-          </div>
+          {!hideNav && <NavBar />}
           {/* <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label> */}
           <div
             className={cx("", {
@@ -233,6 +222,34 @@ const Dashboard = ({
         </div>
       </div>
     </LangCommonContext.Provider>
+  );
+};
+
+export const NavBar = () => {
+  return (
+    <div
+      className={cx(
+        "sticky top-0 right-0 z-50 flex h-[60px] w-full  flex-row items-center gap-3 px-3 backdrop-blur-md"
+      )}
+    >
+      <div className="flex-grow"></div>
+      <NotificationComponent />
+      <ProfileCard />
+    </div>
+  );
+};
+
+export const NavBarFixed = () => {
+  return (
+    <div
+      className={cx(
+        "flex h-[60px] w-full  flex-row items-center gap-3 px-3 shadow"
+      )}
+    >
+      <div className="flex-grow"></div>
+      <NotificationComponent />
+      <ProfileCard />
+    </div>
   );
 };
 

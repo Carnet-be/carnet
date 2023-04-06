@@ -21,6 +21,10 @@ import { ToastContainer } from "react-toastify";
 import { useNotifyMe } from "./hooks";
 import { IntlProvider } from "react-intl";
 import "@utils/i18n";
+
+import frFR from "antd/locale/fr_FR";
+import enUS from "antd/locale/en_US";
+
 // import en from "../lang/en.json";
 // import fr from "../lang/fr.json";
 // const messages = {
@@ -30,6 +34,7 @@ import "@utils/i18n";
 // };
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
+import { ConfigProvider } from "antd";
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
   const { locale } = useRouter();
   //i18next.reloadResources();
@@ -45,7 +50,16 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
       }
     }
   }, [locale]);
-
+  const getAntdLocale = () => {
+    switch (locale) {
+      case "en":
+        return enUS;
+      case "fr":
+        return frFR;
+      default:
+        return enUS;
+    }
+  };
   return (
     // <IntlProvider locale={locale||"fr"}  messages={messages[locale as Locale||"fr"]}>
     <SessionProvider session={session}>
@@ -72,9 +86,11 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
         />
       </Head>
 
-      <App>
-        <Component {...pageProps} />
-      </App>
+      <ConfigProvider locale={getAntdLocale()}>
+        <App>
+          <Component {...pageProps} />
+        </App>
+      </ConfigProvider>
       <Toaster />
       <ToastContainer position="bottom-right" autoClose={8000} />
       <audio

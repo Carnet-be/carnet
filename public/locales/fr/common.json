@@ -9,13 +9,17 @@
     "email": "Email",
     "password": "Mot de passe",
     "confirm password": "Confirmer le mot de passe",
-    "username": "Nom d'utilisateur"
+    "username": "Nom d'utilisateur",
+    "search": "Rechercher",
+    "search for user": "Rechercher un utilisateur",
+    "type message": "Saisir votre message"
   },
   "toast": {
     "failed": "Opération échouée",
     "success": "Opération réussie",
     "error": "Erreur rencontrée",
     "loading": "En cours",
+    "brand already exist": "Cette marque existe déjà",
     "auth": {
       "success": "Vous êtes connectés avec succès",
       "failed": "Echec de la connexion",
@@ -78,7 +82,13 @@
     "auctioneers": "Enchérisseurs",
     "no data": "Aucune donnée",
     "add time": "Ajouter du temps",
-    "make winner": "Choisir le gagnant"
+    "add brand": "Ajouter une marque",
+    "add model": "Ajouter un modèle",
+
+    "import data": "Importer des données",
+    "export data": "Exporter des données",
+    "make winner": "Choisir le gagnant",
+    "chose brand": "Choisir une marque"
   },
   "table": {
     "id": "ID",
@@ -110,7 +120,15 @@
     "commission": "Commission",
     "ended at": "Terminé",
     "active": "Actif",
-    "username": "Nom d'utilisateur"
+    "username": "Nom d'utilisateur",
+    "buildYear": "Année de construction",
+    "logo": "Logo",
+    "models": "Modèles",
+    "brand": "Marque",
+    "brands": "Marques",
+    "model": "Modèle",
+    "country": "Pays",
+    "description": "Description"
   },
   "tooltip": {
     "contact": "contact",

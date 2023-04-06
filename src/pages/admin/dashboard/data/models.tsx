@@ -2,7 +2,7 @@
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import type { InferGetServerSidePropsType } from "next";
 import { type GetServerSideProps } from "next";
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Dashboard from "@ui/dashboard";
 import * as XLSX from "xlsx";
 
@@ -19,6 +19,7 @@ import cx from "classnames";
 import { type TableRowSelection } from "antd/es/table/interface";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { LangCommonContext, useLang, useNotif } from "../../../hooks";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -43,21 +44,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 const Models = () => {
   const { data: models, isLoading, refetch } = trpc.admin.getModel.useQuery();
-
+  const { error, loading, succes } = useNotif();
+  const { text: common } = useLang(undefined);
   const { mutate: removeBrand } = trpc.admin.removeModel.useMutation({
     onError: (err) => {
       console.log("error message", err.message);
-      toast.error("Error encountered");
+      error();
     },
     onSuccess: () => {
-      toast.success("Brand(s) removed");
+      succes();
 
       refetch();
     },
   });
   const columns: ColumnsType<Model> = [
     {
-      title: "Id",
+      title: common("table.id"),
       width: "100px",
       dataIndex: "id",
       key: "id",
@@ -66,14 +68,14 @@ const Models = () => {
       ),
     },
     {
-      title: "Name",
+      title: common("table.name"),
       dataIndex: "name",
       width: "300px",
       key: "name",
       render: (v) => <h6>{v}</h6>,
     },
     {
-      title: "Year",
+      title: common("table.buildYear"),
       dataIndex: "year",
       width: "150px",
       key: "year",
@@ -81,7 +83,7 @@ const Models = () => {
       render: (v) => <Tag>{v}</Tag>,
     },
     {
-      title: "Brand",
+      title: common("table.brand"),
       dataIndex: "brand",
       key: "brand",
       render: (v) => (
@@ -127,49 +129,51 @@ const Models = () => {
   };
 
   return (
-    <Dashboard type="ADMIN">
-      <SwitcherData />
+    <LangCommonContext.Provider value={common}>
+      <Dashboard type="ADMIN">
+        <SwitcherData />
 
-      <div className="mt-6 flex flex-col">
-        <div className="flex flex-row items-center justify-end gap-6 py-3">
-          <button
-            onClick={() => removeBrand(selectedRowKeys as number[])}
-            className={cx("btn-error btn-sm btn", {
-              hidden: selectedRowKeys.length === 0,
-            })}
-          >
-            <DeleteIcon className="text-lg" />
-          </button>
-          <div className="flex-grow"></div>
-          {/* <button
+        <div className="mt-6 flex flex-col">
+          <div className="flex flex-row items-center justify-end gap-6 py-3">
+            <button
+              onClick={() => removeBrand(selectedRowKeys as number[])}
+              className={cx("btn-error btn-sm btn", {
+                hidden: selectedRowKeys.length === 0,
+              })}
+            >
+              <DeleteIcon className="text-lg" />
+            </button>
+            <div className="flex-grow"></div>
+            {/* <button
             onClick={() => setOpen(true)}
             className="btn-primary btn-sm btn"
           >
             add Brand
           </button> */}
-          <ImportModelDialog
-            onSuccess={() => {
-              refetch();
-            }}
+            <ImportModelDialog
+              onSuccess={() => {
+                refetch();
+              }}
+            />
+          </div>
+          <MyTable
+            rowSelection={rowSelection as TableRowSelection<TableType>}
+            loading={isLoading}
+            data={models || []}
+            // xScroll={1000}
+
+            columns={columns as ColumnsType<TableType>}
+            // columns={columns.filter((c)=>options.includes(c.key))}
           />
         </div>
-        <MyTable
-          rowSelection={rowSelection as TableRowSelection<TableType>}
-          loading={isLoading}
-          data={models || []}
-          // xScroll={1000}
-
-          columns={columns as ColumnsType<TableType>}
-          // columns={columns.filter((c)=>options.includes(c.key))}
-        />
-      </div>
-      {/* <ModelBrand
+        {/* <ModelBrand
         open={open == undefined ? false : open}
         onClose={() => setOpen(false)}
         onValide={(b: FBrand) => addBrand({ init: [], brands: [b] })}
       />
       <ModelBrandUpdate open={edit!=undefined}  brand={edit}  onClose={() => setedit(undefined)}   onValide={(b: FBrand) => updateBrand({id:edit?.id!,data:b})}/> */}
-    </Dashboard>
+      </Dashboard>
+    </LangCommonContext.Provider>
   );
 };
 
@@ -181,7 +185,7 @@ type ImportDialogProps = {
 const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const { error, loading, succes } = useNotif();
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -193,14 +197,10 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
   const { mutate: addModel } = trpc.admin.addModel.useMutation({
     onError: (err) => {
       console.log("error message", err.message);
-      if (err.message.includes("Unique constraint failed on the fields")) {
-        toast.error("Brand already exists");
-      } else {
-        toast.error("Error encountered");
-      }
+      error();
     },
     onSuccess: () => {
-      toast.success("Brand(s) added");
+      succes();
       onSuccess();
       handleCancel();
     },
@@ -244,6 +244,7 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
   const [search, setsearch] = useState("");
   const onPickfile = () => fileRef.current?.click();
   const [parent] = useAutoAnimate();
+  const common = useContext(LangCommonContext);
   return (
     <>
       <button
@@ -251,16 +252,16 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
         className={cx("btn-sm btn items-center gap-2", {})}
       >
         <InportIcon className="text-lg" />
-        Import
+        {common("text.import data")}
       </button>
       <Modal
-        title="Choose Brand"
+        title={common("text.chose brand")}
         open={isModalOpen}
-        destroyOnClose={false}
+        destroyOnClose={true}
         onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>
-            cancel
+            {common("button.cancel")}
           </Button>,
           <Button
             key={"ok"}
@@ -275,7 +276,7 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
               type="file"
               accept=".xlsx, .xls"
             />
-            confirm
+            {common("button.validate")}
           </Button>,
         ]}
       >
@@ -283,7 +284,7 @@ const ImportModelDialog = ({ onSuccess }: ImportDialogProps) => {
           value={search}
           onChange={(e) => setsearch(e.target.value)}
           width={"200px"}
-          placeholder="Search"
+          placeholder={common("input.search")}
         />
         <div
           ref={parent as any}
