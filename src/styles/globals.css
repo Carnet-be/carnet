@@ -20,29 +20,19 @@
     @apply text-xl;
   }
 
-  input,textarea {
+  input,
+  textarea {
     @apply outline-none !important;
   }
-  .mesure{
-    @apply italic text-sm text-gray-300 !important
+  .mesure {
+    @apply text-sm italic text-gray-300 !important;
   }
-  .menu-item{
-    @apply flex flex-row gap-3 items-center !important;
+  .menu-item {
+    @apply flex flex-row items-center gap-3 !important;
   }
 }
 
 .ant-btn-primary {
   background-color: blue;
   color: white;
-}
-
-
-.chaty{
-  overflow-y: scroll;
-  overscroll-behavior-y: contain;
-  scroll-snap-type: y proximity;
-}
-
-.chaty > div:last-child {
-  scroll-snap-align: end;
 }

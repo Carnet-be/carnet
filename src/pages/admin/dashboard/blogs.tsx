@@ -394,6 +394,9 @@ const AddBlog = ({
             onLoad={(e) => {
               console.log(e);
             }}
+            previewOptions={{
+              className: "prose",
+            }}
             value={value}
             onChange={(s) => setValue(s || "")}
           />

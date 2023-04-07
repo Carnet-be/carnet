@@ -102,6 +102,7 @@
   "blog": {
     "blog": "Blog",
     "subtitle": "Découvrez nos derniers articles",
-    "read more": "Lire la suite"
+    "read more": "Lire la suite",
+    "blogs": "Blogs"
   }
 }

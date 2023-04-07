@@ -2,26 +2,31 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
-  important:true,
+
+  important: true,
   theme: {
     extend: {
-      colors:{
-        background:"#F8F8F8",
-        green:"#1ACC8D",
-        grey:"#F0F0F0"
-      }
+      colors: {
+        background: "#F8F8F8",
+        green: "#1ACC8D",
+        grey: "#F0F0F0",
+      },
     },
   },
-  plugins: [require("daisyui"),  require('@tailwindcss/line-clamp'),],
-  daisyui:{
+  plugins: [
+    require("daisyui"),
+    require("@tailwindcss/line-clamp"),
+    require("@tailwindcss/typography"),
+  ],
+  daisyui: {
     darkTheme: "light",
-      themes: [
-        {
-          light: {
-            ...require("daisyui/src/colors/themes")["[data-theme=light]"],
-            primary: "#181BAA",
-          },
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/colors/themes")["[data-theme=light]"],
+          primary: "#181BAA",
         },
-      ],
-  }
+      },
+    ],
+  },
 };

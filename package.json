@@ -63,10 +63,12 @@
     "react-icons": "^4.6.0",
     "react-intl": "^6.3.2",
     "react-loading-skeleton": "^3.1.0",
+    "react-markdown": "^8.0.6",
     "react-onesignal": "^2.0.4",
     "react-slick": "^0.29.0",
     "react-spinners": "^0.13.7",
     "react-toastify": "^9.1.1",
+    "remark-gfm": "^3.0.1",
     "rsuite": "^5.23.0",
     "rxjs": "^7.8.0",
     "superjson": "1.9.1",
@@ -76,6 +78,7 @@
     "zustand": "^4.3.3"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.9",
     "@types/bcrypt": "^5.0.0",
     "@types/google-map-react": "^2.1.7",
     "@types/node": "^18.0.0",

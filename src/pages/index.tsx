@@ -164,29 +164,29 @@ export const MyNav = () => {
         <Image src={Logo2} height={50} alt="logo" />
 
         <div className="flex-grow" />
-        <Link scroll={true} href={"#"} className="font-semibold  text-white">
+        <Link scroll={true} href={"/"} className="font-semibold  text-white">
           {text("navbar.menu.home")}
         </Link>
-        <Link scroll={true} href={"#how"} className="font-semibold text-white">
+        <Link scroll={true} href={"/#how"} className="font-semibold text-white">
           {text("navbar.menu.how it works")}
         </Link>
         <Link
           scroll={true}
-          href={"#about"}
+          href={"/#about"}
           className="font-semibold text-white"
         >
           {text("navbar.menu.about us")}
         </Link>
         <Link
           scroll={true}
-          href={"#blogs"}
+          href={"/blogs"}
           className="font-semibold text-white"
         >
           {text("navbar.menu.blog")}
         </Link>
         <Link
           scroll={true}
-          href={"#contact"}
+          href={"/#contact"}
           className="font-semibold text-white"
         >
           {text("navbar.menu.contact us")}
@@ -360,7 +360,7 @@ const Contact = () => {
   );
 };
 
-const Footer = () => {
+export const Footer = () => {
   const s = "footer.menu";
   const text = useContext(LangContext);
   return (
@@ -373,29 +373,29 @@ const Footer = () => {
         className={"my-6"}
       />
       <div className="flex flex-row items-center justify-center gap-10 ">
-        <Link scroll={true} href={"#"} className="font-semibold  text-white">
+        <Link scroll={true} href={"/#"} className="font-semibold  text-white">
           {text(s + ".home")}
         </Link>
-        <Link scroll={true} href={"#how"} className="font-semibold text-white">
+        <Link scroll={true} href={"/#how"} className="font-semibold text-white">
           {text(s + ".how it works")}
         </Link>
         <Link
           scroll={true}
-          href={"#about"}
+          href={"/#about"}
           className="font-semibold text-white"
         >
           {text(s + ".about us")}
         </Link>
         <Link
           scroll={true}
-          href={"#blogs"}
+          href={"/blogs"}
           className="font-semibold text-white"
         >
           {text(s + ".blog")}
         </Link>
         <Link
           scroll={true}
-          href={"#contact"}
+          href={"/#contact"}
           className="font-semibold text-white"
         >
           {text(s + ".contact us")}
@@ -403,14 +403,14 @@ const Footer = () => {
 
         <Link
           scroll={true}
-          href={"#terms_conditions"}
+          href={"/#terms_conditions"}
           className="font-semibold text-white"
         >
           {text(s + ".terms and conditions")}
         </Link>
         <Link
           scroll={true}
-          href={"#privacy_policy"}
+          href={"/#privacy_policy"}
           className="font-semibold text-white"
         >
           {text(s + ".privacy policy")}
