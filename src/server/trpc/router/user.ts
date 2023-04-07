@@ -3,6 +3,7 @@ import { router, publicProcedure } from "../trpc";
 import bcrypt from "bcrypt";
 import { bcryptHash } from "@utils/bcrypt";
 import { TMessage } from "@repository/index";
+import { Language } from "@prisma/client";
 
 export const userRouter = router({
   get: publicProcedure.query(async ({ ctx }) => {
@@ -27,6 +28,11 @@ export const userRouter = router({
         username: z.string(),
         tel: z.string().nullable(),
         email: z.string().email(),
+        // nomEntreprise: z.string().nullable(),
+        address: z.string().nullable(),
+        city: z.string().nullable(),
+        country: z.string().nullable(),
+        zipCode: z.string().nullable(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -115,17 +121,26 @@ export const userRouter = router({
   getUsersFromMessages: publicProcedure
     .input(z.array(z.string()))
     .query(async ({ input, ctx }) => {
-      
-      return await ctx.prisma.user
-        .findMany({
-          where: {
-            id: {
-              in: input,
-            },
+      return await ctx.prisma.user.findMany({
+        where: {
+          id: {
+            in: input,
           },
-          include: {
-            image: true,
-          },
-        })
+        },
+        include: {
+          image: true,
+        },
+      });
+    }),
+
+  changeLang: publicProcedure
+    .input(z.string())
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.user.update({
+        where: { email: ctx.session?.user?.email || "" },
+        data: {
+          lang: input as Language,
+        },
+      });
     }),
 });

@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
-import Dashboard from "@ui/dashboard";
+import Dashboard, { NavBarFixed } from "@ui/dashboard";
 import { trpc } from "@utils/trpc";
 import { Button, Divider, Input } from "antd";
 import { GetServerSideProps } from "next";
@@ -164,8 +164,11 @@ const Chat = (props: { user: any }) => {
   return (
     <LangCommonContext.Provider value={common}>
       <Dashboard type={"ADMIN"} hideNav>
-        <div className="flex h-screen flex-row items-stretch">
-          <div className="top-0 left-0  min-w-[330px] max-w-[330px]  border-l border-r">
+        <div className="relative flex h-screen flex-row items-stretch">
+          <div className="absolute top-0  right-0 z-[1000] w-full  bg-background backdrop-blur-md">
+            <NavBarFixed />
+          </div>
+          <div className="min-w-[330px]  max-w-[330px] border-l  border-r pt-[60px]">
             <LeftSide
               usersMessages={users}
               onClick={onSelectedUser}
@@ -336,7 +339,7 @@ export const RightSide = ({
     });
   };
   return (
-    <div className={cx("flex h-full w-full flex-col-reverse items-center")}>
+    <div className={cx(" flex h-full w-full flex-col-reverse items-center")}>
       <form
         hidden={user === undefined}
         onSubmit={onSubmit}

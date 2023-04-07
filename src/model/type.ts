@@ -47,7 +47,10 @@ export type TAuction = Auction & {
   bidder: TUser;
   images: AssetImage[];
 };
-export type TUser = User & { auctions: Auction[]; image: AssetImage | null };
+export type TUser = User & {
+  auctions: Auction[];
+  image: AssetImage | null;
+};
 export type TBid = Bid & { bidder: TUser };
 
 export type TypeNotification =

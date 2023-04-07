@@ -10,11 +10,14 @@
     "password": "Mot de passe",
     "confirm password": "Confirmer le mot de passe",
     "username": "Nom d'utilisateur",
+    "tel": "Téléphone",
     "search": "Rechercher",
     "search for user": "Rechercher un utilisateur",
     "type message": "Saisir votre message",
     "title": "Titre",
-    "fill all fields": "Veuillez remplir tous les champs"
+    "fill all fields": "Veuillez remplir tous les champs",
+    "old password": "Ancien mot de passe",
+    "new password": "Nouveau mot de passe"
   },
   "toast": {
     "failed": "Opération échouée",
@@ -54,12 +57,15 @@
     "logout": "Déconnexion",
     "login": "Connexion",
     "new blog": "Nouveau blog",
-    "edit blog": "Modifier le blog"
+    "edit blog": "Modifier le blog",
+    "update password": "Mettre à jour le mot de passe"
   },
   "quotes": {
     "big title": "Achetez Votre Voiture avec"
   },
   "text": {
+    "update your password": "Mettre à jour votre mot de passe",
+    "profile": "Profil",
     "terms and conditions": "Conditions générales",
     "privacy policy": "Politique de confidentialité",
     "password forget": "Mot de passe oublié",
@@ -70,6 +76,7 @@
     "staffs": "Personnels",
     "data": "Données",
     "chat": "Chat",
+    "address": "Adresse",
     "settings": "Paramètres",
     "my auctions": "Mes enchères",
     "my bids": "Mes offres",
@@ -138,8 +145,10 @@
     "brands": "Marques",
     "model": "Modèle",
     "country": "Pays",
+    "city": "Ville",
     "description": "Description",
     "image": "Image",
+    "zip": "Code postal",
     "lang": "Langue"
   },
   "tooltip": {

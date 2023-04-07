@@ -1,4 +1,7 @@
 {
+  "settings": {
+    "new bidder": "Les nouveaux comptes des enchérisseurs doivent être approuvés par un administrateur"
+  },
   "admin": {
     "text": {
       "auction page title": "Gestion des enchères",

@@ -5,23 +5,17 @@ export const appSettingsRouter = router({
   get: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.appSettings.findFirst();
   }),
-  update: publicProcedure
-    .input(
-      z.object({
-        confirmNewBidderAccount: z.boolean().optional(),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.appSettings.upsert({
-        where: {
-          id: "appSettings",
-        },
-        create: {
-          ...input,
-        },
-        update: {
-          ...input,
-        },
-      });
-    }),
+  update: publicProcedure.input(z.any()).mutation(async ({ input, ctx }) => {
+    return await ctx.prisma.appSettings.upsert({
+      where: {
+        id: "appSettings",
+      },
+      create: {
+        ...input,
+      },
+      update: {
+        ...input,
+      },
+    });
+  }),
 });

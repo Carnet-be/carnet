@@ -5,6 +5,8 @@ import Dashboard from "@ui/dashboard";
 import SettingsSection from "@ui/settingsSection";
 import { GetServerSideProps } from "next";
 import { prisma } from "../../server/db/client";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { LangContext, useLang } from "../hooks";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -22,9 +24,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       where: {
         email: session?.user?.email || "",
       },
-      include:{
-        image:true
-      }
+      include: {
+        image: true,
+      },
     })
     .then((res) => JSON.parse(JSON.stringify(res)));
   if (!user) {
@@ -54,16 +56,28 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-   props:{
-      user
-   }
+    props: {
+      user,
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
+    },
   };
 };
-const ProfilePage = (props:{user:TUser}) => {
-  const {user} = props;
-  return <Dashboard type={user.type}>
-       <SettingsSection user={user}/>
-  </Dashboard>;
+const ProfilePage = (props: { user: TUser }) => {
+  const { user } = props;
+  const { text } = useLang({
+    file: "dashboard",
+    selector: "settings",
+  });
+  return (
+    <LangContext.Provider value={text}>
+      <Dashboard type={user.type}>
+        <SettingsSection user={user} />
+      </Dashboard>
+    </LangContext.Provider>
+  );
 };
 
 export default ProfilePage;

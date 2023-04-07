@@ -1,6 +1,7 @@
 import React from "react";
 import { prisma } from "../../server/db/client";
 import { GetServerSideProps } from "next";
+import { Language } from "@prisma/client";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { locale } = context;
@@ -8,7 +9,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const blog = await prisma.blog
     .findFirst({
       where: {
-        OR: [{ locale: locale }, { locale: null }],
+        OR: [{ locale: locale as Language | undefined }, { locale: null }],
       },
       orderBy: {
         createAt: "desc",

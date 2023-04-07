@@ -243,7 +243,7 @@ export const NavBarFixed = () => {
   return (
     <div
       className={cx(
-        "flex h-[60px] w-full  flex-row items-center gap-3 px-3 shadow"
+        "flex h-[60px] w-full  flex-row items-center gap-3 border-b border-l px-3"
       )}
     >
       <div className="flex-grow"></div>

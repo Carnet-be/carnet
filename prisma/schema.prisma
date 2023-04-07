@@ -17,19 +17,26 @@ datasource db {
 model User {
   id String @id @default(cuid())
 
-  username       String
-  email          String   @unique
-  nom_entreprise String?
-  type           UserType
-  tel            String?
-  password       String
-  isActive       Boolean  @default(true)
-  emailVerified  Boolean  @default(false)
+  username         String
+  email            String           @unique
+  nom_entreprise   String?
+  type             UserType
+  tel              String?
+  password         String
+  isActive         Boolean          @default(true)
+  emailVerified    Boolean          @default(false)
+  lang             Language         @default(fr)
+  subscriptionType SubscriptionType @default(free)
 
   favoris_auctions String[]
+
+  zipCode  String?
+  country  String?
+  city     String?
+  address  String?
   //
-  createAt         DateTime @default(now())
-  updateAt         DateTime @updatedAt
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
 
   logsAuctions LogAuction[]
 
@@ -40,6 +47,8 @@ model User {
 
   internalMessages InternalMessage[] @relation("auctioner")
   Blog             Blog[]
+  Address          Address?          @relation(fields: [addressId], references: [id])
+  addressId        String?
 }
 
 model DemandeStaff {
@@ -155,6 +164,7 @@ model Address {
   //
   auction_id String  @unique
   auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  User       User[]
 }
 
 model Bid {
@@ -252,7 +262,7 @@ model Blog {
   updateAt          DateTime   @updatedAt
   // field
   title             String
-  locale            String?
+  locale            Language?
   image             AssetImage @relation(fields: [assetImageFileKey], references: [fileKey], onDelete: Cascade)
   content           String
   // relation
@@ -293,4 +303,27 @@ enum AuctionState {
 enum IntermalMessageType {
   client
   admin
+}
+
+enum Language {
+  fr
+  en
+  ar
+  de
+  es
+  it
+  nl
+  pt
+  ru
+  zh
+  ja
+  ko
+}
+
+enum SubscriptionType {
+  free
+  premium
+  //
+  freeTrial
+  //
 }

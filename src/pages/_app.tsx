@@ -24,7 +24,7 @@ import "@utils/i18n";
 
 import frFR from "antd/locale/fr_FR";
 import enUS from "antd/locale/en_US";
-
+import "/node_modules/flag-icons/css/flag-icons.min.css";
 // import en from "../lang/en.json";
 // import fr from "../lang/fr.json";
 // const messages = {
@@ -35,6 +35,7 @@ import enUS from "antd/locale/en_US";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { ConfigProvider } from "antd";
+import Cookies from "js-cookie";
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
   const { locale } = useRouter();
   //i18next.reloadResources();
@@ -107,6 +108,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
 const App = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   useNotifyMe({ uid: "123456" });
+
   return <>{children}</>;
 };
 
