@@ -10,7 +10,7 @@ import { GetServerSideProps } from "next";
 import { prisma } from "../../../server/db/client";
 import Dashboard from "@ui/dashboard";
 import { LangCommonContext, LangContext, useLang, useNotif } from "../../hooks";
-import { AssetImage, Blog } from "@prisma/client";
+import { AssetImage, Blog, Language } from "@prisma/client";
 import { ColumnsType } from "antd/es/table";
 import MyTable, {
   ActionTable,
@@ -234,8 +234,8 @@ const AddBlog = ({
   const [asset, setAsset] = React.useState<AssetImage | TImage | undefined>(
     blog ? blog.image : undefined
   );
-  const [size, setSize] = useState<Lang | undefined>(
-    blog ? (blog.locale as Lang) : undefined
+  const [size, setSize] = useState<Language | undefined>(
+    blog ? (blog.locale as Language) : undefined
   );
   const text = useContext(LangContext);
 

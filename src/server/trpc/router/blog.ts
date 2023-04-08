@@ -46,7 +46,7 @@ export const blogRouter = router({
         blog: z.object({
           title: z.string(),
           content: z.string(),
-          locale: z.string().optional(),
+          locale: z.any(),
         }),
         image: z.object({
           fileKey: z.string(),
@@ -78,7 +78,7 @@ export const blogRouter = router({
           id: z.number(),
           title: z.string(),
           content: z.string(),
-          locale: z.string().optional(),
+          locale: z.any(),
         }),
         image: z.object({
           fileKey: z.string(),
