@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useNotif } from "../../pages/hooks";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const LangSwitcher = () => {
   type TLang = {
@@ -25,11 +26,11 @@ const LangSwitcher = () => {
       locale: "en",
     },
 
-    {
-      title: "العربية",
-      icon: "ma",
-      locale: "ar",
-    },
+    // {
+    //   title: "العربية",
+    //   icon: "ma",
+    //   locale: "ar",
+    // },
   ];
   const router = useRouter();
 
@@ -38,13 +39,17 @@ const LangSwitcher = () => {
   const { mutate } = trpc.user.changeLang.useMutation({
     onSuccess: (data) => {
       succes();
-      // location.reload();
-      // router.push(pathname, asPath, { locale: data.locale });
+
+      router.push(pathname, asPath, { locale: data.lang });
+      location.reload();
     },
     onError: (err) => {
       error();
     },
   });
+
+  const { i18n } = useTranslation();
+
   function handleLanguageChange(lang: Language) {
     Cookies.set("lang", lang, { expires: 365 });
     mutate(lang);
@@ -52,14 +57,14 @@ const LangSwitcher = () => {
 
   const getIcon = () => {
     const icon =
-      langs.filter((l) => l.locale === activeLocale)[0]?.icon || "fr";
+      langs.filter((l) => l.locale === i18n.language)[0]?.icon || "fr";
     return icon;
   };
 
   return (
     <div className="dropdown-end dropdown font-semibold">
       <button tabIndex={0} className="flex flex-row items-center gap-1">
-        <span className={`fi fi-${getIcon()} text-2xl`}></span>
+        <span className={`fi fi-${getIcon()} rounded-full text-2xl`}></span>
         <ExpandMoreIcon className="icon" />
       </button>
       <ul
@@ -72,11 +77,11 @@ const LangSwitcher = () => {
             <li key={i}>
               <button onClick={() => handleLanguageChange(locale)}>
                 <span
-                  className={`justify-start ${
+                  className={`flex flex-row justify-start gap-3 ${
                     activeLocale == locale && "active"
                   }`}
                 >
-                  <span className={`fi fi-${icon}`}></span>
+                  <span className={`fi fi-${icon}  rounded-full`}></span>
                   {title}
                 </span>
               </button>

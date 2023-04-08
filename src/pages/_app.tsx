@@ -21,7 +21,7 @@ import { ToastContainer } from "react-toastify";
 import { useNotifyMe } from "./hooks";
 import { IntlProvider } from "react-intl";
 import "@utils/i18n";
-
+import i18n from "../i18n";
 import frFR from "antd/locale/fr_FR";
 import enUS from "antd/locale/en_US";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
@@ -36,8 +36,11 @@ import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { ConfigProvider } from "antd";
 import Cookies from "js-cookie";
+
+import { I18nextProvider } from "react-i18next";
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
   const { locale } = useRouter();
+  const router = useRouter();
   //i18next.reloadResources();
   //init moment locale
   useEffect(() => {
@@ -61,6 +64,13 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
         return frFR;
     }
   };
+  useEffect(() => {
+    const lang = Cookies.get("lang");
+    console.log("lang", lang);
+    if (lang && router.locale !== lang) {
+      router.push(router.pathname, router.asPath, { locale: lang });
+    }
+  }, []);
   return (
     // <IntlProvider locale={locale||"fr"}  messages={messages[locale as Locale||"fr"]}>
     <SessionProvider session={session}>
@@ -86,7 +96,6 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
         />
       </Head>
-
       <ConfigProvider locale={getAntdLocale()}>
         <App>
           <Component {...pageProps} />
@@ -106,7 +115,6 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
 };
 
 const App = ({ children }: { children: ReactNode }) => {
-  const router = useRouter();
   useNotifyMe({ uid: "123456" });
 
   return <>{children}</>;

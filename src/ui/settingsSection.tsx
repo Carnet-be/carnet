@@ -385,8 +385,8 @@ const SettingSide = () => {
 
   function LangueChanger() {
     return (
-      <div className=" flex w-full flex-row items-center justify-between rounded-lg bg-gray-100 px-2">
-        Langue
+      <div className=" flex w-full flex-row items-center justify-between rounded-lg bg-gray-100 px-2 py-4">
+        {text("language")}
         <LangSwitcher />
       </div>
     );
