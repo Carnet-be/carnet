@@ -403,6 +403,7 @@ export const DisplayMessage = ({
       )}
       {items.map((message, i) => {
         const mine = message.sender === id ? true : false;
+
         return (
           <div
             key={i}
@@ -415,7 +416,17 @@ export const DisplayMessage = ({
             <div className="chat-image avatar ">
               {!mine ? (
                 <div className="chat-image avatar">
-                  <AvatarImg img={user?.image} size={40} />
+                  {message.sender === "ADMIN" ? (
+                    <Image
+                      src="/assets/big_logo.png"
+                      width={35}
+                      height={35}
+                      alt="admin"
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <AvatarImg img={user?.image} size={40} />
+                  )}
                 </div>
               ) : (
                 <Button

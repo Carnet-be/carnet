@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { InternalMessage } from "@prisma/client";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
-import Dashboard from "@ui/dashboard";
+import Dashboard, { NavBarFixed } from "@ui/dashboard";
 import { trpc } from "@utils/trpc";
 import { Button, Input } from "antd";
 import { GetServerSideProps } from "next";
@@ -30,11 +30,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     })
     .then((res) => JSON.parse(JSON.stringify(res)));
 
-    const { locale } = ctx;
+  const { locale } = ctx;
 
   return {
     props: {
-      ...(await serverSideTranslations(locale || "fr", ["common", "dashboard"])),
+      ...(await serverSideTranslations(locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
       user,
     },
   };
@@ -46,7 +49,6 @@ const Chat = (props: { user: any }) => {
   return (
     <Dashboard type={"AUC"} hideNav>
       <ChatPage id={user.id} />
-     
     </Dashboard>
   );
 };

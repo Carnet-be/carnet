@@ -10,6 +10,7 @@ import animationEmpty from "../../public/animations/mo_message.json";
 import { TMessage, getMessages, sendMessage } from "@repository/index";
 import { DisplayMessage } from "../pages/admin/dashboard/chat";
 import { useLang } from "../pages/hooks";
+import { NavBarFixed } from "./dashboard";
 const ChatPage = ({
   id,
   receiver = "ADMIN",
@@ -48,41 +49,46 @@ const ChatPage = ({
     };
   }, []);
   return (
-    <div
-      className={cx(
-        "mx-auto flex h-screen w-full flex-col-reverse items-center lg:max-w-[800px]"
-      )}
-    >
-      <form
-        onSubmit={onSubmit}
-        className="flex w-full w-full flex-row items-center  items-center justify-center rounded-md bg-white p-4 shadow-md lg:max-w-[800px]"
+    <div className="relative">
+      <div className="absolute top-0 left-0 z-[100] w-full bg-background">
+        <NavBarFixed />
+      </div>
+      <div
+        className={cx(
+          "mx-auto flex h-screen w-full flex-col-reverse items-center lg:max-w-[800px]"
+        )}
       >
-        <Input.Group className="flex w-full flex-grow flex-row items-center gap-3">
-          <Input.TextArea
-            autoSize={{ minRows: 2, maxRows: 4 }}
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            size="large"
-            placeholder={common("input.placeholder message")}
-            className="flex-grow"
-            style={{ width: "calc(100% - 200px)" }}
+        <form
+          onSubmit={onSubmit}
+          className="flex w-full w-full flex-row items-center  items-center justify-center rounded-md bg-white p-4 shadow-md lg:max-w-[800px]"
+        >
+          <Input.Group className="flex w-full flex-grow flex-row items-center gap-3">
+            <Input.TextArea
+              autoSize={{ minRows: 2, maxRows: 4 }}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              size="large"
+              placeholder={common("input.placeholder message")}
+              className="flex-grow"
+              style={{ width: "calc(100% - 200px)" }}
+            />
+            <button
+              className={cx("btn-primary btn", {
+                loading: isLoading,
+              })}
+            >
+              {common("button.send")}
+            </button>
+          </Input.Group>
+        </form>
+        <div className={cx("w-fullflex-grow w-full overflow-scroll px-4")}>
+          <DisplayMessage
+            user={undefined}
+            isAdmin
+            items={messages || []}
+            id={id}
           />
-          <button
-            className={cx("btn-primary btn", {
-              loading: isLoading,
-            })}
-          >
-            {common("button.send")}
-          </button>
-        </Input.Group>
-      </form>
-      <div className={cx("w-fullflex-grow w-full overflow-scroll px-4")}>
-        <DisplayMessage
-          user={undefined}
-          isAdmin
-          items={messages || []}
-          id={id}
-        />
+        </div>
       </div>
     </div>
   );
