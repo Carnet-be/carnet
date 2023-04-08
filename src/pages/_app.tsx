@@ -38,6 +38,7 @@ import { ConfigProvider } from "antd";
 import Cookies from "js-cookie";
 
 import { I18nextProvider } from "react-i18next";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
   const { locale } = useRouter();
   const router = useRouter();
@@ -96,11 +97,23 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
         />
       </Head>
-      <ConfigProvider locale={getAntdLocale()}>
-        <App>
-          <Component {...pageProps} />
-        </App>
-      </ConfigProvider>
+
+      <ThemeProvider
+        theme={createTheme(
+          {
+            palette: {
+              primary: { main: "#1976d2" },
+            },
+          },
+          getAntdLocale()
+        )}
+      >
+        <ConfigProvider locale={getAntdLocale()}>
+          <App>
+            <Component {...pageProps} />
+          </App>
+        </ConfigProvider>
+      </ThemeProvider>
       <Toaster />
       <ToastContainer position="bottom-right" autoClose={8000} />
       <audio

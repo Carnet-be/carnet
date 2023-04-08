@@ -67,108 +67,109 @@ export const auctionnaireRouter = router({
         }
       }
       console.log("images", data6.images);
-      const name =
-        BRAND[data1.brand || 0]?.title +
-        " " +
-        BRAND[data1.brand || 0]?.model[data1.model || 0] +
-        " " +
-        data1.buildYear;
+      const name = data1.brand + " " + data1.model + " " + data1.buildYear;
       console.log("name", name);
-      return await ctx.prisma.auction.create({
-        data: {
-          id,
-          name,
-          brand: data1.brand!,
-          model: data1.model!,
-          build_year: data1.buildYear!,
-          fuel: data1.fuel,
-          //images,
-          description: data6.description,
-          duration,
-          expected_price: parseFloat(data6.expected_price!.toString()),
-          images: {
-            createMany: {
-              data: data6.images,
+      return await ctx.prisma.auction
+        .create({
+          data: {
+            id,
+            name,
+            brand: data1.brand!,
+            model: data1.model!,
+            build_year: data1.buildYear!,
+            fuel: data1.fuel,
+            //images,
+            description: data6.description,
+            duration,
+            expected_price: parseFloat(data6.expected_price!.toString()),
+            images: {
+              createMany: {
+                data: data6.images,
+              },
             },
-          },
-          color: data1.color,
-          //auctionnaire_id: auctionnaire_id||"",
-          auctionnaire: {
-            connect: { id: auctionnaire_id },
-          },
-          address: {
-            create: {
-              zipCode: data6.zipCode,
-              city: data6.city,
-              country: data6.country,
-              lat: data6.lat!,
-              lon: data6.lon!,
-              address: data6.address,
+            color: data1.color,
+            //auctionnaire_id: auctionnaire_id||"",
+            auctionnaire: {
+              connect: { id: auctionnaire_id },
             },
-          },
-          rating: {
-            create: data4,
-          },
-          specs: {
-            create: {
-              carrosserie: data3.carrosserie,
-              cc: data3.cc,
-              cv: data3.cv,
-              co2: data3.co2,
-              kilometrage: data3.kilometrage,
-              version: data3.version,
-              transmission: data3.transmission,
-              doors: data3.doors ? parseInt(data3.doors) : null,
+            address: {
+              create: {
+                zipCode: data6.zipCode,
+                city: data6.city,
+                country: data6.country,
+                lat: data6.lat!,
+                lon: data6.lon!,
+                address: data6.address,
+              },
             },
-          },
-          options: {
-            create: data5,
-          },
-          logs: {
-            create: {
-              action: "creation",
-              user: {
-                connect: {
-                  email: ctx.session?.user?.email || "",
+            rating: {
+              create: data4,
+            },
+            specs: {
+              create: {
+                carrosserie: data3.carrosserie,
+                cc: data3.cc,
+                cv: data3.cv,
+                co2: data3.co2,
+                kilometrage: data3.kilometrage,
+                version: data3.version,
+                transmission: data3.transmission,
+                doors: data3.doors ? parseInt(data3.doors) : null,
+              },
+            },
+            options: {
+              create: data5,
+            },
+            logs: {
+              create: {
+                action: "creation",
+                user: {
+                  connect: {
+                    email: ctx.session?.user?.email || "",
+                  },
                 },
               },
             },
           },
-        },
-        
-      }).then((auction) => ({...auction,auctionnaire_id:auctionnaire_id||""}));
+        })
+        .then((auction) => ({
+          ...auction,
+          auctionnaire_id: auctionnaire_id || "",
+        }));
     }),
   pauseAuction: publicProcedure
     .input(z.string())
     .mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.auction.update({
-        where: { id: input },
-        data: {
-          state: AuctionState.pause,
-          pause_date: new Date(),
-          logs: {
-            create: {
-              action: "pause",
-              user: {
-                connect: {
-                  email: ctx.session?.user?.email || "",
+      return await ctx.prisma.auction
+        .update({
+          where: { id: input },
+          data: {
+            state: AuctionState.pause,
+            pause_date: new Date(),
+            logs: {
+              create: {
+                action: "pause",
+                user: {
+                  connect: {
+                    email: ctx.session?.user?.email || "",
+                  },
                 },
               },
             },
           },
-        },
-      }).then((auction) => {
-        const res=auction;
-        sendNotification({
-          type:"auction modified",
-          type_2:"pause",
-          date: new Date(),
-          auction_id: res.id,
-          auction_name: res.name,
-          auctionnaire_id: res.auctionnaire_id,
-         })
-        return auction
-      });
+        })
+        .then((auction) => {
+          const res = auction;
+          sendNotification({
+            type: "auction modified",
+            type_2: "pause",
+            date: new Date(),
+            auction_id: res.id,
+            auction_name: res.name,
+            auctionnaire_id: res.auctionnaire_id,
+          });
+          return auction;
+        });
     }),
   updateAuction: publicProcedure
     .input(z.any())
@@ -221,88 +222,93 @@ export const auctionnaireRouter = router({
         starting_price == undefined || commission == undefined
           ? undefined
           : starting_price + (starting_price * commission) / 100;
-      return await ctx.prisma.$transaction([
-        ctx.prisma.auction.update({
-          where: { id: auction.id },
-          data: {
-            name: data6.name!,
-            brand: data1.brand!,
-            model: data1.model!,
-            state,
-            build_year: data1.buildYear!,
-            fuel: data1.fuel,
-            images: {
-              deleteMany: deleteImage,
-              createMany: {
-                data: addImage,
+      return await ctx.prisma
+        .$transaction([
+          ctx.prisma.auction.update({
+            where: { id: auction.id },
+            data: {
+              name: data6.name!,
+              brand: data1.brand!,
+              model: data1.model!,
+              state,
+              build_year: data1.buildYear!,
+              fuel: data1.fuel,
+              images: {
+                deleteMany: deleteImage,
+                createMany: {
+                  data: addImage,
+                },
               },
-            },
-            description: data6.description,
-            duration,
-            color: data1.color,
-            //test confirmation
-           //end_date: new Date(),
-           end_date,
+              description: data6.description,
+              duration,
+              color: data1.color,
+              //test confirmation
+              //end_date: new Date(),
+              end_date,
 
-            starting_price,
-            pause_date: pause_date,
-            commission,
-            starting_price_with_commission,
-            expected_price: parseFloat(data6.expected_price!.toString()),
-            logs: {
-              create: {
-                action:input.log|| "edit",
-                user: {
-                  connect: {
-                    email: ctx.session?.user?.email || "",
+              starting_price,
+              pause_date: pause_date,
+              commission,
+              starting_price_with_commission,
+              expected_price: parseFloat(data6.expected_price!.toString()),
+              logs: {
+                create: {
+                  action: input.log || "edit",
+                  user: {
+                    connect: {
+                      email: ctx.session?.user?.email || "",
+                    },
                   },
                 },
               },
             },
-          },
-        }),
-        ctx.prisma.auctionSpecs.update({
-          where: { auction_id },
-          data: {
-            carrosserie: data3.carrosserie,
-            cc: data3.cc,
-            cv: data3.cv,
-            co2: data3.co2,
-            kilometrage: data3.kilometrage,
-            version: data3.version,
-            transmission: data3.transmission,
-            doors: data3.doors ? parseInt(data3.doors) : null,
-          },
-        }),
-        ctx.prisma.auctionOptions.update({
-          where: { auction_id },
-          data: data5,
-        }),
-        ctx.prisma.auctionRating.update({ where: { auction_id }, data: data4 }),
-        ctx.prisma.address.update({
-          where: { auction_id },
-          data: {
-            zipCode: data6.zipCode,
-            city: data6.city,
-            country: data6.country,
-            lat: data6.lat,
-            lon: data6.lon,
-            address: data6.address,
-          },
-        }),
-      ]).then((auction) => {
-        const res=auction[0];
-        console.log('notif', input.log)
-        sendNotification({
-          type:"auction modified",
-          type_2:input.log|| "edit",
-          date: new Date(),
-          auction_id: res.id,
-          auction_name: res.name,
-          auctionnaire_id: res.auctionnaire_id,
-         })
-        return auction
-      });
+          }),
+          ctx.prisma.auctionSpecs.update({
+            where: { auction_id },
+            data: {
+              carrosserie: data3.carrosserie,
+              cc: data3.cc,
+              cv: data3.cv,
+              co2: data3.co2,
+              kilometrage: data3.kilometrage,
+              version: data3.version,
+              transmission: data3.transmission,
+              doors: data3.doors ? parseInt(data3.doors) : null,
+            },
+          }),
+          ctx.prisma.auctionOptions.update({
+            where: { auction_id },
+            data: data5,
+          }),
+          ctx.prisma.auctionRating.update({
+            where: { auction_id },
+            data: data4,
+          }),
+          ctx.prisma.address.update({
+            where: { auction_id },
+            data: {
+              zipCode: data6.zipCode,
+              city: data6.city,
+              country: data6.country,
+              lat: data6.lat,
+              lon: data6.lon,
+              address: data6.address,
+            },
+          }),
+        ])
+        .then((auction) => {
+          const res = auction[0];
+          console.log("notif", input.log);
+          sendNotification({
+            type: "auction modified",
+            type_2: input.log || "edit",
+            date: new Date(),
+            auction_id: res.id,
+            auction_name: res.name,
+            auctionnaire_id: res.auctionnaire_id,
+          });
+          return auction;
+        });
     }),
   getAuctions: publicProcedure
     .input(
@@ -508,60 +514,26 @@ export const auctionnaireRouter = router({
       },
     });
   }),
-  resume: publicProcedure.input(z.object({ id: z.string(),end_date:z.date(),pause_date:z.date() })).mutation(
-    async ({ input, ctx }) => {
-       const end_date=input.end_date
-        const pause = new Date().getTime() - input.pause_date.getTime();
-
-        end_date.setTime(end_date.getTime() + pause);
-      
-      return await ctx.prisma.auction.update({
-        where: { id: input.id },
-        data: {
-          end_date: end_date,
-          state: "published",
-
-          logs: {
-            create: {
-              action: "resume",
-              user: {
-                connect: {
-                  email: ctx.session?.user?.email || "",
-                },
-              },
-            },
-          },
-        },
-      }).then((res) => {
-        sendNotification({
-          type:"auction modified",
-          type_2:"resume",
-          date: new Date(),
-          auction_id: res.id,
-          auction_name: res.name,
-          auctionnaire_id: res.auctionnaire_id,
-         })
-         return res
-      });
-    }
-  ),
-  makeWinner: publicProcedure
+  resume: publicProcedure
     .input(
-      z.object({
-        auction_id: z.string(),
-        bid_id: z.string(),
-      })
+      z.object({ id: z.string(), end_date: z.date(), pause_date: z.date() })
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.$transaction([
-        ctx.prisma.auction.update({
-          where: { id: input.auction_id },
+      const end_date = input.end_date;
+      const pause = new Date().getTime() - input.pause_date.getTime();
+
+      end_date.setTime(end_date.getTime() + pause);
+
+      return await ctx.prisma.auction
+        .update({
+          where: { id: input.id },
           data: {
-            isClosed: true,
-            closedAt: new Date(),
+            end_date: end_date,
+            state: "published",
+
             logs: {
               create: {
-                action: "choice winner",
+                action: "resume",
                 user: {
                   connect: {
                     email: ctx.session?.user?.email || "",
@@ -570,66 +542,108 @@ export const auctionnaireRouter = router({
               },
             },
           },
-        }),
-        ctx.prisma.bid.update({
-          where: { id: input.bid_id },
-          data: {
-            winner: true,
-          },
-        }),
-      ]).then((res) => {
-        sendNotification({
-          type:"winner",
-          date: new Date(),
-          montant: res[1].montant,
-          auction_id: res[0].id,
-          auctionnaire_id: res[0].auctionnaire_id,
-          winner_id: res[1].bidder_id,
-          auction_name: res[0].name,
-         })
-         return res
-      });
+        })
+        .then((res) => {
+          sendNotification({
+            type: "auction modified",
+            type_2: "resume",
+            date: new Date(),
+            auction_id: res.id,
+            auction_name: res.name,
+            auctionnaire_id: res.auctionnaire_id,
+          });
+          return res;
+        });
+    }),
+  makeWinner: publicProcedure
+    .input(
+      z.object({
+        auction_id: z.string(),
+        bid_id: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma
+        .$transaction([
+          ctx.prisma.auction.update({
+            where: { id: input.auction_id },
+            data: {
+              isClosed: true,
+              closedAt: new Date(),
+              logs: {
+                create: {
+                  action: "choice winner",
+                  user: {
+                    connect: {
+                      email: ctx.session?.user?.email || "",
+                    },
+                  },
+                },
+              },
+            },
+          }),
+          ctx.prisma.bid.update({
+            where: { id: input.bid_id },
+            data: {
+              winner: true,
+            },
+          }),
+        ])
+        .then((res) => {
+          sendNotification({
+            type: "winner",
+            date: new Date(),
+            montant: res[1].montant,
+            auction_id: res[0].id,
+            auctionnaire_id: res[0].auctionnaire_id,
+            winner_id: res[1].bidder_id,
+            auction_name: res[0].name,
+          });
+          return res;
+        });
     }),
   relancer: publicProcedure
     .input(
       z.object({
         auction_id: z.string(),
-        duration:z.date(),
+        duration: z.date(),
       })
     )
     .mutation(async ({ input, ctx }) => {
       //
-      const end_date =input.duration
-      return ctx.prisma.auction.update({
-        where: { id: input.auction_id },
-        data: {
-          state: "pause",
-          pause_date: new Date(),
-          end_date,
-          isClosed: false,
-          closedAt: null,
-          logs: {
-            create: {
-              action: "republished",
-              user: {
-                connect: {
-                  email: ctx.session?.user?.email || "",
+      const end_date = input.duration;
+      return ctx.prisma.auction
+        .update({
+          where: { id: input.auction_id },
+          data: {
+            state: "pause",
+            pause_date: new Date(),
+            end_date,
+            isClosed: false,
+            closedAt: null,
+            logs: {
+              create: {
+                action: "republished",
+                user: {
+                  connect: {
+                    email: ctx.session?.user?.email || "",
+                  },
                 },
               },
             },
           },
-        },
-      }).then((res) => {
-        sendNotification({
-          type:"auction modified", 
-          type_2:"republished",
-          date: new Date(),
-          auction_id: res.id,
-          auction_name: res.name,
-          auctionnaire_id: res.auctionnaire_id,
-         })
-         return res
-      });
+        })
+        .then((res) => {
+          sendNotification({
+            type: "auction modified",
+            type_2: "republished",
+            date: new Date(),
+            auction_id: res.id,
+            auction_name: res.name,
+            auctionnaire_id: res.auctionnaire_id,
+          });
+          return res;
+        });
     }),
   addTime: publicProcedure
     .input(
@@ -639,71 +653,74 @@ export const auctionnaireRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      return ctx.prisma.auction.update({
-        where: { id: input.auction_id },
-        data: {
-          end_date: input.time,
-          logs: {
-            create: {
-              action: "add time",
-              user: {
-                connect: {
-                  email: ctx.session?.user?.email || "",
-                },
-              },
-            },
-          },
-        },
-      }).then((res) => {
-        sendNotification({
-          type:"auction modified", 
-          type_2:"add time",
-          date: new Date(),
-          auction_id: res.id,
-          auction_name: res.name,
-          auctionnaire_id: res.auctionnaire_id,
-         })
-         return res
-      });
-    }),
-    cancelWinner:publicProcedure.input(z.object({ auction_id: z.string() })).mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.$transaction([
-        ctx.prisma.auction.update({
+      return ctx.prisma.auction
+        .update({
           where: { id: input.auction_id },
           data: {
-            isClosed: false,
-            closedAt: null,
+            end_date: input.time,
             logs: {
               create: {
-                action: "cancel winner",
+                action: "add time",
                 user: {
                   connect: {
                     email: ctx.session?.user?.email || "",
                   },
                 },
               },
-              
             },
-            
           },
-        
-        }),
-        ctx.prisma.bid.updateMany({
-          where: { auction_id: input.auction_id },
-          data: {
-            winner: false,
-          },
-        }),
-      ]).then((res) => {
-        sendNotification({
-          type:"auction modified",
-          type_2:"cancel winner",
-          date: new Date(),
-          auction_id: res[0].id,
-          auctionnaire_id: res[0].auctionnaire_id,
-          auction_name: res[0].name,
-         })
-         return res
-      });
-    })
+        })
+        .then((res) => {
+          sendNotification({
+            type: "auction modified",
+            type_2: "add time",
+            date: new Date(),
+            auction_id: res.id,
+            auction_name: res.name,
+            auctionnaire_id: res.auctionnaire_id,
+          });
+          return res;
+        });
+    }),
+  cancelWinner: publicProcedure
+    .input(z.object({ auction_id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma
+        .$transaction([
+          ctx.prisma.auction.update({
+            where: { id: input.auction_id },
+            data: {
+              isClosed: false,
+              closedAt: null,
+              logs: {
+                create: {
+                  action: "cancel winner",
+                  user: {
+                    connect: {
+                      email: ctx.session?.user?.email || "",
+                    },
+                  },
+                },
+              },
+            },
+          }),
+          ctx.prisma.bid.updateMany({
+            where: { auction_id: input.auction_id },
+            data: {
+              winner: false,
+            },
+          }),
+        ])
+        .then((res) => {
+          sendNotification({
+            type: "auction modified",
+            type_2: "cancel winner",
+            date: new Date(),
+            auction_id: res[0].id,
+            auctionnaire_id: res[0].auctionnaire_id,
+            auction_name: res[0].name,
+          });
+          return res;
+        });
+    }),
 });

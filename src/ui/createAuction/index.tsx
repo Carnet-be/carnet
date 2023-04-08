@@ -24,11 +24,11 @@ import { sendNotification } from "../../repository";
 import { LangCommonContext, LangContext, useLang } from "../../pages/hooks";
 
 export type Data1 = {
-  brand?: number;
+  brand?: string;
   fuel: FuelType;
-  model?: number;
+  model?: string;
   color?: string;
-  buildYear?: number;
+  buildYear?: number | null;
 };
 export type Data3 = {
   carrosserie?: number;
@@ -132,7 +132,7 @@ const CreateAuction = ({
   const [data1, setdata1] = useState<Data1>({
     brand: auction?.brand,
     model: auction?.model,
-    buildYear: auction?.build_year,
+    buildYear: auction?.build_year || undefined,
     fuel: "Gasoline",
   });
   const [data3, setdata3] = useState<Data3>({});
@@ -258,7 +258,7 @@ const CreateAuction = ({
     const isNext1 =
       step === 1
         ? data1.brand !== undefined &&
-          data1.buildYear !== undefined &&
+          // data1.buildYear !== undefined &&
           data1.model !== undefined &&
           data1.color !== undefined
         : true;
@@ -373,7 +373,7 @@ const CreateAuction = ({
           id={id || "create_auction"}
           className="modal-toggle"
         />
-        <div className={cx("modal absolute top-0 left-0 z-[1000]")}>
+        <div className={cx("modal fixed top-0 left-0 z-[1000]")}>
           <div className="modal-box flex min-h-[450px] flex-col justify-between gap-6 lg:max-w-2xl">
             {auction ? (
               <StepperEdit isAdmin={isAdmin} step={step} />
@@ -422,13 +422,7 @@ const CreateAuction = ({
                     data={data6}
                     uploadRef={uploadRef}
                     setData={setdata6}
-                    defaultName={
-                      BRAND[data1.brand || 0]?.title +
-                      " " +
-                      BRAND[data1.brand || 0]?.model[data1.model || 0] +
-                      " " +
-                      data1.buildYear
-                    }
+                    defaultName={`${data1.brand} ${data1.model} ${data1.buildYear}`}
                   />
                 )}
               </>
@@ -513,7 +507,7 @@ export const Stepper = ({ step }: { step: number }) => {
   const t = useContext(LangContext);
   const text = (key: string) => t(`steps.${key}`);
   return (
-    <ul className="steps w-full">
+    <ul className="steps w-full text-[10px] font-bold">
       {Array.from({ length: 6 }, (_, i) => i + 1).map((k, i) => {
         return (
           <li
@@ -545,7 +539,7 @@ export const StepperEdit = ({
   const t = useContext(LangContext);
   const text = (key: string) => t(`steps.${key}`);
   return (
-    <ul className="steps w-full">
+    <ul className="steps w-full  text-[10px] font-bold">
       {Array.from({ length: isAdmin ? 6 : 5 }, (_, i) => i + 1).map((k, i) => {
         return (
           <li

@@ -55,11 +55,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  
   return {
-    props: { 
-      ...(await serverSideTranslations(ctx.locale || "fr", ["common", "pages"])),
-      id },
+    props: {
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "pages",
+      ])),
+      id,
+    },
   };
 };
 const Home = (
@@ -80,7 +83,7 @@ const Home = (
           <BigTitle title={auction.name} />
           <div className="flex flex-wrap justify-center gap-6">
             <LeftSide auction={auction as TAuction} />
-            <RightSide auction={auction as TAuction} view/>
+            <RightSide auction={auction as TAuction} view />
           </div>
         </>
       )}
@@ -220,9 +223,15 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
   );
 };
 
-const RightSide = ({ auction,view=false }: { auction: TAuction,view?:boolean }) => {
+const RightSide = ({
+  auction,
+  view = false,
+}: {
+  auction: TAuction;
+  view?: boolean;
+}) => {
   const [isTimeOut, setisTimeOut] = useState(false);
-  const model = BRAND[auction.brand]?.model[auction.model];
+  const model = auction.model;
   const carrosserie = CARROSSERIE[auction.specs.carrosserie || 0];
   const onTimeOut = () => {
     setisTimeOut(true);
@@ -369,8 +378,7 @@ const MiniCard = (props: {
             className={cx("h-8 w-8 rounded-full border")}
           ></div>
           <span className="text-[12px]">
-            {COLORS.filter((c) => c.value === value)[0]?.name ||
-              ""}
+            {COLORS.filter((c) => c.value === value)[0]?.name || ""}
           </span>
         </>
       ) : (

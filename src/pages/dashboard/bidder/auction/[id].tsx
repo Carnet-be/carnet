@@ -234,7 +234,7 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
 const RightSide = ({ auction }: { auction: TAuction }) => {
   const text = useContext(LangContext);
   const [isTimeOut, setisTimeOut] = useState(false);
-  const model = BRAND[auction.brand]?.model[auction.model];
+  const model = auction.model;
   const carrosserie = CARROSSERIE[auction.specs.carrosserie || 0];
   const onTimeOut = () => {
     setisTimeOut(true);

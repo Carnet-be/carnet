@@ -66,9 +66,9 @@ model Auction {
   updateAt   DateTime @updatedAt
   // field
   name       String
-  brand      Int
-  model      Int
-  build_year Int
+  brand      String
+  model      String
+  build_year Int?
   fuel       FuelType
 
   starting_price                 Float?

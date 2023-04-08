@@ -30,6 +30,34 @@ export const adminRouter = router({
       },
     });
   }),
+  getBrandAutoComplete: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.brand
+      .findMany({
+        select: { name: true },
+        orderBy: {
+          name: "asc",
+        },
+      })
+      .then((brands) => {
+        return brands.map((b) => b.name);
+      });
+  }),
+  getModelByBrandName: publicProcedure
+
+    .input(z.string().optional())
+    .query(async ({ ctx, input }) => {
+      if (!input) return [];
+      return await ctx.prisma.model.findMany({
+        where: {
+          brand: {
+            name: input,
+          },
+        },
+        orderBy: {
+          name: "asc",
+        },
+      });
+    }),
   removeBrand: publicProcedure
     .input(z.array(z.number()))
     .mutation(async ({ input, ctx }) => {
@@ -208,31 +236,41 @@ export const adminRouter = router({
     .input(z.string())
     .query(async ({ input, ctx }) => {
       return ctx.prisma.$transaction([
-         ctx.prisma.auction.findUnique({where:{id:input},include:{bids:true}}),
+        ctx.prisma.auction.findUnique({
+          where: { id: input },
+          include: { bids: true },
+        }),
         ctx.prisma.logAuction.findMany({
           where: { auction_id: input },
-          include:{
-            user:true
+          include: {
+            user: true,
           },
           orderBy: {
-           createAt:"desc"
+            createAt: "desc",
           },
-        })
-      ])
-    
+        }),
+      ]);
     }),
-    getAuctionsCount: publicProcedure.query(async ({ ctx }) => {
-      const { prisma } = ctx;
-      const auctions= await prisma.auction.findMany()
-      return {
-        published: auctions.filter(a=>a.state==="published"&&a.isClosed===false&&(a.end_date?.getTime()||0>=new Date().getTime())).length,
-        pause: auctions.filter(a=>a.state==="pause").length,
-        pending: auctions.filter(a=>a.state==="pending").length,
-        completed: auctions.filter(a=>a.isClosed).length,
-        confirmation: auctions.filter(a=>a.isClosed===false&&(a.end_date?.getTime()||0<new Date().getTime())).length,
-      }
-    }),
-    
+  getAuctionsCount: publicProcedure.query(async ({ ctx }) => {
+    const { prisma } = ctx;
+    const auctions = await prisma.auction.findMany();
+    return {
+      published: auctions.filter(
+        (a) =>
+          a.state === "published" &&
+          a.isClosed === false &&
+          (a.end_date?.getTime() || 0 >= new Date().getTime())
+      ).length,
+      pause: auctions.filter((a) => a.state === "pause").length,
+      pending: auctions.filter((a) => a.state === "pending").length,
+      completed: auctions.filter((a) => a.isClosed).length,
+      confirmation: auctions.filter(
+        (a) =>
+          a.isClosed === false &&
+          (a.end_date?.getTime() || 0 < new Date().getTime())
+      ).length,
+    };
+  }),
 });
 
 const sendDemandeStaff = async (user: User | { email: string; id: string }) => {

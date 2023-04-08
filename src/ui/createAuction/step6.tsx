@@ -7,6 +7,7 @@ import {
   MenuItem,
   TextField,
   Select,
+  Autocomplete,
 } from "@mui/material";
 import Upload from "@ui/components/upload";
 
@@ -18,6 +19,7 @@ import cx from "classnames";
 import Map from "@ui/components/map";
 import { useEffect } from "react";
 import { LangCommonContext, LangContext } from "../../pages/hooks";
+import { COUNTRIES } from "@data/internal";
 const Step6 = ({
   data,
   setData,
@@ -115,53 +117,6 @@ const Step6 = ({
               value={data.address}
               onChange={(e) => setData({ ...data, address: e.target.value })}
             />
-
-            <div className="flex flex-row gap-1">
-              <FormControl className="w-1/2">
-                <InputLabel htmlFor="brand">
-                  {text("fields.country")}
-                </InputLabel>
-                <Select
-                  value={data.country}
-                  label={text("fields.country")}
-                  size="small"
-                  className="w-full"
-                  onChange={(e) =>
-                    setData({ ...data, country: e.target.value })
-                  }
-                >
-                  {["France", "Belgique", "Maroc"].map((o, i) => (
-                    <MenuItem key={i} value={o}>
-                      {o}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl className="w-1/2">
-                <InputLabel htmlFor="brand">{text("fields.city")}</InputLabel>
-                <Select
-                  value={data.city}
-                  label={text("fields.city")}
-                  className="w-full"
-                  size="small"
-                  onChange={(e) => setData({ ...data, city: e.target.value })}
-                >
-                  {["Paris", "Caen", "Marseille"].map((o, i) => (
-                    <MenuItem key={i} value={o}>
-                      {o}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              <TextField
-                label="Zip"
-                size="small"
-                className="w-1/2"
-                value={data.zipCode}
-                onChange={(e) => setData({ ...data, zipCode: e.target.value })}
-              />
-            </div>
           </div>
 
           <Map
@@ -179,6 +134,57 @@ const Step6 = ({
               }
             }}
             containerClass={"w-[40%] h-auto bg-red-100"}
+          />
+        </div>
+        <div className="flex flex-row gap-1 text-xs">
+          <Autocomplete
+            // lang={}
+            freeSolo={true}
+            options={COUNTRIES.map((o) => o.name)}
+            value={data.country}
+            clearIcon={null}
+            size="small"
+            onChange={(e, v) => {
+              setData({
+                ...data,
+                country: v,
+              });
+            }}
+            className="w-1/2"
+            renderInput={(params) => (
+              <TextField {...params} label={text("fields.country")} />
+            )}
+          />
+          <Autocomplete
+            // lang={}
+            freeSolo={true}
+            options={
+              COUNTRIES.filter((o) => o.name === data.country)[0]?.cities || []
+            }
+            value={data.city}
+            sx={{
+              fontSize: "0.8rem",
+            }}
+            clearIcon={null}
+            size="small"
+            onChange={(e, v) => {
+              setData({
+                ...data,
+                city: v,
+              });
+            }}
+            className="w-1/2"
+            renderInput={(params) => (
+              <TextField {...params} label={text("fields.city")} />
+            )}
+          />
+
+          <TextField
+            label="Zip"
+            size="small"
+            className="w-1/2"
+            value={data.zipCode}
+            onChange={(e) => setData({ ...data, zipCode: e.target.value })}
           />
         </div>
       </div>

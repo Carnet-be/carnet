@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import image from "@assets/newAuctionImage.png";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Autocomplete,
+  TextField,
+} from "@mui/material";
 import Image from "next/image";
 import { BRAND, COLORS } from "@data/internal";
 import { type Data1 } from ".";
@@ -13,6 +20,9 @@ import { BsCheck } from "react-icons/bs";
 import { AiFillCheckCircle } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { useLang } from "../../pages/hooks";
+import AutoComplete from "@ui/components/autoComplete";
+import { trpc } from "@utils/trpc";
+
 const Step1 = ({
   data,
   setData,
@@ -27,8 +37,25 @@ const Step1 = ({
     selector: "auction",
   });
   const field = (name: string) => text(`fields.${name}`);
+  const [model, setModel] = useState<string[]>([]);
+  const [year, setYear] = useState<number[]>([]);
   const [time, setTime] = useState(Date.now());
-
+  const { data: brands, isLoading: isGettingBrands } =
+    trpc.admin.getBrandAutoComplete.useQuery();
+  const { isLoading: isGettingModels } =
+    trpc.admin.getModelByBrandName.useQuery(data.brand, {
+      enabled: !!data.brand,
+      onSuccess(data) {
+        console.log(data);
+        setModel(data.map((o) => o.name));
+        const years = data.filter((o) => !!o.year).map((o) => o.year as number);
+        setYear(years);
+      },
+      onError(err) {
+        console.log(err);
+      },
+    });
+  const [open, setOpen] = useState<"brand" | "model" | undefined>(undefined);
   useEffect(() => {
     const interval = setInterval(() => setTime(Date.now()), 100);
     return () => {
@@ -50,84 +77,63 @@ const Step1 = ({
       <h5>{text("steps.title")}</h5>
       <div className="flex w-full flex-col gap-4 py-4  lg:w-[80%]">
         <div className="flex flex-row gap-3">
-          <FormControl required className="w-1/2">
-            <InputLabel htmlFor="brand">{field("brand")}</InputLabel>
-            <Select
-              value={data.brand}
-              disabled={disabled}
-              label={field("brand")}
-              defaultValue={data.brand}
-              onChange={(e) => {
-                console.log(typeof e.target.value);
-
-                setData({
-                  ...data,
-                  brand: e.target.value,
-                  model: 0,
-                  buildYear:
-                    BRAND[(e.target.value as number) || 0]?.buildYear[0],
-                });
-              }}
-            >
-              {BRAND.map((o, i) => (
-                <MenuItem key={i} value={i}>
-                  {o.title}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl required className="w-1/2">
-            <InputLabel htmlFor="model">{field("model")}</InputLabel>
-            <Select
-              value={data.model}
-              labelId="model"
-              label={field("model")}
-              disabled={
-                disabled
-                  ? true
-                  : data.brand
-                  ? false
-                  : data.brand == 0
-                  ? false
-                  : true
-              }
-              onChange={(e) => setData({ ...data, model: e.target.value })}
-            >
-              {BRAND[data.brand || 0]?.model.map((o, i) => (
-                <MenuItem key={i} value={i}>
-                  {o}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Autocomplete
+            // lang={}
+            disabled={disabled}
+            open={open == "brand"}
+            onOpen={() => setOpen("brand")}
+            onClose={() => setOpen("model")}
+            options={brands || []}
+            value={data.brand}
+            loading={isGettingBrands}
+            onChange={(e, v) => {
+              setData({
+                ...data,
+                brand: v,
+                model: undefined,
+                buildYear: undefined,
+              });
+            }}
+            className="w-1/2"
+            renderInput={(params) => (
+              <TextField {...params} required label={field("brand")} />
+            )}
+          />
+          <Autocomplete
+            // lang={}
+            disabled={disabled}
+            options={[...new Set(model)]}
+            value={data.model}
+            open={open == "model"}
+            isOptionEqualToValue={(option, value) => option === value}
+            onOpen={() => setOpen("model")}
+            onClose={() => setOpen(undefined)}
+            loading={isGettingModels}
+            onChange={(e, v) => {
+              setData({ ...data, model: v });
+            }}
+            className="w-1/2"
+            renderInput={(params) => (
+              <TextField {...params} required label={field("model")} />
+            )}
+          />
         </div>
 
         <div className="flex flex-row gap-3">
-          <FormControl required className="w-1/2">
-            <InputLabel htmlFor="brand">{field("build year")}</InputLabel>
-            <Select
-              value={data.buildYear}
-              label={field("build year")}
-              disabled={
-                disabled ? true : data.brand === undefined ? true : false
-              }
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  buildYear: e.target.value,
-                })
-              }
-            >
-              {BRAND[data.brand || 0]?.buildYear
-                .sort()
-                .reverse()
-                .map((o, i) => (
-                  <MenuItem key={i} value={o}>
-                    {o}
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
+          <Autocomplete
+            // lang={}
+            disabled={disabled}
+            value={data.buildYear}
+            options={year}
+            loading={isGettingModels}
+            onChange={(e, v) => {
+              setData({ ...data, buildYear: v });
+            }}
+            className="w-1/2"
+            renderInput={(params) => (
+              <TextField {...params} required label={field("build year")} />
+            )}
+          />
           <FormControl required className="w-1/2">
             <InputLabel htmlFor="model">{field("fuel")}</InputLabel>
             <Select

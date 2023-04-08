@@ -81,7 +81,11 @@
       "starting price": "Prix de départ",
       "current bid": "Enchère actuelle",
       "description": "Description",
-      "incremental text": "L'enchère sera augmentée de"
+      "sign up success": "Votre compte a été créé avec succès",
+      "incremental text": "L'enchère sera augmentée de",
+      "welcome, please login": "Bienvenue, veuillez vous connecter à votre compte",
+      "don't have an account": "Vous n'avez pas un compte ?",
+      "you do have an account": "Vous avez un compte ?"
     },
     "status": {
       "active": "En cours",

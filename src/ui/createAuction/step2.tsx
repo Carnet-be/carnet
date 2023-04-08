@@ -3,14 +3,15 @@ import { type TSignupAuc, type TLogin } from "@model/type";
 import Input from "@ui/components/input";
 import { EmailIcon, PasswordIcon, PersonIcon, TelIcon } from "@ui/icons";
 import { signIn } from "next-auth/react";
-import  { useRouter } from "next/router";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import React, { useContext, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 import cx from "classnames";
 import { TERMS_URL, PRIVACY_POLICY_URL } from "@data/link";
 import { trpc } from "@utils/trpc";
 import Link from "next/link";
+import { LangCommonContext, LangContext, useLang } from "../../pages/hooks";
 const Step2 = () => {
   const [isLogin, setisLogin] = useState(false);
   if (isLogin) {
@@ -26,23 +27,25 @@ const SignUp = ({ setisLogin }: { setisLogin: any }) => {
     mode: "onChange",
   });
 
+  const text = useContext(LangContext);
+  const common = useContext(LangCommonContext);
   const { errors } = formState;
   const router = useRouter();
   const { mutate: signup, isLoading } = trpc.auth.signUp.useMutation({
     onError: (err) => {
       console.log("Auth signup", err);
 
-      toast.error(err.message);
+      toast.error(text("toast.error"));
     },
     onSuccess: (user) => {
       console.log("user after signup", user);
-      toast.success("Inscription réussie");
+      toast.success(text("text.sign up success"));
 
       signIn("credentials", {
         email: user.email,
         password: watch("password"),
         redirect: false,
-      })
+      });
       //TODO:Signin
     },
   });
@@ -50,8 +53,8 @@ const SignUp = ({ setisLogin }: { setisLogin: any }) => {
   const onSubmit: SubmitHandler<TSignupAuc> = async (data) => {
     signup({
       ...data,
-      setEmailVerified:true,
-      type: "AUC"
+      setEmailVerified: true,
+      type: "AUC",
     });
   };
   return (
@@ -61,66 +64,64 @@ const SignUp = ({ setisLogin }: { setisLogin: any }) => {
     >
       <div className="h-[20px]"></div>
       <Input
-        label="Nom d'utilisateur"
+        label={common("input.username")}
         error={errors.username}
         icon={<PersonIcon />}
         controler={{
-          ...register("username", { required: "Champs obligatoire" }),
+          ...register("username", { required: common("input.required") }),
         }}
       />
       <div className="flex w-full flex-row gap-4">
         <Input
-          label="Email"
+          label={common("input.email")}
           error={errors.email}
           icon={<EmailIcon />}
           controler={{
             ...register("email", {
-              required: "Champs obligatoire",
+              required: common("input.required"),
               pattern: {
                 value:
                   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                message: "Email invalide",
+                message: common("input.invalid"),
               },
             }),
           }}
         />
         <Input
-          label="Tél"
+          label={common("input.tel")}
           error={errors.tel}
           controler={{
-            ...register("tel", { required: "Champs obligatoire" }),
+            ...register("tel", { required: common("input.required") }),
           }}
           icon={<TelIcon />}
         />
       </div>
       <div className="flex w-full flex-row gap-4">
         <Input
-          label="Password"
+          label={common("input.password")}
           error={errors.password}
           type="password"
           icon={<PasswordIcon />}
           controler={{
             ...register("password", {
-              required: "Champs obligatoire",
+              required: common("input.required"),
               minLength: {
                 value: 6,
-                message: "La taille doit dépasser 6 caractères",
+                message: common("input.min6"),
               },
             }),
           }}
         />
         <Input
-          label="Confirmation de password"
+          label={common("input.confirm password")}
           type="password"
           error={errors.confirmPassword}
           controler={{
             ...register("confirmPassword", {
-              required: "Champs obligatoire",
+              required: common("input.required"),
               validate: {
                 isValid: (v) =>
-                  v == watch("password")
-                    ? true
-                    : "Ne correspond pas au password",
+                  v == watch("password") ? true : common("input.no conform"),
               },
             }),
           }}
@@ -129,28 +130,7 @@ const SignUp = ({ setisLogin }: { setisLogin: any }) => {
       </div>
 
       <div className="h-[10px]"></div>
-      <div className="flex flex-row items-center gap-3  text-opacity-75">
-        <input
-          type="checkbox"
-          checked={agree}
-          onChange={(v) => setagree(v.currentTarget.checked)}
-          className="checkbox-primary checkbox  checkbox-sm"
-        />
-        <span>
-          I agree to all{" "}
-          <Link target={"_blank"} href={TERMS_URL} className="text-primary">
-            the terms
-          </Link>{" "}
-          and{" "}
-          <Link
-            target={"_blank"}
-            href={PRIVACY_POLICY_URL}
-            className="text-primary"
-          >
-            Privacy policy
-          </Link>
-        </span>
-      </div>
+
       <div className="h-[30px]"></div>
       <button
         type="submit"
@@ -159,16 +139,17 @@ const SignUp = ({ setisLogin }: { setisLogin: any }) => {
           loading: isLoading,
         })}
       >
-        Créer un compte
+        {common("button.sign up")}
       </button>
       <div className="h-[20px]"></div>
       <p>
-        Vous avez déjà un compte ?{" "}
+        {text("text.you do have an account")}
+        {` `}
         <label
           onClick={() => setisLogin(true)}
           className="cursor-pointer text-primary"
         >
-          connexion
+          {common("button.login")}
         </label>
       </p>
     </form>
@@ -181,7 +162,8 @@ const Login = ({ setisLogin }: { setisLogin: any }) => {
     mode: "onChange",
   });
   const { errors } = formState;
-
+  const text = useContext(LangContext);
+  const common = useContext(LangCommonContext);
   const onSubmit: SubmitHandler<TLogin> = async (data) => {
     setisLoading(true);
     signIn("credentials", {
@@ -191,18 +173,18 @@ const Login = ({ setisLogin }: { setisLogin: any }) => {
     })
       .then((data) => {
         if (data?.ok) {
-          toast.success("Vous êtes connectés avec succès");
+          toast.success(common("toast.auth.success"));
         } else {
           switch (data?.error) {
             case "Password invalid":
-              toast.error("Password invalide");
+              toast.error(common("toast.auth.password invalid"));
               break;
             case "User not exist":
-              toast.error("Compte inexistant, veuillez en créer un");
+              toast.error(common("toast.auth.user not exist"));
               break;
 
             default:
-              toast.error("Erreur lors de Sign up");
+              toast.error(common("toast.auth.failed"));
               break;
           }
         }
@@ -214,7 +196,7 @@ const Login = ({ setisLogin }: { setisLogin: any }) => {
   return (
     <div className="mx-auto flex w-[80%] flex-col items-center">
       <h5 className="py-3 text-opacity-70">
-        Bienvenue! Veuillez-vous connecter à votre compte.
+        {text("text.welcome, please login")}
       </h5>
       <div className="h-[30px]"></div>
 
@@ -223,32 +205,32 @@ const Login = ({ setisLogin }: { setisLogin: any }) => {
         className="flex w-full flex-col  items-center"
       >
         <Input
-          label="Email"
+          label={common("input.email")}
           error={errors.email}
           icon={<EmailIcon />}
           controler={{
             ...register("email", {
-              required: "Champs obligatoire",
+              required: common("input.required"),
               pattern: {
                 value:
                   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                message: "Email invalide",
+                message: common("input.invalid"),
               },
             }),
           }}
         />
 
         <Input
-          label="Password"
+          label={common("input.password")}
           error={errors.password}
           type="password"
           icon={<PasswordIcon />}
           controler={{
             ...register("password", {
-              required: "Champs obligatoire",
+              required: common("input.required"),
               minLength: {
                 value: 6,
-                message: "La taille doit dépasser 6 caractères",
+                message: common("input.min6"),
               },
             }),
           }}
@@ -260,16 +242,17 @@ const Login = ({ setisLogin }: { setisLogin: any }) => {
             loading: isLoading,
           })}
         >
-          Connexion
+          {common("button.login")}
         </button>
         <div className="h-[20px]"></div>
         <p>
-          {"Vous n'avez pas un compte ? "}
+          {text("text.don't have an account")}
+          {` `}
           <label
             onClick={() => setisLogin(false)}
             className="cursor-pointer text-primary"
           >
-            Inscription
+            {common("button.sign up")}
           </label>
         </p>
       </form>
