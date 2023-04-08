@@ -3,7 +3,7 @@ import { router, publicProcedure } from "../trpc";
 import bcrypt from "bcrypt";
 import { bcryptHash } from "@utils/bcrypt";
 import { TMessage } from "@repository/index";
-import { Language } from "@prisma/client";
+import { Currency, Language } from "@prisma/client";
 
 export const userRouter = router({
   get: publicProcedure.query(async ({ ctx }) => {
@@ -142,5 +142,18 @@ export const userRouter = router({
           lang: input as Language,
         },
       });
+    }),
+
+  changeCurrency: publicProcedure
+    .input(z.string())
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.user
+        .update({
+          where: { email: ctx.session?.user?.email || "" },
+          data: {
+            currency: input as Currency,
+          },
+        })
+        .then((user) => user.currency);
     }),
 });

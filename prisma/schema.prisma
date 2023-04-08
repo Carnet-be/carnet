@@ -26,6 +26,7 @@ model User {
   isActive         Boolean          @default(true)
   emailVerified    Boolean          @default(false)
   lang             Language         @default(fr)
+  currency         Currency         @default(EUR)
   subscriptionType SubscriptionType @default(free)
 
   favoris_auctions String[]
@@ -326,4 +327,11 @@ enum SubscriptionType {
   //
   freeTrial
   //
+}
+
+enum Currency {
+  EUR
+  USD
+  GBP
+  MAD
 }

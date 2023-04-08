@@ -20,6 +20,7 @@ import Img from "./components/img";
 import { confirmPasswordHash } from "../utils/bcrypt";
 import { LangCommonContext, LangContext, useNotif } from "../pages/hooks";
 import LangSwitcher from "./components/langSwitcher";
+import CurrencySwitcher from "./components/currencySwitcher";
 const { Panel } = Collapse;
 const UserContext = createContext<TUser | undefined>(undefined);
 const Settings = ({ user }: { user: TUser }) => {
@@ -379,10 +380,18 @@ const SettingSide = () => {
       <div className="flex w-full flex-col items-stretch gap-3 ">
         <ConfirmNewBidderAccount />
         <LangueChanger />
+        <CurrencyChanger />
       </div>
     </div>
   );
-
+  function CurrencyChanger() {
+    return (
+      <div className=" flex w-full flex-row items-center justify-between rounded-lg bg-gray-100 px-2 py-4">
+        {text("currency")}
+        <CurrencySwitcher />
+      </div>
+    );
+  }
   function LangueChanger() {
     return (
       <div className=" flex w-full flex-row items-center justify-between rounded-lg bg-gray-100 px-2 py-4">

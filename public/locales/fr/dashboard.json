@@ -1,7 +1,8 @@
 {
   "settings": {
     "new bidder": "Les nouveaux comptes des enchérisseurs doivent être approuvés par un administrateur",
-    "language": "Langue"
+    "language": "Langue",
+    "currency": "Devise"
   },
   "admin": {
     "text": {
