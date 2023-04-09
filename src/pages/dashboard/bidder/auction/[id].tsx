@@ -97,9 +97,11 @@ const Home = (
   );
 };
 
-const LeftSide = ({ auction }: { auction: TAuction }) => {
+export const LeftSide = ({ auction }: { auction: TAuction }) => {
   const text = useContext(LangContext);
   const common = useContext(LangCommonContext);
+
+  const rate = (s: string) => text(`rating text.${s}`);
   const noImg = auction.images.length <= 0;
   const [imgP, setImgP] = useState(0);
   const [imgSize, setimgSize] = useState(0);
@@ -191,7 +193,7 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
           {Object.keys(auction.options)
             .filter((o) => auction.options[o as keyof AuctionOptions] === true)
             .map((k, i) => {
-              return <Chip key={i} label={k.replaceAll("_", " ")} />;
+              return <Chip key={i} label={text("options." + k)} />;
             })}
         </div>
       </div>
@@ -211,7 +213,7 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
                           key={i}
                           className={cx(
                             "m-1 text-xl",
-                            i <= (r.rate || 0)
+                            s <= (r.rate || 0)
                               ? "text-yellow-500"
                               : "opacity-50"
                           )}
@@ -220,7 +222,7 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
                     })}
                   </div>
                   <span className="text-sm italic text-black/70">
-                    {r.list[r.rate || 0]}
+                    {rate(`handling.${r.rate}`)}
                   </span>
                 </div>
               </div>
@@ -231,7 +233,7 @@ const LeftSide = ({ auction }: { auction: TAuction }) => {
   );
 };
 
-const RightSide = ({ auction }: { auction: TAuction }) => {
+export const RightSide = ({ auction }: { auction: TAuction }) => {
   const text = useContext(LangContext);
   const [isTimeOut, setisTimeOut] = useState(false);
   const model = auction.model;

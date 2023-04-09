@@ -48,14 +48,11 @@ export const auctionnaireRouter = router({
       const data6: Data6 = input.data6;
 
       const processDate = new ProcessDate();
-      const processUser = new ProcessUser(ctx.session!);
       //
 
       const duration = processDate.getDuration(data6.duration);
       //const end_date = processDate.endDate(duration);
       // return
-      const auctionnaire_id = await processUser.getId();
-
       let id = Math.random().toString().slice(2, 9);
       let incorrectId = true;
       while (incorrectId) {
@@ -63,79 +60,76 @@ export const auctionnaireRouter = router({
         if (count === 0) {
           incorrectId = false;
         } else {
-          id = Math.random().toString().slice(2, 9);
+          id = Math.random().toString().slice(2, 7);
         }
       }
       console.log("images", data6.images);
       const name = data1.brand + " " + data1.model + " " + data1.buildYear;
-      console.log("name", name);
-      return await ctx.prisma.auction
-        .create({
-          data: {
-            id,
-            name,
-            brand: data1.brand!,
-            model: data1.model!,
-            build_year: data1.buildYear!,
-            fuel: data1.fuel,
-            //images,
-            description: data6.description,
-            duration,
-            expected_price: parseFloat(data6.expected_price!.toString()),
-            images: {
-              createMany: {
-                data: data6.images,
-              },
+
+      return await ctx.prisma.auction.create({
+        data: {
+          id,
+          name,
+          brand: data1.brand!,
+          model: data1.model!,
+          build_year: data1.buildYear!,
+          fuel: data1.fuel,
+          //images,
+          description: data6.description,
+          duration,
+          expected_price: parseFloat(data6.expected_price!.toString()),
+          images: {
+            createMany: {
+              data: data6.images,
             },
-            color: data1.color,
-            //auctionnaire_id: auctionnaire_id||"",
-            auctionnaire: {
-              connect: { id: auctionnaire_id },
+          },
+          color: data1.color,
+          //auctionnaire_id: auctionnaire_id||"",
+          auctionnaire: {
+            connect: {
+              email: ctx.session?.user?.email || "",
             },
-            address: {
-              create: {
-                zipCode: data6.zipCode,
-                city: data6.city,
-                country: data6.country,
-                lat: data6.lat!,
-                lon: data6.lon!,
-                address: data6.address,
-              },
+          },
+          address: {
+            create: {
+              zipCode: data6.zipCode,
+              city: data6.city,
+              country: data6.country,
+              lat: data6.lat!,
+              lon: data6.lon!,
+              address: data6.address,
             },
-            rating: {
-              create: data4,
+          },
+          rating: {
+            create: data4,
+          },
+          specs: {
+            create: {
+              carrosserie: data3.carrosserie,
+              cc: data3.cc,
+              cv: data3.cv,
+              co2: data3.co2,
+              kilometrage: data3.kilometrage,
+              version: data3.version,
+              transmission: data3.transmission,
+              doors: data3.doors ? parseInt(data3.doors) : null,
             },
-            specs: {
-              create: {
-                carrosserie: data3.carrosserie,
-                cc: data3.cc,
-                cv: data3.cv,
-                co2: data3.co2,
-                kilometrage: data3.kilometrage,
-                version: data3.version,
-                transmission: data3.transmission,
-                doors: data3.doors ? parseInt(data3.doors) : null,
-              },
-            },
-            options: {
-              create: data5,
-            },
-            logs: {
-              create: {
-                action: "creation",
-                user: {
-                  connect: {
-                    email: ctx.session?.user?.email || "",
-                  },
+          },
+          options: {
+            create: data5,
+          },
+          logs: {
+            create: {
+              action: "creation",
+              user: {
+                connect: {
+                  email: ctx.session?.user?.email || "",
                 },
               },
             },
           },
-        })
-        .then((auction) => ({
-          ...auction,
-          auctionnaire_id: auctionnaire_id || "",
-        }));
+        },
+      });
     }),
   pauseAuction: publicProcedure
     .input(z.string())

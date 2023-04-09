@@ -35,7 +35,7 @@ const Step5 = ({ data, setData }: { data: Data5; setData: any }) => {
   return (
     <div className="flex flex-col items-center gap-4">
       <span className="flex w-full flex-row justify-start pl-8">
-        Cocher les critères de votre voiture :
+        {text("text.check options")} :
       </span>
       <div className="flex flex-wrap items-center justify-center gap-1">
         {Object.keys(data).map((k, i) => {

@@ -49,7 +49,7 @@ const Step1 = ({
         console.log(data);
         setModel(data.map((o) => o.name));
         const years = data.filter((o) => !!o.year).map((o) => o.year as number);
-        setYear(years);
+        setYear(years.sort((a, b) => b - a));
       },
       onError(err) {
         console.log(err);
