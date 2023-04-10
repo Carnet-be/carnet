@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-var-requires */
 // @ts-check
-
 import pkg from "./next-i18next.config.js";
 const { i18n } = pkg;
+
 import removeImports from "next-remove-imports";
 const removeImportsFunc = removeImports();
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env/server.mjs"));
@@ -14,6 +14,8 @@ const config = {
   reactStrictMode: false,
   swcMinify: true,
   i18n,
+
+  // localePath: path.resolve('./public/locales'),
   images: {
     domains: [
       "lh3.googleusercontent.com",
