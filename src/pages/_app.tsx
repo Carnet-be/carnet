@@ -71,7 +71,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
     if (lang && router.locale !== lang) {
       router.push(router.pathname, router.asPath, { locale: lang });
     }
-  }, []);
+  }, [router.locale]);
   return (
     // <IntlProvider locale={locale||"fr"}  messages={messages[locale as Locale||"fr"]}>
     <SessionProvider session={session}>
