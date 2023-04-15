@@ -172,7 +172,7 @@ const Completed = () => {
       render: (a, v) => (
         <div className="flex flex-row gap-1">
           <Tooltip
-            title="Contact"
+            title={common("tooltip.contact")}
             className="flex flex-row items-center justify-center text-primary"
           >
             <Button shape="circle" icon={<EmailIcon className="text-lg" />} />
@@ -228,7 +228,7 @@ const Completed = () => {
             id={auction.id}
             onCustom={() => ({
               icon: <MdOutlineCancel className="text-lg text-yellow-500" />,
-              tooltip: common("tootlip.cancel winner"),
+              tooltip: common("tooltip.cancel winner"),
               onClick: () => {
                 cancelWinner({
                   auction_id: auction.id,

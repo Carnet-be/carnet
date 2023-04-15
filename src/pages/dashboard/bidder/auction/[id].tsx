@@ -415,7 +415,7 @@ const AuctionStatus = ({ auction }: { auction: TAuction }) => {
       if (auction.state === "published") {
         if (auction.isClosed) return "completed";
         if (auction.end_date && auction.end_date < new Date())
-          return "completed";
+          return "confirmation";
         return "published";
       }
       return auction.state;
