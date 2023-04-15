@@ -187,6 +187,7 @@ export const ActionTable = ({
   onPlay?: () => void;
   onRepublish?: () => void;
 }) => {
+  const { text: common } = useLang(undefined);
   const ref = useRef<HTMLLabelElement>(null);
   const refDelete = useRef<HTMLLabelElement>(null);
   const [openDelete, setOpenDelete] = useState(false);
@@ -226,7 +227,7 @@ export const ActionTable = ({
       <label ref={refDelete} hidden={true} htmlFor={"delete" + id}></label>
       {onRepublish && (
         <Tooltip
-          title="Republish"
+          title={common("button.republish")}
           className="flex flex-row items-center justify-center"
         >
           <Button
@@ -238,7 +239,7 @@ export const ActionTable = ({
       )}
       {onPlay && (
         <Tooltip
-          title="Resume"
+          title={common("button.resume")}
           className="flex flex-row items-center justify-center"
         >
           <Button
@@ -252,7 +253,7 @@ export const ActionTable = ({
       )}
       {onView && (
         <Tooltip
-          title="View"
+          title={common("button.view")}
           className="flex flex-row items-center justify-center"
         >
           <Button
@@ -265,7 +266,7 @@ export const ActionTable = ({
 
       {onEdit && (
         <Tooltip
-          title="Edit"
+          title={common("button.edit")}
           className="flex flex-row items-center justify-center text-primary"
         >
           <Button
@@ -294,7 +295,7 @@ export const ActionTable = ({
       )}
       {onDelete && (
         <Tooltip
-          title="Delete"
+          title={common("button.delete")}
           className="flex flex-row items-center justify-center text-red-500"
         >
           <Button

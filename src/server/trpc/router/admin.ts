@@ -33,6 +33,7 @@ export const adminRouter = router({
   getBrandAutoComplete: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.brand
       .findMany({
+        where: { models: { some: {} } },
         select: { name: true },
         orderBy: {
           name: "asc",

@@ -33,6 +33,7 @@ export function findSymbol(code: Currency) {
   return symbol || "€";
 }
 const CurrencySwitcher = () => {
+  const router = useRouter();
   const [currency, setCurrency] = useState<string>(
     findSymbol(Cookies.get("currency") as Currency)
   );
@@ -42,6 +43,7 @@ const CurrencySwitcher = () => {
       succes();
       setCurrency(findSymbol(data));
       Cookies.set("currency", data, { expires: 365 });
+      // router.reload();
     },
     onError: (err) => {
       error();
@@ -59,7 +61,7 @@ const CurrencySwitcher = () => {
       </button>
       <ul
         tabIndex={0}
-        className="dropdown-content menu rounded-box z-50 w-40 gap-2 p-2 shadow"
+        className="dropdown-content menu rounded-box z-50 w-40 gap-2 bg-white p-2 shadow"
       >
         {currencies.map((l, i) => {
           return (

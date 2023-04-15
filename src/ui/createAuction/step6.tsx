@@ -139,7 +139,7 @@ const Step6 = ({
         <div className="flex flex-row gap-1 text-xs">
           <Autocomplete
             // lang={}
-            freeSolo={true}
+
             options={COUNTRIES.map((o) => o.name)}
             value={data.country}
             clearIcon={null}
@@ -157,7 +157,7 @@ const Step6 = ({
           />
           <Autocomplete
             // lang={}
-            freeSolo={true}
+
             options={
               COUNTRIES.filter((o) => o.name === data.country)[0]?.cities || []
             }
@@ -168,6 +168,7 @@ const Step6 = ({
             clearIcon={null}
             size="small"
             onChange={(e, v) => {
+              console.log("e", e);
               setData({
                 ...data,
                 city: v,

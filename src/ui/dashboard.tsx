@@ -312,7 +312,9 @@ const NotificationComponent = () => {
         className="btn-ghost btn flex flex-row gap-1 hover:bg-primary/10"
       >
         {num > 0 && (
-          <div className="flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-white"></div>
+          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white">
+            {num}
+          </div>
         )}
         <NotifIcon className="text-2xl" />
       </button>
@@ -325,6 +327,7 @@ const NotificationComponent = () => {
         {notifications
           .sort((a, b) => b.date.getTime() - a.date.getTime())
           .map((n, i) => {
+            const isNew = newNotifs.map((n) => n.uid).includes(n.uid || "");
             return (
               <div
                 onClick={() => {
@@ -332,12 +335,17 @@ const NotificationComponent = () => {
                   onClose();
                 }}
                 key={i}
-                className={cx("mb-3 cursor-pointer rounded-md border p-3", {
-                  "text-primary": newNotifs
-                    .map((n) => n.uid)
-                    .includes(n.uid || ""),
-                })}
+                className={cx(
+                  "relative mb-3 cursor-pointer rounded-md border p-3",
+                  {
+                    "text-primary": isNew,
+                  }
+                )}
               >
+                <div
+                  hidden={!isNew}
+                  className="absolute -top-1 -right-1 h-4 w-4 animate-pulse rounded-full bg-red-400"
+                ></div>
                 <div className="flex flex-col">
                   <div className="text-sm font-bold">{n.title}</div>
                   <div className="text-xs">{n.body}</div>

@@ -327,7 +327,7 @@ export const useGetNotifications = () => {
     // Define the documents to update
     for (const i of newNotifs) {
       batch.update(doc(db, "notifications", i.uid || ""), {
-        hasRead: arrayUnion(user?.id),
+        hasRead: arrayUnion(user?.type === "ADMIN" ? "ADMIN" : user?.id),
       });
     }
     // Commit the write batch
