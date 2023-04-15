@@ -23,7 +23,7 @@ import { useContext, useEffect, useState } from "react";
 import { useRef } from "react";
 import { SampleNextArrow, SamplePrevArrow } from "@ui/createAuction/step3";
 import { Chip } from "@mui/material";
-import type { Auction, AuctionOptions } from "@prisma/client";
+import type { Auction, AuctionOptions, AuctionState } from "@prisma/client";
 import { HANDLING } from "@data/internal";
 import { EXTERIOR } from "@data/internal";
 import { INTERIOR } from "@data/internal";
@@ -34,6 +34,7 @@ import { NO_IMAGE_URL } from "@ui/components/auctionCard";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { LangCommonContext, LangContext, useLang } from "../../../hooks";
+import { UserContext } from "../../auctionnaire/auction/[id]";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -242,7 +243,7 @@ export const RightSide = ({ auction }: { auction: TAuction }) => {
     setisTimeOut(true);
     console.log("Time out, executing...");
   };
-
+  const user = useContext(UserContext);
   return (
     <div className=" w-full lg:w-[40%] ">
       <div className="w-full space-y-4 rounded-xl bg-grey p-3">
@@ -325,12 +326,20 @@ export const RightSide = ({ auction }: { auction: TAuction }) => {
           />
         </div>
       </div>
-      <CountDown
-        variant="primary"
-        onTimeOut={onTimeOut}
-        endDate={auction.end_date!}
-      />
-      <BidSection auction={auction} isTimeOut={isTimeOut} />
+      {user &&
+        (user.type === "BID" ? (
+          <>
+            {" "}
+            <CountDown
+              variant="primary"
+              onTimeOut={onTimeOut}
+              endDate={auction.end_date || new Date()}
+            />
+            <BidSection auction={auction} isTimeOut={isTimeOut} />
+          </>
+        ) : (
+          <AuctionStatus auction={auction} />
+        ))}
       <Map
         options={{ zoomControl: false }}
         latitude={auction.address.lat}
@@ -393,3 +402,31 @@ const MiniCard = (props: {
   );
 };
 export default Home;
+
+const AuctionStatus = ({ auction }: { auction: TAuction }) => {
+  const [state, setState] = useState(auction.state);
+  const { text } = useLang({
+    file: "dashboard",
+    selector: "auction",
+  });
+
+  useEffect(() => {
+    const getStatus = (): AuctionState => {
+      if (auction.state === "published") {
+        if (auction.isClosed) return "completed";
+        if (auction.end_date && auction.end_date < new Date())
+          return "completed";
+        return "published";
+      }
+      return auction.state;
+    };
+    setState(getStatus());
+  }, [auction.end_date, auction.isClosed, auction.state]);
+  return (
+    <div className="py-10">
+      <div className="border border-primary p-6 text-xl uppercase text-primary">
+        <h3 className="text-center text-lg"> {text("status." + state)}</h3>
+      </div>
+    </div>
+  );
+};
