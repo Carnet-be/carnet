@@ -110,7 +110,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
       >
         <ConfigProvider locale={getAntdLocale()}>
           <App>
-            <NextNProgress color="#181BAA" height={7} />
+            <NextNProgress color="#181BAA" height={5} />
             <Component {...pageProps} />
           </App>
         </ConfigProvider>
