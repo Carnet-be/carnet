@@ -54,6 +54,7 @@
     "next-auth": "^4.15.1",
     "next-i18next": "^13.2.2",
     "next-remove-imports": "^1.0.10",
+    "nextjs-progressbar": "^0.0.16",
     "nodemailer": "^6.8.0",
     "nookies": "^2.5.2",
     "react": "^18.2.0",
