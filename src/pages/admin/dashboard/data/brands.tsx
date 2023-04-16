@@ -201,7 +201,9 @@ const Brands = (
       dataIndex: "description",
 
       key: "description",
-      render: (v) => <p className="text-[12px] opacity-50">{v || "---"}</p>,
+      render: (v) => (
+        <p className="lamp text-[12px] opacity-50 line-clamp-2">{v || "---"}</p>
+      ),
     },
 
     {

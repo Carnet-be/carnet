@@ -374,7 +374,7 @@ const AddBlog = ({
           />
           <div
             style={{ backgroundImage: `url(${img?.url})` }}
-            className="relative h-[240px] border border-dashed bg-cover bg-center bg-no-repeat"
+            className="relative h-[200px] border border-dashed bg-cover bg-center bg-no-repeat"
           >
             <div className="absolute bottom-2 right-2 rounded-md bg-white">
               <UploadButton
