@@ -165,7 +165,7 @@ const ProfileButton = () => {
       router.push("/dashboard/bidder");
     }
     if (user?.type === "AUC") {
-      router.push("/dashboard/auctionaire");
+      router.push("/dashboard/auctionnaire");
     }
   };
 

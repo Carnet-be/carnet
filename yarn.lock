@@ -6450,6 +6450,11 @@ react-onesignal@^2.0.4:
   resolved "https://registry.npmjs.org/react-onesignal/-/react-onesignal-2.0.4.tgz"
   integrity sha512-llZ4PV1+EsWWZDt0BRils6gAxaxMoYP0Z3rlNivQy4xqUaiO1/PcRaIJ6CuzCci/koDsw5IzLOXEHlV4Yn+d9Q==
 
+react-quilljs@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/react-quilljs/-/react-quilljs-1.3.3.tgz#ca6e6e38c723f2bd50023e2da65977306cc17f1f"
+  integrity sha512-fC1IrlenC2rkI6LaFSQL+OnVAWJPJO1BU5bMKekHQkR/2O1lJ/DlZo46ofA/nG+YX/GZKEeqT4XS/ny/JWwwhA==
+
 react-slick@^0.29.0:
   version "0.29.0"
   resolved "https://registry.npmjs.org/react-slick/-/react-slick-0.29.0.tgz"
