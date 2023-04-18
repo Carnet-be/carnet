@@ -25,7 +25,13 @@ import moment from "moment";
 import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
 import Share from "@ui/components/share";
-
+import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
+const Editor = dynamic(
+  () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
+  {
+    ssr: false,
+  }
+);
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { locale } = context;
   const paramId = context.params?.id;
@@ -153,9 +159,13 @@ const BlogView = ({
         {blog.content}
       </ReactMarkdown> */}
       <div className="prose prose-a:text-blue-600 prose-hr:my-8 prose-hr:h-px prose-hr:border-0 prose-hr:bg-blue-200 lg:prose-lg">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {blog.content}
-        </ReactMarkdown>
+        <Editor
+          editorState={EditorState.createWithContent(
+            convertFromRaw(JSON.parse(blog.content))
+          )}
+          toolbarHidden={true}
+          readOnly={true}
+        />
       </div>
     </div>
   );

@@ -2,8 +2,6 @@
 import React, { useContext, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import "@uiw/react-md-editor/markdown-editor.css";
-import "@uiw/react-markdown-preview/markdown.css";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import { GetServerSideProps } from "next";
@@ -28,6 +26,14 @@ import toast from "react-hot-toast";
 import { AdvancedImage } from "@cloudinary/react";
 import cloudy from "@utils/cloudinary";
 import { useRouter } from "next/router";
+import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
+const Editor = dynamic(
+  () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
+  {
+    ssr: false,
+  }
+);
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -62,7 +68,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 const Blogs = () => {
   //  const [value, setValue] = useState("**Hello world!!!**");
   const { loading, error, succes } = useNotif();
-  const { data: bids, isLoading, refetch } = trpc.blog.getBlogs.useQuery();
+  const {
+    data: bids,
+    isLoading,
+    refetch,
+  } = trpc.blog.getBlogs.useQuery(undefined, {
+    onSuccess(data) {
+      console.log("fetching blogs");
+    },
+  });
   const { text: common } = useLang(undefined);
   const { text } = useLang({
     file: "dashboard",
@@ -223,7 +237,7 @@ const AddBlog = ({
   onClose: () => void;
 }) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(blog?.content || "");
+  const [value, setValue] = useState(EditorState.createEmpty());
   const [title, setTitle] = useState(blog?.title || "");
   const common = useContext(LangCommonContext);
   const { error, loading, succes } = useNotif();
@@ -240,7 +254,7 @@ const AddBlog = ({
 
   const clear = () => {
     setTitle("");
-    setValue("");
+    setValue(EditorState.createEmpty());
     setAsset(undefined);
     setSize(undefined);
     setImg(undefined);
@@ -288,7 +302,7 @@ const AddBlog = ({
             id: blog.id,
             title,
             locale: size,
-            content: value,
+            content: JSON.stringify(convertToRaw(value.getCurrentContent())),
           },
           image: {
             url: asset.url,
@@ -301,7 +315,7 @@ const AddBlog = ({
           blog: {
             title,
             locale: size,
-            content: value,
+            content: JSON.stringify(convertToRaw(value.getCurrentContent())),
           },
           image: {
             url: asset.url,
@@ -333,7 +347,9 @@ const AddBlog = ({
   useEffect(() => {
     if (blog) {
       setTitle(blog.title);
-      setValue(blog.content);
+      setValue(
+        EditorState.createWithContent(convertFromRaw(JSON.parse(blog.content)))
+      );
       setImg(blog.image);
       setAsset(blog.image);
       setSize(blog.locale ? (blog.locale as Lang) : undefined);
@@ -388,6 +404,19 @@ const AddBlog = ({
                 }}
               />
             </div>
+          </div>
+          <div>
+            <Editor
+              editorState={value}
+              toolbarClassName="toolbarClassName"
+              wrapperClassName="wrapperClassName"
+              editorClassName="editorClassName"
+              onEditorStateChange={(e) => {
+                console.log("e.", e);
+                setValue(e);
+              }}
+            />
+            ;
           </div>
         </div>
       </Modal>
