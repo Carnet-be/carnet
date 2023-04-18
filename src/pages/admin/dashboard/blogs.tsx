@@ -28,7 +28,6 @@ import toast from "react-hot-toast";
 import { AdvancedImage } from "@cloudinary/react";
 import cloudy from "@utils/cloudinary";
 import { useRouter } from "next/router";
-const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -390,16 +389,6 @@ const AddBlog = ({
               />
             </div>
           </div>
-          <MDEditor
-            onLoad={(e) => {
-              console.log(e);
-            }}
-            previewOptions={{
-              className: "prose",
-            }}
-            value={value}
-            onChange={(s) => setValue(s || "")}
-          />
         </div>
       </Modal>
     </>
