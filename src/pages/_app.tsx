@@ -5,7 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { db } from "@utils/firebase";
 import { query, collection, where, onSnapshot } from "firebase/firestore";
-
+import NextNProgress from "nextjs-progressbar";
 import { toast } from "react-toastify";
 import { appWithTranslation } from "next-i18next";
 import "../styles/globals.css";
@@ -110,6 +110,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
       >
         <ConfigProvider locale={getAntdLocale()}>
           <App>
+            <NextNProgress color="#181BAA" height={5} />
             <Component {...pageProps} />
           </App>
         </ConfigProvider>

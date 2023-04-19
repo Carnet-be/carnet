@@ -15,8 +15,8 @@ import {
 import { prisma } from "../server/db/client";
 import { type User } from "@prisma/client";
 import CreateAuction from "@ui/createAuction";
-import { signOut } from "next-auth/react";
-import { ReactNode, useContext } from "react";
+import { signOut, useSession } from "next-auth/react";
+import { ReactNode, useContext, useEffect } from "react";
 import { EditIcon } from "@ui/icons";
 import { FaCarAlt } from "react-icons/fa";
 import { GiTakeMyMoney } from "react-icons/gi";
@@ -25,73 +25,23 @@ import { useIntl } from "react-intl";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { i18n, useTranslation } from "next-i18next";
 import { LangContext, useLang } from "./hooks";
+import { trpc } from "@utils/trpc";
+import { AdvancedImage } from "@cloudinary/react";
+import cloudy from "@utils/cloudinary";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerAuthSession(context);
 
-  if (!session) {
-    // if (process.env.NODE_ENV === "development") {
-    //   await i18n?.reloadResources();
-    // }
-    const { locale } = context;
-    return {
-      props: {
-        ...(await serverSideTranslations(locale || "fr", [
-          "common",
-          "pages",
-          "dashboard",
-        ])),
-      },
-    };
-  }
-  let user: User | undefined;
-  try {
-    user = await prisma.user
-      .findUnique({
-        where: {
-          email: session?.user?.email || "",
-        },
-      })
-      .then((res) => JSON.parse(JSON.stringify(res)));
-  } catch (error) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: true,
-      },
-    };
-  }
-  if (!user) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: true,
-      },
-    };
-  }
-  if (!user.emailVerified) {
-    return {
-      redirect: {
-        destination: "/pages/email-verification",
-        permanent: true,
-      },
-    };
-  }
-  let route;
-  switch (user.type) {
-    case "AUC":
-      route = "/dashboard/auctionnaire";
-      break;
-    case "BID":
-      route = "/dashboard/bidder";
-      break;
-    default:
-      route = "/admin/dashboard";
-      break;
-  }
+  // if (process.env.NODE_ENV === "development") {
+  //   await i18n?.reloadResources();
+  // }
+  const { locale } = context;
   return {
-    redirect: {
-      destination: route,
-      permanent: true,
+    props: {
+      ...(await serverSideTranslations(locale || "fr", [
+        "common",
+        "pages",
+        "dashboard",
+      ])),
     },
   };
 };
@@ -200,15 +150,71 @@ export const MyNav = () => {
 
 const ProfileButton = () => {
   const text = useContext(LangContext);
+  const { data: user, refetch, isLoading } = trpc.user.get.useQuery();
+  const { data: session } = useSession();
+  useEffect(() => {
+    refetch();
+  }, [refetch, session]);
+
+  const router = useRouter();
+  const onClick = () => {
+    if (user?.type === "ADMIN" || user?.type === "STAFF") {
+      router.push("/admin/dashboard");
+    }
+    if (user?.type === "BID") {
+      router.push("/dashboard/bidder");
+    }
+    if (user?.type === "AUC") {
+      router.push("/dashboard/auctionnaire");
+    }
+  };
+
+  if (isLoading)
+    return (
+      <div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          x="0px"
+          y="0px"
+          width="20"
+          height="20"
+          className="animate-spin fill-white"
+          viewBox="0 0 30 30"
+        >
+          <path d="M 13 3 A 2 2 0 0 0 11 5 A 2 2 0 0 0 13 7 A 2 2 0 0 0 15 5 A 2 2 0 0 0 13 3 z M 20 4 A 2 2 0 0 0 18 6 A 2 2 0 0 0 20 8 A 2 2 0 0 0 22 6 A 2 2 0 0 0 20 4 z M 7 7 A 2 2 0 0 0 5 9 A 2 2 0 0 0 7 11 A 2 2 0 0 0 9 9 A 2 2 0 0 0 7 7 z M 24.5 10 A 2.5 2.5 0 0 0 22 12.5 A 2.5 2.5 0 0 0 24.5 15 A 2.5 2.5 0 0 0 27 12.5 A 2.5 2.5 0 0 0 24.5 10 z M 5 13.75 A 1.25 1.25 0 0 0 3.75 15 A 1.25 1.25 0 0 0 5 16.25 A 1.25 1.25 0 0 0 6.25 15 A 1.25 1.25 0 0 0 5 13.75 z M 23 17 A 3 3 0 0 0 20 20 A 3 3 0 0 0 23 23 A 3 3 0 0 0 26 20 A 3 3 0 0 0 23 17 z M 7 19 A 1 1 0 0 0 6 20 A 1 1 0 0 0 7 21 A 1 1 0 0 0 8 20 A 1 1 0 0 0 7 19 z M 14.5 20 A 3.5 3.5 0 0 0 11 23.5 A 3.5 3.5 0 0 0 14.5 27 A 3.5 3.5 0 0 0 18 23.5 A 3.5 3.5 0 0 0 14.5 20 z"></path>
+        </svg>
+      </div>
+    );
+  if (!user)
+    return (
+      <Link
+        href={"/auth/login"}
+        className={cx(
+          "rounded-lg bg-white px-6 py-2 text-sm font-semibold no-underline"
+        )}
+      >
+        {text("navbar.login button")}
+      </Link>
+    );
+
   return (
-    <Link
-      href={"/auth/login"}
-      className={cx(
-        "rounded-lg bg-white px-6 py-2 text-sm font-semibold no-underline"
-      )}
+    <button
+      onClick={onClick}
+      className="flex flex-row items-center gap-2 rounded-full bg-white py-1 px-2 text-primary"
     >
-      {text("navbar.login button")}
-    </Link>
+      <span>{user.username}</span>
+
+      <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-primary  font-bold uppercase text-white">
+        {!user.image ? (
+          user.username[0]
+        ) : (
+          <AdvancedImage
+            cldImg={cloudy.image(user.image?.fileKey)}
+            quality={20}
+          />
+        )}
+      </div>
+    </button>
   );
 };
 const Overlay = () => {
