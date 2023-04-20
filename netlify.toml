@@ -1,16 +1,15 @@
 [build]
-  # Build command for your Next.js app
   command = "npm run build"
-
-  # Directory where the built app will be located
   publish = "out"
+  functions = "out_functions"
+  plugins = ["netlify-plugin-inline-source"]
 
-[dev]
-  # Start command for your Next.js app
-  command = "npm run dev"
+[build.environment]
+  # Add any environment variables you need here, if any
 
 [[plugins]]
-  # Plugin to run a script on app startup
-  package = "@netlify/plugin-functions"
+  package = "netlify-plugin-inline-source"
   [plugins.inputs]
-    command = "npm run start:watch"
+    commands = [
+      "start:watch",
+    ]
