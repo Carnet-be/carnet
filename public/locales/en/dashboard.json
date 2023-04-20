@@ -27,6 +27,16 @@
     }
   },
   "auction": {
+    "log": {
+      "edit": "Edit",
+      "creation": "Creation",
+      "published": "Published",
+      "cancel winner": "Cancel winner",
+      "pause": "Pause",
+      "resume": "Resume",
+      "choice winner": "Choice winner",
+      "republished": "Republished"
+    },
     "steps": {
       "title": "Want to sell your car?",
       "identify": "Identify",
@@ -76,6 +86,7 @@
     },
     "option title": "Check the features of your car",
     "text": {
+      "logs": "Logs",
       "optionals": "Optionals",
       "initial bid": "Initial Bid",
       "starting price": "Starting Price",
@@ -87,7 +98,6 @@
       "welcome, please login": "Welcome, please log in to your account",
       "don't have an account": "Don't have an account?",
       "you do have an account": "You have an account?"
-   
     },
     "status": {
       "active": "In progress",

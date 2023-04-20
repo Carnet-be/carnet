@@ -27,6 +27,16 @@
     }
   },
   "auction": {
+    "log": {
+      "edit": "Modification",
+      "creation": "Création",
+      "published": "Publication",
+      "cancel winner": "Annulation du gagnant",
+      "pause": "Pause",
+      "resume": "Reprise",
+      "choice winner": "Choix du gagnant",
+      "republished": "Republication"
+    },
     "steps": {
       "title": "Vous voulez vendre votre voiture ?",
       "identify": "Identifier",
@@ -76,6 +86,7 @@
     },
     "option title": "Cocher les critères de votre voiture",
     "text": {
+      "logs": "Historiques",
       "optionals": "Optionnels",
       "initial bid": "Enchère de départ",
       "starting price": "Prix de départ",
