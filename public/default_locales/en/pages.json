@@ -1,0 +1,9 @@
+{
+    "home":{
+        "hero":{
+            "title":"Welcome to the new site",
+            "subtitle":"This is the subtitle",
+            "button":"Click here"  
+        }
+    }
+}

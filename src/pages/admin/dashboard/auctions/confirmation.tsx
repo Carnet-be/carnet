@@ -33,6 +33,7 @@ import { SwitcherAuctions } from ".";
 import LogAuction from "@ui/components/logAuction";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useLang, useNotif } from "../../../hooks";
+import { useAuctionCountStore } from "../../../../state";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -56,6 +57,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 const Confirmation = () => {
+  const count = useAuctionCountStore((state) => state.increase);
   const { text: common } = useLang(undefined);
   const tab = (s: string) => common(`table.${s}`);
   const { text } = useLang({
@@ -82,6 +84,7 @@ const Confirmation = () => {
     },
     onSuccess: () => {
       succes();
+      count("confirmation", "completed");
       refetch();
     },
   });
@@ -191,6 +194,8 @@ const Confirmation = () => {
     },
     onSuccess: () => {
       succes();
+
+      count("confirmation", "pause");
       refetch();
     },
   });

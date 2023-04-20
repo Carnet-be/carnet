@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
 import { ColumnsType } from "antd/es/table";
-import { Auction, Bid } from "@prisma/client";
+import { Auction, AuctionState, Bid } from "@prisma/client";
 import { TAuction, TUser } from "@model/type";
 import BigTitle from "@ui/components/bigTitle";
 import Price from "@ui/components/price";
@@ -35,7 +35,10 @@ import Image from "next/image";
 import { BiPause } from "react-icons/bi";
 import moment from "moment";
 import LogAuction from "@ui/components/logAuction";
-import { useAdminDashboardStore } from "../../../../state";
+import {
+  useAdminDashboardStore,
+  useAuctionCountStore,
+} from "../../../../state";
 import { useLang, useNotif } from "../../../hooks";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -69,33 +72,32 @@ export const SwitcherAuctions = () => {
     file: "dashboard",
     selector: "auction",
   });
-  const { pause, pending, published, confirmation, completed } =
-    useAdminDashboardStore((state) => state);
+  const data = useAuctionCountStore((state) => state.data);
   const router = useRouter();
   const routers = [
     {
       title: text("status.published"),
-      value: published,
+      value: "published",
       route: "/admin/dashboard/auctions/published",
     },
     {
       title: text("status.pending"),
-      value: pending,
+      value: "pending",
       route: "/admin/dashboard/auctions/pending",
     },
     {
       title: text("status.paused"),
-      value: pause,
+      value: "pause",
       route: "/admin/dashboard/auctions/pause",
     },
     {
       title: text("status.confirmation"),
-      value: confirmation,
+      value: "confirmation",
       route: "/admin/dashboard/auctions/confirmation",
     },
     {
       title: text("status.completed"),
-      value: completed,
+      value: "completed",
       route: "/admin/dashboard/auctions/completed",
     },
   ];
@@ -113,7 +115,16 @@ export const SwitcherAuctions = () => {
             })}
           >
             {r.title}
-            {/* <span className={cx("text-[11px] font-bold px-1 rounded-full",isActive?"bg-white text-primary":"bg-primary text-white opacity-50")}>{r.value}</span> */}
+            <span
+              className={cx(
+                "rounded-full px-2 text-[11px] font-bold",
+                isActive
+                  ? "bg-white text-primary"
+                  : "bg-primary/30 text-white opacity-50"
+              )}
+            >
+              {data[r.value as AuctionState]}
+            </span>
           </Link>
         );
       })}
@@ -127,6 +138,7 @@ export const AuctionsPage = ({
   state: "published" | "pending" | "pause";
 }) => {
   const { loading, error, succes } = useNotif();
+  const count = useAuctionCountStore((state) => state.increase);
   const { text: common } = useLang(undefined);
   const tab = (s: string) => common(`table.${s}`);
   const { text } = useLang({
@@ -152,7 +164,7 @@ export const AuctionsPage = ({
     },
     onSuccess: () => {
       toast.dismiss();
-
+      count(state, "completed");
       succes();
       refetch();
     },
@@ -173,6 +185,7 @@ export const AuctionsPage = ({
     onSuccess: () => {
       toast.dismiss();
       succes();
+      count(state);
       refetch();
     },
   });
@@ -291,6 +304,7 @@ export const AuctionsPage = ({
     },
     onSuccess: () => {
       toast.dismiss();
+      count(state, "pause");
       succes();
       refetch();
     },
@@ -322,6 +336,7 @@ export const AuctionsPage = ({
     },
     onSuccess: () => {
       toast.dismiss();
+      count(state, "published");
       succes();
       refetch();
     },

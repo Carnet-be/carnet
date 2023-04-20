@@ -233,6 +233,49 @@ export const adminRouter = router({
     return { user };
   }),
 
+  getAuctionsCount: publicProcedure.query(async ({ ctx }) => {
+    const { prisma } = ctx;
+    // const user= await prisma.user.findUnique({
+    //   where: { email: ctx.session?.user?.email || "" },
+    // })
+    // if((user?.type!=="ADMIN") && (user?.type!=="STAFF")){
+    //   return null
+    // }
+
+    const auctions = await prisma.auction.findMany({
+      select: {
+        state: true,
+        isClosed: true,
+        end_date: true,
+      },
+    });
+
+    const data = {
+      published: 0,
+      pause: 0,
+      pending: 0,
+      confirmation: 0,
+      completed: 0,
+    };
+
+    for (const a of auctions) {
+      if (a.state === "pending") {
+        data.pending++;
+      }
+      if (a.state === "pause") {
+        data.pause++;
+      }
+      if (a.state === "published") {
+        if (a.isClosed === true) data.completed++;
+        else if (a.end_date && a.end_date?.getTime() < Date.now())
+          data.confirmation++;
+        else data.published++;
+      }
+      //repplace with switch
+    }
+    return data;
+  }),
+
   getLogAuctions: publicProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
@@ -252,26 +295,6 @@ export const adminRouter = router({
         }),
       ]);
     }),
-  getAuctionsCount: publicProcedure.query(async ({ ctx }) => {
-    const { prisma } = ctx;
-    const auctions = await prisma.auction.findMany();
-    return {
-      published: auctions.filter(
-        (a) =>
-          a.state === "published" &&
-          a.isClosed === false &&
-          (a.end_date?.getTime() || 0 >= new Date().getTime())
-      ).length,
-      pause: auctions.filter((a) => a.state === "pause").length,
-      pending: auctions.filter((a) => a.state === "pending").length,
-      completed: auctions.filter((a) => a.isClosed).length,
-      confirmation: auctions.filter(
-        (a) =>
-          a.isClosed === false &&
-          (a.end_date?.getTime() || 0 < new Date().getTime())
-      ).length,
-    };
-  }),
 });
 
 const sendDemandeStaff = async (user: User | { email: string; id: string }) => {

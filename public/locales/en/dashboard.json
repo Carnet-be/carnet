@@ -1,5 +1,219 @@
 {
   "settings": {
-    "new bidder": "New bidders account must be approuved by the admin"
+    "new bidder": "New bidders account must be approved by the admin",
+    "language": "Language",
+    "currency": "Currency"
+  },
+  "admin": {
+    "text": {
+      "auction page title": "Auction Management",
+      "bids page title": "Bids Management",
+      "users page title": "Users Management",
+      "blog page title": "Blog Management"
+    }
+  },
+  "auctioneer": {
+    "new auction card": {
+      "title": "Join the excitement: create your own auction and watch the bids roll in!",
+      "button": "Create an auction"
+    }
+  },
+  "bidder": {
+    "filter": {
+      "new": "New",
+      "feature": "Featured",
+      "trending": "Trending",
+      "buy now": "Buy Now"
+    }
+  },
+  "auction": {
+    "steps": {
+      "title": "Want to sell your car?",
+      "identify": "Identify",
+      "specs": "Specifications",
+      "options": "Options",
+      "rating": "Rating",
+      "validation": "Validation",
+      "login/registration": "Login/Registration",
+      "finalisation": "Finalisation"
+    },
+    "fields": {
+      "brand": "Brand",
+      "model": "Model",
+      "build year": "Year of Manufacture",
+      "fuel": "Fuel",
+      "mileage": "Mileage",
+      "doors": "Doors",
+      "carossery": "Body Type",
+      "transmission": "Transmission",
+      "engine size": "Engine Size",
+      "horse power": "Horse Power",
+      "co2 emission": "CO2 Emissions",
+      "version": "Version",
+      "exterior": "Exterior",
+      "interior": "Interior",
+      "tires": "Tires",
+      "handling": "Handling",
+      "name": "Auction Name",
+      "description": "Description",
+      "description description": "Describe your car, its options, condition, etc.",
+      "pick photos": "Pick Photos",
+      "expected price": "Expected Price",
+      "auction duration": "Auction Duration",
+      "address": "Address",
+      "address description": "Address of the car",
+      "city": "City",
+      "zip code": "Zip Code",
+      "country": "Country",
+      "color": "Color",
+      "commission": "Commission",
+      "starting price": "Starting Price"
+    },
+    "duration": {
+      "1 week": "1 week",
+      "2 weeks": "2 weeks",
+      "3 days": "3 days"
+    },
+    "option title": "Check the features of your car",
+    "text": {
+      "optionals": "Optionals",
+      "initial bid": "Initial Bid",
+      "starting price": "Starting Price",
+      "current bid": "Current Bid",
+      "description": "Description",
+      "check options": "Check your car's options",
+      "sign up success": "Your account has been successfully created",
+      "incremental text": "The bid will be increased by",
+      "welcome, please login": "Welcome, please log in to your account",
+      "don't have an account": "Don't have an account?",
+      "you do have an account": "You have an account?"
+   
+    },
+    "status": {
+      "active": "In progress",
+      "finished": "Finished",
+      "cancelled": "Cancelled",
+      "pending": "Pending",
+      "sold": "Sold",
+      "not sold": "Not sold",
+      "completed": "Completed",
+      "published": "Published",
+      "paused": "Paused",
+      "pause": "Paused",
+      "confirmation": "Confirmation"
+    },
+    "color": {
+      "red": "Red",
+      "blue": "Blue",
+      "green": "Green",
+      "yellow": "Yellow",
+      "orange": "Orange",
+      "purple": "Purple",
+      "pink": "Pink",
+      "black": "Black",
+      "white": "White",
+      "grey": "Grey",
+      "brown": "Brown",
+      "gold": "Gold",
+      "silver": "Silver",
+      "other": "Other",
+      "beige": "Beige",
+      "maroon": "Maroon"
+    },
+    "type of car": {
+      "sedan": "Sedan",
+      "coupe": "Coupe",
+      "convertible": "Convertible",
+      "hatchback": "Hatchback",
+      "wagon": "Station wagon",
+      "suv": "SUV",
+      "van": "Van",
+      "truck": "Truck",
+      "other": "Other"
+    },
+    "options": {
+      "airco": "Air conditioning",
+      "airbags": "Airbags",
+      "electric_windows": "Electric windows",
+      "electric_mirrors": "Electric mirrors",
+      "climate_control": "Automatic climate control",
+      "cruise_control": "Cruise control",
+      "parking_sensors": "Parking sensors",
+      "panoramic_roof_or_open_roof": "Panoramic or open roof",
+      "central_locking": "Central locking",
+      "xenon_lighting": "Xenon lighting",
+      "light_alloy_wheels": "Alloy wheels",
+      "four_by_four": "4x4",
+      "power_steering": "Power steering",
+      "radio_cd": "Radio CD",
+      "on_board_computer": "On-board computer",
+      "parking_camera": "Parking camera",
+      "start_stop": "Start/Stop",
+      "abs": "ABS",
+      "tow_hook": "Tow hook",
+      "dead_angle_detection": "Dead angle detection"
+    },
+    "carossery": {
+      "sedan": "Sedan",
+      "coupe": "Coupe",
+      "convertible": "Convertible",
+      "hatchback": "Hatchback",
+      "wagon": "Station wagon",
+      "suv": "SUV",
+      "van": "Van",
+      "truck": "Truck",
+      "break": "Station wagon",
+      "minivan": "Minivan",
+      "minibus": "Minibus",
+      "off-road": "Off-road",
+      "pickup truck": "Pickup truck",
+      "45 km auto": "45 km/h car",
+      "other": "Other"
+    },
+    "transmission": {
+      "automatic": "Automatic",
+      "manual": "Manual",
+      "semi-automatic": "Semi-automatic"
+    },
+    "fuel": {
+      "diesel": "Diesel",
+      "petrol": "Gasoline",
+      "electric": "Electric",
+      "hybrid": "Hybrid"
+    },
+    "rating text": {
+      "handling": {
+        "1": "Very bad",
+        "2": "Bad",
+        "3": "Average",
+        "4": "Good",
+        "5": "Very good",
+        "undefined": "Not rated"
+      },
+      "exterior": {
+        "1": "Very bad",
+        "2": "Bad",
+        "3": "Average",
+        "4": "Good",
+        "5": "Very good",
+        "undefined": "Not rated"
+      },
+      "interior": {
+        "1": "Very bad",
+        "2": "Bad",
+        "3": "Average",
+        "4": "Good",
+        "5": "Very good",
+        "undefined": "Not rated"
+      },
+      "tires": {
+        "1": "Very bad",
+        "2": "Bad",
+        "3": "Average",
+        "4": "Good",
+        "5": "Very good",
+        "undefined": "Not rated"
+      }
+    }
   }
 }

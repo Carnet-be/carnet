@@ -473,6 +473,7 @@ export const auctionnaireRouter = router({
         end_date: {
           lte: new Date(),
         },
+        state: "published",
         isClosed: false,
       },
       include: {
@@ -686,6 +687,8 @@ export const auctionnaireRouter = router({
             data: {
               isClosed: false,
               closedAt: null,
+              state: "pause",
+              pause_date: new Date(),
               logs: {
                 create: {
                   action: "cancel winner",
