@@ -35,7 +35,8 @@
       "pause": "Pause",
       "resume": "Reprise",
       "choice winner": "Choix du gagnant",
-      "republished": "Republication"
+      "republished": "Republication",
+      "add time": "Ajout de temps"
     },
     "steps": {
       "title": "Vous voulez vendre votre voiture ?",

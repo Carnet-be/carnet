@@ -61,7 +61,10 @@ export type TypeNotification =
   | "winner"
   | "new bid"
   | "auction modified"
-  | "cancel winner";
+  | "cancel winner"
+  | "auction expired"
+  | "auction 1h left"
+  | "auction 3h left";
 
 export type TAudience = {
   id: string;

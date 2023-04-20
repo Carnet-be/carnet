@@ -338,7 +338,7 @@ const AddBlog = ({
   //     user?.image || undefined
   //   );
   // default is 'middle'
-
+  const { locale } = useRouter();
   const handleClose = () => {
     setOpen(false);
     clear();
@@ -355,6 +355,7 @@ const AddBlog = ({
       setSize(blog.locale ? (blog.locale as Lang) : undefined);
     }
   }, [blog]);
+  const [load, setLoad] = useState(false);
 
   return (
     <>
@@ -407,6 +408,7 @@ const AddBlog = ({
           </div>
           <div>
             <Editor
+              locale={locale}
               editorState={value}
               toolbarClassName="toolbarClassName"
               wrapperClassName="wrapperClassName"
@@ -416,7 +418,6 @@ const AddBlog = ({
                 setValue(e);
               }}
             />
-            ;
           </div>
         </div>
       </Modal>

@@ -1,0 +1,22 @@
+Script started on Thu Apr 20 16:40:33 2023
+[?1034hsh-3.2# 
+sh-3.2# 
+sh-3.2# ls
+.DS_Store		.netlify		next-env.d.ts		postcss.config.cjs	tailwind.config.cjs
+.env			.next			next-i18next.config.js	prettier.config.cjs	tsconfig.json
+.eslintrc.json		.vscode			next.config.mjs		prisma			typescript
+.git			README.md		node_modules		public			yarn-error.log
+.gitignore		mocks			package-lock.json	scripts			yarn.lock
+.idea			netlify.toml		package.json		src
+sh-3.2# cd  ..
+sh-3.2# ls
+.DS_Store					diplomy
+Bots						garbage
+BrandWeb					keyboard-shortcuts-macos.pdf
+Eternum						konva
+Flutter						nest-app
+JEE						newupdate-main
+Oumaima PFA					portfolio
+afribac						spring
+carnet						wetransfer_newupdate-main_2023-04-12_2033.zip
+sh-3.2# 

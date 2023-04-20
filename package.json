@@ -1,13 +1,13 @@
 {
   "name": "carnet",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "node ./scripts/notifications-checker.mjs && next start"
   },
   "dependencies": {
     "@cloudinary/react": "^1.7.0",
