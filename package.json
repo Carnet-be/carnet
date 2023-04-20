@@ -8,6 +8,7 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
+    "script": "node ./scripts/notifications-checker.mjs",
     "start:watch": "node ./scripts/notifications-checker.mjs & npm run start"
   },
   "dependencies": {

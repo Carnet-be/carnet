@@ -1,15 +1,4 @@
 [build]
-  command = "npm run build"
+  command = "npm run build && script" 
   publish = "out"
-  functions = "out_functions"
-  plugins = ["netlify-plugin-inline-source"]
 
-[build.environment]
-  # Add any environment variables you need here, if any
-
-[[plugins]]
-  package = "netlify-plugin-inline-source"
-  [plugins.inputs]
-    commands = [
-      "start:watch",
-    ]
