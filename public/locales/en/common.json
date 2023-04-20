@@ -1,6 +1,6 @@
 {
   "input": {
-    "placeholder": "Enter your message",
+    "placeholder": "Type",
     "invalid": "invalid",
     "required": "This field is required",
     "min6": "This field must contain at least 6 characters",
