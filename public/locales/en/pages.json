@@ -1,9 +1,105 @@
 {
-    "home":{
-        "hero":{
-            "title":"Welcome to the new site",
-            "subtitle":"This is the subtitle",
-            "button":"Click here"  
+    "home": {
+      "navbar": {
+        "menu": {
+            "home": "Home",
+            "how it works": "How It Works",
+            "about us": "About Us",
+            "contact us": "Contact",
+            "blog": "Blog"
+        },
+        "login button": "Login"
+      },
+      "hero": {
+        "title": "Sell your car with",
+        "subtitle": "Get a free, no-obligation offer for your car!",
+        "button": "Advertise your car!"
+      },
+      "how it works": {
+        "title": "How It Works?",
+        "subtitle": "Sell your car in 3 easy steps",
+        "step1": {
+        "title": "1. Advertise your car",
+        "subtitle": "Fill out the online form and receive a free, no-obligation offer for your car."
+    },
+        "step2": {
+            "title": "2. Receive your offer",
+            "subtitle": "We will contact you to arrange an appointment to inspect your car."             },
+        "step3": {
+         "title": "3. Sell your car",
+         "subtitle": "We pay you immediately in cash or by bank transfer."  }
+      },
+      "about us": {
+        "title": "About us",
+        "subtitle": "We are a team of car enthusiasts who decided to venture into buying and selling used cars. We are based in Paris and buy cars throughout France."
+        },
+      "contact us": {
+        "title": "Contact us",
+        "subtitle": "Do you have any questions? Do you want to meet us? Feel free to contact us!",
+        "address": "Address",
+        "phone": "Phone",
+        "email": "Email",
+        "form": {
+            "name": "Name",
+            "email": "Email",
+            "message": "Message",
+            "button": "Send"
         }
+      },
+      "footer": {
+        "menu": {
+            "home": "Home",
+            "how it works": "How it works?",
+            "about us": "About us",
+            "contact us": "Contact us",
+            "blog": "Blog",
+            "terms and conditions": "Terms and Conditions",
+            "privacy policy": "Privacy Policy"
+        }
+      }
+    },
+    "auth": {
+      "login": {
+        "title": "Sell your car with CarNet",
+        "subtitle": "Log in to your account",
+        "button": "Login",
+        "footer": {
+        "no account": "Don't have an account?",
+        "link": "Sign up"
+        }
+      },
+  
+      "register": {
+        "title": "Sell your car with CarNet",
+        "subtitle": "Create your account",
+        "menu": {
+            "bidder": "Buyer",
+            "auctioneer": "Seller"
+        },
+        "footer": {
+            "have account": "Already have an account?",
+            "link": "Log in"
+        },
+        "button": "Sign up"
+      },
+  
+      "forget password": "Forgot your password?",
+  
+      "form": {
+        "email": "Email",
+        "password": "Password",
+        "telephone": "Telephone",
+        "confirm password": "Confirm Password",
+        "username": "Username",
+        "company name": "Company Name"
+      },
+      "accept terms and privacy": "I accept the"
+    },
+    "blog": {
+        "blog": "Blog",
+        "subtitle": "Check out our latest articles",
+        "read more": "Read more",
+        "blogs": "Blogs"
     }
-}
+  }
+  

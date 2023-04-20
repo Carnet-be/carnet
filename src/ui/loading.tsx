@@ -20,7 +20,7 @@ export const LoadingSpin = () => {
 
 export const LoadingSpinPage = () => {
   return (
-    <div className="flex flex-row items-center justify-center">
+    <div className="flex h-screen w-screen flex-row items-center justify-center">
       <Spin size="large"></Spin>
     </div>
   );

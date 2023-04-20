@@ -1,3 +1,4 @@
+import { Auction, AuctionState } from "@prisma/client";
 import { create } from "zustand";
 
 import { devtools, persist } from "zustand/middleware";
@@ -47,7 +48,7 @@ export const useAdminDashboardStore = create<TAdminDashboard>()(
         reload: () => {
           console.log("reload");
         },
-        setNums: (a: TAdminNum) => set((state) => ({...state, ...a })),
+        setNums: (a: TAdminNum) => set((state) => ({ ...state, ...a })),
         setReload: (refetch: () => void) =>
           set((state) => ({ ...state, reload: refetch })),
       }),
@@ -58,9 +59,8 @@ export const useAdminDashboardStore = create<TAdminDashboard>()(
   )
 );
 
-
 interface TNotificationSeen {
-  notifs:string[],
+  notifs: string[];
   add: (by: string) => void;
 }
 export const useNotifStore = create<TNotificationSeen>()(
@@ -68,15 +68,70 @@ export const useNotifStore = create<TNotificationSeen>()(
     persist(
       (set) => ({
         notifs: [],
-       add: (by: string) => set((state) =>{
-         if(state.notifs.includes(by)){
-           return state
-         }
-         return {notifs:[...state.notifs, by]}}),
+        add: (by: string) =>
+          set((state) => {
+            if (state.notifs.includes(by)) {
+              return state;
+            }
+            return { notifs: [...state.notifs, by] };
+          }),
       }),
       {
         name: "notification-storage",
       }
     )
+  )
+);
+
+interface AuctionCountState {
+  hasData: boolean;
+  data: {
+    published: number;
+    pending: number;
+    pause: number;
+    confirmation: number;
+    completed: number;
+  };
+  increase: (from: AuctionState, to?: AuctionState) => void;
+  init: (data: {
+    published: number;
+    pending: number;
+    pause: number;
+    confirmation: number;
+    completed: number;
+  }) => void;
+}
+export const useAuctionCountStore = create<AuctionCountState>()(
+  devtools(
+    // persist(
+    (set) => ({
+      hasData: false,
+      data: {
+        published: 0,
+        pending: 0,
+        pause: 0,
+        confirmation: 0,
+        completed: 0,
+      },
+      increase: (from: AuctionState, to?: AuctionState) => {
+        set((state) => {
+          const { data } = state;
+          data[from] -= data[from] === 0 ? 0 : 1;
+          if (to) {
+            data[to] += 1;
+          }
+          return { ...state, data };
+        });
+      },
+      init: (data) => {
+        set((state) => {
+          return { ...state, data, hasData: true };
+        });
+      },
+    }),
+    {
+      name: "auction-count-storage",
+    }
+    //  )
   )
 );

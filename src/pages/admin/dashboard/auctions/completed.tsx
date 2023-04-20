@@ -37,7 +37,10 @@ import moment from "moment";
 import { SwitcherAuctions } from ".";
 import { MdOutlineCancel } from "react-icons/md";
 import LogAuction from "@ui/components/logAuction";
-import { useAdminDashboardStore } from "../../../../state";
+import {
+  useAdminDashboardStore,
+  useAuctionCountStore,
+} from "../../../../state";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useLang, useNotif } from "../../../hooks";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -63,6 +66,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 const Completed = () => {
+  const count = useAuctionCountStore((state) => state.increase);
   const { text: common } = useLang(undefined);
   const tab = (s: string) => common(`table.${s}`);
   const { text } = useLang({
@@ -84,6 +88,7 @@ const Completed = () => {
     onSuccess: () => {
       toast.dismiss();
       succes();
+      count("completed", "pause");
       refetch();
       reload();
     },

@@ -12,7 +12,7 @@ import "../styles/globals.css";
 import { Toaster } from "react-hot-toast";
 import Head from "next/head";
 import "rsuite/dist/rsuite.min.css";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { messaging, msgKey } from "@utils/firebase";
 import { getToken } from "firebase/messaging";
@@ -39,6 +39,7 @@ import Cookies from "js-cookie";
 
 import { I18nextProvider } from "react-i18next";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { LoadingSpinPage } from "@ui/loading";
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
   const { locale } = useRouter();
   const router = useRouter();
@@ -130,7 +131,13 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
 
 const App = ({ children }: { children: ReactNode }) => {
   useNotifyMe({ uid: "123456" });
+  const [isHydrated, setIsHydrated] = useState(false);
 
+  //Wait till NextJS rehydration completes
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+  if (!isHydrated) return <LoadingSpinPage />;
   return <>{children}</>;
 };
 

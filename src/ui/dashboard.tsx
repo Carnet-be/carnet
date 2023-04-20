@@ -1,4 +1,4 @@
-import React, { useState, type ReactNode } from "react";
+import React, { useState, type ReactNode, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
@@ -26,10 +26,14 @@ import {
   LangCommonContext,
   useGetNotifications,
   useLang,
+  useNotif,
 } from "../pages/hooks";
 import { Drawer } from "antd";
 import moment from "moment";
 import { Timestamp } from "firebase/firestore";
+import { useAuctionCountStore } from "../state/index";
+import { LoadingSpinPage, LoadingSpin } from "./loading";
+import { toast } from "react-hot-toast";
 
 type TSide = {
   route: string;
@@ -149,79 +153,100 @@ const Dashboard = ({
     ],
     STAFF: [],
   };
+  const { loading } = useNotif();
+  const hasData = useAuctionCountStore((state) => state.hasData);
+
+  const {} = trpc.admin.getAuctionsCount.useQuery(undefined, {
+    enabled: !hasData && (type == "ADMIN" || type == "STAFF"),
+
+    onSuccess: (data) => {
+      useAuctionCountStore.getState().init(data);
+    },
+    onSettled: () => {
+      toast.dismiss();
+    },
+  });
+
+  useEffect(() => {
+    if (!hasData) {
+      loading();
+    }
+  }, []);
 
   return (
-    <LangCommonContext.Provider value={common}>
-      <CreateAuction />
-      <div className="drawer-mobile drawer">
-        <input id="drawer" type="checkbox" className="drawer-toggle" />
-        <div className={cx("drawer-content relative", background)}>
-          {!hideNav && <NavBar />}
-          {/* <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label> */}
-          <div
-            className={cx("", {
-              "p-3 lg:p-6 lg:px-14": !hideNav,
-            })}
-          >
-            {children}
-          </div>
-        </div>
-        <div className="drawer-side w-[300px]">
-          <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
-          <div className="flex flex-col items-center gap-3 py-4 ">
-            <div className="flex flex-row items-center justify-center py-4">
-              <Logo size={70} />
-            </div>
-            <ul className="menu flex w-[80%] flex-grow flex-col gap-2 py-3 text-base-content">
-              {menu[type].map((m, i) => {
-                const active =
-                  router.pathname == m.route ||
-                  router.pathname.includes(m.route);
-                return (
-                  <Side
-                    key={i}
-                    side={m}
-                    active={active}
-                    count={m.count}
-                    isLoading={m.isLoading}
-                  />
-                );
+    <>
+      <LangCommonContext.Provider value={common}>
+        <CreateAuction />
+        <div className="drawer-mobile drawer">
+          <input id="drawer" type="checkbox" className="drawer-toggle" />
+          <div className={cx("drawer-content relative", background)}>
+            {!hideNav && <NavBar />}
+            {/* <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label> */}
+            <div
+              className={cx("", {
+                "p-3 lg:p-6 lg:px-14": !hideNav,
               })}
-            </ul>
-            <ul className="menu w-[80%] space-y-2">
-              {type == "AUC" && (
+            >
+              {children}
+            </div>
+          </div>
+          <div className="drawer-side w-[300px]">
+            <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
+            <div className="flex flex-col items-center gap-3 py-4 ">
+              <div className="flex flex-row items-center justify-center py-4">
+                <Logo size={70} />
+              </div>
+              <ul className="menu flex w-[80%] flex-grow flex-col gap-2 py-3 text-base-content">
+                {menu[type].map((m, i) => {
+                  const active =
+                    router.pathname == m.route ||
+                    router.pathname.includes(m.route);
+                  return (
+                    <Side
+                      key={i}
+                      side={m}
+                      active={active}
+                      count={m.count}
+                      isLoading={m.isLoading}
+                    />
+                  );
+                })}
+              </ul>
+              <ul className="menu w-[80%] space-y-2">
+                {type == "AUC" && (
+                  <li>
+                    <label
+                      htmlFor="create_auction"
+                      className={cx(
+                        "flex flex-row gap-5 rounded-lg border font-light no-underline"
+                      )}
+                    >
+                      <div className="text-xl">
+                        <AddIcon />
+                      </div>
+                      {common("text.new auction")}
+                    </label>
+                  </li>
+                )}
                 <li>
-                  <label
-                    htmlFor="create_auction"
+                  <Link
+                    href={"/pages/settings"}
                     className={cx(
                       "flex flex-row gap-5 rounded-lg border font-light no-underline"
                     )}
                   >
                     <div className="text-xl">
-                      <AddIcon />
+                      <SettingsIcon />
                     </div>
-                    {common("text.new auction")}
-                  </label>
+                    {common("text.settings")}
+                  </Link>
                 </li>
-              )}
-              <li>
-                <Link
-                  href={"/pages/settings"}
-                  className={cx(
-                    "flex flex-row gap-5 rounded-lg border font-light no-underline"
-                  )}
-                >
-                  <div className="text-xl">
-                    <SettingsIcon />
-                  </div>
-                  {common("text.settings")}
-                </Link>
-              </li>
-            </ul>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
-    </LangCommonContext.Provider>
+      </LangCommonContext.Provider>
+    </>
   );
 };
 
