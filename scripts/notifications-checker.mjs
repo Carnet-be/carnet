@@ -15,12 +15,8 @@ import { getFirestore } from "firebase/firestore";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCEN8KCXXbM_UUiU8dGBD1f-br2y0JS70I",
-  authDomain: "carnet-371611.firebaseapp.com",
   projectId: "carnet-371611",
-  storageBucket: "carnet-371611.appspot.com",
-  messagingSenderId: "1009587678596",
   appId: "1:1009587678596:web:d16c07c8601cefeb9f01d1",
-  measurementId: "G-66CGKD121M",
 };
 
 // Initialize Firebase
