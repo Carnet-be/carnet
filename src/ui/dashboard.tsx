@@ -168,7 +168,7 @@ const Dashboard = ({
   });
 
   useEffect(() => {
-    if (!hasData) {
+    if (!hasData && (type == "ADMIN" || type == "STAFF")) {
       loading();
     }
   }, []);

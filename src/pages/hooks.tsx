@@ -29,6 +29,8 @@ const playNotificationSound = () => {
 };
 
 export const useNotifyMe = ({ uid }: { uid: string }) => {
+  const { text: common } = useLang(undefined);
+  const t = (key: string) => common("notifications." + key);
   const { notifs, add } = useNotifStore((state) => state);
   const { data: user } = trpc.user.get.useQuery();
   const router = useRouter();
@@ -54,59 +56,57 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
     let title = "";
     switch (notification.type) {
       case "new auction":
-        content.title = "New Auction";
-        content.body = "There is a new auction";
+        content.title = t(notification.type + ".title");
+        content.body = t(notification.type + ".body");
         content.link =
           "/admin/dashboard/auctions/pending?id=" + notification.auction_id;
         break;
       case "new user":
         const isBid = notification.user_type === "BID";
-        content.title = "New User";
-        content.body = `There is a new ${isBid ? "bidder" : "auctioneer"}`;
+        content.title = t(notification.type + ".title");
+        content.body = t(notification.type + ".body");
         content.link =
           `/admin/dashboard/users/${isBid ? "bidder" : "auctioneers"}?id=` +
           notification.user_id;
         break;
       case "auction modified":
-        switch (notification.type_2) {
-          case "pause":
-            title = "Auction Paused";
-            break;
-          case "resume":
-            title = "Auction Resumed";
-            break;
-          case "edit":
-            title = "Auction Edited";
-            break;
-          case "delete":
-            title = "Auction Deleted";
-            break;
-          case "published":
-            title = "Auction Published";
-            break;
-          case "republished":
-            title = "Auction Republished";
-            break;
-          case "add time":
-            title = "Auction extended";
-            break;
-          case "cancel winner":
-            title = "Auction winner canceled";
-            break;
-          default:
-            title = notification.type_2;
-            break;
-        }
+        title = t(notification.type + "." + notification.type_2);
+        // switch (notification.type_2) {
+        //   case "pause":
+        //     title = "Auction Paused";
+        //     break;
+        //   case "resume":
+        //     title = "Auction Resumed";
+        //     break;
+        //   case "edit":
+        //     title = "Auction Edited";
+        //     break;
+        //   case "delete":
+        //     title = "Auction Deleted";
+        //     break;
+        //   case "published":
+        //     title = "Auction Published";
+        //     break;
+        //   case "republished":
+        //     title = "Auction Republished";
+        //     break;
+        //   case "add time":
+        //     title = "Auction extended";
+        //     break;
+        //   case "cancel winner":
+        //     title = "Auction winner canceled";
+        //     break;
+        //   default:
+        //     title = notification.type_2;
+        //     break;
+        // }
         content.title = title;
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link =
           "/dashboard/auctionnaire/auction/" + notification.auction_id;
         break;
       case "winner":
-        content.title =
-          user?.type === "BID"
-            ? "Congratulation, you won an auction"
-            : "Winner chosen";
+        content.title = t(notification.type + "." + user?.type);
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link = `/dashboard/${
           user?.type === "BID" ? "bidder" : "auctionnaire"
@@ -114,9 +114,35 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
         break;
 
       case "new bid":
-        title =
-          user?.type === "BID" ? "Someone bid higher than you" : "New Bid";
+        title = t(notification.type + "." + user?.type);
         content.title = `${title} (${getPrice(notification.montant)})`;
+        content.body = `${notification.auction_name} (#${notification.auction_id})`;
+        content.link =
+          `/dashboard/${
+            user?.type === "AUC" ? "auctionnaire" : "bidder"
+          }/auction/` + notification.auction_id;
+
+        break;
+      case "auction expired":
+        content.title = t(notification.type);
+        content.body = `${notification.auction_name} (#${notification.auction_id})`;
+        content.link =
+          `/dashboard/${
+            user?.type === "AUC" ? "auctionnaire" : "bidder"
+          }/auction/` + notification.auction_id;
+
+        break;
+      case "auction 1h left":
+        content.title = t(notification.type);
+        content.body = `${notification.auction_name} (#${notification.auction_id})`;
+        content.link =
+          `/dashboard/${
+            user?.type === "AUC" ? "auctionnaire" : "bidder"
+          }/auction/` + notification.auction_id;
+
+        break;
+      case "auction 3h left":
+        content.title = t(notification.type);
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link =
           `/dashboard/${
@@ -127,7 +153,6 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
       default:
         break;
     }
-    console.log("content", content);
     ///
     playNotificationSound();
     toast(<Msg content={content} />, {
@@ -154,6 +179,22 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
             user.id === notification.last_bidder_id &&
             notification.last_bidder_id !== notification.bidder_id) ||
           (user?.type === "AUC" && user.id === notification.auctionnaire_id)
+        );
+
+      case "auction expired":
+        return (
+          (user?.type === "AUC" && user.id == notification.auctionnaire_id) ||
+          (user?.type === "BID" && user.id in notification.bidders)
+        );
+      case "auction 1h left":
+        return (
+          (user?.type === "AUC" && user.id == notification.auctionnaire_id) ||
+          (user?.type === "BID" && user.id in notification.bidders)
+        );
+      case "auction 3h left":
+        return (
+          (user?.type === "AUC" && user.id == notification.auctionnaire_id) ||
+          (user?.type === "BID" && user.id in notification.bidders)
         );
       default:
         return false;
@@ -201,6 +242,8 @@ export default function Notification() {
 }
 
 export const useGetNotifications = () => {
+  const { text: common } = useLang(undefined);
+  const t = (key: string) => common("notifications." + key);
   const [notifications, setNotifications] = useState<
     { title: string; body: string; link: string; date: Date; uid: string }[]
   >([]);
@@ -219,59 +262,57 @@ export const useGetNotifications = () => {
     let title = "";
     switch (notification.type) {
       case "new auction":
-        content.title = "New Auction";
-        content.body = "There is a new auction";
+        content.title = t(notification.type + ".title");
+        content.body = t(notification.type + ".body");
         content.link =
           "/admin/dashboard/auctions/pending?id=" + notification.auction_id;
         break;
       case "new user":
         const isBid = notification.user_type === "BID";
-        content.title = "New User";
-        content.body = `There is a new ${isBid ? "bidder" : "auctioneer"}`;
+        content.title = t(notification.type + ".title");
+        content.body = t(notification.type + ".body");
         content.link =
           `/admin/dashboard/users/${isBid ? "bidder" : "auctioneers"}?id=` +
           notification.user_id;
         break;
       case "auction modified":
-        switch (notification.type_2) {
-          case "pause":
-            title = "Auction Paused";
-            break;
-          case "resume":
-            title = "Auction Resumed";
-            break;
-          case "edit":
-            title = "Auction Edited";
-            break;
-          case "delete":
-            title = "Auction Deleted";
-            break;
-          case "published":
-            title = "Auction Published";
-            break;
-          case "republished":
-            title = "Auction Republished";
-            break;
-          case "add time":
-            title = "Auction extended";
-            break;
-          case "cancel winner":
-            title = "Auction winner canceled";
-            break;
-          default:
-            title = notification.type_2;
-            break;
-        }
+        title = t(notification.type + "." + notification.type_2);
+        // switch (notification.type_2) {
+        //   case "pause":
+        //     title = "Auction Paused";
+        //     break;
+        //   case "resume":
+        //     title = "Auction Resumed";
+        //     break;
+        //   case "edit":
+        //     title = "Auction Edited";
+        //     break;
+        //   case "delete":
+        //     title = "Auction Deleted";
+        //     break;
+        //   case "published":
+        //     title = "Auction Published";
+        //     break;
+        //   case "republished":
+        //     title = "Auction Republished";
+        //     break;
+        //   case "add time":
+        //     title = "Auction extended";
+        //     break;
+        //   case "cancel winner":
+        //     title = "Auction winner canceled";
+        //     break;
+        //   default:
+        //     title = notification.type_2;
+        //     break;
+        // }
         content.title = title;
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link =
           "/dashboard/auctionnaire/auction/" + notification.auction_id;
         break;
       case "winner":
-        content.title =
-          user?.type === "BID"
-            ? "Congratulation, you won an auction"
-            : "Winner chosen";
+        content.title = t(notification.type + "." + user?.type);
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link = `/dashboard/${
           user?.type === "BID" ? "bidder" : "auctionnaire"
@@ -279,9 +320,35 @@ export const useGetNotifications = () => {
         break;
 
       case "new bid":
-        title =
-          user?.type === "BID" ? "Someone bid higher than you" : "New Bid";
+        title = t(notification.type + "." + user?.type);
         content.title = `${title} (${getPrice(notification.montant)})`;
+        content.body = `${notification.auction_name} (#${notification.auction_id})`;
+        content.link =
+          `/dashboard/${
+            user?.type === "AUC" ? "auctionnaire" : "bidder"
+          }/auction/` + notification.auction_id;
+
+        break;
+      case "auction expired":
+        content.title = t(notification.type);
+        content.body = `${notification.auction_name} (#${notification.auction_id})`;
+        content.link =
+          `/dashboard/${
+            user?.type === "AUC" ? "auctionnaire" : "bidder"
+          }/auction/` + notification.auction_id;
+
+        break;
+      case "auction 1h left":
+        content.title = t(notification.type);
+        content.body = `${notification.auction_name} (#${notification.auction_id})`;
+        content.link =
+          `/dashboard/${
+            user?.type === "AUC" ? "auctionnaire" : "bidder"
+          }/auction/` + notification.auction_id;
+
+        break;
+      case "auction 3h left":
+        content.title = t(notification.type);
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link =
           `/dashboard/${
@@ -315,6 +382,21 @@ export const useGetNotifications = () => {
             user.id === notification.last_bidder_id &&
             notification.last_bidder_id !== notification.bidder_id) ||
           (user?.type === "AUC" && user.id === notification.auctionnaire_id)
+        );
+      case "auction expired":
+        return (
+          (user?.type === "AUC" && user.id == notification.auctionnaire_id) ||
+          (user?.type === "BID" && user.id in notification.bidders)
+        );
+      case "auction 1h left":
+        return (
+          (user?.type === "AUC" && user.id == notification.auctionnaire_id) ||
+          (user?.type === "BID" && user.id in notification.bidders)
+        );
+      case "auction 3h left":
+        return (
+          (user?.type === "AUC" && user.id == notification.auctionnaire_id) ||
+          (user?.type === "BID" && user.id in notification.bidders)
         );
       default:
         return false;

@@ -1,0 +1,16 @@
+[build]
+  # Build command for your Next.js app
+  command = "npm run build"
+
+  # Directory where the built app will be located
+  publish = "out"
+
+[dev]
+  # Start command for your Next.js app
+  command = "npm run dev"
+
+[[plugins]]
+  # Plugin to run a script on app startup
+  package = "@netlify/plugin-functions"
+  [plugins.inputs]
+    command = "npm run start:watch"

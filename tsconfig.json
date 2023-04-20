@@ -33,6 +33,6 @@
 
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "src/ui/components/table.tsx", "src/ui/components/map.tsx", "src/pages/test.tsx", "src/pages/_app.tsx", "next-i18next.config.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "src/ui/components/table.tsx", "src/ui/components/map.tsx", "src/pages/test.tsx", "src/pages/_app.tsx", "next-i18next.config.js", "scripts/notifications-checker.mts", "scripts/notifications-checker.js"],
   "exclude": ["node_modules"]
 }

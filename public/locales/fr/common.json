@@ -159,5 +159,36 @@
   "tooltip": {
     "contact": "contact",
     "cancel winner": "Annuler le gagnant"
+  },
+  "notifications": {
+    "new user": {
+      "title": "Nouvel utilisateur",
+      "body": "Un nouvel utilisateur vient de s'inscrire"
+    },
+    "new auction": {
+      "title": "Nouvelle enchère",
+      "body": "Une nouvelle enchère vient d'être créée"
+    },
+    "auction modified": {
+      "pause": "Enchère mise en pause",
+      "resume": "Enchère reprise",
+      "edit": "Encère modifiée",
+      "delete": "Enchère supprimée",
+      "published": "Enchère publiée",
+      "republished": "Enchère republiée",
+      "add time": "Enchère prolongée",
+      "cancel winner": "Gagnant annulé"
+    },
+    "winner": {
+      "BID": "Vous avez gagné l'enchère",
+      "AUC": "L'enchères a été gagnée"
+    },
+    "new bid": {
+      "BID": "Quelqu'un a fait une offre sur votre enchère",
+      "AUC": "Quelqu'un a fait une offre sur votre enchère"
+    },
+    "auction expired": "L'enchère est terminée",
+    "auction 1h left": "L'enchère se termine dans 1 heure",
+    "auction 3h left": "L'enchère se termine dans 3 heures"
   }
 }
