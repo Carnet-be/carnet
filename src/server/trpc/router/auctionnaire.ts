@@ -415,27 +415,26 @@ export const auctionnaireRouter = router({
       z.object({ id: z.string(), action: z.enum(["add", "remove"]).nullable() })
     )
     .mutation(async ({ input, ctx }) => {
-      const favorites = await ctx.prisma.user.findUnique({
-        where: { email: ctx.session?.user?.email || "" },
-        select: { favoris_auctions: true },
-      });
       const add = () =>
         ctx.prisma.user.update({
           where: { email: ctx.session?.user?.email || "" },
           data: {
-            favoris_auctions: [
-              ...(favorites?.favoris_auctions || []),
-              input.id,
-            ],
+            favoris_auctions: {
+              connect: {
+                id: input.id,
+              },
+            },
           },
         });
       const remove = () =>
         ctx.prisma.user.update({
           where: { email: ctx.session?.user?.email || "" },
           data: {
-            favoris_auctions: favorites?.favoris_auctions.filter(
-              (f) => f != input.id
-            ),
+            favoris_auctions: {
+              disconnect: {
+                id: input.id,
+              },
+            },
           },
         });
       switch (input.action) {
@@ -449,16 +448,19 @@ export const auctionnaireRouter = router({
     }),
 
   getFavCount: publicProcedure.query(async ({ ctx }) => {
-    const favorites = await ctx.prisma.user.findUnique({
-      where: { email: ctx.session?.user?.email || "" },
-      select: { favoris_auctions: true },
-    });
+    // const favorites = await ctx.prisma.user.findUnique({
+    //   where: { email: ctx.session?.user?.email || "" },
+    //   select: { favoris_auctions: true },
+    // });
     const fav = await ctx.prisma.auction.count({
       where: {
-        id: {
-          in: favorites?.favoris_auctions || [],
+        favorite_by: {
+          some: {
+            email: ctx.session?.user?.email || "",
+          },
         },
         isClosed: false,
+        state: "published",
         end_date: {
           gte: new Date(),
         },

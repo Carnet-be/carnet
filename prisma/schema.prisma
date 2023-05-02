@@ -3,15 +3,18 @@
 
 generator client {
   provider = "prisma-client-js"
+
+  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-  provider = "postgres"
+  provider     = "mysql"
   // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-  url      = env("DATABASE_URL")
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
@@ -29,7 +32,7 @@ model User {
   currency         Currency         @default(EUR)
   subscriptionType SubscriptionType @default(free)
 
-  favoris_auctions String[]
+  favoris_auctions Auction[] @relation(name: "favorite")
 
   zipCode  String?
   country  String?
@@ -49,8 +52,11 @@ model User {
 
   internalMessages InternalMessage[] @relation("auctioner")
   Blog             Blog[]
-  Address          Address?          @relation(fields: [addressId], references: [id])
+  Address          Address?          @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   addressId        String?
+  ListString       ListString[]
+
+  @@index([addressId])
 }
 
 model DemandeStaff {
@@ -93,10 +99,12 @@ model Auction {
   bids           Bid[]
   images         AssetImage[]
 
-  logs LogAuction[]
-
+  logs            LogAuction[]
+  favorite_by     User[]       @relation(name: "favorite")
   auctionnaire_id String
-  auctionnaire    User   @relation(fields: [auctionnaire_id], references: [id], onDelete: Cascade)
+  auctionnaire    User         @relation(fields: [auctionnaire_id], references: [id])
+
+  @@index([auctionnaire_id])
 }
 
 model AuctionSpecs {
@@ -111,7 +119,7 @@ model AuctionSpecs {
   version      String?
   ///
   auction_id   String  @unique
-  auction      Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  auction      Auction @relation(fields: [auction_id], references: [id])
 }
 
 model AuctionOptions {
@@ -137,7 +145,7 @@ model AuctionOptions {
   dead_angle_detection        Boolean @default(false)
   ///
   auction_id                  String  @unique
-  auction                     Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  auction                     Auction @relation(fields: [auction_id], references: [id])
 }
 
 model AuctionRating {
@@ -148,7 +156,7 @@ model AuctionRating {
   interior   Int?
   ///
   auction_id String  @unique
-  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  auction    Auction @relation(fields: [auction_id], references: [id])
 }
 
 model Address {
@@ -165,7 +173,7 @@ model Address {
   lon        Float
   //
   auction_id String  @unique
-  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  auction    Auction @relation(fields: [auction_id], references: [id])
   User       User[]
 }
 
@@ -180,9 +188,12 @@ model Bid {
   winner     Boolean @default(false)
   ///
   bidder_id  String
-  bidder     User    @relation(fields: [bidder_id], references: [id], onDelete: Cascade)
+  bidder     User    @relation(fields: [bidder_id], references: [id])
   auction_id String
-  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  auction    Auction @relation(fields: [auction_id], references: [id])
+
+  @@index([auction_id])
+  @@index([bidder_id])
 }
 
 model AssetImage {
@@ -191,11 +202,13 @@ model AssetImage {
   url        String
   //
   auction_id String?
-  auction    Auction? @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  auction    Auction? @relation(fields: [auction_id], references: [id])
 
   user_id String? @unique
-  user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [user_id], references: [id])
   Blog    Blog[]
+
+  @@index([auction_id])
 }
 
 model Brand {
@@ -213,9 +226,10 @@ model Model {
   year        Int?
   description String?
   brand_id    Int
-  brand       Brand   @relation(fields: [brand_id], references: [id], onDelete: Cascade)
+  brand       Brand   @relation(fields: [brand_id], references: [id])
 
   @@unique([name, year, brand_id])
+  @@index([brand_id])
 }
 
 model InternalMessage {
@@ -230,7 +244,9 @@ model InternalMessage {
   type      IntermalMessageType @default(client)
   // relation
   client_id String
-  client    User                @relation("auctioner", fields: [client_id], references: [id], onDelete: Cascade)
+  client    User                @relation("auctioner", fields: [client_id], references: [id])
+
+  @@index([client_id])
 }
 
 model AppSettings {
@@ -253,9 +269,12 @@ model LogAuction {
   action     String
   // relation
   auction_id String
-  auction    Auction  @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  auction    Auction  @relation(fields: [auction_id], references: [id])
   user_id    String
-  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@index([auction_id])
 }
 
 model Blog {
@@ -265,12 +284,15 @@ model Blog {
   // field
   title             String
   locale            Language?
-  image             AssetImage @relation(fields: [assetImageFileKey], references: [fileKey], onDelete: Cascade)
+  image             AssetImage @relation(fields: [assetImageFileKey], references: [fileKey])
   content           String
   // relation
   author_id         String
-  author            User       @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  author            User       @relation(fields: [author_id], references: [id])
   assetImageFileKey String
+
+  @@index([author_id])
+  @@index([assetImageFileKey])
 }
 
 model Token {
@@ -283,7 +305,22 @@ model Token {
   expireAt DateTime
   // relation
   user_id  String
-  user     User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+}
+
+model ListString {
+  id       String   @id @default(cuid())
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  // field
+  value    String
+  // relation
+  user_id  String
+  user     User     @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
 }
 
 //////ENUM///////

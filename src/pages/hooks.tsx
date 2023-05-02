@@ -272,7 +272,7 @@ export const useGetNotifications = () => {
         content.title = t(notification.type + ".title");
         content.body = t(notification.type + ".body");
         content.link =
-          `/admin/dashboard/users/${isBid ? "bidder" : "auctioneers"}?id=` +
+          `/admin/dashboard/users/${isBid ? "bidders" : "auctioneers"}?id=` +
           notification.user_id;
         break;
       case "auction modified":
