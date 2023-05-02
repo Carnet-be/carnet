@@ -97,12 +97,18 @@
       "username": "Nom d'utilisateur",
       "company name": "Nom de la société"
     },
-    "accept terms and privacy": "J'accepte les"
+    "accept terms and privacy": "J'accepte les",
+    "reset password subtitle": "Un email vous a été envoyé, veuillez vérifier votre boite de réception et suivre les instructions pour réinitialiser votre mot de passe."
   },
   "blog": {
     "blog": "Blog",
     "subtitle": "Découvrez nos derniers articles",
     "read more": "Lire la suite",
     "blogs": "Blogs"
+  },
+  "reset password": {
+    "expired title": "Le lien de réinitialisation du mot de passe a expiré",
+    "deleted title": "La demande de réinitialisation du mot de passe n'existe plus",
+    "title": "Veuillez un enregistrer un nouveau mot de passe"
   }
 }

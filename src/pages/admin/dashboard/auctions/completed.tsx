@@ -43,6 +43,7 @@ import {
 } from "../../../../state";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useLang, useNotif } from "../../../hooks";
+import SendMessageButton from "@ui/components/sendMessageButton";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -174,23 +175,17 @@ const Completed = () => {
       // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
       dataIndex: "auctionnaire",
       key: "auctionnaire",
-      render: (a, v) => (
-        <div className="flex flex-row gap-1">
-          <Tooltip
-            title={common("tooltip.contact")}
-            className="flex flex-row items-center justify-center text-primary"
-          >
-            <Button shape="circle" icon={<EmailIcon className="text-lg" />} />
-          </Tooltip>
-          <div className="flex flex-col">
-            <h6>{(a as TUser).username}</h6>
-
-            <span className="text-[12px] italic text-primary">
-              #{(a as TUser).id}
-            </span>
+      render: (a, v) => {
+        return (
+          <div className="flex flex-row gap-1">
+            {a && <SendMessageButton receiver={a.id} />}
+            <div className="flex flex-col">
+              <h6>{a.username}</h6>
+              <span className="text-[12px] italic text-primary">#{a.id}</span>
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       title: tab("bidder"),
@@ -198,27 +193,22 @@ const Completed = () => {
       // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
       dataIndex: "bid",
       key: "bid",
-      render: (_, v) => (
-        <div className="flex flex-row gap-1">
-          <Tooltip
-            title={common("tooltip.contact")}
-            className="flex flex-row items-center justify-center text-primary"
-          >
-            <Button shape="circle" icon={<EmailIcon className="text-lg" />} />
-          </Tooltip>
-          <div className="flex flex-col">
-            <h6>
-              {
-                (v as TAuction).bids.find((d) => d.winner == true)?.bidder
-                  .username
-              }
-            </h6>
-            <span className="text-[12px] italic text-primary">
-              #{(v as TAuction).bids.find((d) => d.winner == true)?.bidder.id}
-            </span>
+      render: (_, v) => {
+        const bidder = (v as TAuction).bids.find(
+          (d) => d.winner == true
+        )?.bidder;
+        return (
+          <div className="flex flex-row gap-1">
+            {bidder && <SendMessageButton receiver={bidder?.id} />}
+            <div className="flex flex-col">
+              <h6>{bidder?.username}</h6>
+              <span className="text-[12px] italic text-primary">
+                #{bidder?.id}
+              </span>
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       title: tab("actions"),

@@ -1,6 +1,6 @@
 {
   "input": {
-    "placeholder": "saisir",
+    "placeholder": "Saisir",
     "invalid": "invalide",
     "required": "Ce champs est requis",
     "min6": "Ce champs doit contenir au moins 6 caractères",

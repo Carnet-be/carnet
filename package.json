@@ -82,6 +82,7 @@
     "rxjs": "^7.8.0",
     "superjson": "1.9.1",
     "use-places-autocomplete": "^4.0.0",
+    "uuid": "^9.0.0",
     "xlsx": "^0.18.5",
     "zod": "^3.18.0",
     "zustand": "^4.3.3"
@@ -97,6 +98,7 @@
     "@types/react-dom": "^18.0.5",
     "@types/react-draft-wysiwyg": "^1.13.4",
     "@types/react-slick": "^0.23.10",
+    "@types/uuid": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
     "autoprefixer": "^10.4.7",

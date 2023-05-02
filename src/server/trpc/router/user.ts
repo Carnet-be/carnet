@@ -98,13 +98,11 @@ export const userRouter = router({
           {
             username: {
               contains: input,
-              mode: "insensitive",
             },
           },
           {
             email: {
               contains: input,
-              mode: "insensitive",
             },
           },
         ],
