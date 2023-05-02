@@ -323,13 +323,9 @@ export const auctionnaireRouter = router({
 
       switch (input.filter) {
         case "mine":
-          const user = await ctx.prisma.user.findUnique({
-            where: { email: ctx.session?.user?.email || "" },
-            select: {
-              favoris_auctions: true,
-            },
-          });
-          condition = { id: { in: user?.favoris_auctions } };
+          condition = {
+            favorite_by: { some: { email: ctx.session?.user?.email } },
+          };
           break;
 
         default:

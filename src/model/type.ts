@@ -50,6 +50,7 @@ export type TAuction = Auction & {
 export type TUser = User & {
   auctions: Auction[];
   image: AssetImage | null;
+  favoris_auctions: Auction[];
 };
 export type TBid = Bid & { bidder: TUser };
 

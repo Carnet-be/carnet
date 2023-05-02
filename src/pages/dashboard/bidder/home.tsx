@@ -30,7 +30,16 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
   const user = await prisma.user
-    .findUnique({ where: { email: session.user?.email || "" } })
+    .findUnique({
+      where: { email: session.user?.email || "" },
+      select: {
+        favoris_auctions: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    })
     .then((user) => JSON.parse(JSON.stringify(user)));
 
   if (!user.isActive) {
@@ -106,7 +115,7 @@ const Home = (
             <AuctionCard
               key={i}
               auction={a as any}
-              isFavorite={user.favoris_auctions.includes(a.id)}
+              isFavorite={user.favoris_auctions.map((a) => a.id).includes(a.id)}
             />
           ))
         )}
