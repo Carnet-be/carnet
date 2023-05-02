@@ -13,6 +13,7 @@ import { getServerAuthSession } from "../../server/common/get-server-auth-sessio
 import { prisma } from "../../server/db/client";
 import { useLang } from "../hooks";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import PasswordForget from "@ui/passowrdForget";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -53,7 +54,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   return {
     props: {
-      ...(await serverSideTranslations(ctx.locale || "fr", ["common"])),
+      ...(await serverSideTranslations(ctx.locale || "fr", [
+        "common",
+        "pages",
+      ])),
     },
   };
 };
@@ -151,7 +155,7 @@ const Admin = () => {
         </div>
         <div className="flex w-full max-w-[300px] flex-row justify-between text-sm text-white">
           <div className="flex flex-row items-center gap-3 text-opacity-75"></div>
-          <Link href="/">{common("text.password forget")}?</Link>
+          <PasswordForget color="text-white" />
         </div>
         <div className="h-[20px]"></div>
         <div className="flex flex-row gap-6">
