@@ -2,7 +2,7 @@ import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import { GetServerSideProps } from "next";
 import { User } from "next-auth";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import React from "react";
+import React, { useEffect } from "react";
 import { prisma } from "../../server/db/client";
 import { Token } from "@prisma/client";
 import { useLang, useNotif } from "../hooks";
@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const isExpired = token ? new Date() > token.expireAt : true;
   const tokenId = token?.id || "";
   const notExist = !token;
-
+  let isActivited = false;
   if (token && !isExpired) {
     await prisma.$transaction([
       prisma.token.delete({
@@ -43,18 +43,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       }),
     ]);
 
-    return {
-      redirect: {
-        destination: `/dashboard`,
-        permanent: true,
-      },
-    };
+    isActivited = true;
   }
 
   return {
     props: {
       isExpired,
       notExist,
+      isActivited,
       ...(await serverSideTranslations(ctx.locale || "en", ["pages"])),
     },
   };
@@ -67,6 +63,12 @@ const ResetPassword = (props: any) => {
 
   const isExpired = props.isExpired;
   const notExist = props.notExist;
+  const isActivited = props.isActivited;
+  useEffect(() => {
+    if (isActivited) {
+      toast.success(text("activated title"));
+    }
+  }, [isActivited]);
 
   return (
     <div className="relative flex h-screen w-screen flex-row items-stretch">
@@ -76,13 +78,17 @@ const ResetPassword = (props: any) => {
         <div className="flex w-[500px] flex-col gap-4 rounded-xl bg-white p-10">
           <div className="flex flex-col items-center gap-3">
             <p className="text-center italic text-red-800">
-              {notExist ? text("deleted title") : text("expired title")}
+              {isActivited
+                ? `🎉 ${text("activated title")}`
+                : notExist
+                ? text("deleted title")
+                : text("expired title")}
             </p>
             <Link
               href="/dashboard"
               className="!important btn-primary btn-wide btn-sm btn no-underline hover:text-white"
             >
-              <p>{text(notExist ? "button 1" : "button 2")}</p>
+              <p>{text(notExist || isActivited ? "button 1" : "button 2")}</p>
             </Link>
           </div>
         </div>

@@ -114,6 +114,7 @@
   "verify email": {
     "expired title": "Email verification link expired",
     "deleted title": "Email already verified",
+    "activated title": "Congratulations! Your email has been verified",
     "button 1": "Workspace",
     "button 2": "Verify email"
   }
