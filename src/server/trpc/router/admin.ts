@@ -133,9 +133,20 @@ export const adminRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.model.createMany({
-        data: input.models.map((m) => ({ ...m, brand_id: input.brandId })),
-      });
+      // return await ctx.prisma.model.createMany({
+      //   data: input.models.map((m) => ({ ...m, brand_id: input.brandId })),
+      // });
+      return await ctx.prisma.model
+        .deleteMany({
+          where: {
+            brand_id: input.brandId,
+          },
+        })
+        .then(async () => {
+          return await ctx.prisma.model.createMany({
+            data: input.models.map((m) => ({ ...m, brand_id: input.brandId })),
+          });
+        });
     }),
 
   getStaff: publicProcedure.query(async ({ ctx }) => {
@@ -295,9 +306,6 @@ export const adminRouter = router({
         }),
       ]);
     }),
-
-
-
 });
 
 const sendDemandeStaff = async (user: User | { email: string; id: string }) => {
