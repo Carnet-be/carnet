@@ -106,8 +106,15 @@
   },
 
   "reset password": {
-    "expired title": "Le lien de réinitialisation du mot de passe a expiré",
-    "deleted title": "La demande de réinitialisation du mot de passe n'existe plus",
-    "title": "Veuillez un enregistrer un nouveau mot de passe"
+    "expired title": "Password reset link expired",
+    "deleted title": "Password reset request no longer exists",
+    "title": "Please register a new password"
+  },
+
+  "verify email": {
+    "expired title": "Email verification link expired",
+    "deleted title": "Email already verified",
+    "button 1": "Workspace",
+    "button 2": "Verify email"
   }
 }

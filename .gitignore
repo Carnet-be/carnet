@@ -24,6 +24,8 @@ next-env.d.ts
 .DS_Store
 *.pem
 
+/emails/node_modules
+/emails/.react-email
 # debug
 npm-debug.log*
 yarn-debug.log*
