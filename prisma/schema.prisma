@@ -229,6 +229,7 @@ model Model {
   brand       Brand   @relation(fields: [brand_id], references: [id])
 
   @@unique([name, year, brand_id])
+  @@unique([name, year])
   @@index([brand_id])
 }
 
