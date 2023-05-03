@@ -229,7 +229,6 @@ model Model {
   brand       Brand   @relation(fields: [brand_id], references: [id])
 
   @@unique([name, year, brand_id])
-  @@unique([name, year])
   @@index([brand_id])
 }
 
@@ -327,6 +326,7 @@ model ListString {
 //////ENUM///////
 enum TokenType {
   PASSWORD_FORGET
+  EMAIL_CONFIRM
 }
 
 enum UserType {

@@ -88,7 +88,7 @@ const ResetPassword = (props: any) => {
           onSubmit={onSubmit}
           className="flex w-[500px] flex-col gap-4 rounded-xl bg-white p-10"
         >
-          {isExpired ? (
+          {isExpired || notExist ? (
             <div className="flex flex-col items-center gap-3">
               <p className="text-center italic text-red-800">
                 {notExist ? text("deleted title") : text("expired title")}

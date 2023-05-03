@@ -110,5 +110,11 @@
     "expired title": "Le lien de réinitialisation du mot de passe a expiré",
     "deleted title": "La demande de réinitialisation du mot de passe n'existe plus",
     "title": "Veuillez un enregistrer un nouveau mot de passe"
+  },
+  "verify email": {
+    "expired title": "Le lien de vérification de l'email a expiré",
+    "deleted title": "Email déjà vérifié",
+    "button 1": "Mon Espace",
+    "button 2": "Vérifier mon email"
   }
 }

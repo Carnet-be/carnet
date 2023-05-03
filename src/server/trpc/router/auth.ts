@@ -7,6 +7,9 @@ import { getBaseUrl } from "../../../pages/_app";
 import { router, publicProcedure } from "../trpc";
 import { sendNotification } from "@repository/index";
 import { v4 as uuid } from "uuid";
+import { render } from "@react-email/render";
+import EmailVerifyEmail from "@ui/emails/verify-email";
+import EmailResetPassword from "@ui/emails/reset-password";
 const ZSignup = z.object({
   username: z.string(),
   tel: z.string().optional(),
@@ -70,7 +73,19 @@ export const authRouter = router({
       })
       .then(async (res) => {
         if (!setEmailVerified) {
-          await sendVerifEmail(res);
+          await ctx.prisma.token
+            .create({
+              data: {
+                user_id: res.id,
+                type: "EMAIL_CONFIRM",
+                value: uuid(),
+                //expired in one day
+                expireAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+              },
+            })
+            .then(async (token) => {
+              await sendVerifEmail(res.username, res.email, token.id);
+            });
         }
         return res;
       })
@@ -114,8 +129,35 @@ export const authRouter = router({
     }),
   resendVerif: publicProcedure
     .input(z.object({ email: z.string(), id: z.string() }))
-    .mutation(async ({ input }) => {
-      return await sendVerifEmail(input);
+    .mutation(async ({ input, ctx }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: input.id },
+      });
+      if (!user) {
+        throw new trpc.TRPCError({
+          code: "NOT_FOUND",
+          message: "user not found",
+        });
+      }
+      await ctx.prisma.token.deleteMany({
+        where: {
+          user_id: user.id,
+          type: "EMAIL_CONFIRM",
+        },
+      });
+      return await ctx.prisma.token
+        .create({
+          data: {
+            user_id: user.id,
+            type: "EMAIL_CONFIRM",
+            value: uuid(),
+            //expired in one day
+            expireAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+          },
+        })
+        .then(async (token) => {
+          await sendVerifEmail(user.username, user.email, token.id);
+        });
     }),
 
   cancelSignIn: publicProcedure.mutation(async ({ ctx }) => {
@@ -143,39 +185,20 @@ export const authRouter = router({
           expireAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
         },
       });
-      const getSubjectByLang = (lang?: string) => {
-        switch (lang) {
-          case "ar":
-            return "إعادة تعيين كلمة المرور";
-          case "fr":
-            return "Réinitialiser votre mot de passe";
-          default:
-            return "Reset your password";
-        }
-      };
-      const getBodyByLang = (lang?: string) => {
-        switch (lang) {
-          case "ar":
-            return `<div><h3>لقد طلبت إعادة تعيين كلمة المرور الخاصة بك ، يرجى النقر على الرابط التالي: </h3> <a href="${getBaseUrl()}/pages/resetPassword?token=${
-              token.id
-            }">إعادة تعيين هنا</a></div>`;
 
-          case "fr":
-            return `<div><h3>Vous avez demandé à réinitialiser votre mot de passe, veuillez cliquer sur le lien suivant : </h3> <a href="${getBaseUrl()}/pages/resetPassword?token=${
-              token.id
-            }">réinitialiser ici</a></div>`;
-
-          default:
-            return `<div><h3>You have requested to reset your password, please click on the following link : </h3> <a href="${getBaseUrl()}/pages/resetPassword?token=${
-              token.id
-            }">reset here</a></div>`;
-        }
-      };
       return await Transporter.sendMail({
         to: user.email,
         from: process.env.ADMINS_EMAIL,
-        subject: getSubjectByLang(user.lang),
-        html: getBodyByLang(user.lang),
+        subject: "Link to reset your password",
+        html: render(
+          EmailResetPassword({
+            username: user.username,
+            baseUrl: getBaseUrl(),
+            verify_link: `${getBaseUrl()}/pages/resetPassword?token=${
+              token.id
+            }`,
+          })
+        ),
       });
     }),
 
@@ -195,13 +218,24 @@ export const authRouter = router({
     }),
 });
 
-const sendVerifEmail = async (user: User | { email: string; id: string }) => {
+const sendVerifEmail = async (
+  username: string,
+  email: string,
+  tokenId: string
+) => {
+  // baseUrl: string;
+  // username: string;
+  // verify_link: string;
   await Transporter.sendMail({
-    to: user.email,
+    to: email,
     from: process.env.ADMINS_EMAIL,
     subject: `Confirmez l'inscription chez CARNET`,
-    html: `<div><h3>Votre compte est créé, pour finaliser, vous devez confirmer votre email </h3> <a href="${getBaseUrl()}/api/verify?id=${
-      user.id
-    }">${getBaseUrl()}/api/verify?id=${user.id}</a></div>`,
+    html: render(
+      EmailVerifyEmail({
+        baseUrl: getBaseUrl(),
+        username,
+        verify_link: `${getBaseUrl()}/pages/email-verified?token=${tokenId}`,
+      })
+    ),
   });
 };
