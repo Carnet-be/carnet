@@ -133,9 +133,31 @@ export const adminRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.model.createMany({
-        data: input.models.map((m) => ({ ...m, brand_id: input.brandId })),
-      });
+      // return await ctx.prisma.model.createMany({
+      //   data: input.models.map((m) => ({ ...m, brand_id: input.brandId })),
+      // });
+      return await ctx.prisma.$transaction(
+        input.models.map((m) => {
+          return ctx.prisma.model.upsert({
+            where: {
+              name_year_brand_id: {
+                name: m.name,
+                year: m.year,
+                brand_id: input.brandId,
+              },
+            },
+            update: {
+              name: m.name,
+              year: m.year,
+              description: m.description,
+            },
+            create: {
+              ...m,
+              brand_id: input.brandId,
+            },
+          });
+        })
+      );
     }),
 
   getStaff: publicProcedure.query(async ({ ctx }) => {
@@ -295,9 +317,6 @@ export const adminRouter = router({
         }),
       ]);
     }),
-
-
-
 });
 
 const sendDemandeStaff = async (user: User | { email: string; id: string }) => {

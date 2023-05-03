@@ -215,7 +215,7 @@ model Brand {
   id          Int     @id @default(autoincrement())
   name        String  @unique
   country     String?
-  description String?
+  description String? @db.Text()
   //
   models      Model[]
 }
@@ -224,11 +224,12 @@ model Model {
   id          Int     @id @default(autoincrement())
   name        String
   year        Int?
-  description String?
+  description String? @db.Text()
   brand_id    Int
   brand       Brand   @relation(fields: [brand_id], references: [id])
 
   @@unique([name, year, brand_id])
+  @@unique([name, year])
   @@index([brand_id])
 }
 
@@ -237,7 +238,7 @@ model InternalMessage {
   createAt      DateTime @default(now())
   updateAt      DateTime @updatedAt
   // field
-  content       String
+  content       String   @db.Text()
   isRead        Boolean  @default(false)
   isReadByAdmin Boolean  @default(false)
 
@@ -285,7 +286,7 @@ model Blog {
   title             String
   locale            Language?
   image             AssetImage @relation(fields: [assetImageFileKey], references: [fileKey])
-  content           String
+  content           String     @db.Text()
   // relation
   author_id         String
   author            User       @relation(fields: [author_id], references: [id])
