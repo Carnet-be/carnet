@@ -20,14 +20,15 @@ const SignupLayout = ({
         <h1 className="text-3xl font-semibold text-primary">
           {text("register." + type + ".title")}
         </h1>
-        <p className="py-3 text-opacity-70">
+        <p className="py-3  text-opacity-70">
           {text("register." + type + ".subtitle")}
           {"? "}
+
           <Link
             href={
               type === "bidder"
-                ? "/auth/signup/bidder"
-                : "/auth/signup/auctionnaire"
+                ? "/auth/signup/auctionnaire"
+                : "/auth/signup/bidder"
             }
           >
             {text("register." + type + ".link")}
