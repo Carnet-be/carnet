@@ -8,7 +8,7 @@
         "contact us": "Contact",
         "blog": "Blog"
       },
-      "login button": "Se connecter"
+      "login button": "S'incrire"
     },
     "hero": {
       "title": "Vendez votre voiture avec",
@@ -73,9 +73,16 @@
     },
 
     "register": {
-      "title": "Vendez votre voiture avec CarNet",
-
-      "subtitle": "Créez votre compte",
+      "bidder": {
+        "title": "Acheter des voitures aux enchères avec CarNet",
+        "subtitle": "Voulez vous vendre votre voiture",
+        "link": "Créer un compte vendeur"
+      },
+      "auctioneer": {
+        "title": "Vendez votre voiture avec CarNet",
+        "subtitle": "Voulez vous acheter une voiture ?",
+        "link": "Créer un compte acheteur"
+      },
       "menu": {
         "bidder": "Acheteur",
         "auctioneer": "Vendeur"
@@ -116,5 +123,9 @@
     "deleted title": "Email déjà vérifié",
     "button 1": "Mon Espace",
     "button 2": "Vérifier mon email"
+  },
+  "inactive": {
+    "title": "Votre compte n'est pas encore activé",
+    "button": "Actualiser"
   }
 }

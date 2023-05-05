@@ -93,7 +93,7 @@ const Bidder = () => {
     <LangContext.Provider value={text}>
       <LangCommonContext.Provider value={common}>
         <Auth>
-          <SignupLayout>
+          <SignupLayout type="bidder">
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
               <Input
                 label={text("form.username")}
@@ -184,27 +184,23 @@ const Bidder = () => {
                   className="checkbox-primary checkbox  checkbox-sm"
                 />
                 <span>
-                  <Trans
-                    i18nKey={text("accept terms and privacy")}
-                 
-                 >
-                  {text("accept terms and privacy")}
-                  {" "}
-                  <Link
-                    target={"_blank"}
-                    href={TERMS_URL}
-                    className="text-primary"
-                  >
-                   {common("text.terms and conditions")}
-                  </Link>
-                 ,{" "}
-                  <Link
-                    target={"_blank"}
-                    href={PRIVACY_POLICY_URL}
-                    className="text-primary"
-                  >
-                {common("text.privacy policy")}
-                  </Link>
+                  <Trans i18nKey={text("accept terms and privacy")}>
+                    {text("accept terms and privacy")}{" "}
+                    <Link
+                      target={"_blank"}
+                      href={TERMS_URL}
+                      className="text-primary"
+                    >
+                      {common("text.terms and conditions")}
+                    </Link>
+                    ,{" "}
+                    <Link
+                      target={"_blank"}
+                      href={PRIVACY_POLICY_URL}
+                      className="text-primary"
+                    >
+                      {common("text.privacy policy")}
+                    </Link>
                   </Trans>
                 </span>
               </div>

@@ -62,7 +62,8 @@
     "login": "Login",
     "new blog": "New Blog",
     "edit blog": "Edit Blog",
-    "update password": "Update Password"
+    "update password": "Update Password",
+    "dashboard": "Dashboard"
   },
   "quotes": {
     "big title": "Buy Your Car with"

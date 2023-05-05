@@ -46,7 +46,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
   if (!user.isActive) {
-    console.log("user is not active");
     return {
       redirect: {
         destination: "/pages/inactive",

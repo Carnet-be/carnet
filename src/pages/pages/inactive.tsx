@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import React from "react";
 
 import { prisma } from "../../server/db/client";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useLang } from "../hooks";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -44,7 +46,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!user.isActive) {
     console.log("user is not active");
     return {
-      props: {},
+      props: {
+        ...(await serverSideTranslations(ctx.locale || "en", ["pages"])),
+      },
     };
   }
   switch (user.type) {
@@ -68,6 +72,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 const Inactive = () => {
   const router = useRouter();
+  const { text } = useLang({
+    file: "pages",
+    selector: "inactive",
+  });
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-10">
       <div className="h-[250px]">
@@ -78,9 +86,9 @@ const Inactive = () => {
         />
       </div>
       <div className="flex flex-row items-center gap-4">
-        <h6>Your account need confirmation</h6>
+        <h6>{text("title")}</h6>
         <button onClick={() => router.reload()} className="btn-sm btn">
-          refrech
+          {text("button")}
         </button>
       </div>
     </div>

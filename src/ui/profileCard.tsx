@@ -82,7 +82,7 @@ import { Drawer } from "antd";
 import { Profile } from "./settingsSection";
 import { useLang } from "../pages/hooks";
 
-const StyledMenu = styled((props: MenuProps) => (
+export const StyledMenu = styled((props: MenuProps) => (
   <Menu
     elevation={0}
     anchorOrigin={{
@@ -125,7 +125,11 @@ const StyledMenu = styled((props: MenuProps) => (
   },
 }));
 
-export default function CustomizedMenus() {
+export default function CustomizedMenus({
+  children,
+}: {
+  children?: React.ReactNode;
+}) {
   const { text: common } = useLang(undefined);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
