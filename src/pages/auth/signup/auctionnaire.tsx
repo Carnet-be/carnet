@@ -89,14 +89,16 @@ const Auctionnaire = () => {
     <LangContext.Provider value={text}>
       <LangCommonContext.Provider value={common}>
         <Auth>
-          <SignupLayout>
+          <SignupLayout type="auctioneer">
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
               <Input
                 label={text("form.username")}
                 error={errors.username}
                 icon={<PersonIcon />}
                 controler={{
-                  ...register("username", { required: common("input.required") }),
+                  ...register("username", {
+                    required: common("input.required"),
+                  }),
                 }}
               />
               <div className="flex flex-row gap-4">
@@ -106,11 +108,11 @@ const Auctionnaire = () => {
                   icon={<EmailIcon />}
                   controler={{
                     ...register("email", {
-                      required:  common("input.required") ,
+                      required: common("input.required"),
                       pattern: {
                         value:
                           /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                        message:  common("input.invalid") ,
+                        message: common("input.invalid"),
                       },
                     }),
                   }}
@@ -132,10 +134,10 @@ const Auctionnaire = () => {
                   icon={<PasswordIcon />}
                   controler={{
                     ...register("password", {
-                      required: common("input.required") ,
+                      required: common("input.required"),
                       minLength: {
                         value: 6,
-                        message:  common("input.min6") ,
+                        message: common("input.min6"),
                       },
                     }),
                   }}
@@ -146,7 +148,7 @@ const Auctionnaire = () => {
                   error={errors.confirmPassword}
                   controler={{
                     ...register("confirmPassword", {
-                      required: common("input.required") ,
+                      required: common("input.required"),
                       validate: {
                         isValid: (v) =>
                           v == watch("password")
@@ -196,13 +198,13 @@ const Auctionnaire = () => {
                   loading: isLoading,
                 })}
               >
-               {text("register.button")}
+                {text("register.button")}
               </button>
               <div className="h-[20px]"></div>
               <p>
                 {text("register.footer.have account")}{" "}
                 <Link href="/auth/login" className="text-primary">
-                {text("register.footer.link")}
+                  {text("register.footer.link")}
                 </Link>
               </p>
             </form>

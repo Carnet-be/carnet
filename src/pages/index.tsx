@@ -16,8 +16,14 @@ import { prisma } from "../server/db/client";
 import { type User } from "@prisma/client";
 import CreateAuction from "@ui/createAuction";
 import { signOut, useSession } from "next-auth/react";
-import { ReactNode, useContext, useEffect } from "react";
-import { EditIcon } from "@ui/icons";
+import { ReactNode, useContext, useEffect, useState } from "react";
+import {
+  DashboardIcon,
+  DashboardIcon2,
+  EditIcon,
+  LogoutIcon,
+  PersonIcon,
+} from "@ui/icons";
 import { FaCarAlt } from "react-icons/fa";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { useIntl } from "react-intl";
@@ -28,6 +34,8 @@ import { LangContext, useLang } from "./hooks";
 import { trpc } from "@utils/trpc";
 import { AdvancedImage } from "@cloudinary/react";
 import cloudy from "@utils/cloudinary";
+import { MenuItem, Divider } from "@mui/material";
+import { StyledMenu } from "@ui/profileCard";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerAuthSession(context);
 
@@ -155,9 +163,22 @@ const ProfileButton = () => {
   useEffect(() => {
     refetch();
   }, [refetch, session]);
+  const { text: common } = useLang(undefined);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const router = useRouter();
-  const onClick = () => {
+  const toAccount = () => {
+    router.push("/pages/settings");
+  };
+
+  const toDashboard = () => {
     if (user?.type === "ADMIN" || user?.type === "STAFF") {
       router.push("/admin/dashboard");
     }
@@ -188,7 +209,7 @@ const ProfileButton = () => {
   if (!user)
     return (
       <Link
-        href={"/auth/login"}
+        href={"/auth/signup/auctionnaire"}
         className={cx(
           "rounded-lg bg-white px-6 py-2 text-sm font-semibold no-underline"
         )}
@@ -198,25 +219,63 @@ const ProfileButton = () => {
     );
 
   return (
-    <button
-      onClick={onClick}
-      className="flex flex-row items-center gap-2 rounded-full bg-white py-1 px-2 text-primary"
-    >
-      <span>{user.username}</span>
+    <div>
+      <button
+        onClick={handleClick}
+        className="flex flex-row items-center gap-2 rounded-full bg-white py-1 px-2 text-primary"
+      >
+        <span>{user.username}</span>
 
-      <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-primary  font-bold uppercase text-white">
-        {!user.image ? (
-          user.username[0]
-        ) : (
-          <AdvancedImage
-            cldImg={cloudy.image(user.image?.fileKey)}
-            quality={20}
-          />
-        )}
-      </div>
-    </button>
+        <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-primary  font-bold uppercase text-white">
+          {!user.image ? (
+            user.username[0]
+          ) : (
+            <AdvancedImage
+              cldImg={cloudy.image(user.image?.fileKey)}
+              quality={20}
+            />
+          )}
+        </div>
+      </button>
+
+      <StyledMenu
+        id="demo-customized-menu"
+        MenuListProps={{
+          "aria-labelledby": "demo-customized-button",
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={toDashboard} disableRipple className="menu-item">
+          <DashboardIcon2 />
+          {common("button.dashboard")}
+        </MenuItem>
+        <MenuItem onClick={toAccount} disableRipple className="menu-item">
+          <PersonIcon />
+          {common("button.account")}
+        </MenuItem>
+        {/* <MenuItem onClick={handleClose} disableRipple className="menu-item">
+         <SupportIcon />
+         Supports
+       </MenuItem> */}
+        <Divider sx={{ my: 0.5 }} />
+
+        <MenuItem
+          onClick={() => {
+            signOut();
+          }}
+          disableRipple
+          className="menu-item"
+        >
+          <LogoutIcon className="text-red-500" />
+          {common("button.logout")}
+        </MenuItem>
+      </StyledMenu>
+    </div>
   );
 };
+
 const Overlay = () => {
   return (
     <div className="absolute top-0 right-0 z-10 flex h-[90vh] w-[100vh] translate-x-[5vw] translate-y-[10vh] -rotate-[10deg] items-center justify-center rounded-[100px] bg-[#196EBD]/50 shadow-lg">

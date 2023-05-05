@@ -62,7 +62,8 @@
     "login": "Connexion",
     "new blog": "Nouveau blog",
     "edit blog": "Modifier le blog",
-    "update password": "Mettre à jour le mot de passe"
+    "update password": "Mettre à jour le mot de passe",
+    "dashboard": "Tableau de bord"
   },
   "quotes": {
     "big title": "Achetez Votre Voiture avec"
