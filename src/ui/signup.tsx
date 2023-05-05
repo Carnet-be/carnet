@@ -26,8 +26,8 @@ const SignupLayout = ({
           <Link
             href={
               type === "bidder"
-                ? "/auth/signup/bidder"
-                : "/auth/signup/auctionnaire"
+                ? "/auth/signup/auctionnaire"
+                : "/auth/signup/bidder"
             }
           >
             {text("register." + type + ".link")}

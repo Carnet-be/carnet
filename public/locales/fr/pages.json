@@ -74,13 +74,13 @@
 
     "register": {
       "bidder": {
-        "title": "Acheter des voitures aux enchères avec CarNet",
+        "title": "Acheter des voitures avec CarNet",
         "subtitle": "Voulez vous vendre votre voiture",
         "link": "Créer un compte vendeur"
       },
       "auctioneer": {
         "title": "Vendez votre voiture avec CarNet",
-        "subtitle": "Voulez vous acheter une voiture ?",
+        "subtitle": "Voulez vous acheter une voiture",
         "link": "Créer un compte acheteur"
       },
       "menu": {
