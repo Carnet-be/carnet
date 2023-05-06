@@ -36,6 +36,7 @@ import { AdvancedImage } from "@cloudinary/react";
 import cloudy from "@utils/cloudinary";
 import { MenuItem, Divider } from "@mui/material";
 import { StyledMenu } from "@ui/profileCard";
+import LangSwitcher from "@ui/components/langSwitcher";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerAuthSession(context);
 
@@ -151,6 +152,7 @@ export const MyNav = () => {
         </Link>
 
         <ProfileButton />
+        <LangSwitcher border />
       </div>
     </div>
   );

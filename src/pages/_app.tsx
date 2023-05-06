@@ -3,25 +3,15 @@
 import { SessionProvider } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
-import { db } from "@utils/firebase";
-import { query, collection, where, onSnapshot } from "firebase/firestore";
 import NextNProgress from "nextjs-progressbar";
-import { toast } from "react-toastify";
 import { appWithTranslation } from "next-i18next";
 import "../styles/globals.css";
 import { Toaster } from "react-hot-toast";
 import Head from "next/head";
 import "rsuite/dist/rsuite.min.css";
-import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { messaging, msgKey } from "@utils/firebase";
-import { getToken } from "firebase/messaging";
-import OneSignal from "react-onesignal";
-import { ToastContainer } from "react-toastify";
 import { useNotifyMe } from "./hooks";
-import { IntlProvider } from "react-intl";
 import "@utils/i18n";
-import i18n from "../i18n";
 import frFR from "antd/locale/fr_FR";
 import enUS from "antd/locale/en_US";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
@@ -36,10 +26,10 @@ import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { ConfigProvider } from "antd";
 import Cookies from "js-cookie";
-
-import { I18nextProvider } from "react-i18next";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { LoadingSpinPage } from "@ui/loading";
+import { useEffect, type ReactNode, useState } from "react";
+import { ToastContainer } from "react-toastify";
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
   const { locale } = useRouter();
   const router = useRouter();

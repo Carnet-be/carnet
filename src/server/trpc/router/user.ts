@@ -134,12 +134,16 @@ export const userRouter = router({
   changeLang: publicProcedure
     .input(z.string())
     .mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.user.update({
-        where: { email: ctx.session?.user?.email || "" },
-        data: {
-          lang: input as Language,
-        },
-      });
+      if (ctx.session?.user?.email)
+        return await ctx.prisma.user.update({
+          where: { email: ctx.session?.user?.email || "" },
+          data: {
+            lang: input as Language,
+          },
+        });
+      return {
+        lang: input,
+      };
     }),
 
   changeCurrency: publicProcedure
