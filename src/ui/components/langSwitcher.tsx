@@ -6,8 +6,8 @@ import { useRouter } from "next/router";
 import { useNotif } from "../../pages/hooks";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-
-const LangSwitcher = () => {
+import cx from "classnames";
+const LangSwitcher = ({ border }: { border?: boolean }) => {
   type TLang = {
     title: string;
     icon: string;
@@ -64,7 +64,11 @@ const LangSwitcher = () => {
   return (
     <div className="dropdown-end dropdown font-semibold">
       <button tabIndex={0} className="flex flex-row items-center gap-1">
-        <span className={`fi fi-${getIcon()} rounded-full text-2xl`}></span>
+        <span
+          className={cx(`fi fi-${getIcon()}  h-6 w-7 rounded-lg text-xl`, {
+            "border-2 border-white": border,
+          })}
+        ></span>
         <ExpandMoreIcon className="icon" />
       </button>
       <ul
@@ -81,7 +85,7 @@ const LangSwitcher = () => {
                     activeLocale == locale && "active"
                   }`}
                 >
-                  <span className={`fi fi-${icon}  rounded-full`}></span>
+                  <span className={`fi fi-${icon}  rounded-lg`}></span>
                   {title}
                 </span>
               </button>
