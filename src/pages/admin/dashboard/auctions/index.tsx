@@ -341,6 +341,11 @@ export const AuctionsPage = ({
       refetch();
     },
   });
+  const afterPublish = (first: AuctionState, second: AuctionState) => {
+    if (first == "pending" && second == "published") {
+      count("pending", "published");
+    }
+  };
   const columns: ColumnsType<Auction> = [
     {
       title: tab("name"),
@@ -562,6 +567,7 @@ export const AuctionsPage = ({
             isEdit={true}
             id={auc.id}
             refetch={refetch}
+            afterPublish={afterPublish}
           />
         ))}
         <BigTitle title={text("text.auction page title")} />

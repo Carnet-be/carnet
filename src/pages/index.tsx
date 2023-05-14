@@ -58,7 +58,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Home: NextPage = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  const user: User = props.user;
   const { text } = useLang({ file: "pages", selector: "home" });
   //signOut()
   return (
@@ -105,11 +104,17 @@ const Home: NextPage = (
 
 const DashBoardButton = ({ children }: { children: string }) => {
   //  const {data:user} =  useAuthUser(["user"], auth);
+  const { data: user } = trpc.user.get.useQuery();
 
   return (
     <label
       htmlFor="create_auction"
-      className="cursor-pointer rounded-lg bg-white py-3 text-center font-bold text-black"
+      className={cx(
+        "cursor-pointer rounded-lg bg-white py-3 text-center font-bold text-black",
+        {
+          hidden: !(user?.type == "AUC" || user == null),
+        }
+      )}
     >
       {children}
     </label>

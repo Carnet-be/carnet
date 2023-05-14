@@ -5,8 +5,6 @@ import {
   type GetServerSideProps,
 } from "next";
 
-import Map from "@ui/components/map";
-import Slider from "react-slick";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import BigTitle from "@ui/components/bigTitle";
 import { useRouter } from "next/router";

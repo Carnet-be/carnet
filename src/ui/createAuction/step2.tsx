@@ -135,7 +135,6 @@ const SignUp = ({ setisLogin }: { setisLogin: any }) => {
       <button
         type="submit"
         className={cx("btn-primary btn-wide btn rounded-2xl px-7", {
-          "btn-disabled": !agree,
           loading: isLoading,
         })}
       >
