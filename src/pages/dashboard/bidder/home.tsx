@@ -17,6 +17,7 @@ import { prisma } from "../../../server/db/client";
 import type { TAuction, TUser } from "@model/type";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useLang } from "../../hooks";
+import { LoadingSpinPage } from "@ui/loading";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -65,7 +66,7 @@ const Home = (
   const user: TUser = props.user;
   const { text } = useLang({ file: "dashboard", selector: "bidder" });
   const filter = (router.query.filter as TFilterBidde) || "new";
-  const { data: auctions } = trpc.auctionnaire.getAuctions.useQuery({
+  const { data: auctions, isLoading } = trpc.auctionnaire.getAuctions.useQuery({
     filter,
     state: "published",
   });
@@ -104,7 +105,9 @@ const Home = (
         )}
       </div>
       <div className="flex flex-wrap items-center  gap-6">
-        {!auctions ? (
+        {isLoading ? (
+          <LoadingSpinPage />
+        ) : !auctions ? (
           <span>No data</span>
         ) : (
           auctions.map((a, i) => (

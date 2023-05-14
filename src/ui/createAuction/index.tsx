@@ -93,6 +93,7 @@ const CreateAuction = ({
   onCancel,
   id,
   refetch,
+  afterPublish,
   isAdmin,
 }: {
   auction?: TAuction;
@@ -100,6 +101,7 @@ const CreateAuction = ({
   onCancel?: () => void;
   id?: string;
   refetch?: () => void;
+  afterPublish?: (first: AuctionState, second: AuctionState) => void;
   isAdmin?: boolean;
 }) => {
   const { text } = useLang({
@@ -290,8 +292,8 @@ const CreateAuction = ({
     if (data6.city == undefined) valide = false;
     if (data6.country == undefined) valide = false;
     if (data6.zipCode == undefined) valide = false;
-    if (data6.lat == undefined) valide = false;
-    if (data6.lon == undefined) valide = false;
+    // if (data6.lat == undefined) valide = false;
+    // if (data6.lon == undefined) valide = false;
     if (data6.expected_price == undefined) valide = false;
     setisValid(step === (auction ? 5 : 6) && valide);
   }, [data6, data1]);
@@ -329,6 +331,8 @@ const CreateAuction = ({
         toast.success("Opération réussi");
 
         //  router.push("/dashboard/auctionnaire/myauctions")
+        if (afterPublish && auction && auction.state !== data[0].state)
+          afterPublish(auction?.state, data[0].state);
         if (refetch) {
           refetch();
         }

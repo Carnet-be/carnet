@@ -35,6 +35,7 @@ import { fill } from "@cloudinary/url-gen/actions/resize";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { LangCommonContext, LangContext, useLang } from "../../../hooks";
 import { UserContext } from "../../auctionnaire/auction/[id]";
+import { prisma } from "../../../../server/db/client";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -57,8 +58,38 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  const auction = await prisma?.auction.findUnique({
+    where: { id },
+  });
+
+  if (auction?.state !== "published") {
+    return {
+      redirect: {
+        destination: "/dashboard/bidder/home",
+        permanent: true,
+      },
+    };
+  }
+  if (auction.isClosed || auction.end_date! < new Date()) {
+    return {
+      redirect: {
+        destination: "/dashboard/bidder/home",
+        permanent: true,
+      },
+    };
+  }
+
+  const user = await prisma.user
+    .findUnique({
+      where: {
+        email: session?.user?.email || "",
+      },
+    })
+    .then((res) => JSON.parse(JSON.stringify(res)));
+
   return {
     props: {
+      user,
       id,
       ...(await serverSideTranslations(ctx.locale || "fr", [
         "common",
@@ -84,15 +115,17 @@ const Home = (
       {!auction ? (
         <Loading classContainer="h-[80vh]" />
       ) : (
-        <LangCommonContext.Provider value={common}>
-          <LangContext.Provider value={text}>
-            <BigTitle title={auction.name} />
-            <div className="flex flex-wrap justify-center gap-6">
-              <LeftSide auction={auction as TAuction} />
-              <RightSide auction={auction as TAuction} />
-            </div>
-          </LangContext.Provider>
-        </LangCommonContext.Provider>
+        <UserContext.Provider value={props.user}>
+          <LangCommonContext.Provider value={common}>
+            <LangContext.Provider value={text}>
+              <BigTitle title={auction.name} />
+              <div className="flex flex-wrap justify-center gap-6">
+                <LeftSide auction={auction as TAuction} />
+                <RightSide auction={auction as TAuction} />
+              </div>
+            </LangContext.Provider>
+          </LangCommonContext.Provider>
+        </UserContext.Provider>
       )}
     </Dashboard>
   );
@@ -326,20 +359,19 @@ export const RightSide = ({ auction }: { auction: TAuction }) => {
           />
         </div>
       </div>
-      {user &&
-        (user.type === "BID" ? (
-          <>
-            {" "}
-            <CountDown
-              variant="primary"
-              onTimeOut={onTimeOut}
-              endDate={auction.end_date || new Date()}
-            />
-            <BidSection auction={auction} isTimeOut={isTimeOut} />
-          </>
-        ) : (
-          <AuctionStatus auction={auction} />
-        ))}
+      {user?.type === "BID" ? (
+        <>
+          {" "}
+          <CountDown
+            variant="primary"
+            onTimeOut={onTimeOut}
+            endDate={auction.end_date || new Date()}
+          />
+          <BidSection auction={auction} isTimeOut={isTimeOut} />
+        </>
+      ) : (
+        <AuctionStatus auction={auction} />
+      )}
       <Map
         options={{ zoomControl: false }}
         latitude={auction.address.lat}
