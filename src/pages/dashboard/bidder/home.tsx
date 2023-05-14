@@ -32,12 +32,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const user = await prisma.user
     .findUnique({
       where: { email: session.user?.email || "" },
-      select: {
-        favoris_auctions: {
-          select: {
-            id: true,
-          },
-        },
+      include: {
+        favoris_auctions: true,
       },
     })
     .then((user) => JSON.parse(JSON.stringify(user)));
