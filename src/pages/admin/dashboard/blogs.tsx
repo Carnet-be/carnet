@@ -371,28 +371,45 @@ const AddBlog = ({
         closable={false}
         onOk={() => onAdd()}
         onCancel={handleClose}
-        width={800}
+        width={1000}
       >
-        <div className="space-y-5 py-3">
-          <Radio.Group value={size} onChange={(e) => setSize(e.target.value)}>
-            <Radio.Button value={undefined}>
-              {common("text.undefined")}
-            </Radio.Button>
-            <Radio.Button value="fr">{common("text.fr")}</Radio.Button>
-            <Radio.Button value="en">{common("text.en")}</Radio.Button>
-          </Radio.Group>
-          <Input
-            placeholder={common("input.title")}
-            size="large"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full text-xl font-bold"
-          />
-          <div
-            style={{ backgroundImage: `url(${img?.url})` }}
-            className="relative h-[200px] border border-dashed bg-cover bg-center bg-no-repeat"
-          >
-            <div className="absolute bottom-2 right-2 rounded-md bg-white">
+        <div className="grid grid-cols-[2fr_1fr] gap-3 py-3">
+          <div className="space-y-2">
+            <Input
+              placeholder={common("input.title")}
+              size="large"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full text-xl font-bold"
+            />
+
+            <div>
+              <Editor
+                locale={locale}
+                editorState={value}
+                toolbarClassName="toolbarClassName"
+                wrapperClassName="wrapperClassName"
+                editorClassName="editorClassName"
+                onEditorStateChange={(e) => {
+                  console.log("e.", e);
+                  setValue(e);
+                }}
+              />
+            </div>
+          </div>
+          <div className="space-y-3">
+            <Radio.Group value={size} onChange={(e) => setSize(e.target.value)}>
+              <Radio.Button value={undefined}>
+                {common("text.undefined")}
+              </Radio.Button>
+              <Radio.Button value="fr">{common("text.fr")}</Radio.Button>
+              <Radio.Button value="en">{common("text.en")}</Radio.Button>
+            </Radio.Group>
+            <div
+              style={{ backgroundImage: `url(${img?.url})` }}
+              className="relative h-[200px] border border-dashed bg-cover bg-center bg-no-repeat"
+            ></div>
+            <div className="mx-auto rounded-md bg-white">
               <UploadButton
                 aspect={2.35 / 1}
                 setPreviewImage={(k) => {
@@ -405,19 +422,6 @@ const AddBlog = ({
                 }}
               />
             </div>
-          </div>
-          <div>
-            <Editor
-              locale={locale}
-              editorState={value}
-              toolbarClassName="toolbarClassName"
-              wrapperClassName="wrapperClassName"
-              editorClassName="editorClassName"
-              onEditorStateChange={(e) => {
-                console.log("e.", e);
-                setValue(e);
-              }}
-            />
           </div>
         </div>
       </Modal>

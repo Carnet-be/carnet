@@ -8,7 +8,9 @@
         "contact us": "Contact",
         "blog": "Blog"
       },
-      "login button": "S'incrire"
+      "login button": "Se connecter",
+
+      "register button": "S'inscrire"
     },
     "hero": {
       "title": "Vendez votre voiture avec",
@@ -121,6 +123,7 @@
   "verify email": {
     "expired title": "Le lien de vérification de l'email a expiré",
     "deleted title": "Email déjà vérifié",
+    "activated title": "Félicitations votre email a été vérifié",
     "button 1": "Mon Espace",
     "button 2": "Vérifier mon email"
   },

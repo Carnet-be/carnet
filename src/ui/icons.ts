@@ -30,6 +30,7 @@ import {
   AiFillHeart,
   AiOutlineUserDelete,
   AiFillCheckCircle,
+  AiFillCloseCircle,
 } from "react-icons/ai";
 import {
   RiNotification2Line,
@@ -88,3 +89,4 @@ export const ExportIcon = TbFileExport;
 export const WinIcon = FaCrown;
 export const ChatIcon = IoMdChatbubbles;
 export const DashboardIcon2 = MdOutlineDashboard;
+export const XIcon = AiFillCloseCircle;

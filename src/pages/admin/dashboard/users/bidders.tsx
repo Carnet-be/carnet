@@ -12,7 +12,7 @@ import type { User } from "@prisma/client";
 import type { ColumnsType } from "antd/es/table";
 import { Tag } from "antd";
 import toast from "react-hot-toast";
-import { CheckIcon } from "@ui/icons";
+import { CheckIcon, XIcon } from "@ui/icons";
 import cx from "classnames";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useLang, useNotif } from "../../../hooks";
@@ -52,7 +52,7 @@ const Bidders = (
   });
   const tab = (s: string) => common(`table.${s}`);
   const { loading, error, succes } = useNotif();
-  const { mutate: deleteUser } = trpc.global.delete.useMutation({
+  const { mutate: deleteUser } = trpc.global.deleteUser.useMutation({
     onMutate: () => {
       loading();
     },
@@ -107,12 +107,11 @@ const Bidders = (
       render: (v, b) => (
         <div className="flex flex-row items-center gap-2">
           <span className="text-[12px]">{v}</span>
-          <CheckIcon
-            className={cx(
-              "text-lg text-primary",
-              b.emailVerified ? "" : "hidden"
-            )}
-          />{" "}
+          {!b.emailVerified ? (
+            <XIcon className={cx("text-lg text-red-500")} />
+          ) : (
+            <CheckIcon className={cx("text-lg text-primary")} />
+          )}
         </div>
       ),
     },
@@ -150,7 +149,7 @@ const Bidders = (
         <ActionTable
           id={user.id}
           onDelete={() => {
-            deleteUser({ id: user.id, table: "user" });
+            deleteUser(user.id);
           }}
           // onEdit={() => {
           //   console.log("edit");

@@ -202,26 +202,28 @@ export const LeftSide = ({ auction }: { auction: TAuction }) => {
                 <div
                   key={i}
                   onClick={() => setImgP(i)}
-                  className={cx("flex flex-col items-center rounded-lg p-3", {
-                    border: isActive,
-                  })}
+                  className={cx(
+                    "relative flex h-[100px] w-[140px] cursor-pointer flex-col items-center rounded-lg p-3",
+                    {
+                      border: isActive,
+                    }
+                  )}
                 >
-                  <Image
+                  <img
                     src={cloudy.image(m).resize(fill(undefined, 120)).toURL()}
                     alt="photo"
-                    width={140}
-                    height={120}
+                    className="h-full w-full rounded-lg object-cover"
                   />
                 </div>
               );
             })}
         </Slider>
       </div>
-      <div className="my-3 flex flex-col gap-3 bg-white p-2">
+      <div className="my-3 flex flex-col gap-3 border bg-white p-6">
         <h4 className="text-primary">{text("text.description")}</h4>
         <p>{auction.description}</p>
       </div>
-      <div className="my-3 flex flex-col gap-3 bg-white p-2">
+      <div className="my-3 flex flex-col gap-3 border bg-white p-6">
         <h4 className="text-primary">{text("steps.options")}</h4>
         <div className="flex flex-wrap gap-3">
           {Object.keys(auction.options)
@@ -231,7 +233,7 @@ export const LeftSide = ({ auction }: { auction: TAuction }) => {
             })}
         </div>
       </div>
-      <div className="my-3 flex flex-col gap-3 bg-white p-2">
+      <div className="my-3 flex flex-col gap-3 border bg-white p-6">
         <h4 className="text-primary">{text("steps.rating")}</h4>
         {rating
           .filter((r) => r.rate !== null)

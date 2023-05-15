@@ -102,7 +102,7 @@ model Auction {
   logs            LogAuction[]
   favorite_by     User[]       @relation(name: "favorite")
   auctionnaire_id String
-  auctionnaire    User         @relation(fields: [auctionnaire_id], references: [id])
+  auctionnaire    User         @relation(fields: [auctionnaire_id], references: [id], onDelete: Cascade)
 
   @@index([auctionnaire_id])
 }
@@ -119,7 +119,7 @@ model AuctionSpecs {
   version      String?
   ///
   auction_id   String  @unique
-  auction      Auction @relation(fields: [auction_id], references: [id])
+  auction      Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 }
 
 model AuctionOptions {
@@ -145,7 +145,7 @@ model AuctionOptions {
   dead_angle_detection        Boolean @default(false)
   ///
   auction_id                  String  @unique
-  auction                     Auction @relation(fields: [auction_id], references: [id])
+  auction                     Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 }
 
 model AuctionRating {
@@ -156,7 +156,7 @@ model AuctionRating {
   interior   Int?
   ///
   auction_id String  @unique
-  auction    Auction @relation(fields: [auction_id], references: [id])
+  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 }
 
 model Address {
@@ -173,7 +173,7 @@ model Address {
   lon        Float
   //
   auction_id String  @unique
-  auction    Auction @relation(fields: [auction_id], references: [id])
+  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
   User       User[]
 }
 
@@ -188,9 +188,9 @@ model Bid {
   winner     Boolean @default(false)
   ///
   bidder_id  String
-  bidder     User    @relation(fields: [bidder_id], references: [id])
+  bidder     User    @relation(fields: [bidder_id], references: [id], onDelete: Cascade)
   auction_id String
-  auction    Auction @relation(fields: [auction_id], references: [id])
+  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 
   @@index([auction_id])
   @@index([bidder_id])
@@ -202,10 +202,10 @@ model AssetImage {
   url        String
   //
   auction_id String?
-  auction    Auction? @relation(fields: [auction_id], references: [id])
+  auction    Auction? @relation(fields: [auction_id], references: [id], onDelete: Cascade)
 
   user_id String? @unique
-  user    User?   @relation(fields: [user_id], references: [id])
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   Blog    Blog[]
 
   @@index([auction_id])
@@ -226,7 +226,7 @@ model Model {
   year        Int?
   description String? @db.Text()
   brand_id    Int
-  brand       Brand   @relation(fields: [brand_id], references: [id])
+  brand       Brand   @relation(fields: [brand_id], references: [id], onDelete: Cascade)
 
   @@unique([name, year, brand_id])
   @@index([brand_id])
@@ -244,7 +244,7 @@ model InternalMessage {
   type      IntermalMessageType @default(client)
   // relation
   client_id String
-  client    User                @relation("auctioner", fields: [client_id], references: [id])
+  client    User                @relation("auctioner", fields: [client_id], references: [id], onDelete: Cascade)
 
   @@index([client_id])
 }
@@ -269,9 +269,9 @@ model LogAuction {
   action     String
   // relation
   auction_id String
-  auction    Auction  @relation(fields: [auction_id], references: [id])
+  auction    Auction  @relation(fields: [auction_id], references: [id], onDelete: Cascade)
   user_id    String
-  user       User     @relation(fields: [user_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([user_id])
   @@index([auction_id])
@@ -305,7 +305,7 @@ model Token {
   expireAt DateTime
   // relation
   user_id  String
-  user     User      @relation(fields: [user_id], references: [id])
+  user     User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([user_id])
 }
@@ -318,7 +318,7 @@ model ListString {
   value    String
   // relation
   user_id  String
-  user     User     @relation(fields: [user_id], references: [id])
+  user     User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([user_id])
 }
