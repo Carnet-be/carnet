@@ -11,6 +11,7 @@ import { toast } from "react-hot-toast";
 import Link from "next/link";
 import { trpc } from "@utils/trpc";
 import { useRouter } from "next/router";
+import Image from "next/image";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const token_id = ctx.query.token as string;
 
@@ -76,7 +77,8 @@ const ResetPassword = (props: any) => {
       <div className="flex-grow bg-[#BBC3D7]"></div>
       <div className="fixed z-20 flex h-screen w-screen flex-row items-center justify-center p-4">
         <div className="flex w-[500px] flex-col gap-4 rounded-xl bg-white p-10">
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-5">
+            <Image src="/assets/logo.png" width={100} height={50} alt="logo" />
             <p className="text-center italic text-red-800">
               {isActivited
                 ? `🎉 ${text("activated title")}`

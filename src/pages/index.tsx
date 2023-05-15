@@ -215,14 +215,24 @@ const ProfileButton = () => {
     );
   if (!user)
     return (
-      <Link
-        href={"/auth/signup/auctionnaire"}
-        className={cx(
-          "rounded-lg bg-white px-6 py-2 text-sm font-semibold no-underline"
-        )}
-      >
-        {text("navbar.login button")}
-      </Link>
+      <div className="flex flex-row items-center gap-2">
+        <Link
+          href={"/auth/signup/auctionnaire"}
+          className={cx(
+            "rounded-lg border-2 border-white bg-white px-6 py-1 text-sm font-semibold no-underline"
+          )}
+        >
+          {text("navbar.register button")}
+        </Link>
+        <Link
+          href={"/auth/login"}
+          className={cx(
+            "rounded-lg border-2 border-white px-6 py-1 text-sm font-semibold text-white no-underline"
+          )}
+        >
+          {text("navbar.login button")}
+        </Link>
+      </div>
     );
 
   return (

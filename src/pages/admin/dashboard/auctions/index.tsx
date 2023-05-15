@@ -120,7 +120,7 @@ export const SwitcherAuctions = () => {
                 "rounded-full px-2 text-[11px] font-bold",
                 isActive
                   ? "bg-white text-primary"
-                  : "bg-primary/30 text-white opacity-50"
+                  : "bg-primary text-white opacity-80"
               )}
             >
               {data[r.value as AuctionState]}
@@ -534,7 +534,7 @@ export const AuctionsPage = ({
               state != "published"
                 ? undefined
                 : () => {
-                    console.log("view");
+                    router.push(`/admin/auction/${auction.id}`);
                   }
             }
             onPlay={

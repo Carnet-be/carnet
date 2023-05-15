@@ -15,6 +15,8 @@ import { Tag } from "antd";
 import toast from "react-hot-toast";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useLang, useNotif } from "../../../hooks";
+import { CheckIcon, XIcon } from "@ui/icons";
+import cx from "classnames";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -91,6 +93,16 @@ const Auctioneers = (
       title: tab("email"),
       dataIndex: "email",
       key: "email",
+      render: (v, b) => (
+        <div className="flex flex-row items-center gap-2">
+          <span className="text-[12px]">{v}</span>
+          {!b.emailVerified ? (
+            <XIcon className={cx("text-lg text-red-500")} />
+          ) : (
+            <CheckIcon className={cx("text-lg text-primary")} />
+          )}
+        </div>
+      ),
     },
     {
       title: tab("auctions"),
