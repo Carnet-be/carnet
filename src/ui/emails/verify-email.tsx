@@ -37,16 +37,12 @@ export const EmailVerifyEmail = ({
       <Preview>Email Verification for {username} on Carnet</Preview>
       <Body style={main}>
         <Container style={container}>
-          <Heading
-            style={{
-              color: "#181CA9",
-              fontSize: "24px",
-              fontWeight: "bold",
-              marginBottom: "12px",
-            }}
-          >
-            CARNET
-          </Heading>
+          <Img
+            src={`${baseUrl}/assets/logo.png`}
+            width="100"
+            height="50"
+            alt="Carnet's Logo"
+          />
 
           <Text style={{ ...text, marginBottom: "16px" }}>
             {`Hi there, ${username}.`}
