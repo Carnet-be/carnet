@@ -68,7 +68,8 @@ const Upload = ({ uploadRef, value, setValue }: UploadProps) => {
         data={UNSIGNE_UPLOAD}
         draggable
         defaultFileList={value}
-        listType="picture-text"
+        // listType="picture-text"
+        listType="picture"
         fileList={value}
         ref={uploadRef}
         onRemove={onRemove}
@@ -89,18 +90,21 @@ const Upload = ({ uploadRef, value, setValue }: UploadProps) => {
       >
         <div
           style={{
-            height: 80,
+            // height: 80,
             display: "flex",
-
+            width: "200px",
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
           }}
-          className="h-[80px] cursor-pointer items-center justify-center"
+          className="h-[80px] w-full cursor-pointer items-center justify-center"
         >
-          <div className="flex flex-col  items-center gap-2">
-            <AddPhotoIcon className="mr-3 text-2xl" />{" "}
-            <span>{common("text.click or drag")}</span>
+          <div className="flex w-full  w-[100px] flex-col items-center justify-center">
+            <AddPhotoIcon className="text-2xl" />{" "}
+            {/* <span>{common("text.click or drag")}</span> */}
+            <span className="text-[9px]  font-bold">
+              {common("text.click or drag")}
+            </span>
           </div>
         </div>
       </Uploader>

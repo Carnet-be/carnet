@@ -378,7 +378,7 @@ const CreateAuction = ({
           className="modal-toggle"
         />
         <div className={cx("modal fixed top-0 left-0 z-[1000]")}>
-          <div className="modal-box flex min-h-[450px] flex-col justify-between gap-6 lg:max-w-2xl">
+          <div className="modal-box flex min-h-[500px] flex-col justify-between gap-2 lg:max-w-2xl">
             {auction ? (
               <StepperEdit isAdmin={isAdmin} step={step} />
             ) : (
@@ -444,7 +444,7 @@ const CreateAuction = ({
               <div className="flex-grow"></div>
               <button
                 onClick={back}
-                className={cx("btn-outline btn-primary btn-sm btn", {
+                className={cx("btn-primary btn-outline btn-sm btn", {
                   hidden: step <= 1,
                 })}
               >
