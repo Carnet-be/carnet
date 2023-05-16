@@ -37,17 +37,12 @@ export const EmailResetPassword = ({
       <Preview>Please reset your password</Preview>
       <Body style={main}>
         <Container style={container}>
-          <Heading
-            style={{
-              color: "#181CA9",
-              fontSize: "24px",
-              fontWeight: "bold",
-              marginBottom: "12px",
-            }}
-          >
-            CARNET
-          </Heading>
-
+          <Img
+            src={`${baseUrl}/assets/logo.png`}
+            width="100"
+            height="50"
+            alt={`${baseUrl}/assets/logo.png`}
+          />
           <Text style={{ ...text, marginBottom: "14px" }}>
             {`
             We are sorry to hear that you forgot your password.
