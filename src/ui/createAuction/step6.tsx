@@ -36,8 +36,8 @@ const Step6 = ({
   // }, [])
   const text = useContext(LangContext);
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="flex w-[96%] flex-col items-stretch gap-4">
+    <div className="flex flex-col items-center gap-1">
+      <div className="flex w-[96%] flex-col items-stretch gap-2">
         <TextField
           label={text("fields.name")}
           disabled
@@ -113,7 +113,7 @@ const Step6 = ({
               label={text("fields.address")}
               size="small"
               multiline
-              minRows={2}
+              minRows={5}
               value={data.address}
               onChange={(e) => setData({ ...data, address: e.target.value })}
             />
@@ -133,7 +133,7 @@ const Step6 = ({
                 });
               }
             }}
-            containerClass={"w-[40%] h-auto bg-red-100"}
+            containerClass={"w-[50%] h-auto pt-4"}
           />
         </div>
         <div className="flex flex-row gap-1 text-xs">

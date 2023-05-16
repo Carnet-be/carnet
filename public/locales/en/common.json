@@ -109,10 +109,12 @@
     "undefined": "Undefined",
     "fr": "French",
     "en": "English",
+    "add image": "Add image",
     "warning": "Warning",
     "click or drag": "Click or drag images here",
     "modal delete": "Do you really want to delete this item?",
-    "modal confirm": "Do you really want to confirm this action?"
+    "modal confirm": "Do you really want to confirm this action?",
+    "map request denied": "This application requires the use of location services, please enable them on your device to use this application."
   },
   "table": {
     "id": "ID",
