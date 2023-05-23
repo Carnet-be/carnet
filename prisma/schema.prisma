@@ -84,7 +84,7 @@ model Auction {
 
   isClosed       Boolean         @default(false)
   closedAt       DateTime?
-  description    String?
+  description    String?         @db.Text()
   duration       DurationType
   end_date       DateTime?
   pause_date     DateTime?
@@ -169,8 +169,8 @@ model Address {
   country    String?
   city       String?
   address    String?
-  lat        Float
-  lon        Float
+  lat        Float?
+  lon        Float?
   //
   auction_id String  @unique
   auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)

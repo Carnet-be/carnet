@@ -16,7 +16,7 @@ import { type Data6 } from ".";
 import GoogleMapReact from "google-map-react";
 
 import cx from "classnames";
-import Map from "@ui/components/map";
+import Map, { MapDialog } from "@ui/components/map";
 import { useEffect } from "react";
 import { LangCommonContext, LangContext } from "../../pages/hooks";
 import { COUNTRIES } from "@data/internal";
@@ -113,27 +113,25 @@ const Step6 = ({
               label={text("fields.address")}
               size="small"
               multiline
-              minRows={5}
+              minRows={3}
               value={data.address}
               onChange={(e) => setData({ ...data, address: e.target.value })}
             />
           </div>
 
-          <Map
-            options={{ zoomControl: false }}
-            latitude={data.lat || 0}
-            longitude={data.lon || 0}
-            onClick={(el: google.maps.MapMouseEvent) => {
-              console.log(el);
-              if (el.latLng) {
-                setData({
-                  ...data,
-                  lat: el.latLng.lat(),
-                  lon: el.latLng.lng(),
-                });
-              }
+          <MapDialog
+            latitude={data.lat}
+            longitude={data.lon}
+            onClick={({ lat, lng }: { lat?: number; lng?: number }) => {
+              setData({
+                ...data,
+                lat,
+                lon: lng,
+              });
             }}
-            containerClass={"w-[50%] h-auto pt-4"}
+            containerClass={
+              "w-[25%] h-auto pt-4 flex flex-row items-center justify-center"
+            }
           />
         </div>
         <div className="flex flex-row gap-1 text-xs">

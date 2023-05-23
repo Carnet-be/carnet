@@ -374,22 +374,24 @@ export const RightSide = ({ auction }: { auction: TAuction }) => {
       ) : (
         <AuctionStatus auction={auction} />
       )}
-      <Map
-        options={{ zoomControl: false }}
-        latitude={auction.address.lat}
-        longitude={auction.address.lon}
-        onClick={() => {
-          // console.log(el);
-          // if(el.latLng){
-          // setData({
-          //   ...data,
-          //   lat: el.latLng.lat(),
-          //   lon: el.latLng.lng(),
-          // });
-          //}
-        }}
-        containerClass={"w-full h-[400px] bg-red-100 mt-10"}
-      />
+      {auction.address.lat && auction.address.lon && (
+        <Map
+          options={{ zoomControl: false }}
+          latitude={auction.address.lat}
+          longitude={auction.address.lon}
+          onClick={() => {
+            // console.log(el);
+            // if(el.latLng){
+            // setData({
+            //   ...data,
+            //   lat: el.latLng.lat(),
+            //   lon: el.latLng.lng(),
+            // });
+            //}
+          }}
+          containerClass={"w-full h-[400px] bg-red-100 mt-10"}
+        />
+      )}
     </div>
   );
 };
