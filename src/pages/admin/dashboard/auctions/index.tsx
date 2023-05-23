@@ -360,7 +360,20 @@ export const AuctionsPage = ({
         </div>
       ),
     },
+    {
+      title: tab("auctioneer"),
 
+      dataIndex: "auctionnaire",
+      key: "auctionnaire",
+      render: (_, v) => (
+        <div>
+          <h6>{(v as any).auctionnaire.username}</h6>
+          <span className="text-[12px] italic text-primary">
+            #{(v as any).auctionnaire.id}
+          </span>
+        </div>
+      ),
+    },
     {
       title: tab("date pub"),
 

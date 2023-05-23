@@ -105,6 +105,11 @@ export const userRouter = router({
               contains: input,
             },
           },
+          {
+            id: {
+              contains: input.replaceAll(" ", "").replaceAll("#", ""),
+            },
+          },
         ],
         type: {
           in: ["AUC", "BID"],

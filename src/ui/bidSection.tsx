@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import type { TAuction, TBid } from "@model/type";
+import type { TAuction, TBid, TUser } from "@model/type";
 import { useContext, useEffect, useState } from "react";
 import Price from "./components/price";
 import { AddIcon, AuctionIcon, MoinsIcon } from "./icons";
@@ -13,6 +13,7 @@ import { LangContext, LangCommonContext } from "../pages/hooks";
 type BidSection = {
   auction: TAuction;
   isTimeOut: boolean;
+  user?: TUser;
 };
 const getMax = (bids: TBid[]) => {
   let max = 0;
@@ -23,7 +24,7 @@ const getMax = (bids: TBid[]) => {
   });
   return max;
 };
-const BidSection = ({ auction, isTimeOut }: BidSection) => {
+const BidSection = ({ auction, isTimeOut, user }: BidSection) => {
   const text = useContext(LangContext);
   const getBidPrice = (bids: TBid[], price?: number) =>
     bids.length <= 0 ? price || auction.expected_price / 2 : getMax(bids);
@@ -67,7 +68,7 @@ const BidSection = ({ auction, isTimeOut }: BidSection) => {
         </div>
       </span>
 
-      {!isTimeOut && (
+      {!isTimeOut && user?.type === "BID" && (
         <AddBid
           start={bidPrice || 0}
           onAddBidSucces={() => {

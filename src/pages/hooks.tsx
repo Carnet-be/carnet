@@ -43,7 +43,7 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
       className="flex flex-col "
     >
       <h6 className="font-bold text-primary">{content.title}</h6>
-      <p>{content.body}</p>
+      <p className="line-clamp-2">{content.body}</p>
     </div>
   );
   const showNotification = async (notification: TNotification) => {
@@ -150,6 +150,20 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
           }/auction/` + notification.auction_id;
 
         break;
+
+      case "new message":
+        content.title = t(notification.type);
+        content.body = `${notification.content}`;
+        if (user?.type === "AUC") {
+          content.link = `/dashboard/auctionnaire/chat`;
+        }
+        if (user?.type === "BID") {
+          content.link = `/dashboard/bidder/chat`;
+        }
+        if (user?.type === "ADMIN") {
+          content.link = `/admin/dashboard/chat`;
+        }
+        break;
       default:
         break;
     }
@@ -195,6 +209,10 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
         return (
           (user?.type === "AUC" && user.id == notification.auctionnaire_id) ||
           (user?.type === "BID" && user.id in notification.bidders)
+        );
+      case "new message":
+        return (
+          notification.receiver === (user?.type == "ADMIN" ? "ADMIN" : user?.id)
         );
       default:
         return false;
@@ -356,6 +374,21 @@ export const useGetNotifications = () => {
           }/auction/` + notification.auction_id;
 
         break;
+
+      case "new message":
+        content.title = t(notification.type);
+        content.body = `${notification.content}`;
+        if (user?.type === "AUC") {
+          content.link = `/dashboard/auctionnaire/chat`;
+        }
+        if (user?.type === "BID") {
+          content.link = `/dashboard/bidder/chat`;
+        }
+        if (user?.type === "ADMIN") {
+          content.link = `/admin/dashboard/chat`;
+        }
+        break;
+
       default:
         break;
     }
@@ -398,6 +431,11 @@ export const useGetNotifications = () => {
           (user?.type === "AUC" && user.id == notification.auctionnaire_id) ||
           (user?.type === "BID" && user.id in notification.bidders)
         );
+      case "new message":
+        return (
+          notification.receiver === (user?.type == "ADMIN" ? "ADMIN" : user?.id)
+        );
+
       default:
         return false;
     }

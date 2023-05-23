@@ -369,11 +369,11 @@ export const RightSide = ({ auction }: { auction: TAuction }) => {
             onTimeOut={onTimeOut}
             endDate={auction.end_date || new Date()}
           />
-          <BidSection auction={auction} isTimeOut={isTimeOut} />
         </>
       ) : (
         <AuctionStatus auction={auction} />
       )}
+      <BidSection user={user} auction={auction} isTimeOut={isTimeOut} />
       {auction.address.lat && auction.address.lon && (
         <Map
           options={{ zoomControl: false }}
