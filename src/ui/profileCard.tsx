@@ -184,6 +184,12 @@ export default function CustomizedMenus({
         }
         endIcon={<ExpandMoreIcon className="text-xl" />}
       >
+        {user?.username && (
+          <span className="mr-2 text-xs font-bold text-black">
+            {user?.username}
+          </span>
+        )}
+
         <Avatar session={session} isLoading={isLoading} user={user as TUser} />
       </Button>
 

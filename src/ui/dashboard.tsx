@@ -34,6 +34,7 @@ import { Timestamp } from "firebase/firestore";
 import { useAuctionCountStore } from "../state/index";
 import { LoadingSpinPage, LoadingSpin } from "./loading";
 import { toast } from "react-hot-toast";
+import LangSwitcher from "./components/langSwitcher";
 
 type TSide = {
   route: string;
@@ -254,11 +255,12 @@ export const NavBar = () => {
   return (
     <div
       className={cx(
-        "sticky top-0 right-0 z-50 flex h-[60px] w-full  flex-row items-center gap-3 px-3 backdrop-blur-md"
+        "sticky top-0 right-0 z-50 flex h-[60px] w-full  flex-row items-center gap-5 px-3 backdrop-blur-md"
       )}
     >
       <div className="flex-grow"></div>
       <NotificationComponent />
+      <LangSwitcher />
       <ProfileCard />
     </div>
   );
@@ -268,11 +270,12 @@ export const NavBarFixed = () => {
   return (
     <div
       className={cx(
-        "flex h-[60px] w-full  flex-row items-center gap-3 border-b border-l px-3"
+        "flex h-[60px] w-full  flex-row items-center gap-5 border-b border-l px-3"
       )}
     >
       <div className="flex-grow"></div>
       <NotificationComponent />
+      <LangSwitcher />
       <ProfileCard />
     </div>
   );
