@@ -172,6 +172,10 @@
       "title": "Nouvelle enchère",
       "body": "Une nouvelle enchère vient d'être créée"
     },
+    "new message": {
+      "title": "Nouveau message",
+      "body": "Vous avez reçu un nouveau message"
+    },
     "auction modified": {
       "pause": "Enchère mise en pause",
       "resume": "Enchère reprise",

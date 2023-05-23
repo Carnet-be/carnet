@@ -414,7 +414,7 @@ export const DisplayMessage = ({
             )}
           >
             <div className="chat-image avatar ">
-              {!mine ? (
+              {!mine && (
                 <div className="chat-image avatar">
                   {message.sender === "ADMIN" ? (
                     <Image
@@ -428,15 +428,6 @@ export const DisplayMessage = ({
                     <AvatarImg img={user?.image} size={40} />
                   )}
                 </div>
-              ) : (
-                <Button
-                  onClick={() => {
-                    deleteDocument("messages", message.uid);
-                  }}
-                  danger
-                  icon={<DeleteIcon className="mx-auto text-lg" />}
-                  className=" scale-0 transition-all  group-hover:scale-100"
-                />
               )}
             </div>
             <div className="chat-header flex flex-row items-center gap-4">

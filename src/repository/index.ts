@@ -40,6 +40,16 @@ export const sendMessage = (data: {
     date: Timestamp.fromDate(new Date()),
     senderRead: true,
     receiverRead: false,
+  }).then((docRef) => {
+    sendNotification({
+      date: new Date(),
+      content: data.content,
+      sender: data.sender,
+      receiver: data.receiver,
+      type: "new message",
+    });
+
+    return docRef;
   });
 
 export const getMessages = ({

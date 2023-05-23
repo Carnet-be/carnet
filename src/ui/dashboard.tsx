@@ -376,7 +376,7 @@ const NotificationComponent = () => {
                 ></div>
                 <div className="flex flex-col">
                   <div className="text-sm font-bold">{n.title}</div>
-                  <div className="text-xs">{n.body}</div>
+                  <div className="text-xs line-clamp-3">{n.body}</div>
                   <div className="self-end text-[10px] italic">
                     {moment(n.date).fromNow()}
                   </div>
