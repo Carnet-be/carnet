@@ -180,7 +180,7 @@ export const LeftSide = ({ auction }: { auction: TAuction }) => {
     <div className="flex  w-full flex-grow flex-col gap-3 lg:w-[57%]">
       <div
         ref={imgRef}
-        className="flex h-[500px] w-full flex-col items-center justify-center overflow-hidden bg-white"
+        className="flex h-[500px] w-full flex-col items-center justify-center overflow-hidden border bg-white"
       >
         <Image
           src={cloudy
@@ -192,8 +192,8 @@ export const LeftSide = ({ auction }: { auction: TAuction }) => {
           height={400}
         />
       </div>
-      <div className={cx("bg-white px-10 py-6", { hidden: noImg })}>
-        <Slider {...settings} className="mb-4">
+      <div className={cx("border bg-white  p-2", { hidden: noImg })}>
+        <Slider {...settings} className="">
           {auction.images
             .map((im) => im.fileKey)
             .map((m, i) => {
@@ -203,7 +203,7 @@ export const LeftSide = ({ auction }: { auction: TAuction }) => {
                   key={i}
                   onClick={() => setImgP(i)}
                   className={cx(
-                    "relative flex h-[100px] w-[140px] cursor-pointer flex-col items-center rounded-lg p-3",
+                    "relative flex h-[100px] w-[140px] cursor-pointer flex-col items-center rounded-lg p-1",
                     {
                       border: isActive,
                     }
