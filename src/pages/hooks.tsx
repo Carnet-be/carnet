@@ -152,7 +152,8 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
         break;
 
       case "new message":
-        content.title = t(notification.type);
+        content.title = t(notification.type + ".title");
+
         content.body = `${notification.content}`;
         if (user?.type === "AUC") {
           content.link = `/dashboard/auctionnaire/chat`;

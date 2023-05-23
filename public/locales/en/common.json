@@ -169,6 +169,10 @@
       "title": "New user",
       "body": "A new user has just registered"
     },
+    "new message": {
+      "title": "Nouveau message",
+      "body": "Vous avez reçu un nouveau message"
+    },
     "new auction": {
       "title": "New auction",
       "body": "A new auction has been created"
