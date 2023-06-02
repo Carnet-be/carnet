@@ -113,7 +113,10 @@
     "blog": "Blog",
     "subtitle": "Découvrez nos derniers articles",
     "read more": "Lire la suite",
-    "blogs": "Blogs"
+    "blogs": "Blogs",
+    "our blogs": "Nos Blogs",
+    "recent blogs": "Blogs récents",
+    "no blogs": "Aucun blog trouvé"
   },
   "reset password": {
     "expired title": "Le lien de réinitialisation du mot de passe a expiré",

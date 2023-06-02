@@ -111,7 +111,10 @@
     "blog": "Blog",
     "subtitle": "Check out our latest articles",
     "read more": "Read more",
-    "blogs": "Blogs"
+    "blogs": "Blogs",
+    "our blogs": "Our Blogs",
+    "recent blogs": "Recent Blogs",
+    "no blogs": "No Blogs"
   },
 
   "reset password": {

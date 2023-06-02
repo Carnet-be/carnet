@@ -8,7 +8,7 @@ import React, { useContext } from "react";
 import { prisma } from "../../server/db/client";
 import { Footer, MyNav } from "..";
 import { LangCommonContext, LangContext, useLang } from "../hooks";
-import type { AssetImage, User, Blog } from "@prisma/client";
+import type { AssetImage, User, Blog, Language } from "@prisma/client";
 import cloudy from "@utils/cloudinary";
 import remarkGfm from "remark-gfm";
 
@@ -26,6 +26,7 @@ import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
 import Share from "@ui/components/share";
 import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
+import { BiCalendarAlt } from "react-icons/bi";
 const Editor = dynamic(
   () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
   {
@@ -71,6 +72,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const blogs = await prisma.blog
     .findMany({
       take: 5,
+      where: {
+        // locale: locale as (Language|undefined) || "fr",
+        OR: [
+          {
+            locale: (locale as Language | undefined) || "fr",
+          },
+          {
+            locale: null,
+          },
+          {
+            locale: undefined,
+          },
+        ],
+      },
       include: {
         image: true,
         author: {
@@ -79,12 +94,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           },
         },
       },
+      orderBy: {
+        createAt: "desc",
+      },
     })
-    .then((blogs) =>
-      JSON.parse(
-        JSON.stringify(blogs.concat([...blogs, ...blogs, ...blogs, ...blogs]))
-      )
-    );
+    .then((blogs) => JSON.parse(JSON.stringify(blogs)));
 
   return {
     props: {
@@ -100,7 +114,6 @@ const BlogPage: NextPage = (
 ) => {
   const { blog, blogs, isAdmin } = props;
 
-  console.log("blog", blog);
   const { text } = useLang({
     file: "pages",
     selector: "home",
@@ -193,18 +206,24 @@ const BlogsView = ({
           <div key={index} className="flex flex-col gap-2">
             <div className="overflow-hidden rounded-md">
               <AdvancedImage
-                cldImg={cloudy.image(blog.image.fileKey).quality("40")}
+                cldImg={cloudy.image(blog.image.fileKey).quality("30")}
                 plugins={[lazyload(), placeholder()]}
               />
             </div>
-            <a
-              href={`/blogs/${blog.id}`}
-              className="border-l-4 border-primary pl-3 text-black hover:text-primary"
-            >
-              {blog.title}
-            </a>
-            <div>
-              <Tag className="">{moment(blog.createAt).calendar()}</Tag>
+            <div className="border-l-4 border-primary pl-3 ">
+              <a
+                href={`/blogs/${blog.id}`}
+                className="text-black hover:text-primary"
+              >
+                {blog.title}
+              </a>
+              <div className="flex flex-row items-center gap-2">
+                <BiCalendarAlt />
+                <span className="text-xs">
+                  {" "}
+                  {moment(blog.createAt).calendar()}
+                </span>
+              </div>
             </div>
           </div>
         ))}
