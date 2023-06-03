@@ -1,6 +1,8 @@
+import moment from "moment";
+
 export const isConfirmation = (date: Date | undefined | null): boolean => {
   if (date) {
-    if (date.getTime() < new Date().getTime()) {
+    if (moment(date).isBefore(moment())) {
       return true;
     }
   }

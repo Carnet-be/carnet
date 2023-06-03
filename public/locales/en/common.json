@@ -69,6 +69,7 @@
     "big title": "Buy Your Car with"
   },
   "text": {
+    "more": "More",
     "update your password": "Update your password",
     "profile": "Profile",
     "terms and conditions": "Terms and Conditions",
@@ -158,7 +159,8 @@
     "description": "Description",
     "image": "Image",
     "zip": "Zip code",
-    "lang": "Language"
+    "lang": "Language",
+    "type": "Type"
   },
   "tooltip": {
     "contact": "Contact",

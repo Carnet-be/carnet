@@ -98,7 +98,8 @@
       "incremental text": "The bid will be increased by",
       "welcome, please login": "Welcome, please log in to your account",
       "don't have an account": "Don't have an account?",
-      "you do have an account": "You have an account?"
+      "you do have an account": "You have an account?",
+      "auction number": "Auctions count"
     },
     "status": {
       "active": "In progress",
@@ -226,5 +227,17 @@
         "undefined": "Not rated"
       }
     }
+  },
+  "admin home": {
+    "title": "Welcome to the admin panel",
+    "recent auctions": "Recent auctions",
+    "recent users": "Recent users",
+    "recent cars": "Recent cars",
+    "recent bids": "Recent bids",
+    "total auctions": "Total auctions",
+    "total users": "Total users",
+    "total cars": "Total cars",
+    "total bids": "Total bids",
+    "auction number": "Auctions count"
   }
 }
