@@ -69,6 +69,7 @@
     "big title": "Achetez Votre Voiture avec"
   },
   "text": {
+    "more": "Plus",
     "update your password": "Mettre à jour votre mot de passe",
     "profile": "Profil",
     "terms and conditions": "Conditions générales",
@@ -157,7 +158,8 @@
     "description": "Description",
     "image": "Image",
     "zip": "Code postal",
-    "lang": "Langue"
+    "lang": "Langue",
+    "type": "Type"
   },
   "tooltip": {
     "contact": "contact",

@@ -71,11 +71,11 @@ const Dashboard = ({
   const wishs = useBidderStore((state) => state.wishList);
   const menu: TMenu = {
     ADMIN: [
-      // {
-      //   title: common("text.home"),
-      //   route: "/admin/dashboard/accueil",
-      //   icon: <DashboardIcon />,
-      // },
+      {
+        title: common("text.home"),
+        route: "/admin/dashboard/accueil",
+        icon: <DashboardIcon />,
+      },
       {
         title: common("text.auctions"),
         route: "/admin/dashboard/auctions",

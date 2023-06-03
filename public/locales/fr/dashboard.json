@@ -98,7 +98,8 @@
       "incremental text": "L'enchère sera augmentée de",
       "welcome, please login": "Bienvenue, veuillez vous connecter à votre compte",
       "don't have an account": "Vous n'avez pas un compte ?",
-      "you do have an account": "Vous avez un compte ?"
+      "you do have an account": "Vous avez un compte ?",
+      "auction number": "Nombre d'enchères"
     },
     "status": {
       "active": "En cours",
@@ -226,5 +227,15 @@
         "undefined": "Non évalué"
       }
     }
+  },
+  "admin home": {
+    "title": "Bienvenue sur le tableau de bord de l'administrateur",
+    "recent bids": "Derniers offres",
+    "recent cars": "Dernières enchères",
+    "recent users": "Derniers utilisateurs",
+    "auction number": "Nombre d'enchères",
+    "total bids": "Total des offres",
+    "total cars": "Total des voitures",
+    "total users": "Total des utilisateurs"
   }
 }

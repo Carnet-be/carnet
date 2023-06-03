@@ -10,6 +10,7 @@
     "start": "node ./scripts/notifications-checker.mjs && next start"
   },
   "dependencies": {
+    "@canvasjs/react-charts": "^1.0.0",
     "@cloudinary/react": "^1.7.0",
     "@cloudinary/url-gen": "^1.9.0",
     "@emotion/react": "^11.10.5",
@@ -35,6 +36,7 @@
     "antd-table-export": "^0.0.5",
     "axios": "^1.2.3",
     "bcrypt": "^5.1.0",
+    "chart.js": "^4.3.0",
     "classnames": "^2.3.2",
     "cloudinary": "^1.33.0",
     "daisyui": "^2.50.1",
@@ -61,6 +63,7 @@
     "nookies": "^2.5.2",
     "react": "^18.2.0",
     "react-alice-carousel": "^2.7.0",
+    "react-chartjs-2": "^5.2.0",
     "react-content-loader": "^6.2.0",
     "react-debounce-input": "^3.3.0",
     "react-dom": "18.2.0",
