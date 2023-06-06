@@ -13,6 +13,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    
     "incremental": true,
     "noUncheckedIndexedAccess": true,
     "paths":{
@@ -33,6 +34,6 @@
 
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "src/ui/components/table.tsx", "src/ui/components/map.tsx", "src/pages/test.tsx", "src/pages/_app.tsx", "next-i18next.config.js", "scripts/notifications-checker.mts", "scripts/notifications-checker.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx","**/*.jsx","src/ui/components/imageZoom.jsx", "**/*.cjs", "**/*.mjs", "src/ui/components/table.tsx", "src/ui/components/map.tsx", "src/pages/test.tsx", "src/pages/_app.tsx", "next-i18next.config.js", "scripts/notifications-checker.mts", "scripts/notifications-checker.js"],
   "exclude": ["node_modules"]
 }
