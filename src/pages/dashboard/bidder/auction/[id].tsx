@@ -36,6 +36,8 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { LangCommonContext, LangContext, useLang } from "../../../hooks";
 import { UserContext } from "../../auctionnaire/auction/[id]";
 import { prisma } from "../../../../server/db/client";
+
+import ImageZoom from "@ui/components/imageZoom";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -176,13 +178,14 @@ export const LeftSide = ({ auction }: { auction: TAuction }) => {
       rate: auction.rating.tires,
     },
   ];
+
   return (
     <div className="flex  w-full flex-grow flex-col gap-3 lg:w-[57%]">
       <div
         ref={imgRef}
         className="flex h-[500px] w-full flex-col items-center justify-center overflow-hidden border bg-white"
       >
-        <Image
+        {/* <Image
           src={cloudy
             .image(noImg ? NO_IMAGE_URL : auction.images[imgP]?.fileKey)
             .resize(fill(undefined, 400))
@@ -190,6 +193,17 @@ export const LeftSide = ({ auction }: { auction: TAuction }) => {
           alt="photo"
           width={imgSize}
           height={400}
+        /> */}
+
+        <ImageZoom
+          src={cloudy
+            .image(noImg ? NO_IMAGE_URL : auction.images[imgP]?.fileKey)
+            .resize(fill(undefined, 400))
+            .toURL()}
+          alt="photo"
+          // width={imgSize}
+          // height={400}
+          style={{ width: imgSize, height: 400 }}
         />
       </div>
       <div className={cx("border bg-white  p-2", { hidden: noImg })}>
@@ -221,7 +235,7 @@ export const LeftSide = ({ auction }: { auction: TAuction }) => {
       </div>
       <div className="my-3 flex flex-col gap-3 border bg-white p-6">
         <h4 className="text-primary">{text("text.description")}</h4>
-        <p>{auction.description}</p>
+        <p className="whitespace-pre-line">{auction.description}</p>
       </div>
       <div className="my-3 flex flex-col gap-3 border bg-white p-6">
         <h4 className="text-primary">{text("steps.options")}</h4>

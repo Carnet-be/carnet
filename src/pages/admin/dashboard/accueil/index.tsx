@@ -24,7 +24,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
-
+  //TODO: fix prisma
   if (!session) {
     return {
       redirect: {
