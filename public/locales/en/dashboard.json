@@ -24,6 +24,9 @@
       "feature": "Featured",
       "trending": "Trending",
       "buy now": "Buy Now"
+    },
+    "interest": {
+      "title": "Pick your interests"
     }
   },
   "auction": {

@@ -9,7 +9,7 @@ import { type GetServerSideProps, type NextPage } from "next";
 import { useState } from "react";
 import { BannierAddAuction } from ".";
 import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
-import { isConfirmation } from '../../../functions/date';
+import { isConfirmation } from "../../../functions/date";
 import { FullStatus, getStatus } from "../../../functions";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -27,7 +27,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { locale } = ctx;
   return {
     props: {
-      ...(await serverSideTranslations(locale || "fr", ["common", "dashboard"])),
+      ...(await serverSideTranslations(locale || "fr", [
+        "common",
+        "dashboard",
+      ])),
     },
   };
 };
@@ -35,7 +38,7 @@ const Home: NextPage = () => {
   const [auctions, setAuctions] = useState<
     Array<{
       auction: Auction;
-      state:FullStatus;
+      state: FullStatus;
     }>
   >([]);
   const { refetch, isLoading } = trpc.auctionnaire.getMyAuctions.useQuery(
@@ -46,7 +49,6 @@ const Home: NextPage = () => {
       onSuccess(data) {
         setAuctions(
           data.map((a) => {
-           
             return {
               auction: a,
               state: getStatus(a),

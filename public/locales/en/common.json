@@ -43,6 +43,7 @@
     "save": "Save",
     "delete": "Delete",
     "edit": "Edit",
+    "confirm": "Confirm",
     "add": "Add",
     "close": "Close",
     "view": "View",
@@ -70,6 +71,7 @@
   },
   "text": {
     "more": "More",
+    "interest": "Interests",
     "update your password": "Update your password",
     "profile": "Profile",
     "terms and conditions": "Terms and Conditions",

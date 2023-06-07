@@ -21,7 +21,9 @@ import { useNotifStore } from "../state";
 import { getPrice } from "@ui/components/price";
 import { User } from "@prisma/client";
 import { useTranslation } from "next-i18next";
-
+import { Modal } from "antd";
+import { LegacyButtonType } from "antd/es/button/button";
+const { confirm } = Modal;
 const playNotificationSound = () => {
   const audio = document.getElementById("audio") as HTMLAudioElement;
 
@@ -541,4 +543,27 @@ export const useNotif = () => {
       if (callback) callback();
     },
   };
+};
+
+export const useConfirmation = () => {
+  const { text: common } = useLang(undefined);
+  const show = (onConfirm: () => void, type?: LegacyButtonType | undefined) => {
+    confirm({
+      title: common("text.warning"),
+
+      content: common("text.modal confirm"),
+      okText: common("button.confirm"),
+      okType: type || "danger",
+      cancelText: common("button.cancel"),
+      centered: true,
+      onOk() {
+        onConfirm();
+      },
+      onCancel() {
+        console.log("Cancel dialog");
+      },
+    });
+  };
+
+  return { show };
 };

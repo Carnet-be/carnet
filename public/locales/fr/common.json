@@ -40,6 +40,7 @@
 
   "button": {
     "cancel": "Annuler",
+    "confirm": "Confirmer",
     "save": "Enregistrer",
     "delete": "Supprimer",
     "edit": "Modifier",
@@ -70,6 +71,7 @@
   },
   "text": {
     "more": "Plus",
+    "interest": "Intéressés",
     "update your password": "Mettre à jour votre mot de passe",
     "profile": "Profil",
     "terms and conditions": "Conditions générales",

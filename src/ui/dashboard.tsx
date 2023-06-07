@@ -35,6 +35,7 @@ import { useAuctionCountStore } from "../state/index";
 import { LoadingSpinPage, LoadingSpin } from "./loading";
 import { toast } from "react-hot-toast";
 import LangSwitcher from "./components/langSwitcher";
+import Interest from "./components/interest";
 
 type TSide = {
   route: string;
@@ -213,7 +214,9 @@ const Dashboard = ({
                   );
                 })}
               </ul>
+
               <ul className="menu w-[80%] space-y-2">
+                {type == "BID" && <Interest />}
                 {type == "AUC" && (
                   <li>
                     <label
