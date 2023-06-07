@@ -33,14 +33,14 @@ model User {
   subscriptionType SubscriptionType @default(free)
 
   favoris_auctions Auction[] @relation(name: "favorite")
-
-  zipCode  String?
-  country  String?
-  city     String?
-  address  String?
+  interest         Interest?
+  zipCode          String?
+  country          String?
+  city             String?
+  address          String?
   //
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+  createAt         DateTime  @default(now())
+  updateAt         DateTime  @updatedAt
 
   logsAuctions LogAuction[]
 
@@ -220,6 +220,19 @@ model Brand {
   models      Model[]
 }
 
+model Interest {
+  id       String   @id @default(cuid())
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  // field
+
+  models      Model[]
+  carrosserie String  @default("")
+  //
+  user_id     String  @unique
+  user        User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
 model Model {
   id          Int     @id @default(autoincrement())
   name        String
@@ -227,6 +240,8 @@ model Model {
   description String? @db.Text()
   brand_id    Int
   brand       Brand   @relation(fields: [brand_id], references: [id], onDelete: Cascade)
+
+  interests Interest[]
 
   @@unique([name, year, brand_id])
   @@index([brand_id])

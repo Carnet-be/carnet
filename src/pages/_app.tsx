@@ -15,6 +15,10 @@ import "@utils/i18n";
 import frFR from "antd/locale/fr_FR";
 import enUS from "antd/locale/en_US";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
+import { CustomProvider } from "rsuite";
+import enUSRS from "rsuite/locales/en_US";
+import frFRRS from "rsuite/locales/fr_FR";
+
 // import en from "../lang/en.json";
 // import fr from "../lang/fr.json";
 // const messages = {
@@ -56,6 +60,18 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
         return frFR;
     }
   };
+
+  const getRsuiteLocale = () => {
+    switch (locale) {
+      case "en":
+        return enUSRS;
+      case "fr":
+        return frFRRS;
+      default:
+        return frFRRS;
+    }
+  };
+
   useEffect(() => {
     const lang = Cookies.get("lang");
     console.log("lang", lang);
@@ -88,24 +104,25 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
         />
       </Head>
-
-      <ThemeProvider
-        theme={createTheme(
-          {
-            palette: {
-              primary: { main: "#1976d2" },
+      <CustomProvider locale={getRsuiteLocale()}>
+        <ThemeProvider
+          theme={createTheme(
+            {
+              palette: {
+                primary: { main: "#1976d2" },
+              },
             },
-          },
-          getAntdLocale()
-        )}
-      >
-        <ConfigProvider locale={getAntdLocale()}>
-          <App>
-            <NextNProgress color="#181BAA" height={5} />
-            <Component {...pageProps} />
-          </App>
-        </ConfigProvider>
-      </ThemeProvider>
+            getAntdLocale()
+          )}
+        >
+          <ConfigProvider locale={getAntdLocale()}>
+            <App>
+              <NextNProgress color="#181BAA" height={5} />
+              <Component {...pageProps} />
+            </App>
+          </ConfigProvider>
+        </ThemeProvider>
+      </CustomProvider>
       <Toaster />
       <ToastContainer position="bottom-right" autoClose={8000} />
       <audio

@@ -1,5 +1,5 @@
 import { type Auction } from "@prisma/client";
-import { AuctionIcon, TimerIcon } from "@ui/icons";
+import { AuctionIcon, DeleteIcon, TimerIcon } from "@ui/icons";
 import { ProcessAuction } from "@utils/processAuction";
 import Image from "next/image";
 import { getRandomNumber } from "../../utils/utilities";
@@ -20,7 +20,12 @@ import { fill } from "@cloudinary/url-gen/actions/resize";
 import { AdvancedImage } from "@cloudinary/react";
 import CreateAuction from "@ui/createAuction";
 import { useBidderStore } from "../../state";
-import { useLang, useNotif } from "../../pages/hooks";
+import { useConfirmation, useLang, useNotif } from "../../pages/hooks";
+import { Button } from "antd";
+import { Modal } from "antd";
+const { confirm } = Modal;
+import ConfirmationDialog from "./confirmation";
+import { BsExclamation } from "react-icons/bs";
 type AuctionCardProps = {
   auction: TAuction;
   isFavorite?: boolean;
@@ -45,7 +50,7 @@ const AuctionCard = ({
   const { text: common } = useLang(undefined);
   const { error, succes } = useNotif();
   const [fav, setfav] = useState(isFavorite);
-
+  const { show } = useConfirmation();
   const increase = useBidderStore((state) => state.increase);
   const decrease = useBidderStore((state) => state.decrease);
 
@@ -76,8 +81,24 @@ const AuctionCard = ({
     },
   });
   const router = useRouter();
+  const { loading, error: er, succes: suc } = useNotif();
   const src = !auction.images[0] ? NO_IMAGE_URL : auction.images[0].fileKey;
   console.log(src);
+  const { mutate: deleteAuction } = trpc.global.delete.useMutation({
+    onMutate: () => {
+      loading();
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.dismiss();
+      er();
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      suc();
+      if (refetch) refetch();
+    },
+  });
   return (
     <>
       {mineAuction && (
@@ -167,15 +188,33 @@ const AuctionCard = ({
             </div>
             <div className="flex flex-row rounded-full bg-[#00A369]">
               {mineAuction ? (
-                <label
-                  onClick={onEdit}
-                  htmlFor={auction.id}
-                  className={cx(
-                    "cursor-pointer rounded-full bg-primary p-[5px] px-3 text-white"
-                  )}
-                >
-                  {common("button.edit")}
-                </label>
+                <div className="flex flex-row items-center gap-1 bg-white">
+                  <Button
+                    onClick={() => {
+                      show(() =>
+                        deleteAuction({
+                          id: auction.id,
+                          table: "auction",
+                        })
+                      );
+                    }}
+                    color="error"
+                    danger
+                    className="rounded-full"
+                  >
+                    <DeleteIcon />
+                  </Button>
+
+                  <label
+                    onClick={onEdit}
+                    htmlFor={auction.id}
+                    className={cx(
+                      "cursor-pointer rounded-full bg-primary p-[5px] px-3 text-white"
+                    )}
+                  >
+                    {common("button.edit")}
+                  </label>
+                </div>
               ) : (
                 <>
                   <Link

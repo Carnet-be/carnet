@@ -24,6 +24,9 @@
       "feature": "En vedette",
       "trending": "Tendance",
       "buy now": "Acheter maintenant"
+    },
+    "interest": {
+      "title": "Choisir vos preferences"
     }
   },
   "auction": {

@@ -4,7 +4,7 @@ import {
   type InferGetServerSidePropsType,
   type GetServerSideProps,
 } from "next";
-
+import ReactImageMagnify from "react-image-magnify";
 import Map from "@ui/components/map";
 import Slider from "react-slick";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
@@ -179,32 +179,30 @@ export const LeftSide = ({ auction }: { auction: TAuction }) => {
     },
   ];
 
+  const [parentSize, setParentSize] = useState(0);
+
+  useEffect(() => {
+    if (imgRef.current) {
+      setParentSize(imgRef.current.clientWidth);
+    }
+  }, [imgRef]);
+
   return (
     <div className="flex  w-full flex-grow flex-col gap-3 lg:w-[57%]">
       <div
         ref={imgRef}
         className="flex h-[500px] w-full flex-col items-center justify-center overflow-hidden border bg-white"
       >
-        {/* <Image
+        <Image
           src={cloudy
             .image(noImg ? NO_IMAGE_URL : auction.images[imgP]?.fileKey)
-            .resize(fill(undefined, 400))
+            .resize(fill(parentSize, 400))
             .toURL()}
           alt="photo"
           width={imgSize}
           height={400}
-        /> */}
-
-        <ImageZoom
-          src={cloudy
-            .image(noImg ? NO_IMAGE_URL : auction.images[imgP]?.fileKey)
-            .resize(fill(undefined, 400))
-            .toURL()}
-          alt="photo"
-          // width={imgSize}
-          // height={400}
-          style={{ width: imgSize, height: 400 }}
         />
+
       </div>
       <div className={cx("border bg-white  p-2", { hidden: noImg })}>
         <Slider {...settings} className="">

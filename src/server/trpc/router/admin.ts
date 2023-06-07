@@ -24,7 +24,7 @@ const ZModel = z.object({
 export const adminRouter = router({
   getBrand: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.brand.findMany({
-      include: { models: { select: { id: true } } },
+      include: { models: { select: { id: true, name: true } } },
       orderBy: {
         id: "desc",
       },
@@ -42,6 +42,16 @@ export const adminRouter = router({
       .then((brands) => {
         return brands.map((b) => b.name);
       });
+  }),
+
+  getBrandModel: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.brand.findMany({
+      where: { models: { some: {} } },
+      include: { models: { select: { id: true, name: true } } },
+      orderBy: {
+        name: "asc",
+      },
+    });
   }),
   getModelByBrandName: publicProcedure
 

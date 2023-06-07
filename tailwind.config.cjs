@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "node modules/daisyui/**/*.{js, jsx,ts, tsx}",
+  ],
 
   important: true,
   theme: {
@@ -20,6 +23,7 @@ module.exports = {
   ],
   daisyui: {
     darkTheme: "light",
+
     themes: [
       {
         light: {

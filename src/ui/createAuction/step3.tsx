@@ -288,7 +288,7 @@ type BodyItemProps = {
   img: string;
   onClick: () => void;
 };
-const BodyItem = ({ isActive, title, img, onClick }: BodyItemProps) => {
+export const BodyItem = ({ isActive, title, img, onClick }: BodyItemProps) => {
   return (
     <div
       onClick={onClick}
