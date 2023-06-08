@@ -48,22 +48,21 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
   let route;
-  if(!user.isActive){
-    console.log("user is not active")
+  if (!user.isActive) {
+    console.log("user is not active");
     return {
       redirect: {
         destination: "/pages/inactive",
         permanent: true,
       },
-    }
-
-}
+    };
+  }
   switch (user.type) {
     case "AUC":
-      route = "/dashboard/auctionnaire";
+      route = "/dashboard/pro";
       break;
     case "BID":
-        route = "/dashboard/bidder";
+      route = "/dashboard/user";
       break;
     default:
       route = "/admin/dashboard";

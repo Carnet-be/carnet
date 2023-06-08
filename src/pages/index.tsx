@@ -190,10 +190,10 @@ const ProfileButton = () => {
       router.push("/admin/dashboard");
     }
     if (user?.type === "BID") {
-      router.push("/dashboard/bidder");
+      router.push("/dashboard/user");
     }
     if (user?.type === "AUC") {
-      router.push("/dashboard/auctionnaire");
+      router.push("/dashboard/pro");
     }
   };
 

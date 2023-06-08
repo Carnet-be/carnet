@@ -72,7 +72,7 @@ const BidderDashboard = (props: { wishs: number }) => {
   useEffect(() => {
     setWish(props.wishs);
     console.log("props.wishs", props.wishs);
-    router.replace("/dashboard/bidder/home");
+    router.replace("/dashboard/user/home");
   }, [props.wishs]);
 
   return (

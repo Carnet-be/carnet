@@ -16,7 +16,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { trpc } from "@utils/trpc";
 import { createContext } from "react";
 import { prisma } from "../../../server/db/client";
-import { LeftSide, RightSide } from "../../dashboard/bidder/auction/[id]";
+import { LeftSide, RightSide } from "../../dashboard/user/auction/[id]";
 import { useLang, LangCommonContext, LangContext } from "../../hooks";
 
 export const UserContext = createContext<TUser | undefined>(undefined);
@@ -37,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!id) {
     return {
       redirect: {
-        destination: "/dashboard/bidder/home",
+        destination: "/dashboard/user/home",
         permanent: true,
       },
     };

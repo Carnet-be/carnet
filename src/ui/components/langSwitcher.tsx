@@ -73,7 +73,7 @@ const LangSwitcher = ({ border }: { border?: boolean }) => {
       </button>
       <ul
         tabIndex={0}
-        className="dropdown-content menu rounded-box z-50 w-52 gap-2 bg-base-200 p-2 shadow"
+        className="dropdown-content menu rounded-box z-50 w-52 gap-2 bg-base-100 p-2 shadow"
       >
         {langs.map((l, i) => {
           const { title, icon, locale } = l;

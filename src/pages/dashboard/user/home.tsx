@@ -84,7 +84,7 @@ const Home = (
                   if (!isActive) {
                     router.push(
                       {
-                        pathname: "/dashboard/bidder/home",
+                        pathname: "/dashboard/user/home",
                         query: { filter: f },
                       },
                       undefined,

@@ -314,7 +314,7 @@ const CreateAuction = ({
           auction_id: data.id,
           auctioner_id: data.auctionnaire_id,
         });
-        router.push("/dashboard/auctionnaire/myauctions");
+        router.push("/dashboard/pro/myauctions");
         ref.current?.click();
       },
       onMutate: () => toast.loading("En cours de traitement"),
@@ -330,7 +330,7 @@ const CreateAuction = ({
         toast.dismiss();
         toast.success("Opération réussi");
 
-        //  router.push("/dashboard/auctionnaire/myauctions")
+        //  router.push("/dashboard/pro/myauctions")
         if (afterPublish && auction && auction.state !== data[0].state)
           afterPublish(auction?.state, data[0].state);
         if (refetch) {

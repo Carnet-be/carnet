@@ -34,7 +34,7 @@ import { NO_IMAGE_URL } from "@ui/components/auctionCard";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { LangCommonContext, LangContext, useLang } from "../../../hooks";
-import { UserContext } from "../../auctionnaire/auction/[id]";
+import { UserContext } from "../../pro/auction/[id]";
 import { prisma } from "../../../../server/db/client";
 
 import ImageZoom from "@ui/components/imageZoom";
@@ -54,7 +54,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!id) {
     return {
       redirect: {
-        destination: "/dashboard/bidder/home",
+        destination: "/dashboard/user/home",
         permanent: true,
       },
     };
@@ -67,7 +67,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (auction?.state !== "published") {
     return {
       redirect: {
-        destination: "/dashboard/bidder/home",
+        destination: "/dashboard/user/home",
         permanent: true,
       },
     };
@@ -75,7 +75,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (auction.isClosed || auction.end_date! < new Date()) {
     return {
       redirect: {
-        destination: "/dashboard/bidder/home",
+        destination: "/dashboard/user/home",
         permanent: true,
       },
     };
@@ -202,7 +202,6 @@ export const LeftSide = ({ auction }: { auction: TAuction }) => {
           width={imgSize}
           height={400}
         />
-
       </div>
       <div className={cx("border bg-white  p-2", { hidden: noImg })}>
         <Slider {...settings} className="">

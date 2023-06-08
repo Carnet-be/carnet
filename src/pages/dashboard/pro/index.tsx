@@ -47,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const home = "/home";
   return {
     redirect: {
-      destination: "/dashboard/auctionnaire/" + home,
+      destination: "/dashboard/pro/" + home,
       permanent: true,
     },
   };
