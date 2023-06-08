@@ -161,14 +161,14 @@ const Admin = () => {
         <div className="flex flex-col items-stretch gap-3">
           <button
             type="submit"
-            className="w-full w-[300px] rounded-lg bg-white py-2 px-1 font-semibold text-primary"
+            className="w-[300px] rounded-lg bg-white py-2 px-1 font-semibold text-primary"
           >
             {common("button.login")}
           </button>
 
           <div
             onClick={() => router.push("/")}
-            className="w-full w-[300px] cursor-pointer rounded-lg border border-white py-2 px-1 text-center font-semibold text-white"
+            className="w-[300px] cursor-pointer rounded-lg border border-white py-2 px-1 text-center font-semibold text-white"
           >
             {common("text.home")}
           </div>

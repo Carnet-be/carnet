@@ -12,6 +12,7 @@ import {
   BidderIcon,
   DataIcon,
   ChatIcon,
+  GarageIcon,
 } from "./icons";
 import { type UserType } from "@model/type";
 import Logo from "./components/logo";
@@ -116,40 +117,45 @@ const Dashboard = ({
     AUC: [
       {
         title: common("text.home"),
-        route: "/dashboard/auctionnaire/home",
+        route: "/dashboard/pro/home",
         icon: <DashboardIcon />,
       },
       {
+        title: common("text.garage"),
+        route: "/dashboard/pro/garage",
+        icon: <GarageIcon />,
+      },
+      {
         title: common("text.my auctions"),
-        route: "/dashboard/auctionnaire/myauctions",
+        route: "/dashboard/pro/myauctions",
         icon: <AuctionIcon />,
       },
       {
         title: common("text.chat"),
-        route: "/dashboard/auctionnaire/chat",
+        route: "/dashboard/pro/chat",
         icon: <ChatIcon />,
       },
     ],
     BID: [
       {
         title: common("text.home"),
-        route: "/dashboard/bidder/home",
+        route: "/dashboard/user/home",
         icon: <DashboardIcon />,
       },
       {
         title: common("text.my bids"),
-        route: "/dashboard/bidder/mybiddes",
+        route: "/dashboard/user/mybiddes",
         icon: <BidderIcon />,
       },
       {
         title: common("text.wishlist"),
-        route: "/dashboard/bidder/wishlist",
+        route: "/dashboard/user/wishlist",
         icon: <ClipIcon />,
         count: wishs,
       },
       {
         title: common("text.chat"),
-        route: "/dashboard/bidder/chat",
+        route: "/dashboard/user/chat",
         icon: <ChatIcon />,
       },
     ],

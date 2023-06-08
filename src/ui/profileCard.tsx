@@ -81,6 +81,7 @@ import { useState } from "react";
 import { Drawer } from "antd";
 import { Profile } from "./settingsSection";
 import { useLang } from "../pages/hooks";
+import BadgeType from "./components/badgeType";
 
 export const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -166,22 +167,7 @@ export default function CustomizedMenus({
         disableRipple
         className="rounded-lg hover:bg-primary/10"
         onClick={handleClick}
-        startIcon={
-          user && (
-            <Image
-              src={
-                user.type == "AUC"
-                  ? aucitonaireIcon
-                  : user.type == "BID"
-                  ? bidderIcon
-                  : adminIcon
-              }
-              width={25}
-              height={25}
-              alt="icon"
-            />
-          )
-        }
+        startIcon={user && <BadgeType type={user.type} />}
         endIcon={<ExpandMoreIcon className="text-xl" />}
       >
         {user?.username && (

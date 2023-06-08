@@ -115,7 +115,7 @@ const AuctionCard = ({
         onClick={() =>
           mineAuction
             ? undefined
-            : router.push("/dashboard/bidder/auction/" + auction.id)
+            : router.push("/dashboard/user/auction/" + auction.id)
         }
         className={cx(
           "z-50 flex h-[270px] w-[310px] flex-col  gap-[40px] overflow-hidden rounded-2xl bg-base-100 drop-shadow-md",
@@ -140,9 +140,7 @@ const AuctionCard = ({
                 onClick={() =>
                   !mineAuction
                     ? undefined
-                    : router.push(
-                        "/dashboard/auctionnaire/auction/" + auction.id
-                      )
+                    : router.push("/dashboard/pro/auction/" + auction.id)
                 }
               >
                 {auction.name}
@@ -218,7 +216,7 @@ const AuctionCard = ({
               ) : (
                 <>
                   <Link
-                    href={"/dashboard/bidder/auction/" + auction.id}
+                    href={"/dashboard/user/auction/" + auction.id}
                     className="rounded-full bg-green p-[5px] px-3 text-[13px] font-semibold text-white no-underline"
                   >
                     {common("button.bid now")}

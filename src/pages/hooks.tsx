@@ -68,7 +68,7 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
         content.title = t(notification.type + ".title");
         content.body = t(notification.type + ".body");
         content.link =
-          `/admin/dashboard/users/${isBid ? "bidder" : "auctioneers"}?id=` +
+          `/admin/dashboard/users/${isBid ? "normal" : "pro"}?id=` +
           notification.user_id;
         break;
       case "auction modified":
@@ -104,14 +104,13 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
         // }
         content.title = title;
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
-        content.link =
-          "/dashboard/auctionnaire/auction/" + notification.auction_id;
+        content.link = "/dashboard/pro/auction/" + notification.auction_id;
         break;
       case "winner":
         content.title = t(notification.type + "." + user?.type);
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link = `/dashboard/${
-          user?.type === "BID" ? "bidder" : "auctionnaire"
+          user?.type === "BID" ? "user" : "pro"
         }/auction/${notification.auction_id}`;
         break;
 
@@ -120,36 +119,32 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
         content.title = `${title} (${getPrice(notification.montant)})`;
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link =
-          `/dashboard/${
-            user?.type === "AUC" ? "auctionnaire" : "bidder"
-          }/auction/` + notification.auction_id;
+          `/dashboard/${user?.type === "AUC" ? "pro" : "user"}/auction/` +
+          notification.auction_id;
 
         break;
       case "auction expired":
         content.title = t(notification.type);
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link =
-          `/dashboard/${
-            user?.type === "AUC" ? "auctionnaire" : "bidder"
-          }/auction/` + notification.auction_id;
+          `/dashboard/${user?.type === "AUC" ? "pro" : "user"}/auction/` +
+          notification.auction_id;
 
         break;
       case "auction 1h left":
         content.title = t(notification.type);
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link =
-          `/dashboard/${
-            user?.type === "AUC" ? "auctionnaire" : "bidder"
-          }/auction/` + notification.auction_id;
+          `/dashboard/${user?.type === "AUC" ? "pro" : "user"}/auction/` +
+          notification.auction_id;
 
         break;
       case "auction 3h left":
         content.title = t(notification.type);
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link =
-          `/dashboard/${
-            user?.type === "AUC" ? "auctionnaire" : "bidder"
-          }/auction/` + notification.auction_id;
+          `/dashboard/${user?.type === "AUC" ? "pro" : "user"}/auction/` +
+          notification.auction_id;
 
         break;
 
@@ -158,10 +153,10 @@ export const useNotifyMe = ({ uid }: { uid: string }) => {
 
         content.body = `${notification.content}`;
         if (user?.type === "AUC") {
-          content.link = `/dashboard/auctionnaire/chat`;
+          content.link = `/dashboard/pro/chat`;
         }
         if (user?.type === "BID") {
-          content.link = `/dashboard/bidder/chat`;
+          content.link = `/dashboard/user/chat`;
         }
         if (user?.type === "ADMIN") {
           content.link = `/admin/dashboard/chat`;
@@ -293,7 +288,7 @@ export const useGetNotifications = () => {
         content.title = t(notification.type + ".title");
         content.body = t(notification.type + ".body");
         content.link =
-          `/admin/dashboard/users/${isBid ? "bidders" : "auctioneers"}?id=` +
+          `/admin/dashboard/users/${isBid ? "normal" : "pro"}?id=` +
           notification.user_id;
         break;
       case "auction modified":
@@ -329,14 +324,13 @@ export const useGetNotifications = () => {
         // }
         content.title = title;
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
-        content.link =
-          "/dashboard/auctionnaire/auction/" + notification.auction_id;
+        content.link = "/dashboard/pro/auction/" + notification.auction_id;
         break;
       case "winner":
         content.title = t(notification.type + "." + user?.type);
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link = `/dashboard/${
-          user?.type === "BID" ? "bidder" : "auctionnaire"
+          user?.type === "BID" ? "user" : "pro"
         }/auction/${notification.auction_id}`;
         break;
 
@@ -345,36 +339,32 @@ export const useGetNotifications = () => {
         content.title = `${title} (${getPrice(notification.montant)})`;
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link =
-          `/dashboard/${
-            user?.type === "AUC" ? "auctionnaire" : "bidder"
-          }/auction/` + notification.auction_id;
+          `/dashboard/${user?.type === "AUC" ? "pro" : "user"}/auction/` +
+          notification.auction_id;
 
         break;
       case "auction expired":
         content.title = t(notification.type);
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link =
-          `/dashboard/${
-            user?.type === "AUC" ? "auctionnaire" : "bidder"
-          }/auction/` + notification.auction_id;
+          `/dashboard/${user?.type === "AUC" ? "pro" : "user"}/auction/` +
+          notification.auction_id;
 
         break;
       case "auction 1h left":
         content.title = t(notification.type);
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link =
-          `/dashboard/${
-            user?.type === "AUC" ? "auctionnaire" : "bidder"
-          }/auction/` + notification.auction_id;
+          `/dashboard/${user?.type === "AUC" ? "pro" : "user"}/auction/` +
+          notification.auction_id;
 
         break;
       case "auction 3h left":
         content.title = t(notification.type);
         content.body = `${notification.auction_name} (#${notification.auction_id})`;
         content.link =
-          `/dashboard/${
-            user?.type === "AUC" ? "auctionnaire" : "bidder"
-          }/auction/` + notification.auction_id;
+          `/dashboard/${user?.type === "AUC" ? "pro" : "user"}/auction/` +
+          notification.auction_id;
 
         break;
 
@@ -382,10 +372,10 @@ export const useGetNotifications = () => {
         content.title = t(notification.type);
         content.body = `${notification.content}`;
         if (user?.type === "AUC") {
-          content.link = `/dashboard/auctionnaire/chat`;
+          content.link = `/dashboard/pro/chat`;
         }
         if (user?.type === "BID") {
-          content.link = `/dashboard/bidder/chat`;
+          content.link = `/dashboard/user/chat`;
         }
         if (user?.type === "ADMIN") {
           content.link = `/admin/dashboard/chat`;

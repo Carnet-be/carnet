@@ -20,7 +20,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     redirect: {
-      destination: "/admin/dashboard/users/auctioneers",
+      destination: "/admin/dashboard/users/pro",
       permanent: true,
     },
   };
@@ -39,11 +39,11 @@ export const Switcher = () => {
   const routers = [
     {
       title: commmon("text.auctioneers"),
-      route: "/admin/dashboard/users/auctioneers",
+      route: "/admin/dashboard/users/pro",
     },
     {
       title: commmon("text.bidders"),
-      route: "/admin/dashboard/users/bidders",
+      route: "/admin/dashboard/users/normal",
     },
   ];
   return (

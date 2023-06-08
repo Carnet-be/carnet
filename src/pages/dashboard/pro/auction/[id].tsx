@@ -15,7 +15,7 @@ import type { TAuction, TUser } from "@model/type";
 
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { LangCommonContext, LangContext, useLang } from "../../../hooks";
-import { LeftSide, RightSide } from "../../bidder/auction/[id]";
+import { LeftSide, RightSide } from "../../user/auction/[id]";
 import { prisma } from "../../../../server/db/client";
 import { createContext } from "react";
 
@@ -37,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!id) {
     return {
       redirect: {
-        destination: "/dashboard/bidder/home",
+        destination: "/dashboard/user/home",
         permanent: true,
       },
     };

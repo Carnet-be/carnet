@@ -94,7 +94,7 @@ const Auctions = () => {
       key: "name",
       render: (_, v) => (
         <div className="flex flex-col gap-1">
-          <Link href={"/dashboard/bidder/auction/" + (v as any).auction.id}>
+          <Link href={"/dashboard/user/auction/" + (v as any).auction.id}>
             {(v as any).auction.name}
           </Link>
           <span className="text-[12px] italic text-blue-400">
