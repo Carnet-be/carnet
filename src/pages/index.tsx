@@ -193,7 +193,7 @@ const ProfileButton = () => {
       router.push("/dashboard/user");
     }
     if (user?.type === "AUC") {
-      router.push("/dashboard/pro");
+      router.push("/dashboard/entreprise");
     }
   };
 

@@ -20,16 +20,22 @@ import Map, { MapDialog } from "@ui/components/map";
 import { useEffect } from "react";
 import { LangCommonContext, LangContext } from "../../pages/hooks";
 import { COUNTRIES } from "@data/internal";
+import { BuyNow } from "./index";
+import { set } from "lodash";
 const Step6 = ({
   data,
   setData,
   defaultName,
   uploadRef,
+  buyNow,
+  setBuyNow,
 }: {
   data: Data6;
   setData: any;
   defaultName: string;
   uploadRef: MutableRefObject<undefined>;
+  buyNow: BuyNow;
+  setBuyNow: any;
 }) => {
   // useEffect(() => {
   //   setData({ ...data, name: defaultName })
@@ -64,45 +70,77 @@ const Step6 = ({
           value={data.images}
           setValue={(v) => setData({ ...data, images: v })}
         />
-        <div className="flex flex-row items-center gap-3">
-          <TextField
-            label={text("fields.expected price")}
-            type="number"
-            value={data.expected_price}
-            className="flex-grow"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">{"€"}</InputAdornment>
-              ),
-            }}
-            onChange={(e) =>
-              setData({ ...data, expected_price: e.target.value })
-            }
-          />
+        <div className="">
+          <label className="flex flex-row items-center gap-3">
+            <input
+              type="checkbox"
+              className="toggle-primary toggle"
+              checked={!buyNow.buyNow}
+              onChange={(e) => {
+                setBuyNow({ ...buyNow, buyNow: !buyNow.buyNow });
+              }}
+            />
+            <span className="">{text("text.bidding system")}</span>
+          </label>
+        </div>
+        {buyNow.buyNow ? (
+          <div>
+            <TextField
+              label={text("fields.price")}
+              type="number"
+              value={buyNow.price}
+              className="w-[300px]"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">{"€"}</InputAdornment>
+                ),
+              }}
+              onChange={(e) => setBuyNow({ ...buyNow, price: e.target.value })}
+            />
+          </div>
+        ) : (
+          <div className="flex flex-row items-center gap-3">
+            <TextField
+              label={text("fields.expected price")}
+              type="number"
+              value={data.expected_price}
+              className="flex-grow"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">{"€"}</InputAdornment>
+                ),
+              }}
+              onChange={(e) =>
+                setData({ ...data, expected_price: e.target.value })
+              }
+            />
 
-          <div className="flex w-1/2 flex-col gap-1">
-            <span className="text-sm ">{text("fields.auction duration")}</span>
-            <div className="flex flex-row gap-2">
-              {["3 days", "1 week", "2 weeks"].map((n, i) => {
-                return (
-                  <button
-                    key={i}
-                    onClick={() => setData({ ...data, duration: n })}
-                    className={cx(
-                      "btn-primary btn-sm btn h-[2.3rem] rounded-md font-semibold",
-                      {
-                        //   "btn-disabled":n!=="3 days",
-                        "btn-outline": data.duration !== n,
-                      }
-                    )}
-                  >
-                    <span className="">{text("duration." + n)}</span>
-                  </button>
-                );
-              })}
+            <div className="flex w-1/2 flex-col gap-1">
+              <span className="text-sm ">
+                {text("fields.auction duration")}
+              </span>
+              <div className="flex flex-row gap-2">
+                {["3 days", "1 week", "2 weeks"].map((n, i) => {
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => setData({ ...data, duration: n })}
+                      className={cx(
+                        "btn-primary btn-sm btn h-[2.3rem] rounded-md font-semibold",
+                        {
+                          //   "btn-disabled":n!=="3 days",
+                          "btn-outline": data.duration !== n,
+                        }
+                      )}
+                    >
+                      <span className="">{text("duration." + n)}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="flex flex-row gap-2">
           <div className="flex flex-grow flex-col gap-1">

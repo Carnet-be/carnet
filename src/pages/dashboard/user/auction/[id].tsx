@@ -34,7 +34,7 @@ import { NO_IMAGE_URL } from "@ui/components/auctionCard";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { LangCommonContext, LangContext, useLang } from "../../../hooks";
-import { UserContext } from "../../pro/auction/[id]";
+import { UserContext } from "../../entreprise/auction/[id]";
 import { prisma } from "../../../../server/db/client";
 
 import ImageZoom from "@ui/components/imageZoom";

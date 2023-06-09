@@ -53,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   switch (user.type) {
     case "AUC":
-      route = "/dashboard/pro";
+      route = "/dashboard/entreprise";
       break;
     case "BID":
       route = "/dashboard/user";

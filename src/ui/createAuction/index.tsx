@@ -15,7 +15,12 @@ import { BRAND } from "@data/internal";
 import { type FileType } from "rsuite/esm/Uploader";
 import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
-import { AssetImage, type FuelType, type AuctionState } from "@prisma/client";
+import {
+  AssetImage,
+  type FuelType,
+  type AuctionState,
+  Auction,
+} from "@prisma/client";
 import { Router, useRouter } from "next/router";
 import { TAuction } from "@model/type";
 import { ProcessDate } from "@utils/processDate";
@@ -45,6 +50,11 @@ export type Data4 = {
   tires?: number;
   exterior?: number;
   interior?: number;
+};
+
+export type BuyNow = {
+  buyNow: boolean;
+  price?: number;
 };
 
 export type Data5 = {
@@ -140,6 +150,10 @@ const CreateAuction = ({
   const [data3, setdata3] = useState<Data3>({});
   const [data7, setdata7] = useState<Data7>({});
   const [data4, setdata4] = useState<Data4>({});
+  const [buyNow, setBuyNow] = useState<BuyNow>({
+    buyNow: false,
+    price: undefined,
+  });
   const [data5, setdata5] = useState<Data5>({
     airco: false,
     electric_windows: false,
@@ -209,6 +223,7 @@ const CreateAuction = ({
         doors: doors ? doors.toString() : "0" || undefined,
         version: version || undefined,
       };
+
       const { handling, tires, exterior, interior } = rating;
       const d4: Data4 = {
         handling: handling || undefined,
@@ -287,14 +302,20 @@ const CreateAuction = ({
     let valide = true;
 
     if (data6.address == undefined) valide = false;
-    if (data6.duration == undefined) valide = false;
+
     if (data6.description == undefined) valide = false;
     if (data6.city == undefined) valide = false;
     if (data6.country == undefined) valide = false;
     if (data6.zipCode == undefined) valide = false;
     // if (data6.lat == undefined) valide = false;
     // if (data6.lon == undefined) valide = false;
-    if (data6.expected_price == undefined) valide = false;
+    if (buyNow.buyNow) {
+      if (buyNow.price == undefined) valide = false;
+    } else {
+      if (data6.duration == undefined) valide = false;
+      if (data6.expected_price == undefined) valide = false;
+    }
+
     setisValid(step === (auction ? 5 : 6) && valide);
   }, [data6, data1]);
   const router = useRouter();
@@ -305,7 +326,7 @@ const CreateAuction = ({
         console.log("Error from AddAuction > ", err);
         toast.error("Erreur lors de l'ajout");
       },
-      onSuccess: (data) => {
+      onSuccess: (data, v) => {
         toast.dismiss();
         toast.success("Opération réussi");
         sendNotification({
@@ -314,7 +335,14 @@ const CreateAuction = ({
           auction_id: data.id,
           auctioner_id: data.auctionnaire_id,
         });
-        router.push("/dashboard/pro/myauctions");
+        //if data typeof is auction
+        if (v.buyNow.buyNow) {
+          router.push("/dashboard/entreprise/garage");
+        } else {
+          router.push("/dashboard/entreprise/myauctions");
+        }
+
+        router.push("/dashboard/entreprise/myauctions");
         ref.current?.click();
       },
       onMutate: () => toast.loading("En cours de traitement"),
@@ -330,7 +358,7 @@ const CreateAuction = ({
         toast.dismiss();
         toast.success("Opération réussi");
 
-        //  router.push("/dashboard/pro/myauctions")
+        //  router.push("/dashboard/entreprise/myauctions")
         if (afterPublish && auction && auction.state !== data[0].state)
           afterPublish(auction?.state, data[0].state);
         if (refetch) {
@@ -349,11 +377,12 @@ const CreateAuction = ({
         data5,
         data6,
         data7,
+
         auction: edit,
         log: "edit",
       });
     } else {
-      addAuction({ data1, data3, data4, data5, data6 });
+      addAuction({ data1, data3, data4, data5, data6, buyNow });
     }
   };
   const onPublish = ({ state, log }: { state: AuctionState; log: string }) =>
@@ -401,6 +430,8 @@ const CreateAuction = ({
                 {step == 5 && (
                   <Step6
                     data={data6}
+                    setBuyNow={setBuyNow}
+                    buyNow={buyNow}
                     uploadRef={uploadRef}
                     setData={setdata6}
                     defaultName={edit?.name || ""}
@@ -424,6 +455,8 @@ const CreateAuction = ({
                 {step == 6 && (
                   <Step6
                     data={data6}
+                    buyNow={buyNow}
+                    setBuyNow={setBuyNow}
                     uploadRef={uploadRef}
                     setData={setdata6}
                     defaultName={`${data1.brand} ${data1.model} ${data1.buildYear}`}

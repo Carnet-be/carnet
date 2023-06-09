@@ -49,10 +49,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  //const home="/users/pro"
+  //const home="/users/entreprise"
   return {
     redirect: {
-      destination: "/admin/dashboard/users/pro",
+      destination: "/admin/dashboard/users/entreprise",
       permanent: true,
     },
   };
@@ -77,7 +77,7 @@ const AdminDashboard: NextPage = (
   // const init=async()=>{
 
   useEffect(() => {
-    router.push("/admin/dashboard/users/pro");
+    router.push("/admin/dashboard/users/entreprise");
   }, []);
   // toast.loading("Loading data...")
 

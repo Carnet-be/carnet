@@ -140,7 +140,7 @@ const AuctionCard = ({
                 onClick={() =>
                   !mineAuction
                     ? undefined
-                    : router.push("/dashboard/pro/auction/" + auction.id)
+                    : router.push("/dashboard/entreprise/auction/" + auction.id)
                 }
               >
                 {auction.name}

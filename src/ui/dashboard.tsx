@@ -117,22 +117,22 @@ const Dashboard = ({
     AUC: [
       {
         title: common("text.home"),
-        route: "/dashboard/pro/home",
+        route: "/dashboard/entreprise/home",
         icon: <DashboardIcon />,
       },
       {
         title: common("text.garage"),
-        route: "/dashboard/pro/garage",
+        route: "/dashboard/entreprise/garage",
         icon: <GarageIcon />,
       },
       {
         title: common("text.my auctions"),
-        route: "/dashboard/pro/myauctions",
+        route: "/dashboard/entreprise/myauctions",
         icon: <AuctionIcon />,
       },
       {
         title: common("text.chat"),
-        route: "/dashboard/pro/chat",
+        route: "/dashboard/entreprise/chat",
         icon: <ChatIcon />,
       },
     ],

@@ -47,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   switch (user.type) {
     case "AUC":
-      route = "/dashboard/pro";
+      route = "/dashboard/entreprise";
       break;
     case "BID":
       if (user.isActive) {
@@ -114,7 +114,7 @@ const EmailVerification: NextPage = () => {
       <div className="flex-grow bg-[#BBC3D7]"></div>
       <div className="fixed z-20 flex h-screen w-screen flex-row items-center justify-center p-4">
         {isLoading ? (
-          <button className="btn-xl loading btn-ghost btn"></button>
+          <button className="btn-xl btn-ghost loading btn"></button>
         ) : (
           <>
             <div className="flex h-[500px] w-full max-w-4xl flex-col items-center gap-3 rounded-xl bg-white p-6 shadow-lg">

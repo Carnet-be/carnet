@@ -54,6 +54,8 @@
     "fields": {
       "brand": "Brand",
       "model": "Model",
+      "bidding system": "Bidding System",
+      "price": "Price",
       "build year": "Year of Manufacture",
       "fuel": "Fuel",
       "mileage": "Mileage",

@@ -66,6 +66,65 @@ export const auctionnaireRouter = router({
       console.log("images", data6.images);
       const name = data1.brand + " " + data1.model + " " + data1.buildYear;
 
+      const buyNow = input.buyNow;
+
+      if (buyNow.buyNow) {
+        return await ctx.prisma.car.create({
+          data: {
+            id,
+            name,
+            brand: data1.brand!,
+            model: data1.model!,
+            build_year: data1.buildYear!,
+            fuel: data1.fuel,
+            //images,
+            description: data6.description,
+
+            price: parseFloat(buyNow.price.toString()),
+            images: {
+              createMany: {
+                data: data6.images,
+              },
+            },
+            color: data1.color,
+            //auctionnaire_id: auctionnaire_id||"",
+            auctionnaire: {
+              connect: {
+                email: ctx.session?.user?.email || "",
+              },
+            },
+            address: {
+              create: {
+                zipCode: data6.zipCode,
+                city: data6.city,
+                country: data6.country,
+                lat: data6.lat!,
+                lon: data6.lon!,
+                address: data6.address,
+              },
+            },
+            rating: {
+              create: data4,
+            },
+            specs: {
+              create: {
+                carrosserie: data3.carrosserie,
+                cc: data3.cc,
+                cv: data3.cv,
+                co2: data3.co2,
+                kilometrage: data3.kilometrage,
+                version: data3.version,
+                transmission: data3.transmission,
+                doors: data3.doors ? parseInt(data3.doors) : null,
+              },
+            },
+            options: {
+              create: data5,
+            },
+          },
+        });
+      }
+
       return await ctx.prisma.auction.create({
         data: {
           id,
