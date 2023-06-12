@@ -45,11 +45,11 @@ model User {
   logsAuctions LogAuction[]
 
   // relation
-  image    AssetImage?
-  auctions Auction[]
-  bids     Bid[]
-  tokens   Token[]
-
+  image            AssetImage?
+  auctions         Auction[]
+  bids             Bid[]
+  tokens           Token[]
+  Car              Car[]
   internalMessages InternalMessage[] @relation("auctioner")
   Blog             Blog[]
   Address          Address?          @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -107,8 +107,42 @@ model Auction {
   @@index([auctionnaire_id])
 }
 
+model Car {
+  id         String   @id
+  createAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
+  // field
+  name       String
+  brand      String
+  model      String
+  build_year Int?
+  fuel       FuelType
+
+  commission Float?
+
+  isClosed    Boolean   @default(false)
+  closedAt    DateTime?
+  description String?   @db.Text()
+
+  price   Float
+  color   String?
+  state   AuctionState    @default(pending)
+  // relation
+  specs   AuctionSpecs?
+  options AuctionOptions?
+  rating  AuctionRating?
+  address Address?
+  images  AssetImage[]
+
+  // favorite_by     User[]       @relation(name: "favorite")
+  auctionnaire_id String
+  auctionnaire    User   @relation(fields: [auctionnaire_id], references: [id], onDelete: Cascade)
+
+  @@index([auctionnaire_id])
+}
+
 model AuctionSpecs {
-  id           String  @id @default(cuid())
+  id           String   @id @default(cuid())
   carrosserie  Int?
   transmission Int?
   doors        Int?
@@ -118,45 +152,54 @@ model AuctionSpecs {
   kilometrage  String?
   version      String?
   ///
-  auction_id   String  @unique
-  auction      Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  auction_id   String?  @unique
+  auction      Auction? @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+
+  car_id String? @unique
+  car    Car?    @relation(fields: [car_id], references: [id], onDelete: Cascade)
 }
 
 model AuctionOptions {
-  id                          String  @id @default(cuid())
-  airco                       Boolean @default(false)
-  electric_windows            Boolean @default(false)
-  climate_control             Boolean @default(false)
-  panoramic_roof_or_open_roof Boolean @default(false)
-  central_locking             Boolean @default(false)
-  xenon_lighting              Boolean @default(false)
-  light_alloy_wheels          Boolean @default(false)
-  four_by_four                Boolean @default(false)
-  power_steering              Boolean @default(false)
-  cruise_control              Boolean @default(false)
-  radio_cd                    Boolean @default(false)
-  parking_sensors             Boolean @default(false)
-  on_board_computer           Boolean @default(false)
-  parking_camera              Boolean @default(false)
-  start_stop                  Boolean @default(false)
-  electric_mirrors            Boolean @default(false)
-  abs                         Boolean @default(false)
-  tow_hook                    Boolean @default(false)
-  dead_angle_detection        Boolean @default(false)
+  id                          String   @id @default(cuid())
+  airco                       Boolean  @default(false)
+  electric_windows            Boolean  @default(false)
+  climate_control             Boolean  @default(false)
+  panoramic_roof_or_open_roof Boolean  @default(false)
+  central_locking             Boolean  @default(false)
+  xenon_lighting              Boolean  @default(false)
+  light_alloy_wheels          Boolean  @default(false)
+  four_by_four                Boolean  @default(false)
+  power_steering              Boolean  @default(false)
+  cruise_control              Boolean  @default(false)
+  radio_cd                    Boolean  @default(false)
+  parking_sensors             Boolean  @default(false)
+  on_board_computer           Boolean  @default(false)
+  parking_camera              Boolean  @default(false)
+  start_stop                  Boolean  @default(false)
+  electric_mirrors            Boolean  @default(false)
+  abs                         Boolean  @default(false)
+  tow_hook                    Boolean  @default(false)
+  dead_angle_detection        Boolean  @default(false)
   ///
-  auction_id                  String  @unique
-  auction                     Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  auction_id                  String?  @unique
+  auction                     Auction? @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+
+  car_id String? @unique
+  car    Car?    @relation(fields: [car_id], references: [id], onDelete: Cascade)
 }
 
 model AuctionRating {
-  id         String  @id @default(cuid())
+  id         String   @id @default(cuid())
   handling   Int?
   tires      Int?
   exterior   Int?
   interior   Int?
   ///
-  auction_id String  @unique
-  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+  auction_id String?  @unique
+  auction    Auction? @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+
+  car_id String? @unique
+  car    Car?    @relation(fields: [car_id], references: [id], onDelete: Cascade)
 }
 
 model Address {
@@ -172,9 +215,12 @@ model Address {
   lat        Float?
   lon        Float?
   //
-  auction_id String  @unique
-  auction    Auction @relation(fields: [auction_id], references: [id], onDelete: Cascade)
-  User       User[]
+  auction_id String?  @unique
+  auction    Auction? @relation(fields: [auction_id], references: [id], onDelete: Cascade)
+
+  car_id String? @unique
+  car    Car?    @relation(fields: [car_id], references: [id], onDelete: Cascade)
+  User   User[]
 }
 
 model Bid {
@@ -207,6 +253,9 @@ model AssetImage {
   user_id String? @unique
   user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   Blog    Blog[]
+
+  car_id String? @unique
+  car    Car?    @relation(fields: [car_id], references: [id], onDelete: Cascade)
 
   @@index([auction_id])
 }

@@ -23,6 +23,7 @@ import {
   BiSupport,
   BiDollarCircle,
   BiImport,
+  BiCar,
 } from "react-icons/bi";
 import {
   AiTwotoneSetting,
@@ -52,7 +53,6 @@ import { GoDatabase } from "react-icons/go";
 import { GrPauseFill, GrView } from "react-icons/gr";
 import { FaCrown } from "react-icons/fa";
 import { GiHomeGarage } from "react-icons/gi";
-
 export const PersonIcon = BsPerson;
 export const EmailIcon = HiOutlineMail;
 export const TelIcon = BsTelephone;
@@ -93,3 +93,4 @@ export const ChatIcon = IoMdChatbubbles;
 export const DashboardIcon2 = MdOutlineDashboard;
 export const XIcon = AiFillCloseCircle;
 export const GarageIcon = GiHomeGarage;
+export const CarIcon = BiCar;

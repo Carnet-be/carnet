@@ -11,7 +11,7 @@ import MyTable, { ActionTable } from "@ui/components/table";
 import type { User } from "@prisma/client";
 import type { ColumnsType } from "antd/es/table";
 import { Tag } from "antd";
-import { Switcher } from "./users";
+
 import { AddIcon } from "@ui/icons";
 import { AddStaffDialog } from "./staff";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";

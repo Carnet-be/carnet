@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { BRAND } from "@data/internal";
-import type { TAuction } from "@model/type";
+import type { TAuction, TCar } from "@model/type";
 import { AuctionState } from "@prisma/client";
 import {
   type Data3,
@@ -65,6 +65,65 @@ export const auctionnaireRouter = router({
       }
       console.log("images", data6.images);
       const name = data1.brand + " " + data1.model + " " + data1.buildYear;
+
+      const buyNow = input.buyNow;
+
+      if (buyNow.buyNow) {
+        return await ctx.prisma.car.create({
+          data: {
+            id,
+            name,
+            brand: data1.brand!,
+            model: data1.model!,
+            build_year: data1.buildYear!,
+            fuel: data1.fuel,
+            //images,
+            description: data6.description,
+
+            price: parseFloat(buyNow.price.toString()),
+            images: {
+              createMany: {
+                data: data6.images,
+              },
+            },
+            color: data1.color,
+            //auctionnaire_id: auctionnaire_id||"",
+            auctionnaire: {
+              connect: {
+                email: ctx.session?.user?.email || "",
+              },
+            },
+            address: {
+              create: {
+                zipCode: data6.zipCode,
+                city: data6.city,
+                country: data6.country,
+                lat: data6.lat!,
+                lon: data6.lon!,
+                address: data6.address,
+              },
+            },
+            rating: {
+              create: data4,
+            },
+            specs: {
+              create: {
+                carrosserie: data3.carrosserie,
+                cc: data3.cc,
+                cv: data3.cv,
+                co2: data3.co2,
+                kilometrage: data3.kilometrage,
+                version: data3.version,
+                transmission: data3.transmission,
+                doors: data3.doors ? parseInt(data3.doors) : null,
+              },
+            },
+            options: {
+              create: data5,
+            },
+          },
+        });
+      }
 
       return await ctx.prisma.auction.create({
         data: {
@@ -182,7 +241,7 @@ export const auctionnaireRouter = router({
 
       const duration = processDate.getDuration(data6.duration);
       const end_date = processDate.endDate(duration);
-      let pause_date = auction.pause_date;
+
       console.log("images", data6.images);
       const idsImage = data6.images.map((dim) => dim.fileKey);
       const deleteImage = auction.images.filter(
@@ -194,6 +253,8 @@ export const auctionnaireRouter = router({
       );
       const auction_id = auction.id;
       const state: AuctionState = input.state;
+
+      let pause_date = auction.pause_date;
       if (input.state == "published") {
         if (auction.pause_date) {
           const pause = new Date().getTime() - auction.pause_date.getTime();
@@ -304,6 +365,90 @@ export const auctionnaireRouter = router({
           return auction;
         });
     }),
+
+  updateCar: publicProcedure.input(z.any()).mutation(async ({ input, ctx }) => {
+    const auction: TCar = input.auction;
+    const data1: Data1 = input.data1;
+    const data3: Data3 = input.data3;
+    const data4: Data4 = input.data4;
+    delete input.data5.auction_id;
+    const data5: Data5 = input.data5;
+    const data6: Data6 = input.data6;
+    const buyNow = input.buyNow;
+
+    console.log("images", data6.images);
+    const idsImage = data6.images.map((dim) => dim.fileKey);
+    const deleteImage = auction.images.filter(
+      (im) => !idsImage.includes(im.fileKey)
+    );
+    const idsImageAdd = auction.images.map((dim) => dim.fileKey);
+    const addImage = data6.images.filter(
+      (im) => !idsImageAdd.includes(im.fileKey)
+    );
+    const car_id = auction.id;
+    const state: AuctionState = input.state;
+
+    return await ctx.prisma.$transaction([
+      ctx.prisma.car.update({
+        where: { id: auction.id },
+        data: {
+          name: data6.name!,
+          brand: data1.brand!,
+          model: data1.model!,
+          state,
+          build_year: data1.buildYear!,
+          fuel: data1.fuel,
+          images: {
+            deleteMany: deleteImage,
+            createMany: {
+              data: addImage,
+            },
+          },
+          description: data6.description,
+
+          color: data1.color,
+          //test confirmation
+          //end_date: new Date(),
+
+          price: parseFloat(buyNow.price!.toString()),
+        },
+      }),
+
+      ctx.prisma.auctionSpecs.update({
+        where: { car_id },
+        data: {
+          carrosserie: data3.carrosserie,
+          cc: data3.cc,
+          cv: data3.cv,
+          co2: data3.co2,
+          kilometrage: data3.kilometrage,
+          version: data3.version,
+          transmission: data3.transmission,
+          doors: data3.doors ? parseInt(data3.doors) : null,
+        },
+      }),
+      ctx.prisma.auctionOptions.update({
+        where: { car_id },
+        data: data5,
+      }),
+      ctx.prisma.auctionRating.update({
+        where: { car_id },
+        data: data4,
+      }),
+      ctx.prisma.address.update({
+        where: { car_id },
+        data: {
+          zipCode: data6.zipCode,
+          city: data6.city,
+          country: data6.country,
+          lat: data6.lat,
+          lon: data6.lon,
+          address: data6.address,
+        },
+      }),
+    ]);
+  }),
+
   getAuctions: publicProcedure
     .input(
       z.object({
@@ -346,6 +491,47 @@ export const auctionnaireRouter = router({
         },
         include: {
           bids: true,
+          images: true,
+          specs: true,
+          rating: true,
+          auctionnaire: true,
+          options: true,
+          address: true,
+        },
+        orderBy: {
+          createAt: "desc",
+        },
+      });
+    }),
+  getCars: publicProcedure
+    .input(
+      z.object({
+        state: z.enum(["pending", "published"]).optional(),
+        filter: z.enum(["all", "mine"]),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      let condition = {};
+
+      switch (input.filter) {
+        case "mine":
+          condition = {
+            favorite_by: { some: { email: ctx.session?.user?.email } },
+          };
+          break;
+
+        default:
+          break;
+      }
+
+      return await ctx.prisma.car.findMany({
+        where: {
+          ...condition,
+          isClosed: false,
+
+          state: input.state || "published",
+        },
+        include: {
           images: true,
           specs: true,
           rating: true,

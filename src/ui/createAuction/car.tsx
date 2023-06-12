@@ -22,91 +22,23 @@ import {
   Auction,
 } from "@prisma/client";
 import { Router, useRouter } from "next/router";
-import { TAuction } from "@model/type";
+import { TAuction, TCar } from "@model/type";
 import { ProcessDate } from "@utils/processDate";
 import Step7 from "./step7";
 import { sendNotification } from "../../repository";
 import { LangCommonContext, LangContext, useLang } from "../../pages/hooks";
+import { BuyNow, Data1, Data3, Data4, Data5, Data6, Data7, Stepper } from ".";
 
-export type Data1 = {
-  brand?: string;
-  fuel: FuelType;
-  model?: string;
-  color?: string;
-  buildYear?: number | null;
-};
-export type Data3 = {
-  carrosserie?: number;
-  transmission?: number;
-  doors?: string;
-  cv?: string;
-  cc?: string;
-  version?: string;
-  co2?: string;
-  kilometrage?: string;
-};
-export type Data4 = {
-  handling?: number;
-  tires?: number;
-  exterior?: number;
-  interior?: number;
-};
-
-export type BuyNow = {
-  buyNow: boolean;
-  price?: number;
-};
-
-export type Data5 = {
-  airco: boolean;
-  electric_windows: boolean;
-  climate_control: boolean;
-  panoramic_roof_or_open_roof: boolean;
-  central_locking: boolean;
-  xenon_lighting: boolean;
-  light_alloy_wheels: boolean;
-  four_by_four: boolean;
-  power_steering: boolean;
-  cruise_control: boolean;
-  radio_cd: boolean;
-  parking_sensors: boolean;
-  on_board_computer: boolean;
-  parking_camera: boolean;
-  start_stop: boolean;
-  electric_mirrors: boolean;
-  abs: boolean;
-  tow_hook: boolean;
-  dead_angle_detection: boolean;
-};
-
-export type Data6 = {
-  name?: string;
-  images: AssetImage[];
-
-  expected_price?: number;
-  duration: "3 days" | "1 week" | "2 weeks";
-  address?: string;
-  description?: string;
-  zipCode?: string;
-  city?: string;
-  country?: string;
-  lat?: number;
-  lon?: number;
-};
-export type Data7 = {
-  starting_price?: number;
-  commission?: number;
-};
-const CreateAuction = ({
+const CreateAuctionCar = ({
   auction,
-  isEdit,
+
   onCancel,
   id,
   refetch,
   afterPublish,
   isAdmin,
 }: {
-  auction?: TAuction;
+  auction?: TCar;
   isEdit?: boolean;
   onCancel?: () => void;
   id?: string;
@@ -193,7 +125,7 @@ const CreateAuction = ({
         options,
         rating,
         images,
-        expected_price,
+        price,
       } = edit;
       const d1: Data1 = {
         brand,
@@ -240,15 +172,13 @@ const CreateAuction = ({
         ...o,
       };
 
-      const { duration, description } = edit;
+      const { description } = edit;
       const { address: adresse, zipCode, city, country, lat, lon } = address;
-      const process = new ProcessDate();
+
       const d6: Data6 = {
         name,
         images,
-
-        expected_price,
-        duration: process.getDurationName(duration),
+        duration: "3 days",
         address: adresse || undefined,
         description: description || undefined,
         zipCode: zipCode || undefined,
@@ -257,9 +187,9 @@ const CreateAuction = ({
         lat: lat || undefined,
         lon: lon || undefined,
       };
-      setdata7({
-        starting_price: edit.starting_price || undefined,
-        commission: edit.commission || undefined,
+      setBuyNow({
+        buyNow: true,
+        price: edit.price,
       });
       setdata3(d3);
       setdata4(d4);
@@ -316,7 +246,7 @@ const CreateAuction = ({
       if (data6.expected_price == undefined) valide = false;
     }
 
-    setisValid(step === (auction ? 5 : 6) && valide);
+    setisValid(step === 5 && valide);
   }, [data6, data1]);
   const router = useRouter();
   const { mutate: addAuction, isLoading } =
@@ -348,7 +278,7 @@ const CreateAuction = ({
       onMutate: () => toast.loading("En cours de traitement"),
     });
   const { mutate: updateAuction, isLoading: isUpdating } =
-    trpc.auctionnaire.updateAuction.useMutation({
+    trpc.auctionnaire.updateCar.useMutation({
       onError: (err) => {
         toast.dismiss();
         console.log("Error from Update Auction > ", err);
@@ -359,8 +289,8 @@ const CreateAuction = ({
         toast.success("Opération réussi");
 
         //  router.push("/dashboard/entreprise/myauctions")
-        if (afterPublish && auction && auction.state !== data[0].state)
-          afterPublish(auction?.state, data[0].state);
+        // if (afterPublish && auction && auction.state !== data[0].state)
+        //   afterPublish(auction?.state, data[0].state);
         if (refetch) {
           refetch();
         }
@@ -376,10 +306,9 @@ const CreateAuction = ({
         data4,
         data5,
         data6,
-        data7,
-
         auction: edit,
-        log: "edit",
+
+        buyNow,
       });
     } else {
       addAuction({ data1, data3, data4, data5, data6, buyNow });
@@ -392,10 +321,9 @@ const CreateAuction = ({
       data4,
       data5,
       data6,
-      data7,
       auction: edit,
       state,
-      log,
+      buyNow,
     });
   const ref = useRef<HTMLLabelElement | null>(null);
   return (
@@ -408,61 +336,31 @@ const CreateAuction = ({
         />
         <div className={cx("modal fixed top-0 left-0 z-[1000]")}>
           <div className="modal-box flex min-h-[500px] flex-col justify-between gap-2 lg:max-w-2xl">
-            {auction ? (
-              <StepperEdit isAdmin={isAdmin} step={step} />
-            ) : (
-              <Stepper step={step} />
+            <StepperEdit isAdmin={isAdmin} step={step} />
+
+            {step == 1 && (
+              <Step1
+                data={data1}
+                setData={setdata1}
+                disabled={auction == undefined ? false : true}
+              />
             )}
 
-            {auction ? (
-              <>
-                {step == 1 && (
-                  <Step1
-                    data={data1}
-                    setData={setdata1}
-                    disabled={auction == undefined ? false : true}
-                  />
-                )}
-
-                {step == 2 && <Step3 data={data3} setData={setdata3} />}
-                {step == 3 && <Step4 data={data4} setData={setdata4} />}
-                {step == 4 && <Step5 data={data5} setData={setdata5} />}
-                {step == 5 && (
-                  <Step6
-                    data={data6}
-                    setBuyNow={setBuyNow}
-                    buyNow={buyNow}
-                    uploadRef={uploadRef}
-                    setData={setdata6}
-                    defaultName={edit?.name || ""}
-                  />
-                )}
-                {step == 6 && <Step7 data={data7} setData={setdata7} />}
-              </>
-            ) : (
-              <>
-                {step == 1 && (
-                  <Step1
-                    data={data1}
-                    setData={setdata1}
-                    disabled={auction == undefined ? false : true}
-                  />
-                )}
-                {step == 2 && <Step2 />}
-                {step == 3 && <Step3 data={data3} setData={setdata3} />}
-                {step == 5 && <Step4 data={data4} setData={setdata4} />}
-                {step == 4 && <Step5 data={data5} setData={setdata5} />}
-                {step == 6 && (
-                  <Step6
-                    data={data6}
-                    buyNow={buyNow}
-                    setBuyNow={setBuyNow}
-                    uploadRef={uploadRef}
-                    setData={setdata6}
-                    defaultName={`${data1.brand} ${data1.model} ${data1.buildYear}`}
-                  />
-                )}
-              </>
+            {step == 2 && <Step3 data={data3} setData={setdata3} />}
+            {step == 3 && <Step4 data={data4} setData={setdata4} />}
+            {step == 4 && <Step5 data={data5} setData={setdata5} />}
+            {step == 5 && (
+              <Step6
+                data={data6}
+                setBuyNow={setBuyNow}
+                buyNow={buyNow}
+                readOnly={{
+                  buyNow: true,
+                }}
+                uploadRef={uploadRef}
+                setData={setdata6}
+                defaultName={edit?.name || ""}
+              />
             )}
 
             <div className="modal-action flex flex-row items-center">
@@ -477,7 +375,7 @@ const CreateAuction = ({
               <div className="flex-grow"></div>
               <button
                 onClick={back}
-                className={cx("btn-primary btn-outline btn-sm btn", {
+                className={cx("btn-outline btn-primary btn-sm btn", {
                   hidden: step <= 1,
                 })}
               >
@@ -487,7 +385,7 @@ const CreateAuction = ({
                 onClick={next}
                 className={cx("btn-primary btn-sm btn", {
                   "btn-disabled": !isNext,
-                  hidden: (step == 2 && !auction) || step == (isAdmin ? 6 : 6),
+                  hidden: (step == 2 && !auction) || step == 5,
                 })}
               >
                 {common("button.next")}
@@ -496,7 +394,7 @@ const CreateAuction = ({
                 onClick={onValid}
                 className={cx("btn-primary btn-sm btn", {
                   "btn-disabled": !isValid || isLoading || isUpdating,
-                  hidden: auction || step !== (isAdmin ? 6 : 6),
+                  hidden: auction || step !== 5,
                 })}
               >
                 {common("button.validate")}
@@ -507,15 +405,11 @@ const CreateAuction = ({
                     log:
                       auction?.state == "pause"
                         ? "edit"
-                        : step == 6
+                        : step == 5
                         ? "published"
                         : "edit",
                     state:
-                      auction?.state == "pause"
-                        ? "pause"
-                        : step == 6
-                        ? "published"
-                        : auction?.state || "published",
+                      step == 5 ? "published" : auction?.state || "published",
                   })
                 }
                 className={cx("btn-warning btn-sm btn", {
@@ -526,7 +420,7 @@ const CreateAuction = ({
                   "button." +
                     (auction?.state == "pause"
                       ? "save"
-                      : step == 6
+                      : step == 5
                       ? "save and publish"
                       : "save")
                 )}
@@ -539,34 +433,9 @@ const CreateAuction = ({
   );
 };
 
-export const Stepper = ({ step }: { step: number }) => {
-  const { data: session } = useSession();
-  const t = useContext(LangContext);
-  const text = (key: string) => t(`steps.${key}`);
-  return (
-    <ul className="steps w-full text-[10px] font-bold">
-      {Array.from({ length: 6 }, (_, i) => i + 1).map((k, i) => {
-        return (
-          <li
-            key={k}
-            className={cx("step", {
-              "step-primary": k <= step,
-              hidden: session && k == 2,
-            })}
-          >
-            {k === 1 && text("identify")}
-            {k === 2 && text("login/registration")}
-            {k === 3 && text("specs")}
-            {k === 4 && text("options")}
-            {k === 5 && text("rating")}
-            {k === 6 && text("validation")}
-          </li>
-        );
-      })}
-    </ul>
-  );
-};
-export const StepperEdit = ({
+export default CreateAuctionCar;
+
+const StepperEdit = ({
   step,
   isAdmin,
 }: {
@@ -577,7 +446,7 @@ export const StepperEdit = ({
   const text = (key: string) => t(`steps.${key}`);
   return (
     <ul className="steps w-full  text-[10px] font-bold">
-      {Array.from({ length: isAdmin ? 6 : 5 }, (_, i) => i + 1).map((k, i) => {
+      {Array.from({ length: 5 }, (_, i) => i + 1).map((k, i) => {
         return (
           <li
             key={k}
@@ -591,12 +460,9 @@ export const StepperEdit = ({
             {k === 4 && text("rating")}
 
             {k === 5 && text("validation")}
-            {k === 6 && text("finalisation")}
           </li>
         );
       })}
     </ul>
   );
 };
-
-export default CreateAuction;

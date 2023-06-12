@@ -13,6 +13,7 @@ import {
   DataIcon,
   ChatIcon,
   GarageIcon,
+  CarIcon,
 } from "./icons";
 import { type UserType } from "@model/type";
 import Logo from "./components/logo";
@@ -84,6 +85,11 @@ const Dashboard = ({
         icon: <AuctionIcon />,
       },
       {
+        title: common("text.cars"),
+        route: "/admin/dashboard/cars",
+        icon: <CarIcon />,
+      },
+      {
         title: common("text.bids"),
         route: "/admin/dashboard/bids",
         icon: <BidderIcon />,
@@ -117,22 +123,22 @@ const Dashboard = ({
     AUC: [
       {
         title: common("text.home"),
-        route: "/dashboard/pro/home",
+        route: "/dashboard/entreprise/home",
         icon: <DashboardIcon />,
       },
       {
         title: common("text.garage"),
-        route: "/dashboard/pro/garage",
+        route: "/dashboard/entreprise/garage",
         icon: <GarageIcon />,
       },
       {
         title: common("text.my auctions"),
-        route: "/dashboard/pro/myauctions",
+        route: "/dashboard/entreprise/myauctions",
         icon: <AuctionIcon />,
       },
       {
         title: common("text.chat"),
-        route: "/dashboard/pro/chat",
+        route: "/dashboard/entreprise/chat",
         icon: <ChatIcon />,
       },
     ],
