@@ -67,7 +67,7 @@ const Auctions = (
 
 export default Auctions;
 
-export const SwitcherAuctions = () => {
+const SwitcherAuctions = () => {
   const { text } = useLang({
     file: "dashboard",
     selector: "auction",

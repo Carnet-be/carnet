@@ -6,6 +6,7 @@
   },
   "admin": {
     "text": {
+      "cars page title": "Cars Management",
       "auction page title": "Auction Management",
       "bids page title": "Bids Management",
       "users page title": "Users Management",
@@ -97,6 +98,7 @@
       "initial bid": "Initial Bid",
       "starting price": "Starting Price",
       "current bid": "Current Bid",
+      "bidding system": "Bidding System",
       "description": "Description",
       "check options": "Check your car's options",
       "sign up success": "Your account has been successfully created",

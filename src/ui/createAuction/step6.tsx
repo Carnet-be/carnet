@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ButtonGroup,
@@ -29,6 +30,7 @@ const Step6 = ({
   uploadRef,
   buyNow,
   setBuyNow,
+  readOnly,
 }: {
   data: Data6;
   setData: any;
@@ -36,6 +38,7 @@ const Step6 = ({
   uploadRef: MutableRefObject<undefined>;
   buyNow: BuyNow;
   setBuyNow: any;
+  readOnly?: any;
 }) => {
   // useEffect(() => {
   //   setData({ ...data, name: defaultName })
@@ -76,6 +79,7 @@ const Step6 = ({
               type="checkbox"
               className="toggle-primary toggle"
               checked={!buyNow.buyNow}
+              disabled={readOnly?.buyNow || false}
               onChange={(e) => {
                 setBuyNow({ ...buyNow, buyNow: !buyNow.buyNow });
               }}
@@ -90,6 +94,7 @@ const Step6 = ({
               type="number"
               value={buyNow.price}
               className="w-[300px]"
+              InputLabelProps={{ shrink: true }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">{"€"}</InputAdornment>

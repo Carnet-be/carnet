@@ -8,7 +8,7 @@ export const globalRouter = router({
     .input(
       z.object({
         id: z.string(),
-        table: z.enum(["auction", "user"]),
+        table: z.enum(["auction", "user", "car"]),
         moreCondition: z.any().optional(),
       })
     )

@@ -38,28 +38,30 @@ const Step5 = ({ data, setData }: { data: Data5; setData: any }) => {
         {text("text.check options")} :
       </span>
       <div className="flex flex-wrap items-center justify-center gap-1">
-        {Object.keys(data).map((k, i) => {
-          return (
-            <div
-              key={i}
-              className="form-control w-[30%] rounded-lg border p-2 text-[]"
-            >
-              <label className="label flex  w-full cursor-pointer flex-row items-center justify-start  gap-2 break-words">
-                <input
-                  type="checkbox"
-                  checked={data[k as keyof Data5]}
-                  onChange={(e) => {
-                    const obj = { ...data };
-                    obj[k as keyof Data5] = e.target.checked;
-                    setData(obj);
-                  }}
-                  className="checkbox-primary checkbox checkbox-sm"
-                />
-                <span className="label-text">{op(k)}</span>
-              </label>
-            </div>
-          );
-        })}
+        {Object.keys(data)
+          .filter((f) => f !== "car_id")
+          .map((k, i) => {
+            return (
+              <div
+                key={i}
+                className="form-control w-[30%] rounded-lg border p-2 text-[]"
+              >
+                <label className="label flex  w-full cursor-pointer flex-row items-center justify-start  gap-2 break-words">
+                  <input
+                    type="checkbox"
+                    checked={data[k as keyof Data5]}
+                    onChange={(e) => {
+                      const obj = { ...data };
+                      obj[k as keyof Data5] = e.target.checked;
+                      setData(obj);
+                    }}
+                    className="checkbox-primary checkbox checkbox-sm"
+                  />
+                  <span className="label-text">{op(k)}</span>
+                </label>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

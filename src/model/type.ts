@@ -9,6 +9,7 @@ import type {
   User,
   Bid,
   AssetImage,
+  Car,
 } from "@prisma/client";
 
 //Auth
@@ -45,6 +46,15 @@ export type TAuction = Auction & {
   rating: AuctionRating;
   bids: TBid[];
   bidder: TUser;
+  images: AssetImage[];
+};
+
+export type TCar = Car & {
+  specs: AuctionSpecs;
+  address: Address;
+  options: AuctionOptions;
+  rating: AuctionRating;
+  auctionnaire: TUser;
   images: AssetImage[];
 };
 export type TUser = User & {

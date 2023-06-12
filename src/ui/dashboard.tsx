@@ -13,6 +13,7 @@ import {
   DataIcon,
   ChatIcon,
   GarageIcon,
+  CarIcon,
 } from "./icons";
 import { type UserType } from "@model/type";
 import Logo from "./components/logo";
@@ -82,6 +83,11 @@ const Dashboard = ({
         title: common("text.auctions"),
         route: "/admin/dashboard/auctions",
         icon: <AuctionIcon />,
+      },
+      {
+        title: common("text.cars"),
+        route: "/admin/dashboard/cars",
+        icon: <CarIcon />,
       },
       {
         title: common("text.bids"),

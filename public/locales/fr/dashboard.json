@@ -6,6 +6,7 @@
   },
   "admin": {
     "text": {
+      "cars page title": "Gestion des voitures",
       "auction page title": "Gestion des enchères",
       "bids page title": "Gestion des enchères",
       "users page title": "Gestion des utilisateurs",
@@ -94,6 +95,7 @@
     "text": {
       "logs": "Historiques",
       "optionals": "Optionnels",
+      "bidding system": "Système d'enchères",
       "initial bid": "Enchère de départ",
       "starting price": "Prix de départ",
       "current bid": "Enchère actuelle",
