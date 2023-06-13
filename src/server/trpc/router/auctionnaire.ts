@@ -38,6 +38,21 @@ export const auctionnaireRouter = router({
       },
     });
   }),
+
+  getCar: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
+    return await ctx.prisma.car.findUnique({
+      where: { id: input },
+      include: {
+        address: true,
+        specs: true,
+        options: true,
+        rating: true,
+        images: true,
+        buyer: true,
+        auctionnaire: true,
+      },
+    });
+  }),
   addAuction: publicProcedure
     .input(z.any())
     .mutation(async ({ input, ctx }) => {
@@ -458,6 +473,7 @@ export const auctionnaireRouter = router({
           "trending",
           "feature",
           "buy now",
+          "auctions",
           "all",
           "mine",
         ]),
@@ -506,8 +522,8 @@ export const auctionnaireRouter = router({
   getCars: publicProcedure
     .input(
       z.object({
-        state: z.enum(["pending", "published"]).optional(),
-        filter: z.enum(["all", "mine"]),
+        state: z.enum(["pending", "published", "confirmation"]).optional(),
+        filter: z.enum(["all", "mine"]).optional(),
       })
     )
     .query(async ({ input, ctx }) => {
@@ -538,6 +554,7 @@ export const auctionnaireRouter = router({
           auctionnaire: true,
           options: true,
           address: true,
+          buyer: true,
         },
         orderBy: {
           createAt: "desc",
@@ -903,5 +920,35 @@ export const auctionnaireRouter = router({
           });
           return res;
         });
+    }),
+
+  buy: publicProcedure
+    .input(z.object({ car_id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.car.update({
+        where: { id: input.car_id },
+        data: {
+          state: "confirmation",
+          buyer: {
+            connect: {
+              email: ctx.session?.user?.email || "",
+            },
+          },
+        },
+      });
+    }),
+
+  cancelBuy: publicProcedure
+    .input(z.object({ car_id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.car.update({
+        where: { id: input.car_id },
+        data: {
+          state: "published",
+          buyer: {
+            disconnect: true,
+          },
+        },
+      });
     }),
 });

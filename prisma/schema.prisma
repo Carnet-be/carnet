@@ -55,6 +55,7 @@ model User {
   Address          Address?          @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   addressId        String?
   ListString       ListString[]
+  cars_bought      Car[]             @relation("buyer")
 
   @@index([addressId])
 }
@@ -134,11 +135,14 @@ model Car {
   address Address?
   images  AssetImage[]
 
+  buyer_id        String?
+  buyer           User?   @relation(fields: [buyer_id], name: "buyer", references: [id], onDelete: Cascade)
   // favorite_by     User[]       @relation(name: "favorite")
   auctionnaire_id String
-  auctionnaire    User   @relation(fields: [auctionnaire_id], references: [id], onDelete: Cascade)
+  auctionnaire    User    @relation(fields: [auctionnaire_id], references: [id], onDelete: Cascade)
 
   @@index([auctionnaire_id])
+  @@index([buyer_id])
 }
 
 model AuctionSpecs {

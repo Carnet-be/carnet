@@ -47,6 +47,7 @@
     "add": "Add",
     "close": "Close",
     "view": "View",
+    "buy": "Buy",
     "validate": "Validate",
     "next": "Next",
     "republish": "Republish",
@@ -123,6 +124,8 @@
   },
   "table": {
     "id": "ID",
+    "seller": "Seller",
+    "buyer": "Buyer",
     "name": "Name",
     "email": "Email",
     "phone": "Phone",

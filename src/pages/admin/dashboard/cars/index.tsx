@@ -31,9 +31,14 @@ import { Tag } from "antd";
 import Dashboard from "@ui/dashboard";
 import CreateAuction from "@ui/createAuction";
 import { toast } from "react-hot-toast";
-import { useAdminDashboardStore, useAuctionCountStore } from "../../../state";
-import { useLang, useNotif } from "../../hooks";
+import {
+  useAdminDashboardStore,
+  useAuctionCountStore,
+} from "../../../../state";
+import { useLang, useNotif } from "../../../hooks";
 import CreateAuctionCar from "@ui/createAuction/car";
+import SendMessageButton from "@ui/components/sendMessageButton";
+import { MdOutlineCancel } from "react-icons/md";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -61,7 +66,7 @@ const Auctions = (
 
 export default Auctions;
 
-const SwitcherCars = () => {
+export const SwitcherCars = () => {
   const { text } = useLang({
     file: "dashboard",
     selector: "auction",
@@ -78,6 +83,11 @@ const SwitcherCars = () => {
       title: text("status.pending"),
       value: "pending",
       route: "/admin/dashboard/cars/pending",
+    },
+    {
+      title: text("status.confirmation"),
+      value: "confirmation",
+      route: "/admin/dashboard/cars/confirmation",
     },
   ];
 
@@ -112,7 +122,11 @@ const SwitcherCars = () => {
   );
 };
 
-export const CarsPage = ({ state }: { state: "published" | "pending" }) => {
+export const CarsPage = ({
+  state,
+}: {
+  state: "published" | "pending" | "confirmation";
+}) => {
   const { loading, error, succes } = useNotif();
   const count = useAuctionCountStore((state) => state.increase);
   const { text: common } = useLang(undefined);
@@ -142,11 +156,25 @@ export const CarsPage = ({ state }: { state: "published" | "pending" }) => {
     onSuccess: () => {
       toast.dismiss();
       succes();
-      count(state);
       refetch();
     },
   });
 
+  const { mutate: cancel } = trpc.auctionnaire.cancelBuy.useMutation({
+    onMutate: () => {
+      loading();
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.dismiss();
+      error();
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      succes();
+      refetch();
+    },
+  });
   const afterPublish = (first: AuctionState, second: AuctionState) => {
     if (first == "pending" && second == "published") {
       count("pending", "published");
@@ -167,18 +195,52 @@ export const CarsPage = ({ state }: { state: "published" | "pending" }) => {
       ),
     },
     {
-      title: tab("auctioneer"),
+      title: tab("seller"),
 
       dataIndex: "auctionnaire",
       key: "auctionnaire",
-      render: (_, v) => (
-        <div>
-          <h6>{(v as any).auctionnaire.username}</h6>
-          <span className="text-[12px] italic text-primary">
-            #{(v as any).auctionnaire.id}
-          </span>
+      render: (a, v) => (
+        <div className="flex flex-row gap-1">
+          {a && <SendMessageButton receiver={a.id} />}
+          <div className="flex flex-col">
+            <h6>{a.username}</h6>
+            <span className="text-[12px] italic text-primary">#{a.id}</span>
+          </div>
         </div>
+        // <div>
+        //   <h6>{(v as any).auctionnaire.username}</h6>
+        //   <span className="text-[12px] italic text-primary">
+        //     #{(v as any).auctionnaire.id}
+        //   </span>
+        // </div>
       ),
+    },
+    {
+      title: tab("buyer"),
+
+      dataIndex: "buyer",
+      key: "buyer",
+      className: state !== "confirmation" ? "hidden" : undefined,
+      render:
+        state === "confirmation"
+          ? (a, v) => (
+              <div className="flex flex-row gap-1">
+                {a && <SendMessageButton receiver={a.id} />}
+                <div className="flex flex-col">
+                  <h6>{a.username}</h6>
+                  <span className="text-[12px] italic text-primary">
+                    #{a.id}
+                  </span>
+                </div>
+              </div>
+              // <div>
+              //   <h6>{(v as any).auctionnaire.username}</h6>
+              //   <span className="text-[12px] italic text-primary">
+              //     #{(v as any).auctionnaire.id}
+              //   </span>
+              // </div>
+            )
+          : undefined,
     },
     {
       title: tab("date pub"),
@@ -187,10 +249,11 @@ export const CarsPage = ({ state }: { state: "published" | "pending" }) => {
       key: "createAt",
       width: "100px",
       align: "center",
+      className: state === "confirmation" ? "hidden" : undefined,
       render: (v) => (
         <div>
           {renderDate(v, "DD/MM/YYYY")}
-          <span className="flex gap-1"> at: {renderDate(v, "HH:mm:ss")}</span>
+          {/* <span className="flex gap-1"> at: {renderDate(v, "HH:mm:ss")}</span> */}
         </div>
       ),
     },
@@ -199,35 +262,12 @@ export const CarsPage = ({ state }: { state: "published" | "pending" }) => {
       title: tab("price"),
       dataIndex: "price",
       align: "right",
+      width: "nowrap",
       key: "price",
-      render: (v) => <Price value={v} textStyle="text-sm leading-4" />,
+      className: "font-bold whitespace-nowrap",
+      render: (v) => <Price value={v} textStyle="leading-4 text-sm" />,
     },
 
-    {
-      title: tab("auctioneer"),
-
-      // className: "w-[150px] text-[12px] lg:w-[240px] lg:text-base",
-      dataIndex: "auctionnaire",
-      key: "auctionnaire",
-      className: state !== "pending" ? "hidden" : "",
-      render: (a, v) => (
-        <div className="flex flex-row gap-1">
-          <Tooltip
-            title="Contact"
-            className="flex flex-row items-center justify-center text-primary"
-          >
-            <Button shape="circle" icon={<EmailIcon className="text-lg" />} />
-          </Tooltip>
-          <div className="flex flex-col">
-            <h6>{(a as TUser).username}</h6>
-
-            <span className="text-[12px] italic text-primary">
-              #{(a as TUser).id}
-            </span>
-          </div>
-        </div>
-      ),
-    },
     // {
     //   title: "Publish",
     //   dataIndex: "publish",
@@ -255,21 +295,40 @@ export const CarsPage = ({ state }: { state: "published" | "pending" }) => {
           <ActionTable
             id={auction.id}
             onDelete={
-              state == "published"
+              state === "confirmation"
                 ? undefined
                 : () => {
                     deleteAuction({ id: auction.id, table: "auction" });
                   }
             }
-            onEdit={() => {
-              console.log("edit");
-            }}
-            onView={
-              state != "published"
+            onEdit={
+              state === "confirmation"
                 ? undefined
                 : () => {
-                    router.push(`/admin/auction/${auction.id}`);
+                    console.log("edit");
                   }
+            }
+            onView={
+              state === "pending"
+                ? undefined
+                : () => {
+                    router.push(`/admin/cars/${auction.id}`);
+                  }
+            }
+            onCustom={
+              state !== "confirmation"
+                ? undefined
+                : () => ({
+                    icon: (
+                      <MdOutlineCancel className="text-lg text-yellow-500" />
+                    ),
+                    tooltip: common("button.cancel"),
+                    onClick: () => {
+                      cancel({
+                        car_id: auction.id,
+                      });
+                    },
+                  })
             }
           />
         </>

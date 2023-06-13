@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 import Dashboard from "@ui/dashboard";
 import {
@@ -13,7 +14,7 @@ import { useRouter } from "next/router";
 import { trpc } from "../../../../utils/trpc";
 import { toast } from "react-hot-toast";
 import Loading from "@ui/components/loading";
-import type { TAuction } from "@model/type";
+import type { TAuction, TCar } from "@model/type";
 import { BRAND, CARROSSERIE, COLORS, TRANSMISSION } from "@data/internal";
 import Image from "next/image";
 import cx from "classnames";
@@ -33,11 +34,19 @@ import cloudy from "@utils/cloudinary";
 import { NO_IMAGE_URL } from "@ui/components/auctionCard";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { LangCommonContext, LangContext, useLang } from "../../../hooks";
+import {
+  LangCommonContext,
+  LangContext,
+  useConfirmation,
+  useLang,
+  useNotif,
+} from "../../../hooks";
 import { UserContext } from "../../entreprise/auction/[id]";
 import { prisma } from "../../../../server/db/client";
-
+import { FaMoneyBill } from "react-icons/fa";
 import ImageZoom from "@ui/components/imageZoom";
+import Price from "@ui/components/price";
+import { Tag } from "antd";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -133,7 +142,7 @@ const Home = (
   );
 };
 
-export const LeftSide = ({ auction }: { auction: TAuction }) => {
+export const LeftSide = ({ auction }: { auction: TAuction | TCar }) => {
   const text = useContext(LangContext);
   const common = useContext(LangCommonContext);
 
@@ -280,7 +289,13 @@ export const LeftSide = ({ auction }: { auction: TAuction }) => {
   );
 };
 
-export const RightSide = ({ auction }: { auction: TAuction }) => {
+export const RightSide = ({
+  auction,
+  isBuyNow,
+}: {
+  auction: any;
+  isBuyNow?: boolean;
+}) => {
   const text = useContext(LangContext);
   const [isTimeOut, setisTimeOut] = useState(false);
   const model = auction.model;
@@ -372,9 +387,10 @@ export const RightSide = ({ auction }: { auction: TAuction }) => {
           />
         </div>
       </div>
-      {user?.type === "BID" ? (
+      {isBuyNow ? (
+        <Buy auction={auction} />
+      ) : user?.type === "BID" ? (
         <>
-          {" "}
           <CountDown
             variant="primary"
             onTimeOut={onTimeOut}
@@ -384,7 +400,9 @@ export const RightSide = ({ auction }: { auction: TAuction }) => {
       ) : (
         <AuctionStatus auction={auction} />
       )}
-      <BidSection user={user} auction={auction} isTimeOut={isTimeOut} />
+      {!isBuyNow && (
+        <BidSection user={user} auction={auction} isTimeOut={isTimeOut} />
+      )}
       {auction.address.lat && auction.address.lon && (
         <Map
           options={{ zoomControl: false }}
@@ -474,6 +492,52 @@ const AuctionStatus = ({ auction }: { auction: TAuction }) => {
       <div className="border border-primary p-6 text-xl uppercase text-primary">
         <h3 className="text-center text-lg"> {text("status." + state)}</h3>
       </div>
+    </div>
+  );
+};
+
+type PropsByNow = {
+  auction: TCar;
+};
+const Buy = ({ auction }: PropsByNow) => {
+  const user = useContext(UserContext);
+  const common = useContext(LangCommonContext);
+  const { show } = useConfirmation();
+  const router = useRouter();
+  const { error, succes, loading } = useNotif();
+  const { mutate } = trpc.auctionnaire.buy.useMutation({
+    onError: (e) => {
+      console.log(e);
+      error();
+    },
+    onSuccess: () => {
+      succes();
+      router.reload();
+    },
+  });
+  return (
+    <div className="my-10 flex flex-row items-center justify-between rounded-lg bg-background p-6">
+      <div className="flex flex-row items-center gap-3 text-xl font-bold text-primary">
+        <FaMoneyBill className="text-gray-500" />
+        <Price value={auction.price} />
+      </div>
+
+      {auction.state === "confirmation" ? (
+        <Tag color="red">{common("text.selled")}</Tag>
+      ) : (
+        <button
+          disabled={user?.type == "ADMIN"}
+          onClick={() =>
+            show(() => {
+              mutate({ car_id: auction.id });
+            })
+          }
+          className={cx("btn-sm btn")}
+        >
+          {common("button.buy")}
+          {user?.username}
+        </button>
+      )}
     </div>
   );
 };
