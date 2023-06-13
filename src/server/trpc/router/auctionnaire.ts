@@ -522,7 +522,9 @@ export const auctionnaireRouter = router({
   getCars: publicProcedure
     .input(
       z.object({
-        state: z.enum(["pending", "published", "confirmation"]).optional(),
+        state: z
+          .enum(["pending", "published", "confirmation", "completed"])
+          .optional(),
         filter: z.enum(["all", "mine"]).optional(),
       })
     )
@@ -543,7 +545,7 @@ export const auctionnaireRouter = router({
       return await ctx.prisma.car.findMany({
         where: {
           ...condition,
-          isClosed: false,
+          isClosed: input.state === "completed" ? true : false,
 
           state: input.state || "published",
         },
@@ -948,6 +950,18 @@ export const auctionnaireRouter = router({
           buyer: {
             disconnect: true,
           },
+        },
+      });
+    }),
+
+  confirmBuy: publicProcedure
+    .input(z.object({ car_id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.car.update({
+        where: { id: input.car_id },
+        data: {
+          isClosed: true,
+          state: "completed",
         },
       });
     }),

@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import cx from "classnames";
-import { ColumnsType } from "antd/es/table";
-import { Auction, Bid } from "@prisma/client";
-import { TAuction, TUser } from "@model/type";
+import type { GetServerSideProps } from "next";
+
+import type { ColumnsType } from "antd/es/table";
+import type { Auction, Bid } from "@prisma/client";
+import type { TAuction, TUser } from "@model/type";
 import BigTitle from "@ui/components/bigTitle";
 import Price from "@ui/components/price";
 import App, { Button, Tooltip } from "antd";
@@ -17,13 +15,7 @@ import MyTable, {
   ActionTable,
   TableType,
 } from "@ui/components/table";
-import {
-  AuctionIcon,
-  CheckIcon,
-  EmailIcon,
-  PauseIcon,
-  WinIcon,
-} from "@ui/icons";
+
 import { trpc } from "@utils/trpc";
 import { useState } from "react";
 
@@ -111,7 +103,6 @@ const Completed = () => {
 
     {
       title: tab("completed at"),
-
       dataIndex: "closedAt",
       key: "createAt",
       width: "100px",

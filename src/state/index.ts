@@ -96,14 +96,30 @@ interface AuctionCountState {
     published: number;
     pending: number;
     confirmation: number;
+    completed: number;
   };
   increase: (from: AuctionState, to?: AuctionState) => void;
-  init: (data: {
-    published: number;
-    pending: number;
-    pause: number;
-    confirmation: number;
-    completed: number;
+  increaseCar: (
+    from: Exclude<AuctionState, "pause">,
+    to?: Exclude<AuctionState, "pause">
+  ) => void;
+  init: ({
+    data,
+    dataCars,
+  }: {
+    data: {
+      published: number;
+      pending: number;
+      pause: number;
+      confirmation: number;
+      completed: number;
+    };
+    dataCars: {
+      published: number;
+      pending: number;
+      confirmation: number;
+      completed: number;
+    };
   }) => void;
 }
 export const useAuctionCountStore = create<AuctionCountState>()(
@@ -122,6 +138,7 @@ export const useAuctionCountStore = create<AuctionCountState>()(
         published: 0,
         pending: 0,
         confirmation: 0,
+        completed: 0,
       },
       increase: (from: AuctionState, to?: AuctionState) => {
         set((state) => {
@@ -133,9 +150,27 @@ export const useAuctionCountStore = create<AuctionCountState>()(
           return { ...state, data };
         });
       },
+      increaseCar: (
+        from: Exclude<AuctionState, "pause">,
+        to?: Exclude<AuctionState, "pause">
+      ) => {
+        set((state) => {
+          const { buyNow: data } = state;
+          data[from] -= data[from] === 0 ? 0 : 1;
+          if (to) {
+            data[to] += 1;
+          }
+          return { ...state, buyNow: data };
+        });
+      },
       init: (data) => {
         set((state) => {
-          return { ...state, data, hasData: true };
+          return {
+            ...state,
+            data: data.data,
+            hasData: true,
+            buyNow: data.dataCars,
+          };
         });
       },
     }),
