@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import BigTitle from "@ui/components/bigTitle";
 import Dashboard from "@ui/dashboard";
 import { InDevelopmentMini } from "@ui/inDevelopment";
@@ -14,10 +15,11 @@ import { useRouter } from "next/router";
 import AuctionCard from "@ui/components/auctionCard";
 import { UserType } from "@prisma/client";
 import { prisma } from "../../../server/db/client";
-import type { TAuction, TUser } from "@model/type";
+import type { TAuction, TCar, TUser } from "@model/type";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useLang } from "../../hooks";
 import { LoadingSpinPage } from "@ui/loading";
+import CarCard from "@ui/components/carCard";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -58,69 +60,128 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
   };
 };
-type TFilterBidde = "new" | "feature" | "trending" | "buy now";
+type TFilterBidde = "auctions" | "buy now"; //| "feature" | "trending";
 const Home = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const router = useRouter();
   const user: TUser = props.user;
   const { text } = useLang({ file: "dashboard", selector: "bidder" });
-  const filter = (router.query.filter as TFilterBidde) || "new";
-  const { data: auctions, isLoading } = trpc.auctionnaire.getAuctions.useQuery({
-    filter,
-    state: "published",
-  });
+  const filter = (router.query.filter as TFilterBidde) || "auctions";
+  const { data: auctions, isLoading } = trpc.auctionnaire.getAuctions.useQuery(
+    {
+      filter,
+      state: "published",
+    },
+    {
+      enabled: filter == "auctions",
+    }
+  );
+  const { data: cars, isLoading: isLoadingCars } =
+    trpc.auctionnaire.getCars.useQuery(
+      { filter: "all", state: "published" },
+      {
+        enabled: filter == "buy now",
+      }
+    );
   return (
     <Dashboard type="BID">
       <BigTitle />
       <div className="flex flex-row gap-4 py-6">
-        {(["new", "feature", "trending", "buy now"] as TFilterBidde[]).map(
-          (f, i) => {
-            const isActive = filter == f;
-            return (
-              <button
-                key={i}
-                onClick={() => {
-                  if (!isActive) {
-                    router.push(
-                      {
-                        pathname: "/dashboard/user/home",
-                        query: { filter: f },
-                      },
-                      undefined,
-                      { shallow: true }
-                    );
-                    console.log("click");
-                  }
-                }}
-                className={cx("  btn", {
-                  "btn-primary  btn-active": isActive,
-                  "btn-ghost": !isActive,
-                })}
-              >
-                {text("filter." + f)}
-              </button>
-            );
-          }
-        )}
-      </div>
-      <div className="flex flex-wrap items-center  gap-6">
-        {isLoading ? (
-          <LoadingSpinPage />
-        ) : !auctions ? (
-          <span>No data</span>
-        ) : (
-          auctions.map((a, i) => (
-            <AuctionCard
+        {(["auctions", "buy now"] as TFilterBidde[]).map((f, i) => {
+          const isActive = filter == f;
+          return (
+            <button
               key={i}
-              auction={a as any}
-              isFavorite={user.favoris_auctions.map((a) => a.id).includes(a.id)}
-            />
-          ))
-        )}
+              onClick={() => {
+                if (!isActive) {
+                  router.push(
+                    {
+                      pathname: "/dashboard/user/home",
+                      query: { filter: f },
+                    },
+                    undefined,
+                    { shallow: true }
+                  );
+                  console.log("click");
+                }
+              }}
+              className={cx("  btn", {
+                "btn-primary  btn-active": isActive,
+                "btn-ghost": !isActive,
+              })}
+            >
+              {text("filter." + f)}
+            </button>
+          );
+        })}
       </div>
+      {filter == "auctions" && (
+        <AuctionsList
+          auctions={auctions as unknown as TAuction[]}
+          isLoading={isLoading}
+          user={user}
+        />
+      )}
+      {filter == "buy now" && (
+        <CarList
+          auctions={cars as unknown as TCar[]}
+          isLoading={isLoadingCars}
+          user={user}
+        />
+      )}
     </Dashboard>
   );
 };
 
 export default Home;
+
+const AuctionsList = ({
+  auctions,
+  isLoading,
+  user,
+}: {
+  auctions: TAuction[];
+  isLoading: boolean;
+  user: TUser;
+}) => {
+  return (
+    <div className="flex flex-wrap items-center  gap-6">
+      {isLoading ? (
+        <LoadingSpinPage />
+      ) : !auctions ? (
+        <span>No data</span>
+      ) : (
+        auctions.map((a, i) => (
+          <AuctionCard
+            key={i}
+            auction={a as any}
+            isFavorite={user.favoris_auctions.map((a) => a.id).includes(a.id)}
+          />
+        ))
+      )}
+    </div>
+  );
+};
+
+const CarList = ({
+  auctions,
+  isLoading,
+  user,
+}: {
+  auctions: TCar[];
+  isLoading: boolean;
+  user: TUser;
+}) => {
+  return (
+    <div className="flex flex-wrap items-center  gap-6">
+      {isLoading ? (
+        <LoadingSpinPage />
+      ) : !auctions ? (
+        <span>No data</span>
+      ) : (
+        auctions.map((a, i) => <CarCard key={i} auction={a as any} />)
+      )}
+    </div>
+  );
+};

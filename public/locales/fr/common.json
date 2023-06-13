@@ -45,6 +45,7 @@
     "delete": "Supprimer",
     "edit": "Modifier",
     "add": "Ajouter",
+    "buy": "Acheter",
     "close": "Fermer",
     "view": "Voir",
     "validate": "Valider",
@@ -74,6 +75,8 @@
     "interest": "Intéressés",
     "garage": "Garage",
     "cars": "Voitures",
+    "buy": "Acheter",
+    "selled": "Vendu",
     "update your password": "Mettre à jour votre mot de passe",
     "profile": "Profil",
     "terms and conditions": "Conditions générales",
@@ -127,6 +130,8 @@
     "phone": "Téléphone",
     "tel": "Téléphone",
     "date": "Date",
+    "seller": "Vendeur",
+    "buyer": "Acheteur",
     "status": "Statut",
     "action": "Action",
     "actions": "Actions",
@@ -167,6 +172,7 @@
   },
   "tooltip": {
     "contact": "contact",
+
     "cancel winner": "Annuler le gagnant"
   },
   "notifications": {

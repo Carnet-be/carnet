@@ -22,6 +22,7 @@
   "bidder": {
     "filter": {
       "new": "New",
+      "auctions": "Auctions",
       "feature": "Featured",
       "trending": "Trending",
       "buy now": "Buy Now"

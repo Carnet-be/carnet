@@ -95,6 +95,7 @@ interface AuctionCountState {
   buyNow: {
     published: number;
     pending: number;
+    confirmation: number;
   };
   increase: (from: AuctionState, to?: AuctionState) => void;
   init: (data: {
@@ -120,6 +121,7 @@ export const useAuctionCountStore = create<AuctionCountState>()(
       buyNow: {
         published: 0,
         pending: 0,
+        confirmation: 0,
       },
       increase: (from: AuctionState, to?: AuctionState) => {
         set((state) => {
