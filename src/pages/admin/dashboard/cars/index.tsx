@@ -39,6 +39,7 @@ import { useLang, useNotif } from "../../../hooks";
 import CreateAuctionCar from "@ui/createAuction/car";
 import SendMessageButton from "@ui/components/sendMessageButton";
 import { MdOutlineCancel } from "react-icons/md";
+import { BsCheckCircleFill } from "react-icons/bs";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -89,6 +90,11 @@ export const SwitcherCars = () => {
       value: "confirmation",
       route: "/admin/dashboard/cars/confirmation",
     },
+    {
+      title: text("status.sold"),
+      value: "completed",
+      route: "/admin/dashboard/cars/sold",
+    },
   ];
 
   return (
@@ -125,10 +131,10 @@ export const SwitcherCars = () => {
 export const CarsPage = ({
   state,
 }: {
-  state: "published" | "pending" | "confirmation";
+  state: "published" | "pending" | "confirmation" | "completed";
 }) => {
   const { loading, error, succes } = useNotif();
-  const count = useAuctionCountStore((state) => state.increase);
+  const count = useAuctionCountStore((state) => state.increaseCar);
   const { text: common } = useLang(undefined);
   const tab = (s: string) => common(`table.${s}`);
   const { text } = useLang({
@@ -156,7 +162,9 @@ export const CarsPage = ({
     onSuccess: () => {
       toast.dismiss();
       succes();
+
       refetch();
+      count(state);
     },
   });
 
@@ -173,6 +181,24 @@ export const CarsPage = ({
       toast.dismiss();
       succes();
       refetch();
+      count(state, "published");
+    },
+  });
+
+  const { mutate: confirm } = trpc.auctionnaire.confirmBuy.useMutation({
+    onMutate: () => {
+      loading();
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.dismiss();
+      error();
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      succes();
+      refetch();
+      count(state, "completed");
     },
   });
   const afterPublish = (first: AuctionState, second: AuctionState) => {
@@ -220,27 +246,26 @@ export const CarsPage = ({
 
       dataIndex: "buyer",
       key: "buyer",
-      className: state !== "confirmation" ? "hidden" : undefined,
-      render:
-        state === "confirmation"
-          ? (a, v) => (
-              <div className="flex flex-row gap-1">
-                {a && <SendMessageButton receiver={a.id} />}
-                <div className="flex flex-col">
-                  <h6>{a.username}</h6>
-                  <span className="text-[12px] italic text-primary">
-                    #{a.id}
-                  </span>
-                </div>
+      className: !["confirmation", "completed"].includes(state)
+        ? "hidden"
+        : undefined,
+      render: ["confirmation", "completed"].includes(state)
+        ? (a, v) => (
+            <div className="flex flex-row gap-1">
+              {a && <SendMessageButton receiver={a.id} />}
+              <div className="flex flex-col">
+                <h6>{a.username}</h6>
+                <span className="text-[12px] italic text-primary">#{a.id}</span>
               </div>
-              // <div>
-              //   <h6>{(v as any).auctionnaire.username}</h6>
-              //   <span className="text-[12px] italic text-primary">
-              //     #{(v as any).auctionnaire.id}
-              //   </span>
-              // </div>
-            )
-          : undefined,
+            </div>
+            // <div>
+            //   <h6>{(v as any).auctionnaire.username}</h6>
+            //   <span className="text-[12px] italic text-primary">
+            //     #{(v as any).auctionnaire.id}
+            //   </span>
+            // </div>
+          )
+        : undefined,
     },
     {
       title: tab("date pub"),
@@ -290,49 +315,68 @@ export const CarsPage = ({
       key: "actions",
       align: "center",
       fixed: "right",
-      render: (v, auction) => (
-        <>
-          <ActionTable
-            id={auction.id}
-            onDelete={
-              state === "confirmation"
-                ? undefined
-                : () => {
-                    deleteAuction({ id: auction.id, table: "auction" });
+      className: state === "completed" ? "hidden" : undefined,
+      render:
+        state === "completed"
+          ? undefined
+          : (v, auction) => (
+              <>
+                <ActionTable
+                  id={auction.id}
+                  onDelete={
+                    state === "confirmation"
+                      ? undefined
+                      : () => {
+                          deleteAuction({ id: auction.id, table: "auction" });
+                        }
                   }
-            }
-            onEdit={
-              state === "confirmation"
-                ? undefined
-                : () => {
-                    console.log("edit");
+                  onEdit={
+                    state === "confirmation"
+                      ? undefined
+                      : () => {
+                          console.log("edit");
+                        }
                   }
-            }
-            onView={
-              state === "pending"
-                ? undefined
-                : () => {
-                    router.push(`/admin/cars/${auction.id}`);
+                  onView={
+                    state === "pending"
+                      ? undefined
+                      : () => {
+                          router.push(`/admin/cars/${auction.id}`);
+                        }
                   }
-            }
-            onCustom={
-              state !== "confirmation"
-                ? undefined
-                : () => ({
-                    icon: (
-                      <MdOutlineCancel className="text-lg text-yellow-500" />
-                    ),
-                    tooltip: common("button.cancel"),
-                    onClick: () => {
-                      cancel({
-                        car_id: auction.id,
-                      });
-                    },
-                  })
-            }
-          />
-        </>
-      ),
+                  onCustom={
+                    state !== "confirmation"
+                      ? undefined
+                      : () => ({
+                          icon: (
+                            <MdOutlineCancel className="text-lg text-yellow-500" />
+                          ),
+                          tooltip: common("button.cancel"),
+                          onClick: () => {
+                            cancel({
+                              car_id: auction.id,
+                            });
+                          },
+                        })
+                  }
+                  onCustom2={
+                    state !== "confirmation"
+                      ? undefined
+                      : () => ({
+                          icon: (
+                            <BsCheckCircleFill className="text-lg text-blue-500" />
+                          ),
+                          tooltip: common("button.validate"),
+                          onClick: () => {
+                            confirm({
+                              car_id: auction.id,
+                            });
+                          },
+                        })
+                  }
+                />
+              </>
+            ),
     },
   ];
 

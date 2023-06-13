@@ -173,6 +173,7 @@ export const ActionTable = ({
   onPlay,
   onCustom,
   onRepublish,
+  onCustom2,
 }: {
   id?: string | number;
   onView?: () => void;
@@ -180,6 +181,11 @@ export const ActionTable = ({
   onDelete?: () => void;
   onDeleteModal?: () => void;
   onCustom?: () => {
+    icon: React.ReactNode;
+    onClick: () => void;
+    tooltip: string;
+  };
+  onCustom2?: () => {
     icon: React.ReactNode;
     onClick: () => void;
     tooltip: string;
@@ -192,6 +198,7 @@ export const ActionTable = ({
   const refDelete = useRef<HTMLLabelElement>(null);
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const [openEdit2, setOpenEdit2] = useState(false);
   const [openPlay, setOpenPlay] = useState(false);
   return (
     <div className="flex flex-row items-center justify-center gap-1">
@@ -209,6 +216,14 @@ export const ActionTable = ({
           setOpen={setOpenEdit}
           id={id}
           onValide={onCustom().onClick}
+        />
+      )}
+      {id && onCustom2 && (
+        <ConfirmationPause
+          open={openEdit2}
+          setOpen={setOpenEdit2}
+          id={id}
+          onValide={onCustom2().onClick}
         />
       )}
       {id && onPlay && (
@@ -290,6 +305,20 @@ export const ActionTable = ({
             }}
             shape="circle"
             icon={onCustom().icon}
+          />
+        </Tooltip>
+      )}
+      {onCustom2 && (
+        <Tooltip
+          title={onCustom2().tooltip}
+          className="flex flex-row items-center justify-center text-primary"
+        >
+          <Button
+            onClick={() => {
+              setOpenEdit2(true);
+            }}
+            shape="circle"
+            icon={onCustom2().icon}
           />
         </Tooltip>
       )}

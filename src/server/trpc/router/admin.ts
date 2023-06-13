@@ -274,13 +274,21 @@ export const adminRouter = router({
     //   return null
     // }
 
-    const auctions = await prisma.auction.findMany({
-      select: {
-        state: true,
-        isClosed: true,
-        end_date: true,
-      },
-    });
+    const [auctions, cars] = await prisma.$transaction([
+      prisma.auction.findMany({
+        select: {
+          state: true,
+          isClosed: true,
+          end_date: true,
+        },
+      }),
+      prisma.car.findMany({
+        select: {
+          state: true,
+          isClosed: true,
+        },
+      }),
+    ]);
 
     const data = {
       published: 0,
@@ -305,7 +313,30 @@ export const adminRouter = router({
       }
       //repplace with switch
     }
-    return data;
+
+    const dataCars = {
+      published: 0,
+      pending: 0,
+      confirmation: 0,
+      completed: 0,
+    };
+
+    for (const a of cars) {
+      if (a.state === "pending") {
+        dataCars.pending++;
+      }
+      if (a.state === "published") {
+        dataCars.published++;
+      }
+      if (a.state === "completed") {
+        dataCars.completed++;
+      }
+      if (a.state === "confirmation") {
+        dataCars.confirmation++;
+      }
+      //repplace with switch
+    }
+    return { data, dataCars };
   }),
 
   getLogAuctions: publicProcedure
