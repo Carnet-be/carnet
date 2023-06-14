@@ -207,5 +207,11 @@
     "auction expired": "The auction has ended",
     "auction 1h left": "The auction ends in 1 hour",
     "auction 3h left": "The auction ends in 3 hours"
+  },
+  "payment": {
+    "dialog title": "Activate pro account",
+    "dialog description": "To activate your pro account, you must pay",
+    "total": "Total",
+    "each month is": "Each month is"
   }
 }

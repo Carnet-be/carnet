@@ -121,6 +121,7 @@ const CreateAuction = ({
   const { text: common } = useLang(undefined);
   const [edit, setedit] = useState(auction);
   const [step, setstep] = useState(1);
+
   const next = () => {
     let nextStep = step + 1;
     if (auction) {
@@ -477,7 +478,7 @@ const CreateAuction = ({
               <div className="flex-grow"></div>
               <button
                 onClick={back}
-                className={cx("btn-primary btn-outline btn-sm btn", {
+                className={cx("btn-outline btn-primary btn-sm btn", {
                   hidden: step <= 1,
                 })}
               >

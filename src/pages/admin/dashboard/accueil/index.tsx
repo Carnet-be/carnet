@@ -236,8 +236,8 @@ const Accueil = ({
           <TbArrowDownRight />
         </div>
         <div className="relative overflow-x-auto pl-3">
-          <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-            <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+          <table className="w-full text-left text-sm text-gray-500 ">
+            <thead className="bg-gray-50 text-xs uppercase text-gray-700 ">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   {common("table.name")}
@@ -258,11 +258,8 @@ const Accueil = ({
             </thead>
             <tbody>
               {auctions.map((auction, index) => (
-                <tr
-                  key={index}
-                  className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
-                >
-                  <th className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                <tr key={index} className="border-b bg-white">
+                  <th className="px-6 py-4 font-medium text-gray-900 ">
                     <Link
                       href={"/admin/auction/" + auction.id}
                       className="text-black hover:text-primary"
@@ -324,8 +321,8 @@ const Accueil = ({
           <TbArrowDownRight />
         </div>
         <div className="relative overflow-x-auto pl-3">
-          <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-            <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+          <table className="w-full text-left text-sm text-gray-500 ">
+            <thead className="bg-gray-50 text-xs uppercase text-gray-700 ">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   {common("table.auction")}
@@ -343,11 +340,8 @@ const Accueil = ({
             </thead>
             <tbody>
               {bids.map((auction, index) => (
-                <tr
-                  key={index}
-                  className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
-                >
-                  <th className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                <tr key={index} className="border-b bg-white ">
+                  <th className="px-6 py-4 font-medium text-gray-900">
                     <Link
                       href={"/admin/auction/" + auction.id}
                       className="text-black hover:text-primary"
@@ -399,8 +393,8 @@ const Accueil = ({
           <TbArrowDownRight />
         </div>
         <div className="relative overflow-x-auto pl-3">
-          <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-            <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+          <table className="w-full text-left text-sm text-gray-500">
+            <thead className="bg-gray-50 text-xs uppercase text-gray-700">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   {common("table.image")}
@@ -419,11 +413,8 @@ const Accueil = ({
             </thead>
             <tbody>
               {users.map((auction, index) => (
-                <tr
-                  key={index}
-                  className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
-                >
-                  <th className="flex flex-row px-6 py-4 font-medium text-gray-900 dark:text-white">
+                <tr key={index} className="border-b bg-white">
+                  <th className="flex flex-row px-6 py-4 font-medium text-gray-900">
                     {/* <SendMessageButton receiver={auction.id} /> */}
                     <div>
                       <h6>{auction.username}</h6>

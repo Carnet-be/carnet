@@ -56,6 +56,7 @@ model User {
   addressId        String?
   ListString       ListString[]
   cars_bought      Car[]             @relation("buyer")
+  activations_pro  ActivationPro[]
 
   @@index([addressId])
 }
@@ -361,6 +362,22 @@ model Blog {
 
   @@index([author_id])
   @@index([assetImageFileKey])
+}
+
+model ActivationPro {
+  id       String   @id @default(cuid())
+  createAt DateTime @default(now())
+
+  expireAt DateTime
+
+  cycle  Int   @default(1)
+  amount Float
+  unit   Float
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
 }
 
 model Token {
