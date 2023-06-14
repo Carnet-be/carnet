@@ -209,5 +209,11 @@
     "auction expired": "L'enchère est terminée",
     "auction 1h left": "L'enchère se termine dans 1 heure",
     "auction 3h left": "L'enchère se termine dans 3 heures"
+  },
+  "payment": {
+    "dialog title": "Activation du pro",
+    "dialog description": "Veuillez payer pour activer le compte pro",
+    "total": "Total",
+    "each month is": "Chaque mois est"
   }
 }

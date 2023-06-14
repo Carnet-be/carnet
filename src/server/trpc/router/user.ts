@@ -163,4 +163,27 @@ export const userRouter = router({
         })
         .then((user) => user.currency);
     }),
+
+  checkPro: publicProcedure.query(async ({ ctx }) => {
+    const pros = await ctx.prisma.activationPro.findMany({
+      where: {
+        user: {
+          email: ctx.session?.user?.email || "",
+        },
+      },
+      orderBy: {
+        createAt: "desc",
+      },
+    });
+    if (pros.length <= 0) {
+      return false;
+    }
+
+    const last = pros[0];
+    if (!last) return false;
+    const now = new Date();
+    const isPro = now.getTime() < last.expireAt.getTime();
+    console.log("isPro", isPro);
+    return isPro;
+  }),
 });

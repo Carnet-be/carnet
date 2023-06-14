@@ -167,7 +167,7 @@ export default function CustomizedMenus({
         disableRipple
         className="rounded-lg hover:bg-primary/10"
         onClick={handleClick}
-        startIcon={user && <BadgeType type={user.type} />}
+        startIcon={<BadgeType />}
         endIcon={<ExpandMoreIcon className="text-xl" />}
       >
         {user?.username && (

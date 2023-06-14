@@ -38,13 +38,15 @@ import { LoadingSpinPage, LoadingSpin } from "./loading";
 import { toast } from "react-hot-toast";
 import LangSwitcher from "./components/langSwitcher";
 import Interest from "./components/interest";
+import PaymentDialog from "./paymentDialog";
+import BadgeType from "./components/badgeType";
 
 type TSide = {
   route: string;
   title: string;
   icon: ReactNode;
   count?: number;
-
+  pro?: boolean;
   isLoading?: boolean;
 };
 
@@ -130,6 +132,7 @@ const Dashboard = ({
         title: common("text.garage"),
         route: "/dashboard/entreprise/garage",
         icon: <GarageIcon />,
+        pro: true,
       },
       {
         title: common("text.my auctions"),
@@ -187,10 +190,17 @@ const Dashboard = ({
     }
   }, []);
 
+  const [openPayment, setOpenPayment] = useState(false);
   return (
     <>
       <LangCommonContext.Provider value={common}>
         <CreateAuction />
+        {type === "AUC" && (
+          <PaymentDialog
+            isModalOpen={openPayment}
+            setIsModalOpen={(v) => setOpenPayment(v)}
+          />
+        )}
         <div className="drawer-mobile drawer">
           <input id="drawer" type="checkbox" className="drawer-toggle" />
           <div className={cx("drawer-content relative", background)}>
@@ -219,6 +229,7 @@ const Dashboard = ({
                     <Side
                       key={i}
                       side={m}
+                      onPro={m.pro ? () => setOpenPayment(true) : undefined}
                       active={active}
                       count={m.count}
                       isLoading={m.isLoading}
@@ -301,16 +312,19 @@ const Side = ({
   active,
   count,
   isLoading,
+  onPro,
 }: {
   side: TSide;
   active: boolean;
+  onPro?: () => void;
   count: number | undefined;
   isLoading: boolean | undefined;
 }) => {
   return (
     <li>
       <Link
-        href={side.route}
+        href={onPro ? "" : side.route}
+        onClick={() => onPro && onPro()}
         className={cx(
           "flex flex-row gap-5 rounded-lg font-light no-underline",
           {
@@ -319,14 +333,22 @@ const Side = ({
         )}
       >
         <div className="text-xl">{side.icon}</div> {side.title}
-        <div
-          className={cx(
-            "flex-grow justify-end text-end font-bold",
-            active && "text-white"
-          )}
-        >
-          {count}
-        </div>
+        {onPro && (
+          <>
+            <div className="flex-grow"></div>
+            <BadgeType size="small" />
+          </>
+        )}
+        {count && (
+          <div
+            className={cx(
+              "flex-grow justify-end text-end font-bold",
+              active && "text-white"
+            )}
+          >
+            {count}
+          </div>
+        )}
       </Link>
     </li>
   );

@@ -23,6 +23,8 @@ import { LangCommonContext, LangContext } from "../../pages/hooks";
 import { COUNTRIES } from "@data/internal";
 import { BuyNow } from "./index";
 import { set } from "lodash";
+import BadgeType from "@ui/components/badgeType";
+import { trpc } from "@utils/trpc";
 const Step6 = ({
   data,
   setData,
@@ -44,6 +46,9 @@ const Step6 = ({
   //   setData({ ...data, name: defaultName })
   // }, [])
   const text = useContext(LangContext);
+  const { data: isPro } = trpc.user.checkPro.useQuery(undefined, {
+    enabled: !buyNow,
+  });
   return (
     <div className="flex flex-col items-center gap-1">
       <div className="flex w-[96%] flex-col items-stretch gap-2">
@@ -125,20 +130,41 @@ const Step6 = ({
                 {text("fields.auction duration")}
               </span>
               <div className="flex flex-row gap-2">
-                {["3 days", "1 week", "2 weeks"].map((n, i) => {
+                {[
+                  {
+                    value: "3 days",
+                    pro: false,
+                  },
+                  {
+                    value: "1 week",
+                    pro: true,
+                  },
+                  {
+                    value: "2 weeks",
+                    pro: true,
+                  },
+                ].map((n, i) => {
                   return (
                     <button
                       key={i}
-                      onClick={() => setData({ ...data, duration: n })}
+                      disabled={n.pro && !isPro}
+                      onClick={() => setData({ ...data, duration: n.value })}
                       className={cx(
                         "btn-primary btn-sm btn h-[2.3rem] rounded-md font-semibold",
                         {
                           //   "btn-disabled":n!=="3 days",
-                          "btn-outline": data.duration !== n,
+                          "btn-outline": data.duration !== n.value,
+                          relative: n.pro,
                         }
                       )}
                     >
-                      <span className="">{text("duration." + n)}</span>
+                      {n.pro && (
+                        <div className="absolute -top-2 -right-2">
+                          <BadgeType />
+                        </div>
+                      )}
+
+                      <span className="">{text("duration." + n.value)}</span>
                     </button>
                   );
                 })}
