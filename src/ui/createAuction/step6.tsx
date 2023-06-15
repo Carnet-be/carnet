@@ -79,7 +79,15 @@ const Step6 = ({
           setValue={(v) => setData({ ...data, images: v })}
         />
         <div className="">
-          <label className="flex flex-row items-center gap-3">
+          <label className="flex flex-row items-center justify-center gap-3">
+            <span
+              className={cx({
+                "text-primary": buyNow.buyNow,
+              })}
+            >
+              {" "}
+              Buy Now
+            </span>
             <input
               type="checkbox"
               className="toggle-primary toggle"
@@ -89,7 +97,13 @@ const Step6 = ({
                 setBuyNow({ ...buyNow, buyNow: !buyNow.buyNow });
               }}
             />
-            <span className="">{text("text.bidding system")}</span>
+            <span
+              className={cx({
+                "text-primary": !buyNow.buyNow,
+              })}
+            >
+              {text("text.bidding system")}
+            </span>
           </label>
         </div>
         {buyNow.buyNow ? (

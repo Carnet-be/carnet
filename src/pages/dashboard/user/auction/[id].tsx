@@ -200,7 +200,7 @@ export const LeftSide = ({ auction }: { auction: TAuction | TCar }) => {
     <div className="flex  w-full flex-grow flex-col gap-3 lg:w-[57%]">
       <div
         ref={imgRef}
-        className="flex h-[500px] w-full flex-col items-center justify-center overflow-hidden border bg-white"
+        className="ro flex h-[385px] w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-white"
       >
         <Image
           src={cloudy
@@ -209,7 +209,7 @@ export const LeftSide = ({ auction }: { auction: TAuction | TCar }) => {
             .toURL()}
           alt="photo"
           width={imgSize}
-          height={400}
+          height={385}
         />
       </div>
       <div className={cx("border bg-white  p-2", { hidden: noImg })}>
