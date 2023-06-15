@@ -10,7 +10,7 @@ import {
 import { useRouter } from "next/router";
 import { LoadingSpin } from "./loading";
 import cx from "classnames";
-export const AMOUNT = 20;
+export const AMOUNT = 20.0;
 const PaymentDialog = ({
   isModalOpen,
   setIsModalOpen,
@@ -50,7 +50,8 @@ const PaymentDialog = ({
       >
         <PayPalScriptProvider
           options={{
-            clientId: "test",
+            clientId:
+              "ATYPPWozH4kHtf-9w3IoitOzcYeAG5dbD-0N7f_2xkXTEDvgMo6ZZA3pCwivzKY-bJ-vORchQlW5szdu",
             currency: "EUR",
             intent: "capture",
             locale,
