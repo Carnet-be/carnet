@@ -182,15 +182,25 @@ export const adminRouter = router({
   getUsers: publicProcedure
     .input(z.object({ type: z.enum(["ADMIN", "BID", "AUC", "STAFF"]) }))
     .query(async ({ input, ctx }) => {
-      return await ctx.prisma.user.findMany({
-        where: { type: input.type },
-        include: {
-          auctions: {
-            include: { bids: true },
+      return await ctx.prisma.user
+        .findMany({
+          where: { type: input.type },
+          include: {
+            auctions: {
+              include: { bids: true },
+            },
+            activations_pro: {
+              orderBy: {
+                createAt: "desc",
+              },
+            },
+            bids: { include: { bidder: true } },
           },
-          bids: { include: { bidder: true } },
-        },
-      });
+        })
+        .then((users) => {
+          console.log("users", users);
+          return users;
+        });
     }),
   demandeStaff: publicProcedure
     .input(ZStaff)

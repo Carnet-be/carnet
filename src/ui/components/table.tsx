@@ -215,7 +215,10 @@ export const ActionTable = ({
           open={openEdit}
           setOpen={setOpenEdit}
           id={id}
-          onValide={onCustom().onClick}
+          onValide={() => {
+            onCustom().onClick();
+            setOpenEdit(false);
+          }}
         />
       )}
       {id && onCustom2 && (
@@ -223,7 +226,10 @@ export const ActionTable = ({
           open={openEdit2}
           setOpen={setOpenEdit2}
           id={id}
-          onValide={onCustom2().onClick}
+          onValide={() => {
+            onCustom2().onClick();
+            setOpenEdit2(false);
+          }}
         />
       )}
       {id && onPlay && (

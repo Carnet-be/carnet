@@ -38,11 +38,11 @@ export const Switcher = () => {
   const commmon = useContext(LangCommonContext);
   const routers = [
     {
-      title: commmon("text.auctioneers"),
+      title: commmon("text.entreprises"),
       route: "/admin/dashboard/users/entreprise",
     },
     {
-      title: commmon("text.bidders"),
+      title: commmon("text.individuals"),
       route: "/admin/dashboard/users/normal",
     },
   ];

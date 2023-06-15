@@ -1,4 +1,4 @@
-import React, { useState, type ReactNode, useEffect } from "react";
+import React, { useState, type ReactNode, useEffect, useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
@@ -40,6 +40,7 @@ import LangSwitcher from "./components/langSwitcher";
 import Interest from "./components/interest";
 import PaymentDialog from "./paymentDialog";
 import BadgeType from "./components/badgeType";
+import { RiVipCrown2Line } from "react-icons/ri";
 
 type TSide = {
   route: string;
@@ -191,6 +192,10 @@ const Dashboard = ({
   }, []);
 
   const [openPayment, setOpenPayment] = useState(false);
+  const { data: isPro } = trpc.user.checkPro.useQuery(undefined, {
+    enabled: type == "AUC",
+  });
+
   return (
     <>
       <LangCommonContext.Provider value={common}>
@@ -229,7 +234,14 @@ const Dashboard = ({
                     <Side
                       key={i}
                       side={m}
-                      onPro={m.pro ? () => setOpenPayment(true) : undefined}
+                      onPro={
+                        m.pro
+                          ? () =>
+                              isPro
+                                ? router.push(m.route)
+                                : setOpenPayment(true)
+                          : undefined
+                      }
                       active={active}
                       count={m.count}
                       isLoading={m.isLoading}
@@ -240,6 +252,7 @@ const Dashboard = ({
 
               <ul className="menu w-[80%] space-y-2">
                 {type == "BID" && <Interest />}
+
                 {type == "AUC" && (
                   <li>
                     <label
@@ -268,6 +281,10 @@ const Dashboard = ({
                     {common("text.settings")}
                   </Link>
                 </li>
+
+                {type == "AUC" && (
+                  <UpgradeToPro setOpenPayment={(t) => setOpenPayment(t)} />
+                )}
               </ul>
             </div>
           </div>
@@ -342,7 +359,7 @@ const Side = ({
         {count && (
           <div
             className={cx(
-              "flex-grow justify-end text-end font-bold",
+              "w-full flex-grow justify-end text-end font-bold",
               active && "text-white"
             )}
           >
@@ -424,4 +441,24 @@ const NotificationComponent = () => {
       </Drawer>
     </>
   );
+};
+
+const UpgradeToPro = ({
+  setOpenPayment,
+}: {
+  setOpenPayment: (open: boolean) => void;
+}) => {
+  const common = useContext(LangCommonContext);
+  const { data: isPro } = trpc.user.checkPro.useQuery();
+
+  return !isPro ? (
+    <li
+      onClick={() => {
+        setOpenPayment(true);
+      }}
+      className="background-animate relative flex cursor-pointer flex-row items-center justify-center overflow-hidden rounded-md bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 py-2 font-bold text-white"
+    >
+      {common("text.upgrade to pro")}
+    </li>
+  ) : null;
 };
