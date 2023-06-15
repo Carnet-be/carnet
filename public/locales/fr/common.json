@@ -74,8 +74,12 @@
     "more": "Plus",
     "interest": "Intéressés",
     "garage": "Garage",
+    "entreprises": "Entreprises",
+    "individuals": "Particuliers",
     "cars": "Voitures",
+    "cancel pro": "Annuler la version pro",
     "buy": "Acheter",
+    "upgrade to pro": "Passer à la version pro",
     "selled": "Vendu",
     "update your password": "Mettre à jour votre mot de passe",
     "profile": "Profil",
@@ -127,6 +131,7 @@
     "id": "ID",
     "name": "Nom",
     "email": "Email",
+    "upgrade to pro": "Passer à la version pro",
     "phone": "Téléphone",
     "tel": "Téléphone",
     "date": "Date",
@@ -213,6 +218,7 @@
   "payment": {
     "dialog title": "Activation du pro",
     "dialog description": "Veuillez payer pour activer le compte pro",
+    "dialog description admin": "Veuillez valider pour activer le compte pro de l'utilisateur",
     "total": "Total",
     "each month is": "Chaque mois est"
   }

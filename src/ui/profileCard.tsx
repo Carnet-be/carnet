@@ -81,7 +81,7 @@ import { useState } from "react";
 import { Drawer } from "antd";
 import { Profile } from "./settingsSection";
 import { useLang } from "../pages/hooks";
-import BadgeType from "./components/badgeType";
+import BadgeType, { BadgePro } from "./components/badgeType";
 
 export const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -153,7 +153,7 @@ export default function CustomizedMenus({
   const onClose = () => {
     setOpenProfil(false);
   };
-
+  const { data: isPro } = trpc.user.checkPro.useQuery();
   //<Profile usert={user} />
   return (
     <div>
@@ -167,7 +167,7 @@ export default function CustomizedMenus({
         disableRipple
         className="rounded-lg hover:bg-primary/10"
         onClick={handleClick}
-        startIcon={<BadgeType />}
+        startIcon={isPro && <BadgePro />}
         endIcon={<ExpandMoreIcon className="text-xl" />}
       >
         {user?.username && (

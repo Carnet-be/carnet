@@ -10,7 +10,7 @@ import {
 import { useRouter } from "next/router";
 import { LoadingSpin } from "./loading";
 import cx from "classnames";
-const amount = 20;
+export const AMOUNT = 20;
 const PaymentDialog = ({
   isModalOpen,
   setIsModalOpen,
@@ -79,7 +79,7 @@ const ContentPayment = () => {
             <h6>Add Months</h6>
             <span>
               {common("payment.each month is")}{" "}
-              <Price value={amount} textStyle="font-bold" />
+              <Price value={AMOUNT} textStyle="font-bold" />
             </span>
           </div>
           <div className="flex flex-row items-center gap-1 overflow-hidden rounded border">
@@ -105,7 +105,7 @@ const ContentPayment = () => {
         <Divider />
         <div className="flex flex-row items-center justify-between text-primary">
           <h6>{common("payment.total")}</h6>
-          <Price value={months * amount} textStyle="font-bold" />
+          <Price value={months * AMOUNT} textStyle="font-bold" />
         </div>
       </div>
       {isPending ? (
@@ -115,14 +115,14 @@ const ContentPayment = () => {
       ) : (
         <PayPalButtons
           style={{ layout: "vertical" }}
-          forceReRender={[amount]}
+          forceReRender={[AMOUNT]}
           fundingSource={undefined}
           createOrder={(data, actions) => {
             return actions.order.create({
               purchase_units: [
                 {
                   amount: {
-                    value: `${months * amount}`,
+                    value: `${months * AMOUNT}`,
                   },
                 },
               ],

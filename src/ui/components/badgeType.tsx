@@ -61,3 +61,22 @@ const BadgeType = ({ size = "medium" }: Props) => {
 };
 
 export default BadgeType;
+
+export const BadgePro = ({ size = "medium" }: Props) => {
+  return (
+    <div
+      className={cx(
+        "rounded-lg text-[9px] font-bold uppercase text-white",
+        size === "small"
+          ? "rounded px-[4px] py-[1px] text-[7px]"
+          : size === "medium"
+          ? "px-2  py-[1px] text-[9px]"
+          : "px-2 py-[1px]  text-[11px]",
+
+        "bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500"
+      )}
+    >
+      pro
+    </div>
+  );
+};

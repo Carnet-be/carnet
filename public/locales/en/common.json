@@ -65,13 +65,19 @@
     "new blog": "New Blog",
     "edit blog": "Edit Blog",
     "update password": "Update Password",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "upgrade to pro": "Upgrade to Pro"
   },
   "quotes": {
     "big title": "Buy Your Car with"
   },
   "text": {
     "more": "More",
+
+    "entreprises": "Entreprises",
+    "individuals": "Individuals",
+    "upgrade to pro": "Upgrade to Pro",
+    "cancel pro": "Cancel Pro",
     "interest": "Interests",
     "update your password": "Update your password",
     "profile": "Profile",
@@ -211,6 +217,7 @@
   "payment": {
     "dialog title": "Activate pro account",
     "dialog description": "To activate your pro account, you must pay",
+    "dialog description admin": "To activate the pro account, you must validate",
     "total": "Total",
     "each month is": "Each month is"
   }

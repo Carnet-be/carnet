@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { bcryptHash } from "@utils/bcrypt";
 import { TMessage } from "@repository/index";
 import { Currency, Language } from "@prisma/client";
+import moment from "moment";
 
 export const userRouter = router({
   get: publicProcedure.query(async ({ ctx }) => {
@@ -186,4 +187,56 @@ export const userRouter = router({
     console.log("isPro", isPro);
     return isPro;
   }),
+
+  upgradeToPro: publicProcedure
+    .input(
+      z.object({
+        user_id: z.string(),
+        unit: z.number(),
+        cycle: z.number(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { user_id, unit, cycle } = input;
+
+      const expireAt = moment().add(cycle, "months").toDate();
+      console.log("expireAt", expireAt);
+
+      const activation = await ctx.prisma.activationPro.create({
+        data: {
+          user_id,
+          amount: unit * cycle,
+          expireAt,
+          cycle,
+          unit,
+        },
+      });
+      return activation;
+    }),
+
+  downgradeToPro: publicProcedure
+    .input(z.string())
+    .mutation(async ({ input, ctx }) => {
+      const last = await ctx.prisma.activationPro.findFirst({
+        where: {
+          user_id: input,
+        },
+        orderBy: {
+          createAt: "desc",
+        },
+      });
+      if (last) {
+        const activation = await ctx.prisma.activationPro.update({
+          where: {
+            id: last.id,
+          },
+
+          data: {
+            expireAt: new Date(),
+          },
+        });
+        return activation;
+      }
+      return null;
+    }),
 });
