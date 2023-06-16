@@ -289,8 +289,8 @@ const CreateAuctionCar = ({
         toast.success("Opération réussi");
 
         //  router.push("/dashboard/entreprise/myauctions")
-        // if (afterPublish && auction && auction.state !== data[0].state)
-        //   afterPublish(auction?.state, data[0].state);
+        if (afterPublish && auction && auction.state !== data[0].state)
+          afterPublish(auction?.state, data[0].state);
         if (refetch) {
           refetch();
         }
