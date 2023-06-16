@@ -84,6 +84,7 @@ export const bidderRouter = router({
     .input(
       z.object({
         models: z.array(z.number()),
+        brands: z.array(z.number()),
         carrosserie: z.string(),
       })
     )
@@ -103,6 +104,9 @@ export const bidderRouter = router({
             models: {
               connect: input.models.map((model) => ({ id: model })),
             },
+            brands: {
+              connect: input.brands.map((brand) => ({ id: brand })),
+            },
             carrosserie: input.carrosserie,
           },
         });
@@ -111,6 +115,9 @@ export const bidderRouter = router({
         data: {
           models: {
             connect: input.models.map((model) => ({ id: model })),
+          },
+          brands: {
+            connect: input.brands.map((brand) => ({ id: brand })),
           },
           carrosserie: input.carrosserie,
           user: {
@@ -128,6 +135,12 @@ export const bidderRouter = router({
         },
       },
       include: {
+        brands: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         models: true,
       },
     });

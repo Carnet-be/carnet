@@ -221,5 +221,10 @@
     "dialog description admin": "Veuillez valider pour activer le compte pro de l'utilisateur",
     "total": "Total",
     "each month is": "Chaque mois est"
+  },
+  "interest": {
+    "question carrosery": "Quelles sont les carrosiers qui vous intéressent ?",
+    "question brand": "Quelles sont les marques qui vous intéressent ?",
+    "question model": "Quelles sont les modèles qui vous intéressent ?"
   }
 }

@@ -1,4 +1,5 @@
-import { AppSettings, type User } from "@prisma/client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { AppSettings, Prisma, PrismaClient, type User } from "@prisma/client";
 import * as trpc from "@trpc/server";
 import { Transporter } from "@utils/nodemailer";
 import { hash } from "bcrypt";
@@ -10,6 +11,10 @@ import { v4 as uuid } from "uuid";
 import { render } from "@react-email/render";
 import EmailVerifyEmail from "@ui/emails/verify-email";
 import EmailResetPassword from "@ui/emails/reset-password";
+import { TNotification } from "@model/type";
+
+import user from "../../../pages/dashboard/user";
+import DefaultEmailNotification from "@ui/emails/defaultTemplate";
 const ZSignup = z.object({
   username: z.string(),
   tel: z.string().optional(),
@@ -239,3 +244,125 @@ const sendVerifEmail = async (
     ),
   });
 };
+
+export const sendEmailNotification = async (
+  notification: TNotification,
+  prisma: PrismaClient<
+    Prisma.PrismaClientOptions,
+    never,
+    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+  >
+) => {
+  const result = await setupEmailNotifications(
+    notification as unknown as TNotification,
+    prisma
+  );
+
+  Transporter.sendMail({
+    to: result.receiver,
+    from: process.env.ADMINS_EMAIL,
+    subject: result.title,
+    html: render(
+      DefaultEmailNotification({
+        title: result.title,
+        description: result.body,
+        link: result.link,
+        baseUrl: getBaseUrl(),
+      })
+    ),
+  }).catch((err) => {
+    console.log(err);
+  });
+};
+
+async function setupEmailNotifications(
+  notification: TNotification,
+  prisma: PrismaClient<
+    Prisma.PrismaClientOptions,
+    never,
+    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+  >
+): Promise<{ title: string; body: string; link: string; receiver: string[] }> {
+  const content: {
+    title: string;
+    body: string;
+    link: string;
+    receiver: string[];
+  } = {
+    title: "",
+    body: "",
+    link: "#",
+    receiver: [],
+  };
+  ////
+  let title = "";
+  switch (notification.type) {
+    case "new auction":
+      content.title = "New Auction";
+      content.body =
+        "A new auction that corresponds to your interests has been added";
+      content.link = "/dashboard/user/auctions/" + notification.auction_id;
+      break;
+    case "auction modified":
+      title = "";
+      switch (notification.type_2) {
+        case "pause":
+          title = "Auction Paused";
+          break;
+        case "resume":
+          title = "Auction Resumed";
+          break;
+        case "edit":
+          title = "Auction Edited";
+          break;
+        case "delete":
+          title = "Auction Deleted";
+          break;
+        case "published":
+          title = "Auction Published";
+          break;
+        case "republished":
+          title = "Auction Republished";
+          break;
+        case "add time":
+          title = "Auction extended";
+          break;
+        case "cancel winner":
+          title = "Auction winner canceled";
+          break;
+        default:
+          title = notification.type_2;
+          break;
+      }
+      content.title = title;
+      content.body = `${notification.auction_name} (#${notification.auction_id})`;
+      content.link = "/dashboard/entreprise/auction/" + notification.auction_id;
+      const auctionniare_email =
+        (await prisma.user
+          .findUnique({
+            where: { id: notification.auctionnaire_id },
+            select: { email: true },
+          })
+          .then((user) => user?.email)) || "";
+      content.receiver = [auctionniare_email];
+      break;
+
+    // case "new message":
+    //   content.title = t(notification.type);
+    //   content.body = `${notification.content}`;
+    //   if (user?.type === "AUC") {
+    //     content.link = `/dashboard/entreprise/chat`;
+    //   }
+    //   if (user?.type === "BID") {
+    //     content.link = `/dashboard/user/chat`;
+    //   }
+    //   if (user?.type === "ADMIN") {
+    //     content.link = `/admin/dashboard/chat`;
+    //   }
+    //   break;
+
+    default:
+      break;
+  }
+  return content;
+}

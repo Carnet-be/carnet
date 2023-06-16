@@ -220,5 +220,10 @@
     "dialog description admin": "To activate the pro account, you must validate",
     "total": "Total",
     "each month is": "Each month is"
+  },
+  "interest": {
+    "question carrosery": "What are the body types that interest you ?",
+    "question brand": "What are the brands that interest you ?",
+    "question model": "What are the models that interest you ?"
   }
 }

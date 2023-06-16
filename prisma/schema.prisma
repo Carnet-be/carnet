@@ -266,12 +266,13 @@ model AssetImage {
 }
 
 model Brand {
-  id          Int     @id @default(autoincrement())
-  name        String  @unique
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
   country     String?
-  description String? @db.Text()
+  description String?    @db.Text()
   //
   models      Model[]
+  interests   Interest[]
 }
 
 model Interest {
@@ -281,10 +282,12 @@ model Interest {
   // field
 
   models      Model[]
+  brands      Brand[]
   carrosserie String  @default("")
+
   //
-  user_id     String  @unique
-  user        User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String @unique
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Model {

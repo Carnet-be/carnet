@@ -73,6 +73,7 @@ export const DialogInterest = ({
   });
   const [selectedC, setSelectedC] = React.useState<Array<string>>([]);
   const [selectedB, setSelectedB] = React.useState<ValueType>([]);
+  const [selectedBrand, setSelectedBrand] = React.useState<ValueType>([]);
   const showModal = () => {
     setOpen(true);
   };
@@ -106,6 +107,7 @@ export const DialogInterest = ({
       }
       setSelectedC(data.carrosserie.split("--") || []);
       setSelectedB(data.models.map((o) => o.id) || []);
+      setSelectedBrand(data.brands.map((o) => o.id) || []);
       setDefaultData({
         carrosserie: data.carrosserie,
         models: data.models.map((o) => o.id),
@@ -141,6 +143,7 @@ export const DialogInterest = ({
       return {
         label: o.name,
         value: o.id,
+
         children: o.models.map((oo) => {
           return {
             label: oo.name,
@@ -150,6 +153,42 @@ export const DialogInterest = ({
       };
     });
   };
+
+  const transformBrandOnlyToPicker = (
+    brands:
+      | (Brand & {
+          models: {
+            id: number;
+            name: string;
+          }[];
+        })[]
+      | undefined
+  ) => {
+    if (!brands) {
+      return [];
+    }
+    return brands.map((o) => {
+      return {
+        label: o.name,
+        value: o.id,
+      };
+    });
+  };
+  const getUnchecked = (
+    brands:
+      | (Brand & {
+          models: {
+            id: number;
+            name: string;
+          }[];
+        })[]
+      | undefined
+  ) => {
+    if (!brands) {
+      return [];
+    }
+    return brands.map((o) => o.id);
+  };
   const common = useContext(LangCommonContext);
   const router = useRouter();
   return (
@@ -157,69 +196,109 @@ export const DialogInterest = ({
       <Modal.Header>
         <Modal.Title>{t("interest.title")}</Modal.Title>
       </Modal.Header>
-      <Modal.Body className="space-y-10">
-        <Slider {...settings} className="">
-          {CARROSSERIE.map((o, i) => {
-            const isActive = selectedC.includes(o.title);
-            return (
-              <BodyItem
-                key={i}
-                isActive={isActive}
-                title={text("carossery." + o.title.toLowerCase())}
-                img={o.img}
-                onClick={() => {
-                  //   setData((prev:string[]) => {
-                  //     if (prev.includes(o.title)) {
-                  //       return prev.filter((oo) => oo !== o.title);
-                  //     } else {
-                  //       return [...prev, o];
-                  //     }
-                  //   });
+      <Modal.Body className="space-y-3">
+        <div>
+          <span>{common("interest.question carrosery")}</span>
+          <Slider {...settings} className="">
+            {CARROSSERIE.map((o, i) => {
+              const isActive = selectedC.includes(o.title);
+              return (
+                <BodyItem
+                  key={i}
+                  isActive={isActive}
+                  title={text("carossery." + o.title.toLowerCase())}
+                  img={o.img}
+                  onClick={() => {
+                    //   setData((prev:string[]) => {
+                    //     if (prev.includes(o.title)) {
+                    //       return prev.filter((oo) => oo !== o.title);
+                    //     } else {
+                    //       return [...prev, o];
+                    //     }
+                    //   });
 
-                  if (isActive) {
-                    setSelectedC((prev) => {
-                      return prev.filter((oo) => oo !== o.title);
-                    });
-                  } else {
-                    setSelectedC((prev) => {
-                      return [...prev, o.title];
-                    });
-                  }
+                    if (isActive) {
+                      setSelectedC((prev) => {
+                        return prev.filter((oo) => oo !== o.title);
+                      });
+                    } else {
+                      setSelectedC((prev) => {
+                        return [...prev, o.title];
+                      });
+                    }
 
-                  console.log(o);
-                }}
-              />
-            );
-          })}
-        </Slider>
-        <CheckTreePicker
-          size="lg"
-          locale={router.locale as any}
-          placeholder={`${common("table.brand")} & ${common("table.model")}`}
-          data={transformBrandToPicker(brands)}
-          className="z-[1000] w-full"
-          value={selectedB}
-          onChange={(value) => {
-            setSelectedB(value);
-          }}
-          renderTreeNode={(nodeData) => {
-            return (
-              <span className="flex flex-row gap-1">
-                <Image
-                  onError={(e) => {
-                    console.log(e);
-                    e.currentTarget.hidden = true;
+                    console.log(o);
                   }}
-                  src={"/assets/Cars/" + nodeData.label + ".svg"}
-                  alt="logo"
-                  width={20}
-                  height={20}
-                />{" "}
-                {nodeData.label}
-              </span>
-            );
-          }}
-        />
+                />
+              );
+            })}
+          </Slider>
+        </div>
+        <div className="py-4"></div>
+        <div>
+          <span>{common("interest.question brand")}</span>
+          <CheckTreePicker
+            size="lg"
+            locale={router.locale as any}
+            placeholder={`${common("table.brand")}`}
+            data={transformBrandOnlyToPicker(brands)}
+            className="z-[1000] w-full"
+            //  uncheckableItemValues={getUnchecked(brands)}
+            value={selectedBrand}
+            onChange={(value) => {
+              setSelectedBrand(value);
+            }}
+            renderTreeNode={(nodeData) => {
+              return (
+                <span className="flex flex-row gap-1">
+                  <Image
+                    onError={(e) => {
+                      console.log(e);
+                      e.currentTarget.hidden = true;
+                    }}
+                    src={"/assets/Cars/" + nodeData.label + ".svg"}
+                    alt="logo"
+                    width={20}
+                    height={20}
+                  />{" "}
+                  {nodeData.label}
+                </span>
+              );
+            }}
+          />
+        </div>
+        <div>
+          <span className="my-1">{common("interest.question model")}</span>
+          <CheckTreePicker
+            size="lg"
+            locale={router.locale as any}
+            placeholder={`${common("table.model")}`}
+            data={transformBrandToPicker(brands)}
+            className="z-[1000] w-full"
+            uncheckableItemValues={getUnchecked(brands)}
+            value={selectedB}
+            onChange={(value) => {
+              setSelectedB(value);
+            }}
+            renderTreeNode={(nodeData) => {
+              return (
+                <span className="flex flex-row gap-1">
+                  <Image
+                    onError={(e) => {
+                      console.log(e);
+                      e.currentTarget.hidden = true;
+                    }}
+                    src={"/assets/Cars/" + nodeData.label + ".svg"}
+                    alt="logo"
+                    width={20}
+                    height={20}
+                  />{" "}
+                  {nodeData.label}
+                </span>
+              );
+            }}
+          />
+        </div>
       </Modal.Body>
       <Modal.Footer className="space-x-3">
         <Button onClick={handleCancel} type="text">
@@ -231,6 +310,7 @@ export const DialogInterest = ({
             mutate({
               carrosserie: selectedC.join("--"),
               models: selectedB as number[],
+              brands: selectedBrand as number[],
             });
           }}
         >
