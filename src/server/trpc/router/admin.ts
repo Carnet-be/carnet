@@ -47,7 +47,9 @@ export const adminRouter = router({
   getBrandModel: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.brand.findMany({
       where: { models: { some: {} } },
-      include: { models: { select: { id: true, name: true } } },
+      include: {
+        models: { select: { id: true, name: true } },
+      },
       orderBy: {
         name: "asc",
       },

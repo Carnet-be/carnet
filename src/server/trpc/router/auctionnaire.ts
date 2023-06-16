@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { BRAND } from "@data/internal";
-import type { TAuction, TCar } from "@model/type";
+import type { TAuction, TCar, TNotification } from "@model/type";
 import { AuctionState } from "@prisma/client";
 import {
   type Data3,
@@ -19,6 +19,7 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 import moment from "moment";
 import { sendNotification } from "@repository/index";
+import { sendEmailNotification } from "./auth";
 
 export const auctionnaireRouter = router({
   get: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
@@ -228,14 +229,16 @@ export const auctionnaireRouter = router({
         })
         .then((auction) => {
           const res = auction;
-          sendNotification({
+          const notif: TNotification = {
             type: "auction modified",
             type_2: "pause",
             date: new Date(),
             auction_id: res.id,
             auction_name: res.name,
             auctionnaire_id: res.auctionnaire_id,
-          });
+          };
+          sendNotification(notif);
+          sendEmailNotification(notif, ctx.prisma);
           return auction;
         });
     }),
@@ -369,14 +372,16 @@ export const auctionnaireRouter = router({
         .then((auction) => {
           const res = auction[0];
           console.log("notif", input.log);
-          sendNotification({
+          const notif: TNotification = {
             type: "auction modified",
             type_2: input.log || "edit",
             date: new Date(),
             auction_id: res.id,
             auction_name: res.name,
             auctionnaire_id: res.auctionnaire_id,
-          });
+          };
+          sendNotification(notif);
+          sendEmailNotification(notif, ctx.prisma);
           return auction;
         });
     }),
@@ -788,7 +793,7 @@ export const auctionnaireRouter = router({
           }),
         ])
         .then((res) => {
-          sendNotification({
+          const notif: TNotification = {
             type: "winner",
             date: new Date(),
             montant: res[1].montant,
@@ -796,7 +801,9 @@ export const auctionnaireRouter = router({
             auctionnaire_id: res[0].auctionnaire_id,
             winner_id: res[1].bidder_id,
             auction_name: res[0].name,
-          });
+          };
+          sendNotification(notif);
+          sendEmailNotification(notif, ctx.prisma);
           return res;
         });
     }),
@@ -832,14 +839,17 @@ export const auctionnaireRouter = router({
           },
         })
         .then((res) => {
-          sendNotification({
+          const notif: TNotification = {
             type: "auction modified",
             type_2: "republished",
             date: new Date(),
             auction_id: res.id,
             auction_name: res.name,
             auctionnaire_id: res.auctionnaire_id,
-          });
+          };
+          sendNotification(notif);
+
+          sendEmailNotification(notif, ctx.prisma);
           return res;
         });
     }),
@@ -869,14 +879,16 @@ export const auctionnaireRouter = router({
           },
         })
         .then((res) => {
-          sendNotification({
+          const notif: TNotification = {
             type: "auction modified",
             type_2: "add time",
             date: new Date(),
             auction_id: res.id,
             auction_name: res.name,
             auctionnaire_id: res.auctionnaire_id,
-          });
+          };
+          sendNotification(notif);
+          sendEmailNotification(notif, ctx.prisma);
           return res;
         });
     }),
@@ -912,14 +924,16 @@ export const auctionnaireRouter = router({
           }),
         ])
         .then((res) => {
-          sendNotification({
+          const notif: TNotification = {
             type: "auction modified",
             type_2: "cancel winner",
             date: new Date(),
             auction_id: res[0].id,
             auctionnaire_id: res[0].auctionnaire_id,
             auction_name: res[0].name,
-          });
+          };
+          sendNotification(notif);
+          sendEmailNotification(notif, ctx.prisma);
           return res;
         });
     }),
