@@ -107,7 +107,7 @@ const MyUpload = ({
         <Button
           loading={isUploading}
           icon={<UploadOutlined />}
-          className="flex flex-row items-center gap-2"
+          className="flex flex-row items-center gap-2 bg-white"
         >
           {common("text.change image")}
         </Button>

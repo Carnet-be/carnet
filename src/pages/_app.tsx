@@ -117,7 +117,10 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
         >
           <ConfigProvider locale={getAntdLocale()}>
             <App>
-              <NextNProgress color="#181BAA" height={5} />
+              <NextNProgress
+                color="#181BAA"
+                height={router.pathname.includes("/garages/") ? 0 : 5}
+              />
               <Component {...pageProps} />
             </App>
           </ConfigProvider>

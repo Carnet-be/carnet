@@ -57,6 +57,7 @@ model User {
   ListString       ListString[]
   cars_bought      Car[]             @relation("buyer")
   activations_pro  ActivationPro[]
+  garage           Garage?
 
   @@index([addressId])
 }
@@ -329,6 +330,7 @@ model AppSettings {
   contactEmail            String?
   contactPhone            String?
   contactAddress          String?
+  paypalClientId          String   @default("test")
   ////
   confirmNewBidderAccount Boolean  @default(true)
 }
@@ -409,6 +411,20 @@ model ListString {
   user     User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([user_id])
+}
+
+model Garage {
+  id       String   @id @default(cuid())
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  cover       String
+  name        String
+  logo        String
+  description String? @db.Text()
+
+  user_id String @unique
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 //////ENUM///////
