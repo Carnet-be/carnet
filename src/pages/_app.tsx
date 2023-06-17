@@ -26,6 +26,7 @@ import frFRRS from "rsuite/locales/fr_FR";
 //   en,
 //   fr,
 // };
+//fix planet
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { ConfigProvider } from "antd";
