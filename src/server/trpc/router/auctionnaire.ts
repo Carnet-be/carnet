@@ -79,7 +79,7 @@ export const auctionnaireRouter = router({
           id = Math.random().toString().slice(2, 7);
         }
       }
-      console.log("images", data6.images);
+
       const name = data1.brand + " " + data1.model + " " + data1.buildYear;
 
       const buyNow = input.buyNow;
@@ -141,70 +141,83 @@ export const auctionnaireRouter = router({
         });
       }
 
-      return await ctx.prisma.auction.create({
-        data: {
-          id,
-          name,
-          brand: data1.brand!,
-          model: data1.model!,
-          build_year: data1.buildYear!,
-          fuel: data1.fuel,
-          //images,
-          description: data6.description,
-          duration,
-          expected_price: parseFloat(data6.expected_price!.toString()),
-          images: {
-            createMany: {
-              data: data6.images,
+      return await ctx.prisma.auction
+        .create({
+          data: {
+            id,
+            name,
+            brand: data1.brand!,
+            model: data1.model!,
+            build_year: data1.buildYear!,
+            fuel: data1.fuel,
+            //images,
+            description: data6.description,
+            duration,
+            expected_price: parseFloat(data6.expected_price!.toString()),
+            images: {
+              createMany: {
+                data: data6.images,
+              },
             },
-          },
-          color: data1.color,
-          //auctionnaire_id: auctionnaire_id||"",
-          auctionnaire: {
-            connect: {
-              email: ctx.session?.user?.email || "",
+            color: data1.color,
+            //auctionnaire_id: auctionnaire_id||"",
+            auctionnaire: {
+              connect: {
+                email: ctx.session?.user?.email || "",
+              },
             },
-          },
-          address: {
-            create: {
-              zipCode: data6.zipCode,
-              city: data6.city,
-              country: data6.country,
-              lat: data6.lat!,
-              lon: data6.lon!,
-              address: data6.address,
+            address: {
+              create: {
+                zipCode: data6.zipCode,
+                city: data6.city,
+                country: data6.country,
+                lat: data6.lat!,
+                lon: data6.lon!,
+                address: data6.address,
+              },
             },
-          },
-          rating: {
-            create: data4,
-          },
-          specs: {
-            create: {
-              carrosserie: data3.carrosserie,
-              cc: data3.cc,
-              cv: data3.cv,
-              co2: data3.co2,
-              kilometrage: data3.kilometrage,
-              version: data3.version,
-              transmission: data3.transmission,
-              doors: data3.doors ? parseInt(data3.doors) : null,
+            rating: {
+              create: data4,
             },
-          },
-          options: {
-            create: data5,
-          },
-          logs: {
-            create: {
-              action: "creation",
-              user: {
-                connect: {
-                  email: ctx.session?.user?.email || "",
+            specs: {
+              create: {
+                carrosserie: data3.carrosserie,
+                cc: data3.cc,
+                cv: data3.cv,
+                co2: data3.co2,
+                kilometrage: data3.kilometrage,
+                version: data3.version,
+                transmission: data3.transmission,
+                doors: data3.doors ? parseInt(data3.doors) : null,
+              },
+            },
+            options: {
+              create: data5,
+            },
+            logs: {
+              create: {
+                action: "creation",
+                user: {
+                  connect: {
+                    email: ctx.session?.user?.email || "",
+                  },
                 },
               },
             },
           },
-        },
-      });
+        })
+        .then((auction) => {
+          const res = auction;
+          const notif: TNotification = {
+            type: "new auction",
+            date: new Date(),
+            auction_id: res.id,
+            auction_name: res.name,
+            auctionnaire_id: res.auctionnaire_id,
+          };
+          sendEmailNotification(notif, ctx.prisma);
+          return auction;
+        });
     }),
   pauseAuction: publicProcedure
     .input(z.string())
@@ -260,7 +273,6 @@ export const auctionnaireRouter = router({
       const duration = processDate.getDuration(data6.duration);
       const end_date = processDate.endDate(duration);
 
-      console.log("images", data6.images);
       const idsImage = data6.images.map((dim) => dim.fileKey);
       const deleteImage = auction.images.filter(
         (im) => !idsImage.includes(im.fileKey)
@@ -371,7 +383,7 @@ export const auctionnaireRouter = router({
         ])
         .then((auction) => {
           const res = auction[0];
-          console.log("notif", input.log);
+
           const notif: TNotification = {
             type: "auction modified",
             type_2: input.log || "edit",
@@ -396,7 +408,6 @@ export const auctionnaireRouter = router({
     const data6: Data6 = input.data6;
     const buyNow = input.buyNow;
 
-    console.log("images", data6.images);
     const idsImage = data6.images.map((dim) => dim.fileKey);
     const deleteImage = auction.images.filter(
       (im) => !idsImage.includes(im.fileKey)

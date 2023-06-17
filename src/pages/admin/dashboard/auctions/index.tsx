@@ -473,23 +473,29 @@ export const AuctionsPage = ({
       dataIndex: "auctionnaire",
       key: "auctionnaire",
       className: state !== "pending" ? "hidden" : "",
-      render: (a, v) => (
-        <div className="flex flex-row gap-1">
-          <Tooltip
-            title="Contact"
-            className="flex flex-row items-center justify-center text-primary"
-          >
-            <Button shape="circle" icon={<EmailIcon className="text-lg" />} />
-          </Tooltip>
-          <div className="flex flex-col">
-            <h6>{(a as TUser).username}</h6>
+      render:
+        state !== "pending"
+          ? undefined
+          : (a, v) => (
+              <div className="flex flex-row gap-1">
+                <Tooltip
+                  title="Contact"
+                  className="flex flex-row items-center justify-center text-primary"
+                >
+                  <Button
+                    shape="circle"
+                    icon={<EmailIcon className="text-lg" />}
+                  />
+                </Tooltip>
+                <div className="flex flex-col">
+                  <h6>{(a as TUser).username}</h6>
 
-            <span className="text-[12px] italic text-primary">
-              #{(a as TUser).id}
-            </span>
-          </div>
-        </div>
-      ),
+                  <span className="text-[12px] italic text-primary">
+                    #{(a as TUser).id}
+                  </span>
+                </div>
+              </div>
+            ),
     },
     // {
     //   title: "Publish",

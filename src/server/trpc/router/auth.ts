@@ -15,6 +15,7 @@ import { TNotification } from "@model/type";
 
 import user from "../../../pages/dashboard/user";
 import DefaultEmailNotification from "@ui/emails/defaultTemplate";
+import { CARROSSERIE } from "@data/internal";
 const ZSignup = z.object({
   username: z.string(),
   tel: z.string().optional(),
@@ -302,6 +303,42 @@ async function setupEmailNotifications(
       content.body =
         "A new auction that corresponds to your interests has been added";
       content.link = "/dashboard/user/auctions/" + notification.auction_id;
+
+      const auction = await prisma.auction.findUnique({
+        where: { id: notification.auction_id },
+        include: {
+          specs: true,
+        },
+      });
+      if (auction) {
+        console.log(CARROSSERIE[auction.specs?.carrosserie || 0]?.title);
+        const users = await prisma.user.findMany({
+          where: {
+            interest: {
+              carrosserie: {
+                contains: CARROSSERIE[auction.specs?.carrosserie || 0]?.title,
+              },
+              OR: {
+                brands: {
+                  some: {
+                    name: auction.brand,
+                  },
+                },
+                models: {
+                  some: {
+                    name: auction.model,
+                  },
+                },
+              },
+            },
+          },
+          select: {
+            email: true,
+          },
+        });
+        console.table(users);
+        content.receiver = users.map((user) => user.email);
+      }
       break;
     case "auction modified":
       title = "";

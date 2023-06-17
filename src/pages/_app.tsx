@@ -26,6 +26,7 @@ import frFRRS from "rsuite/locales/fr_FR";
 //   en,
 //   fr,
 // };
+//fix planet
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { ConfigProvider } from "antd";
@@ -117,7 +118,11 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: any) => {
         >
           <ConfigProvider locale={getAntdLocale()}>
             <App>
-              <NextNProgress color="#181BAA" height={5} />
+              {router.pathname.includes("/garages/") ? (
+                <></>
+              ) : (
+                <NextNProgress color="#181BAA" height={5} />
+              )}
               <Component {...pageProps} />
             </App>
           </ConfigProvider>
