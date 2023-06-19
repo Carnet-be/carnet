@@ -180,3 +180,61 @@ const CarCard = ({
 };
 
 export default CarCard;
+
+type CarCardReadOnlyProps = {
+  auction: TCar;
+  // isFavorite?: boolean;
+};
+
+export const CarCardReadOnly = ({ auction }: CarCardReadOnlyProps) => {
+  const { text: common } = useLang(undefined);
+
+  const router = useRouter();
+  const src = !auction.images[0] ? NO_IMAGE_URL : auction.images[0].fileKey;
+
+  return (
+    <>
+      <div
+        onClick={() => router.push("/dashboard/user/cars/" + auction.id)}
+        className={cx(
+          " flex h-[270px] flex-col  gap-[40px] overflow-hidden rounded-2xl bg-base-100 drop-shadow-md",
+          {
+            "cursor-pointer": true,
+          }
+        )}
+      >
+        <div className="relative flex-grow ">
+          <Image
+            src={cloudy.image(src).toURL()}
+            alt="image"
+            fill
+            className="object-cover"
+          />
+        </div>
+        <div className="flex w-full flex-col justify-between gap-[0px] px-2 pb-2">
+          <div className="flex flex-row items-end justify-between gap-1  text-primary">
+            <div className="flex-grow font-semibold">
+              <span>{auction.name}</span>
+            </div>
+          </div>
+          <hr className="my-1 h-0" />
+          <div className="flex flex-row items-center justify-between">
+            <div className="flex flex-col">
+              <span className="flex flex-row items-center gap-2 font-semibold text-green">
+                <Price textStyle="text-base" value={auction.price} />
+              </span>
+            </div>
+            <div className="flex flex-row rounded-full bg-[#00A369]">
+              <Link
+                href={"/dashboard/user/cars/" + auction.id}
+                className="rounded-full bg-green p-[5px] px-3 text-[13px] font-semibold text-white no-underline"
+              >
+                {common("button.buy")}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};

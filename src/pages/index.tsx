@@ -163,7 +163,7 @@ export const MyNav = () => {
   );
 };
 
-const ProfileButton = () => {
+export const ProfileButton = () => {
   const text = useContext(LangContext);
   const { data: user, refetch, isLoading } = trpc.user.get.useQuery();
   const { data: session } = useSession();

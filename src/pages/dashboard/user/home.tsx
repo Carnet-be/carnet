@@ -127,7 +127,6 @@ const Home = (
         <CarList
           auctions={cars as unknown as TCar[]}
           isLoading={isLoadingCars}
-          user={user}
         />
       )}
     </Dashboard>
@@ -152,26 +151,18 @@ const AuctionsList = ({
       ) : !auctions ? (
         <span>No data</span>
       ) : (
-        auctions.map((a, i) => (
-          <AuctionCard
-            key={i}
-            auction={a as any}
-            isFavorite={user.favoris_auctions.map((a) => a.id).includes(a.id)}
-          />
-        ))
+        auctions.map((a, i) => <AuctionCard key={i} auction={a as any} />)
       )}
     </div>
   );
 };
 
-const CarList = ({
+export const CarList = ({
   auctions,
   isLoading,
-  user,
 }: {
   auctions: TCar[];
   isLoading: boolean;
-  user: TUser;
 }) => {
   return (
     <div className="flex flex-wrap items-center  gap-6">
