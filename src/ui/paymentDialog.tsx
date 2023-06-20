@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Divider, Modal } from "antd";
-import { LangCommonContext } from "../pages/hooks";
+import { Button, Divider, Modal, Spin } from "antd";
+import { LangCommonContext, useNotif } from "../pages/hooks";
 import Price from "./components/price";
 import {
   PayPalScriptProvider,
@@ -10,6 +10,7 @@ import {
 import { useRouter } from "next/router";
 import { LoadingSpin } from "./loading";
 import cx from "classnames";
+import { trpc } from "@utils/trpc";
 export const AMOUNT = 20.0;
 const PaymentDialog = ({
   isModalOpen,
@@ -38,6 +39,17 @@ const PaymentDialog = ({
     }
   }, [router.locale]);
 
+  const { error } = useNotif();
+  const { data: key, isLoading } = trpc.settings.getPaypalClientID.useQuery(
+    undefined,
+    {
+      onError(err) {
+        console.log(err);
+        error();
+      },
+    }
+  );
+
   return (
     <>
       <Modal
@@ -48,17 +60,24 @@ const PaymentDialog = ({
         cancelButtonProps={{ hidden: true }}
         onCancel={handleCancel}
       >
-        <PayPalScriptProvider
-          options={{
-            clientId:
-              "ATYPPWozH4kHtf-9w3IoitOzcYeAG5dbD-0N7f_2xkXTEDvgMo6ZZA3pCwivzKY-bJ-vORchQlW5szdu",
-            currency: "EUR",
-            intent: "capture",
-            locale,
-          }}
-        >
-          <ContentPayment />
-        </PayPalScriptProvider>
+        {isLoading ? (
+          <div className="flex w-full items-center justify-center p-6">
+            <Spin></Spin>
+          </div>
+        ) : key ? (
+          <PayPalScriptProvider
+            options={{
+              clientId: key,
+              currency: "EUR",
+              intent: "capture",
+              locale,
+            }}
+          >
+            <ContentPayment />
+          </PayPalScriptProvider>
+        ) : (
+          <div></div>
+        )}
       </Modal>
     </>
   );

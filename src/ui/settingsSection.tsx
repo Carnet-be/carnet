@@ -22,6 +22,7 @@ import { LangCommonContext, LangContext, useNotif } from "../pages/hooks";
 import LangSwitcher from "./components/langSwitcher";
 import CurrencySwitcher from "./components/currencySwitcher";
 const { Panel } = Collapse;
+import { useDebounce } from "usehooks-ts";
 const UserContext = createContext<TUser | undefined>(undefined);
 const Settings = ({ user }: { user: TUser }) => {
   const t = useContext(LangCommonContext);
@@ -343,35 +344,8 @@ const UpdatePassowrd = ({ current }: { current: string }) => {
 };
 
 const SettingSide = () => {
-  const { error, succes, loading } = useNotif();
-  const [settings, setsettings] = useState({
-    confirmNewBidderAccount: true,
-  });
-  const { data: s, refetch } = trpc.settings.get.useQuery(undefined, {
-    onSuccess(data) {
-      if (data)
-        setsettings({
-          confirmNewBidderAccount: data.confirmNewBidderAccount,
-        });
-    },
-  });
-  const { mutate: updateAppSetting } = trpc.settings.update.useMutation({
-    onSuccess: () => {
-      succes();
-      refetch();
-    },
-    onError: (e) => {
-      error();
-      console.log(e);
-    },
-  });
-
-  const user = useContext(UserContext) as TUser;
   const t = useContext(LangCommonContext);
   const text = useContext(LangContext);
-  const onChangeSetting = (e: any) => {
-    updateAppSetting({ ...settings, [e.target.name]: e.target.checked });
-  };
 
   return (
     <div>
@@ -400,16 +374,60 @@ const SettingSide = () => {
       </div>
     );
   }
-  function ConfirmNewBidderAccount() {
-    return (
-      <div
-        hidden={
-          user.type !== "ADMIN"
-          //TODO: review
-          //&& user.type !== "STAFF"
-        }
-        className="form-control"
-      >
+};
+
+export default Settings;
+
+function ConfirmNewBidderAccount() {
+  const { error, succes, loading } = useNotif();
+  const text = useContext(LangContext);
+  const [settings, setsettings] = useState({
+    confirmNewBidderAccount: true,
+    paypalClientId: "",
+  });
+  const { data: s, refetch } = trpc.settings.get.useQuery(undefined, {
+    onSuccess(data) {
+      if (data)
+        setsettings({
+          confirmNewBidderAccount: data.confirmNewBidderAccount,
+          paypalClientId: data.paypalClientId,
+        });
+    },
+  });
+  const { mutate: updateAppSetting } = trpc.settings.update.useMutation({
+    onMutate: () => {
+      loading();
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      succes();
+      // refetch();
+    },
+    onError: (e) => {
+      toast.dismiss();
+      error();
+      console.log(e);
+    },
+  });
+  const onChangeSetting = (e: any) => {
+    updateAppSetting({ ...settings, [e.target.name]: e.target.checked });
+  };
+  const onUpdate = () => {
+    updateAppSetting(settings);
+  };
+  const user = useContext(UserContext) as TUser;
+  const [visible, setvisible] = useState(false);
+  const debouncedValue = useDebounce<string>(settings.paypalClientId, 400);
+
+  // Fetch API (optional)
+  useEffect(() => {
+    onUpdate();
+  }, [debouncedValue]);
+  return user.type !== "ADMIN" ? (
+    <></>
+  ) : (
+    <>
+      <div className="form-control">
         <label className="label cursor-pointer rounded-lg bg-gray-100 px-2">
           <span className="label-text max-w-[300px]">{text("new bidder")}</span>
           <input
@@ -421,8 +439,22 @@ const SettingSide = () => {
           />
         </label>
       </div>
-    );
-  }
-};
 
-export default Settings;
+      <label className="label flex cursor-pointer flex-col items-start rounded-lg bg-gray-100 px-2">
+        <span className="label-text max-w-[300px] ">Paypal Cliend ID</span>
+
+        <Input.Password
+          //placeholder="input password"
+          value={settings.paypalClientId}
+          onChange={(e) => {
+            setsettings({ ...settings, paypalClientId: e.target.value });
+          }}
+          visibilityToggle={{
+            visible: visible,
+            onVisibleChange: setvisible,
+          }}
+        />
+      </label>
+    </>
+  );
+}

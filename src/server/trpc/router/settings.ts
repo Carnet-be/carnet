@@ -18,4 +18,14 @@ export const appSettingsRouter = router({
       },
     });
   }),
+
+  getPaypalClientID: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.appSettings
+      .findFirst({
+        select: {
+          paypalClientId: true,
+        },
+      })
+      .then((res) => res?.paypalClientId);
+  }),
 });
