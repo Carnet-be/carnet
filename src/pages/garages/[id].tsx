@@ -18,16 +18,20 @@ import { CarCardReadOnly } from "@ui/components/carCard";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { getBaseUrl } from "../_app";
+import NoCardAnimation from "../../../public/animations/empty_garage.json";
+import Lottie from "@ui/components/lottie";
 function Garage({
   garage,
   cars,
   user,
   url,
+  noCars,
 }: {
   garage: Garage;
   cars: TCar[];
   user: TUser;
   url: string;
+  noCars: boolean;
 }) {
   const { text } = useLang({ file: "pages", selector: "home" });
   const getShortVersion = (text: string | undefined | null) => {
@@ -102,7 +106,7 @@ function Garage({
           />
         </div>
         <div className="container mx-auto flex flex-row gap-16">
-          <div className="w-[400px] -translate-y-[60px] space-y-6">
+          <div className="w-[480px] -translate-y-[60px] space-y-6">
             <div className="bg-green-300 relative h-[120px] w-[120px] overflow-hidden rounded-full ring-4 ring-white ring-offset-0">
               <Image
                 fill
@@ -116,15 +120,28 @@ function Garage({
 
             <p className="whitespace-pre-line">{garage.description}</p>
           </div>
-          <div className="mockup-window my-6 flex-grow border bg-base-200">
-            {/* <div className="flex flex-row items-center justify-end gap-3">
+          <div className="w-full">
+            <div className="mockup-window my-10 flex-grow border bg-base-200">
+              {/* <div className="flex flex-row items-center justify-end gap-3">
               <button className="btn-sm btn">contacter</button>
             </div>
             <Divider /> */}
-            <div className="grid w-full grid-cols-2 gap-8 bg-background  px-8 py-5">
-              {[...cars].map((a, i) => (
-                <CarCardReadOnly key={i} auction={a} />
-              ))}
+              {noCars ? (
+                <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-background">
+                  <div className="w-1/3">
+                    <Lottie animationData={NoCardAnimation} />
+                  </div>
+                  <span className="-translate-y-[40px]">
+                    {text("text.empty cars")}
+                  </span>
+                </div>
+              ) : (
+                <div className="grid h-full w-full grid-cols-2 gap-8 bg-background  px-8 py-5">
+                  {[...cars].map((a, i) => (
+                    <CarCardReadOnly key={i} auction={a} />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -163,18 +180,21 @@ export async function getStaticProps({
   const garage = user.garage;
   const cars = user.Car;
   const url = getBaseUrl() + `/garages/${user.id}`;
+  const noCars = cars.length === 0;
+
   return {
     props: {
       garage,
       cars,
       user,
       url,
+      noCars,
       ...(await serverSideTranslations(locale || "fr", ["common", "pages"])),
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
     // - At most once every 10 seconds
-    revalidate: 10, // In seconds
+    revalidate: 60, // In seconds
   };
 }
 

@@ -16,6 +16,9 @@
       "subtitle": "Get a free, no-obligation offer for your car!",
       "button": "Advertise your car!"
     },
+    "text": {
+      "empty cars": "No cars in this garage"
+    },
     "how it works": {
       "title": "How It Works?",
       "subtitle": "Sell your car in 3 easy steps",

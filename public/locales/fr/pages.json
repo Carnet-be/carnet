@@ -17,6 +17,9 @@
       "subtitle": "Recevez une offre gratuite et sans engagement pour votre voiture !",
       "button": "Annoncez votre voiture !!"
     },
+    "text": {
+      "empty cars": "Aucune voiture trouvée dans ce garage"
+    },
     "how it works": {
       "title": "Comment ça marche ?",
       "subtitle": "Vendez votre voiture en 3 étapes simples",
