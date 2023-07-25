@@ -36,6 +36,10 @@
         "subtitle": "Nous vous payons immédiatement en espèces ou par virement bancaire."
       }
     },
+    "new car": {
+      "title": "Voitures recemment ajoutées",
+      "button": "Voir plus"
+    },
     "about us": {
       "title": "Qui sommes-nous ?",
       "subtitle": "Nous sommes une équipe de passionnés de voitures qui ont décidé de se lancer dans l'achat et la vente de voitures d'occasion. Nous sommes basés à Paris et nous achetons des voitures dans toute la France."

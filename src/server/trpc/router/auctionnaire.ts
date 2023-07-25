@@ -542,6 +542,7 @@ export const auctionnaireRouter = router({
           .enum(["pending", "published", "confirmation", "completed"])
           .optional(),
         filter: z.enum(["all", "mine"]).optional(),
+        limit: z.number().optional(),
       })
     )
     .query(async ({ input, ctx }) => {
@@ -577,6 +578,7 @@ export const auctionnaireRouter = router({
         orderBy: {
           createAt: "desc",
         },
+        take: input.limit || undefined,
       });
     }),
   getBids: publicProcedure

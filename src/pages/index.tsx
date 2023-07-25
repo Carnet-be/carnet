@@ -18,6 +18,7 @@ import CreateAuction from "@ui/createAuction";
 import { signOut, useSession } from "next-auth/react";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import {
+  ArrowRightIconFill,
   DashboardIcon,
   DashboardIcon2,
   EditIcon,
@@ -37,6 +38,9 @@ import cloudy from "@utils/cloudinary";
 import { MenuItem, Divider } from "@mui/material";
 import { StyledMenu } from "@ui/profileCard";
 import LangSwitcher from "@ui/components/langSwitcher";
+import { Skeleton } from "antd";
+import CarCard, { CarCardReadOnly } from "@ui/components/carCard";
+import { TCar } from "@model/type";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerAuthSession(context);
 
@@ -92,6 +96,7 @@ const Home: NextPage = (
 
           <Overlay />
         </div>
+        <NewCars />
         <CommentCaMarche />
         <About />
         {/* <Blogs /> */}
@@ -334,10 +339,7 @@ const CommentCaMarche = () => {
   ];
 
   return (
-    <section
-      id="how"
-      className="flex flex-col items-center gap-10 rounded-t-[100px] bg-white py-[70px]"
-    >
+    <section id="how" className="flex flex-col items-center gap-10 bg-white">
       <h2 className="uppercase text-primary">{text("how it works.title")}</h2>
       <p>{text("how it works.subtitle")}</p>
       <div className="flex flex-row items-start justify-center gap-6 py-10">
@@ -505,5 +507,44 @@ export const Footer = () => {
         </span>
       </div>
     </footer>
+  );
+};
+
+const NewCars = () => {
+  const text = useContext(LangContext);
+  const { data, isLoading } = trpc.auctionnaire.getCars.useQuery({
+    filter: "all",
+    limit: 4,
+  });
+
+  return (
+    <div
+      className={cx(
+        "flex flex-col items-center gap-10 rounded-t-[100px] bg-white py-[100px]",
+        {
+          hidden: !isLoading && data?.length === 0,
+        }
+      )}
+    >
+      <h2 className="uppercase text-primary ">{text("new car.title")} </h2>
+      <div className="grid w-full max-w-[1000px] grid-cols-3 items-center justify-center gap-6">
+        {isLoading
+          ? [1, 2, 3].map((a, i) => (
+              <div key={i} className="w-full space-y-4">
+                <Skeleton.Image active={true} className="h-[200px] w-full" />
+                <Skeleton active={true} className="w-full" />
+              </div>
+            ))
+          : data?.map((a, i) => (
+              <CarCardReadOnly key={i} auction={a as unknown as TCar} />
+            ))}
+      </div>
+      <Link
+        href={"/dashboard/user"}
+        className="btn-outline btn-primary btn-sm btn"
+      >
+        {text("new car.button")}
+      </Link>
+    </div>
   );
 };
