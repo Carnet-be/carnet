@@ -105,8 +105,9 @@ function Garage({
             style={{ objectFit: "cover", objectPosition: "center" }}
           />
         </div>
-        <div className="container mx-auto flex flex-row gap-16">
-          <div className="w-[480px] -translate-y-[60px] space-y-6">
+
+        <div className="mx-auto flex max-w-[1100px] flex-col gap-10">
+          <div className="w-full -translate-y-[60px] space-y-6">
             <div className="bg-green-300 relative h-[120px] w-[120px] overflow-hidden rounded-full ring-4 ring-white ring-offset-0">
               <Image
                 fill
@@ -121,7 +122,7 @@ function Garage({
             <p className="whitespace-pre-line">{garage.description}</p>
           </div>
           <div className="w-full">
-            <div className="mockup-window my-10 flex-grow border bg-base-200">
+            <div className="mockup-window mb-20 flex-grow border bg-base-200">
               {/* <div className="flex flex-row items-center justify-end gap-3">
               <button className="btn-sm btn">contacter</button>
             </div>
@@ -136,7 +137,7 @@ function Garage({
                   </span>
                 </div>
               ) : (
-                <div className="grid h-full w-full grid-cols-2 gap-8 bg-background  px-8 py-5">
+                <div className="grid h-full w-full grid-cols-3 gap-8 bg-background  px-8 py-5">
                   {[...cars].map((a, i) => (
                     <CarCardReadOnly key={i} auction={a} />
                   ))}
@@ -169,6 +170,11 @@ export async function getStaticProps({
         garage: true,
         image: true,
         Car: {
+          where: {
+            isClosed: false,
+
+            state: "published",
+          },
           include: {
             images: true,
           },
@@ -194,7 +200,7 @@ export async function getStaticProps({
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
     // - At most once every 10 seconds
-    revalidate: 60, // In seconds
+    revalidate: 10, // In seconds
   };
 }
 
