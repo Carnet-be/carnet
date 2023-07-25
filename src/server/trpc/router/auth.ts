@@ -248,11 +248,7 @@ const sendVerifEmail = async (
 
 export const sendEmailNotification = async (
   notification: TNotification,
-  prisma: PrismaClient<
-    Prisma.PrismaClientOptions,
-    never,
-    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-  >
+  prisma: any
 ) => {
   const result = await setupEmailNotifications(
     notification as unknown as TNotification,
@@ -278,11 +274,7 @@ export const sendEmailNotification = async (
 
 async function setupEmailNotifications(
   notification: TNotification,
-  prisma: PrismaClient<
-    Prisma.PrismaClientOptions,
-    never,
-    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-  >
+  prisma: any
 ): Promise<{ title: string; body: string; link: string; receiver: string[] }> {
   const content: {
     title: string;
@@ -337,7 +329,7 @@ async function setupEmailNotifications(
           },
         });
         console.table(users);
-        content.receiver = users.map((user) => user.email);
+        content.receiver = users.map((user: User) => user.email);
       }
       break;
     case "auction modified":
@@ -380,7 +372,7 @@ async function setupEmailNotifications(
             where: { id: notification.auctionnaire_id },
             select: { email: true },
           })
-          .then((user) => user?.email)) || "";
+          .then((user: User) => user?.email)) || "";
       content.receiver = [auctionniare_email];
       break;
 
