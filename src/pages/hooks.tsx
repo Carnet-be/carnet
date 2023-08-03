@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TNotification } from "@model/type";
+import type { TNotification } from "@model/type";
 import { db } from "@utils/firebase";
 import { trpc } from "@utils/trpc";
 import {
@@ -22,7 +22,7 @@ import { getPrice } from "@ui/components/price";
 import { User } from "@prisma/client";
 import { useTranslation } from "next-i18next";
 import { Modal } from "antd";
-import { LegacyButtonType } from "antd/es/button/button";
+import type { LegacyButtonType } from "antd/es/button/button";
 const { confirm } = Modal;
 const playNotificationSound = () => {
   const audio = document.getElementById("audio") as HTMLAudioElement;

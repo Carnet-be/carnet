@@ -7,7 +7,8 @@ import { InternalMessage } from "@prisma/client";
 import cx from "classnames";
 
 import animationEmpty from "../../public/animations/mo_message.json";
-import { TMessage, getMessages, sendMessage } from "@repository/index";
+import type { TMessage} from "@repository/index";
+import { getMessages, sendMessage } from "@repository/index";
 import { DisplayMessage } from "../pages/admin/dashboard/chat";
 import { useLang } from "../pages/hooks";
 import { NavBarFixed } from "./dashboard";

@@ -1,21 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
-import { ColumnsType } from "antd/es/table";
-import { Auction, AuctionState, Bid } from "@prisma/client";
+import type { ColumnsType } from "antd/es/table";
+import type { Auction, AuctionState} from "@prisma/client";
+import { Bid } from "@prisma/client";
 import { TAuction, TUser } from "@model/type";
 import BigTitle from "@ui/components/bigTitle";
 import Price from "@ui/components/price";
 import App, { Button, Tooltip } from "antd";
+import type {
+  TableType} from "@ui/components/table";
 import MyTable, {
   renderDate,
   RenderTimer,
-  ActionTable,
-  TableType,
+  ActionTable
 } from "@ui/components/table";
 import {
   AuctionIcon,

@@ -1,4 +1,5 @@
-import { Auction, AuctionState } from "@prisma/client";
+import type { AuctionState } from "@prisma/client";
+import { Auction } from "@prisma/client";
 import { create } from "zustand";
 
 import { devtools, persist } from "zustand/middleware";

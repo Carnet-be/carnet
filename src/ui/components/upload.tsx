@@ -8,7 +8,7 @@ import type { AssetImage } from "@prisma/client";
 import { env } from "@env/server.mjs";
 import { toast } from "react-hot-toast";
 import { LangCommonContext } from "../../pages/hooks";
-import { FileType } from "rsuite/esm/Uploader";
+import type { FileType } from "rsuite/esm/Uploader";
 
 type UploadProps = {
   uploadRef?: MutableRefObject<undefined>;

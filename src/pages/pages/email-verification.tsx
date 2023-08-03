@@ -6,9 +6,9 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import cx from "classnames";
 import { signOut } from "next-auth/react";
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import React from "react";
 
 import { prisma } from "../../server/db/client";

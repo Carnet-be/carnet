@@ -9,11 +9,12 @@ import type { TAuction, TUser } from "@model/type";
 import BigTitle from "@ui/components/bigTitle";
 import Price from "@ui/components/price";
 import App, { Button, Tooltip } from "antd";
+import type {
+  TableType} from "@ui/components/table";
 import MyTable, {
   renderDate,
   RenderTimer,
-  ActionTable,
-  TableType,
+  ActionTable
 } from "@ui/components/table";
 
 import { trpc } from "@utils/trpc";

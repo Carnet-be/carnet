@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
-import React, { ReactNode, useEffect, useState } from "react";
+import type { ReactNode} from "react";
+import React, { useEffect, useState } from "react";
 import { BsTwitter } from "react-icons/bs";
 import { GrFacebookOption, GrLinkedinOption } from "react-icons/gr";
 import { RiWhatsappFill } from "react-icons/ri";

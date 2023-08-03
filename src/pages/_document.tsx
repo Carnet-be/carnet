@@ -1,9 +1,10 @@
+import type {
+  DocumentContext} from "next/document";
 import Document, {
   Html,
   Head,
   Main,
-  NextScript,
-  DocumentContext,
+  NextScript
 } from "next/document";
 import Cookies from "js-cookie";
 import { setCookie, parseCookies } from "nookies";

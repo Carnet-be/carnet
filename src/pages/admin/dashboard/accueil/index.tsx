@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import Dashboard from "@ui/dashboard";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import React, { useEffect } from "react";
 import { useLang } from "../../../hooks";

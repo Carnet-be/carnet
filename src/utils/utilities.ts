@@ -1,4 +1,4 @@
-import { ActivationPro } from "@prisma/client";
+import type { ActivationPro } from "@prisma/client";
 
 export function getRandomNumber(min: number, max: number) {
   min = Math.ceil(min);

@@ -4,15 +4,16 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { prisma } from "../../../server/db/client";
 import Dashboard from "@ui/dashboard";
 import { LangCommonContext, LangContext, useLang, useNotif } from "../../hooks";
-import { AssetImage, Blog, Language } from "@prisma/client";
-import { ColumnsType } from "antd/es/table";
+import type { AssetImage, Blog, Language } from "@prisma/client";
+import type { ColumnsType } from "antd/es/table";
+import type {
+  TableType} from "@ui/components/table";
 import MyTable, {
   ActionTable,
-  TableType,
   renderDate,
 } from "@ui/components/table";
 import { Button, Input, Modal, Radio, Tag, Tooltip } from "antd";
@@ -20,8 +21,9 @@ import { DeleteIcon, EditIcon, ViewIcon } from "@ui/icons";
 import BigTitle from "@ui/components/bigTitle";
 import { trpc } from "@utils/trpc";
 import Image from "next/image";
-import UploadButton, { TImage } from "@ui/components/uploadButton";
-import { Lang } from "@model/type";
+import type { TImage } from "@ui/components/uploadButton";
+import UploadButton from "@ui/components/uploadButton";
+import type { Lang } from "@model/type";
 import toast from "react-hot-toast";
 import { AdvancedImage } from "@cloudinary/react";
 import cloudy from "@utils/cloudinary";

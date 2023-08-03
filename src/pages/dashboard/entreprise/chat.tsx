@@ -4,7 +4,7 @@ import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import Dashboard, { NavBarFixed } from "@ui/dashboard";
 import { trpc } from "@utils/trpc";
 import { Button, Input } from "antd";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import cx from "classnames";
 import ChatPage from "@ui/chatPage";
 import { prisma } from "../../../server/db/client";

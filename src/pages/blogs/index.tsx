@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
 import { prisma } from "../../server/db/client";
-import { GetServerSideProps } from "next";
-import { AssetImage, Blog, Language } from "@prisma/client";
+import type { GetServerSideProps } from "next";
+import type { AssetImage, Blog, Language } from "@prisma/client";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { TUser } from "@model/type";
+import type { TUser } from "@model/type";
 import { LangContext, useLang } from "../hooks";
 import { MyNav } from "..";
 import { Divider } from "antd";

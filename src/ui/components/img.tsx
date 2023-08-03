@@ -11,7 +11,7 @@ import { focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
 import cloudy from "@utils/cloudinary";
 import Image from "next/image";
 import React from "react";
-import { TImage } from "./uploadButton";
+import type { TImage } from "./uploadButton";
 
 const placeholderImg="https://via.placeholder.com/200x200/cccccc/664e4e?text="
 

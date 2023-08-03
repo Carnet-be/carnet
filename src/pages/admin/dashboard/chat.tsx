@@ -5,7 +5,7 @@ import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import Dashboard, { NavBarFixed } from "@ui/dashboard";
 import { trpc } from "@utils/trpc";
 import { Button, Divider, Input } from "antd";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import cx from "classnames";
 import { prisma } from "../../../server/db/client";
 import React, {
@@ -18,8 +18,9 @@ import React, {
 import Lottie from "@ui/components/lottie";
 
 import animationEmpty from "../../../../public/animations/mo_message.json";
+import type {
+  TMessage} from "@repository/index";
 import {
-  TMessage,
   deleteDocument,
   getMessages,
   sendMessage,
@@ -28,7 +29,7 @@ import { TRPCClient } from "@trpc/client";
 import moment from "moment";
 import { AvatarImg } from "@ui/profileCard";
 import { debounce } from "lodash";
-import { TUser } from "@model/type";
+import type { TUser } from "@model/type";
 import { HiSearchCircle } from "react-icons/hi";
 import toast from "react-hot-toast";
 
