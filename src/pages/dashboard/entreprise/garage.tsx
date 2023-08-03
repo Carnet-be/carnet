@@ -91,7 +91,7 @@ const Home = (props: { user_id: string; garage: Garage | undefined }) => {
   const { data: isValidSlug, isLoading } = trpc.entreprise.isSlugTaken.useQuery(
     {
       slug: watch("slug")!,
-      id: garage?.id,
+      id: garage?.id || "",
     },
     {
       enabled,
