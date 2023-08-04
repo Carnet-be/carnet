@@ -22,9 +22,9 @@ import { CARROSSERIE } from "@data/internal";
 import { trpc } from "@utils/trpc";
 import { router } from "../../server/trpc/trpc";
 import { useRouter } from "next/router";
-import { Brand } from "@prisma/client";
+import type { Brand } from "@prisma/client";
 import Image from "next/image";
-import { ValueType } from "rsuite/esm/CheckTreePicker/CheckTreePicker";
+import type { ValueType } from "rsuite/esm/CheckTreePicker/CheckTreePicker";
 const Interest = () => {
   const common = useContext(LangCommonContext);
   const [open, setOpen] = React.useState(false);

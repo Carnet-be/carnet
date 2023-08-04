@@ -10,7 +10,7 @@ import Loading, { LoadingSpinPage } from "@ui/loading";
 import { auctionnaireRouter } from "../../../server/trpc/router/auctionnaire";
 
 import { prisma } from "../../../server/db/client";
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 

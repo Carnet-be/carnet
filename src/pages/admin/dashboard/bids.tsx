@@ -2,10 +2,11 @@
 import Dashboard from "@ui/dashboard";
 import React, { useState } from "react";
 
+import type {
+  TableType} from "@ui/components/table";
 import MyTable, {
   renderDate,
-  RenderTimer,
-  TableType,
+  RenderTimer
 } from "@ui/components/table";
 import { trpc } from "@utils/trpc";
 import type { TAuction } from "@model/type";
@@ -16,7 +17,7 @@ import { EditIcon } from "../../../ui/icons";
 import BigTitle from "@ui/components/bigTitle";
 import type { ColumnsType } from "antd/es/table";
 import type { Auction } from "@prisma/client";
-import { Bid } from "@prisma/client";
+import type { Bid } from "@prisma/client";
 
 import { type GetServerSideProps } from "next";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";

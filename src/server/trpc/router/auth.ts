@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AppSettings, Prisma, PrismaClient, type User } from "@prisma/client";
+import type { AppSettings} from "@prisma/client";
+import { Prisma, PrismaClient, type User } from "@prisma/client";
 import * as trpc from "@trpc/server";
 import { Transporter } from "@utils/nodemailer";
 import { hash } from "bcrypt";
@@ -11,7 +12,7 @@ import { v4 as uuid } from "uuid";
 import { render } from "@react-email/render";
 import EmailVerifyEmail from "@ui/emails/verify-email";
 import EmailResetPassword from "@ui/emails/reset-password";
-import { TNotification } from "@model/type";
+import type { TNotification } from "@model/type";
 
 import user from "../../../pages/dashboard/user";
 import DefaultEmailNotification from "@ui/emails/defaultTemplate";

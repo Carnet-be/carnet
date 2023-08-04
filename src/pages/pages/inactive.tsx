@@ -1,6 +1,6 @@
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 
 import React from "react";

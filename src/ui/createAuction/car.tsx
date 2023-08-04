@@ -22,12 +22,14 @@ import {
   Auction,
 } from "@prisma/client";
 import { Router, useRouter } from "next/router";
-import { TAuction, TCar } from "@model/type";
+import type { TCar } from "@model/type";
+import { TAuction } from "@model/type";
 import { ProcessDate } from "@utils/processDate";
 import Step7 from "./step7";
 import { sendNotification } from "../../repository";
 import { LangCommonContext, LangContext, useLang } from "../../pages/hooks";
-import { BuyNow, Data1, Data3, Data4, Data5, Data6, Data7, Stepper } from ".";
+import type { BuyNow, Data1, Data3, Data4, Data5, Data6, Data7} from ".";
+import { Stepper } from ".";
 
 const CreateAuctionCar = ({
   auction,

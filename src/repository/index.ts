@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TNotification } from "@model/type";
+import type { TNotification } from "@model/type";
 import { db } from "@utils/firebase";
+import type {
+  Unsubscribe} from "firebase/firestore";
 import {
   addDoc,
   collection,
   deleteDoc,
   doc,
   onSnapshot,
-  Timestamp,
-  Unsubscribe,
+  Timestamp
 } from "firebase/firestore";
 
 //function that add a doc to firestore

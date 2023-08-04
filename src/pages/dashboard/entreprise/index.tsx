@@ -8,7 +8,7 @@ import cx from "classnames";
 import animationData from "../../../../public/animations/location.json";
 import { useLang } from "../../hooks";
 import { prisma } from "../../../server/db/client";
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 

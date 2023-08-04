@@ -15,14 +15,15 @@ import { BRAND } from "@data/internal";
 import { type FileType } from "rsuite/esm/Uploader";
 import { trpc } from "@utils/trpc";
 import { toast } from "react-hot-toast";
+import type {
+  AssetImage} from "@prisma/client";
 import {
-  AssetImage,
   type FuelType,
   type AuctionState,
   Auction,
 } from "@prisma/client";
 import { Router, useRouter } from "next/router";
-import { TAuction } from "@model/type";
+import type { TAuction } from "@model/type";
 import { ProcessDate } from "@utils/processDate";
 import Step7 from "./step7";
 import { sendNotification } from "../../repository";

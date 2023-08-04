@@ -21,7 +21,7 @@ import Map, { MapDialog } from "@ui/components/map";
 import { useEffect } from "react";
 import { LangCommonContext, LangContext } from "../../pages/hooks";
 import { COUNTRIES } from "@data/internal";
-import { BuyNow } from "./index";
+import type { BuyNow } from "./index";
 import { set } from "lodash";
 import BadgeType from "@ui/components/badgeType";
 import { trpc } from "@utils/trpc";

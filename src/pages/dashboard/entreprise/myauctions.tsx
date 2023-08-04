@@ -1,5 +1,5 @@
-import { TAuction } from "@model/type";
-import { Auction } from "@prisma/client";
+import type { TAuction } from "@model/type";
+import type { Auction } from "@prisma/client";
 import AuctionCard from "@ui/components/auctionCard";
 import CreateAuction from "@ui/createAuction";
 import Dashboard from "@ui/dashboard";
@@ -10,7 +10,8 @@ import { useState } from "react";
 import { BannierAddAuction } from ".";
 import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
 import { isConfirmation } from "../../../functions/date";
-import { FullStatus, getStatus } from "../../../functions";
+import type { FullStatus} from "../../../functions";
+import { getStatus } from "../../../functions";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);

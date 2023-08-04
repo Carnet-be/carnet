@@ -1,4 +1,4 @@
-import { Language } from "@prisma/client";
+import type { Language } from "@prisma/client";
 import { ExpandMoreIcon } from "@ui/icons";
 import { trpc } from "@utils/trpc";
 import Cookies from "js-cookie";

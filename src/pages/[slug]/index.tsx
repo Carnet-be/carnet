@@ -1,6 +1,6 @@
 import { Garage } from "@prisma/client";
 import { prisma } from "../../server/db/client";
-import { TCar, TUser } from "@model/type";
+import type { TCar, TUser } from "@model/type";
 import { userAgent } from "next/server";
 import Image from "next/image";
 import { Divider } from "antd";
@@ -20,6 +20,7 @@ import Head from "next/head";
 import { getBaseUrl } from "../_app";
 import NoCardAnimation from "../../../public/animations/empty_garage.json";
 import Lottie from "@ui/components/lottie";
+import Share from "@ui/components/share";
 function Garage({
   garage,
   cars,
@@ -97,7 +98,7 @@ function Garage({
         </Head>
 
         <MyNav />
-        <div className="relative h-[350px] w-full">
+        <div className="relative h-[350px] w-full ">
           <Image
             fill
             src={garage.cover}
@@ -106,7 +107,10 @@ function Garage({
           />
         </div>
 
-        <div className="mx-auto flex max-w-[1100px] flex-col gap-10">
+        <div className="relative mx-auto flex max-w-[1100px] flex-col gap-10">
+          <div className="absolute top-6 right-0 z-50">
+            <Share link={`/${garage.slug}`} />
+          </div>
           <div className="w-full -translate-y-[60px] space-y-6">
             <div className="bg-green-300 relative h-[120px] w-[120px] overflow-hidden rounded-full ring-4 ring-white ring-offset-0">
               <Image
@@ -154,38 +158,43 @@ function Garage({
 // This function gets called at build time on server-side.
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
-export async function getStaticProps({
+export async function getServerSideProps({
   params,
   locale,
 }: {
-  params: { id: string };
+  params: { slug?: string };
   locale: string;
 }) {
-  const user = await prisma.user
+  console.log("params", params);
+  if (!params?.slug) return { notFound: true };
+  const garage = await prisma.garage
     .findUnique({
       where: {
-        id: params.id,
+        slug: params.slug,
       },
       include: {
-        garage: true,
-        image: true,
-        Car: {
-          where: {
-            isClosed: false,
-
-            state: "published",
-          },
+        user: {
           include: {
-            images: true,
+            image: true,
+            Car: {
+              where: {
+                isClosed: false,
+
+                state: "published",
+              },
+              include: {
+                images: true,
+              },
+            },
           },
         },
       },
     })
     .then((res) => JSON.parse(JSON.stringify(res)));
-
-  const garage = user.garage;
+  if (!garage) return { notFound: true };
+  const user = garage.user;
   const cars = user.Car;
-  const url = getBaseUrl() + `/garages/${user.id}`;
+  const url = getBaseUrl() + `/${garage.slug}`;
   const noCars = cars.length === 0;
 
   return {
@@ -197,34 +206,12 @@ export async function getStaticProps({
       noCars,
       ...(await serverSideTranslations(locale || "fr", ["common", "pages"])),
     },
-    // Next.js will attempt to re-generate the page:
-    // - When a request comes in
-    // - At most once every 10 seconds
-    revalidate: 10, // In seconds
   };
 }
 
 // This function gets called at build time on server-side.
 // It may be called again, on a serverless function, if
 // the path has not been generated.
-export async function getStaticPaths() {
-  const res: Garage[] = await prisma.garage
-    .findMany({
-      select: {
-        user_id: true,
-      },
-    })
-    .then((res) => JSON.parse(JSON.stringify(res)));
-  // Get the paths we want to pre-render based on posts
-  const paths = res.map((post) => ({
-    params: { id: post.user_id },
-  }));
-
-  // We'll pre-render only these paths at build time.
-  // { fallback: 'blocking' } will server-render pages
-  // on-demand if the path doesn't exist.
-  return { paths, fallback: "blocking" };
-}
 
 export default Garage;
 

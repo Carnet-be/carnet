@@ -1,9 +1,9 @@
-import { User } from ".prisma/client";
-import { TUser } from "@model/type";
+import type { User } from ".prisma/client";
+import type { TUser } from "@model/type";
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
 import Dashboard from "@ui/dashboard";
 import SettingsSection from "@ui/settingsSection";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { prisma } from "../../server/db/client";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { LangContext, useLang } from "../hooks";

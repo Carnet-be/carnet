@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from "react";
 
+import type {
+  InferGetServerSidePropsType} from "next";
 import {
   type NextPage,
-  type GetServerSideProps,
-  InferGetServerSidePropsType,
+  type GetServerSideProps
 } from "next";
 import { type User } from "@prisma/client";
 import { prisma } from "../../../server/db/client";

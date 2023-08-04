@@ -3,7 +3,7 @@ import { router, publicProcedure } from "../trpc";
 import bcrypt from "bcrypt";
 import { bcryptHash } from "@utils/bcrypt";
 import { TMessage } from "@repository/index";
-import { Currency, Language } from "@prisma/client";
+import type { Currency, Language } from "@prisma/client";
 import moment from "moment";
 
 export const userRouter = router({

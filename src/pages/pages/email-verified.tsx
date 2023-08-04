@@ -1,10 +1,10 @@
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { User } from "next-auth";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import React, { useEffect } from "react";
 import { prisma } from "../../server/db/client";
-import { Token } from "@prisma/client";
+import type { Token } from "@prisma/client";
 import { useLang, useNotif } from "../hooks";
 import { TextField } from "@mui/material";
 import { toast } from "react-hot-toast";

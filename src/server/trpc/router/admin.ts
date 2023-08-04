@@ -1,4 +1,5 @@
-import { Brand, type User } from "@prisma/client";
+import type { Brand} from "@prisma/client";
+import { type User } from "@prisma/client";
 import { Transporter } from "@utils/nodemailer";
 import { z } from "zod";
 import { getBaseUrl } from "../../../pages/_app";

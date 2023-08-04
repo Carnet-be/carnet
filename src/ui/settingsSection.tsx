@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AssetImage, type User } from ".prisma/client";
-import { TUser } from "@model/type";
+import type { TUser } from "@model/type";
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
 import { trpc } from "@utils/trpc";
 import { Button, Collapse, Divider, FloatButton, Input, Modal } from "antd";
@@ -15,7 +15,8 @@ import BigTitle from "./components/bigTitle";
 import cx from "classnames";
 import { CheckIcon, DeleteIcon, PersonIcon } from "./icons";
 import toast from "react-hot-toast";
-import UploadButton, { TImage } from "./components/uploadButton";
+import type { TImage } from "./components/uploadButton";
+import UploadButton from "./components/uploadButton";
 import Img from "./components/img";
 import { confirmPasswordHash } from "../utils/bcrypt";
 import { LangCommonContext, LangContext, useNotif } from "../pages/hooks";

@@ -1,21 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { getServerAuthSession } from "@server/common/get-server-auth-session";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import type { GetServerSideProps} from "next";
+import { InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
-import { ColumnsType } from "antd/es/table";
-import { Auction, Bid } from "@prisma/client";
-import { TAuction } from "@model/type";
+import type { ColumnsType } from "antd/es/table";
+import type { Auction, Bid } from "@prisma/client";
+import type { TAuction } from "@model/type";
 import BigTitle from "@ui/components/bigTitle";
 import Price from "@ui/components/price";
 import App, { InputNumber, Modal } from "antd";
+import type {
+  TableType} from "@ui/components/table";
 import MyTable, {
   renderDate,
   RenderTimer,
-  ActionTable,
-  TableType,
+  ActionTable
 } from "@ui/components/table";
 
 import { MdRestartAlt } from "react-icons/md";

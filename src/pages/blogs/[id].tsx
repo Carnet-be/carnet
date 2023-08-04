@@ -1,4 +1,4 @@
-import {
+import type {
   GetServerSideProps,
   InferGetServerSidePropsType,
   NextPage,

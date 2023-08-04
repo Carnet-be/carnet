@@ -16,7 +16,8 @@ import { prisma } from "../server/db/client";
 import { type User } from "@prisma/client";
 import CreateAuction from "@ui/createAuction";
 import { signOut, useSession } from "next-auth/react";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import type { ReactNode} from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   ArrowRightIconFill,
   DashboardIcon,
@@ -40,7 +41,7 @@ import { StyledMenu } from "@ui/profileCard";
 import LangSwitcher from "@ui/components/langSwitcher";
 import { Skeleton } from "antd";
 import CarCard, { CarCardReadOnly } from "@ui/components/carCard";
-import { TCar } from "@model/type";
+import type { TCar } from "@model/type";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerAuthSession(context);
 
