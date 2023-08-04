@@ -14,7 +14,7 @@ import { prisma } from "../../server/db/client";
 import { useLang } from "../hooks";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import PasswordForget from "@ui/passowrdForget";
-
+import cx from "classnames";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -31,13 +31,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
   const user = {
-    username: "Naim Abdelkerim",
+    username: "Carnet",
     type: "ADMIN" as UserType,
 
-    email: "naimdev@gmail.com",
+    email: "admin@carnet.be",
     emailVerified: true,
   };
-  const pwd = await hash("123456", 10);
+  const pwd = await hash("admin", 10);
   const count = await prisma.user.count({
     where: {
       email: user.email,
@@ -74,6 +74,7 @@ const Admin = () => {
   const router = useRouter();
   const [isLoading, setisLoading] = useState(false);
   const onSubmit: SubmitHandler<TLogin> = (data) => {
+    console.log("data", data);
     setisLoading(true);
     signIn("credentials", {
       email: data.email,
@@ -142,13 +143,7 @@ const Admin = () => {
             <input
               type={"password"}
               placeholder={common("input.password")}
-              {...register("password", {
-                required: common("input.required"),
-                minLength: {
-                  value: 6,
-                  message: common("input.min6"),
-                },
-              })}
+              {...register("password")}
               className="text-semibold w-full bg-transparent text-white"
             />
           </div>
@@ -161,7 +156,12 @@ const Admin = () => {
         <div className="flex flex-col items-stretch gap-3">
           <button
             type="submit"
-            className="w-[300px] rounded-lg bg-white py-2 px-1 font-semibold text-primary"
+            className={cx(
+              "w-[300px] rounded-lg bg-white py-2 px-1 font-semibold text-primary",
+              {
+                loading: isLoading,
+              }
+            )}
           >
             {common("button.login")}
           </button>
