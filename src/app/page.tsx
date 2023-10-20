@@ -1,6 +1,9 @@
-import { Button } from "@nextui-org/react";
-import { redirect } from "next/navigation";
+import { SignIn, SignUp, SignUpButton, UserButton } from "@clerk/nextjs";
 
 export default function Home() {
-  redirect("/auth/login");
+  return <div>
+    <SignUpButton/>
+      <UserButton/>
+      hello
+  </div>
 }

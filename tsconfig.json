@@ -30,6 +30,6 @@
     "**/*.cjs",
     "**/*.mjs",
     ".next/types/**/*.ts"
-  ],
+, "../carnet_auth/src/server/auth.ts"  ],
   "exclude": ["node_modules"]
 }
