@@ -1,4 +1,3 @@
-import Image from "next/image";
 
 export default function Auth({
     children,
@@ -7,7 +6,7 @@ export default function Auth({
 }) {
     return (
         <div className="relative h-screen w-screen overflow-hidden">
-            <div className="absolute top-0 left-0 z-20 flex flex-row py-6 h-full w-full">
+            <div className="absolute top-0 left-0 z-20 flex flex-row py-6 h-full w-full backdrop-blur-md">
                 <div className="layout mx-auto flex flex-row items-center justify-between">
                     <div className="flex-grow flex flex-col h-full overflow-hidden justify-center items-center">
                        

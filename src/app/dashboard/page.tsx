@@ -1,18 +1,12 @@
-import { UserProfile, auth, clerkClient } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-
-export default function DashboardPage() {
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { auth } from '@clerk/nextjs';
+import { api } from '~/trpc/server';
+ 
+export default function  DashboardPage() {
 
   return (
     <div className="">
-     <UserProfile appearance={{
-       elements:{
-        rootBox:"bg-white shadow-none",
-        userProfile:"bg-white shadow-none",
-        card:"bg-white shadow-none",
-       }
-     }}/>
     </div>
   );
 }

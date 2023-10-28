@@ -4,15 +4,27 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 
 export default {
   content: ["./src/**/*.tsx","./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"],
+  important: true,
   theme: {
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },
+      colors:{
+        primary:{
+          DEFAULT: "#181BAA",
+          foreground:"#FFFFFF",
+        },
+        secondary:{
+          DEFAULT:"#FFCC91",
+          foreground:"#000000",
+        }
+      }
     },
   },
   darkMode: "class",
-  plugins: [nextui({
+  plugins: [
+      nextui({
     layout:{
       
     },
@@ -47,6 +59,6 @@ export default {
         }
       }
     }
-  })]
+  })],
 
 } satisfies Config;

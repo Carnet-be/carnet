@@ -5,7 +5,8 @@ import { headers } from "next/headers";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { Providers } from "./providers";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
+import LoadingPage from "./_components/ui/LoadingPage";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,16 +25,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider >
-    <html lang="en" className="light">
-      <body className={`font-sans ${inter.variable}`}>
-        <TRPCReactProvider headers={headers()}>
-          <Providers>
-            {children}
-          </Providers>
-        </TRPCReactProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`font-sans ${inter.variable}`}>
+          <TRPCReactProvider headers={headers()}>
+            <Providers>
+              <ClerkLoading>
+                <LoadingPage />
+              </ClerkLoading>
+              <ClerkLoaded>{children}</ClerkLoaded>
+            </Providers>
+          </TRPCReactProvider>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }

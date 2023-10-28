@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@layer base {
+ 
+    .center {
+        @apply flex items-center justify-center;
+    }
+    .iconButton{
+        @apply p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 
+    }
+    .icon {
+        @apply w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white
+    }
+}
+
+#textarea-wrapper > div > div {
+    height: auto !important;
+}

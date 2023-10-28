@@ -4,9 +4,10 @@ import { env } from "~/env.mjs";
 
 export default {
   schema: "./src/server/db/schema.ts",
+  out: "./drizzle",
   driver: "mysql2",
   dbCredentials: {
     connectionString: env.DATABASE_URL,
   },
-  tablesFilter: ["carnet_*"],
+  
 } satisfies Config;

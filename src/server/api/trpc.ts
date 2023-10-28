@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
  * 1. You want to modify request context (see Part 1).
@@ -7,11 +9,16 @@
  * need to use are documented accordingly near the end.
  */
 import { initTRPC } from "@trpc/server";
-import { type NextRequest } from "next/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
+import { getAuth, type SignedInAuthObject, type SignedOutAuthObject } from '@clerk/nextjs/server';
+import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { db } from "~/server/db";
+
+import { type S3Client } from "@aws-sdk/client-s3";
+type  AuthContext =  SignedInAuthObject | SignedOutAuthObject;
+
+
 
 /**
  * 1. CONTEXT
@@ -23,6 +30,7 @@ import { db } from "~/server/db";
 
 interface CreateContextOptions {
   headers: Headers;
+  auth: AuthContext,
 }
 
 /**
@@ -36,9 +44,11 @@ interface CreateContextOptions {
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
 export const createInnerTRPCContext = (opts: CreateContextOptions) => {
+ 
   return {
     headers: opts.headers,
     db,
+    auth: opts.auth,
   };
 };
 
@@ -48,11 +58,12 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (opts: { req: NextRequest }) => {
+export const createTRPCContext = (opts: CreateNextContextOptions) => {
   // Fetch stuff that depends on the request
 
   return createInnerTRPCContext({
-    headers: opts.req.headers,
+    headers: opts.req.headers as any,
+    auth: getAuth(opts.req),
   });
 };
 
@@ -100,3 +111,4 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+export const protectedProcedure = t.procedure
