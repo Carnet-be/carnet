@@ -18,12 +18,8 @@ const Step4 = ({
   onBack: () => void;
 }) => {
   const {
-    register,
     handleSubmit,
-    watch,
-    setValue,
     control,
-    formState: { errors },
   } = useForm({
     defaultValues: value,
     resolver: zodResolver(step4Schema),

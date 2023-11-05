@@ -3,24 +3,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner } from "@nextui-org/react";
+import { Button, Modal, ModalBody, ModalContent, Spinner } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import useNewCarHistorique from "~/state/newCarHistorique";
-import cx from "classnames";
 import { z } from "zod";
 import Step1 from "./step1";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence } from "framer-motion";
 import Step2 from "./step2";
 import Step3 from "./step3";
 import Step4 from "./step4";
 import Step5 from "./step5";
 import Step6 from "./step6";
-import { SignUp } from "@clerk/nextjs";
 import useFormCarStore from "./state";
-import CModal from "../../ui/cmodal";
 import { api } from "~/trpc/react";
 import axios from "axios";
 import { RotateCcw } from "lucide-react";
@@ -118,9 +112,7 @@ export type TStep6 = z.infer<typeof step6Schema>;
 export type TCar = z.infer<typeof carSchema>;
 
 const NewCarPage = ({
-  data,
-  belongsToId,
-  isAdmin = false,
+  data
 }: {
   data: any;
   belongsToId?: string | null;

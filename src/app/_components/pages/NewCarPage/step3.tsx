@@ -5,9 +5,8 @@ import React from "react";
 import { type TStep3, step3Schema } from ".";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Select, SelectItem } from "@nextui-org/react";
-import { type Model, type Brand, CarOption } from "~/server/db/schema";
-import { YEARS } from "~/utils/constants";
+import { Button } from "@nextui-org/react";
+import { type CarOption } from "~/server/db/schema";
 import { motion } from "framer-motion";
 import cx from "classnames";
 const Step3 = ({
@@ -22,12 +21,8 @@ const Step3 = ({
   data: any;
 }) => {
   const {
-    register,
     handleSubmit,
-    watch,
-    setValue,
     control,
-    formState: { errors },
   } = useForm({
     defaultValues: value,
     resolver: zodResolver(step3Schema),

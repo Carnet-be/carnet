@@ -5,8 +5,6 @@ import { api } from '~/trpc/server'
 import { type FullCar } from '~/types'
 import { getCarImage } from '~/utils/function'
 import cx from 'classnames'
-import { Chip } from '@nextui-org/react'
-import RatingStar from '~/app/_components/ui/ratingStar'
 import Map from '~/app/_components/ui/map'
 import { ContentCarPage } from './_components'
 export default async function CarPage({ params }: Page) {

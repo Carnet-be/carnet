@@ -4,20 +4,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from "react";
-import { type TStep3, step3Schema, step6Schema, type TStep6 } from ".";
+import { step6Schema, type TStep6 } from ".";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Switch, Tab, Tabs, Textarea } from "@nextui-org/react";
-import { type Model, type Brand, CarOption } from "~/server/db/schema";
-import { YEARS } from "~/utils/constants";
 import { AnimatePresence, motion } from "framer-motion";
 import cx from "classnames";
-import { Banknote, Signpost, HelpCircle } from "lucide-react";
-import CModal from "~/app/_components/ui/cmodal";
+import { Banknote, Signpost } from "lucide-react";
 const Step6 = ({
     value,
     onNext,
-    data,
     onBack,
 }: {
     value: TStep6;
@@ -36,7 +32,6 @@ const Step6 = ({
         defaultValues: value,
         resolver: zodResolver(step6Schema),
     });
-    const [selected, setSelected] = React.useState<string>("direct");
 
     return (
         <motion.form

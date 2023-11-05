@@ -1,7 +1,7 @@
-import { Button, Select, SelectItem } from "@nextui-org/react";
+import { Button,  } from "@nextui-org/react";
 import { ArrowUpNarrowWide } from "lucide-react";
 import { api } from "~/trpc/server";
-import { CarsSections, SearchSection } from "./_component";
+import {  SearchSection } from "./_component";
 import CarCard from "~/app/_components/carCard";
 
 

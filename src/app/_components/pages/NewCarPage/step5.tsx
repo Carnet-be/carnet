@@ -5,13 +5,11 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Tooltip, Divider, Select, SelectItem, Textarea, Input } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import { motion } from "framer-motion";
-import cx from "classnames";
 import { type TStep5, step5Schema } from ".";
-import { Camera, Trash2, ImagePlus } from "lucide-react";
+import { Trash2, ImagePlus } from "lucide-react";
 import Image from "next/image";
-import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { type City, type Country } from "~/server/db/schema";
 import Map from "../../ui/map";
 import CSelect from "../../ui/CSelect";
@@ -30,7 +28,6 @@ const Step5 = ({
     register,
     handleSubmit,
     watch,
-    setValue,
     control,
     formState: { errors },
   } = useForm({
@@ -131,7 +128,7 @@ export default Step5;
 const Uploader = ({ value = [], onChange }: { value?: Array<File | string>, onChange?: (file: Array<File | string>) => void }) => {
 
   const inputRef = React.useRef<HTMLInputElement | null>(null);
-  const [parent] = useAutoAnimate()
+
   const previewUrl = (file: File | string): string => typeof file === "string" ? file : URL.createObjectURL(file);
   return <div>
     <input multiple
