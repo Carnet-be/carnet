@@ -10,17 +10,17 @@ const Sidebar = () => {
     const menu: TMenuItem[] = [
         {
             label: "Home",
-            icon: <Home />,
-            route: "/dashboard",
+            icon: <Home size={20}/>,
+            route: "/dashboard/home",
         },
         {
             label: "My cars",
-            icon: <CarFront />,
+            icon: <CarFront size={20}/>,
             route: "/dashboard/my-cars",
         },
         {
             label: "Favorites",
-            icon: <Heart />,
+            icon: <Heart size={20}/>,
             route: "/dashboard/favorites",
         }
     ]
@@ -30,7 +30,7 @@ const Sidebar = () => {
             aria-label="Sidenav"
             id="drawer-navigation"
         >
-            <div className="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
+            <div className="overflow-y-auto py-8 px-8 h-full bg-white dark:bg-gray-800">
                 <form action="#" method="GET" className="md:hidden mb-2">
                     <label htmlFor="sidebar-search" className="sr-only">Search</label>
                     <div className="relative">
@@ -330,7 +330,7 @@ const Sidebar = () => {
                 </ul>
             </div>
             <div
-                className="hidden absolute bottom-0 left-0 justify-center p-4 space-x-4 w-full lg:flex bg-white dark:bg-gray-800 z-20"
+                className="hidden absolute bottom-0 left-0 justify-center p-8 space-x-4 w-full lg:flex bg-white dark:bg-gray-800 z-20"
             >
 
                 <ul className="space-y-2 w-full">

@@ -6,9 +6,11 @@ import { TCar } from "."
 
 type CarFormState = {
     form?: TCar,
+    carId?: number,
     step: number,
     setForm: (data: TCar) => void,
     setStep: (step: number) => void,
+    setCarId: (id: number) => void,
     clear: () => void,
 }
 
@@ -16,12 +18,14 @@ type CarFormState = {
 const useFormCarStore = create<CarFormState>((set) => ({
     form: undefined,
     step: 1,
+
     setForm: (form: TCar) => {
         console.log("Form", form)
         set({ form })
     },
     setStep: (step: number) => set({ step }),
-    clear: () => set({ form: undefined }),
+    clear: () => set({ form: undefined, step: 1, carId: undefined }),
+    setCarId: (carId: number) => set({ carId }),
 }))
 
 export default useFormCarStore

@@ -7,8 +7,8 @@ const RatingStar = ({
     tooltips,
   }: {
     value?: number;
-    onChange: (v: number) => void;
-    tooltips: string[];
+    onChange?: (v: number) => void;
+    tooltips?: string[];
   }) => {
     return (
       <div className="flex items-center space-x-2">
@@ -18,7 +18,7 @@ const RatingStar = ({
             <svg
               key={s}
               onClick={() => {
-                onChange(s);
+                onChange?.(s);
               }}
               className={cx(
                 "h-7 w-7 cursor-pointer transition-all hover:scale-125",

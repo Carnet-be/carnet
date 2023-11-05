@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
@@ -21,7 +23,10 @@ import useFormCarStore from "./state";
 import CModal from "../../ui/cmodal";
 import { api } from "~/trpc/react";
 import axios from "axios";
+import { RotateCcw } from "lucide-react";
 const numSchema = z.number().or(z.string().transform((v) => Number(v) || undefined));
+import SuccessAnimation from "../../../../../public/animations/sucess_button.json";
+import Lottie from "../../ui/lottie";
 export const step1Schema = z.object({
   brand: z.number().min(1, { message: "Please select a brand" }),
   model: z.number().min(1, { message: "Please select a model" }),
@@ -121,6 +126,7 @@ const NewCarPage = ({
   belongsToId?: string | null;
   isAdmin?: boolean;
 }) => {
+  const [isSuccess, setIsSuccess] = React.useState(false);
   const router = useRouter();
   const { form = {
     step1: {
@@ -144,23 +150,40 @@ const NewCarPage = ({
       inRange: false,
       type: "direct"
     }
-  }, setForm, step, setStep } = useFormCarStore()
+  }, setForm, step, setStep, carId,setCarId } = useFormCarStore()
+  const { mutateAsync } = api.public.presignedUrl.useMutation()
+
   const next = () => setStep(step + 1)
   const back = () => setStep(step - 1)
   const [isOpen, setIsOpen] = React.useState(false);
+  const [errorUploading, setErrorUploading] = React.useState<string | undefined>(undefined);
+  const [isUploading, setIsUploading] = React.useState(false);
+  const { mutateAsync: setAssets } = api.car.addAssets.useMutation()
 
-  const { mutate, isLoading, isError } = api.car.addCar.useMutation({
-    onSuccess(data) {
-      console.log('data', data)
-      router.back()
-    },
-    onError(err) {
-      console.log('err', err)
+
+  const { mutate: mutateCar, isLoading, isError } = api.car.addCar.useMutation({
+    onSuccess: (carId)=>{
+      setCarId(carId)
+      onAddAssets({ carId, images: form.step5.images })
     }
   })
 
-  const { mutateAsync } = api.public.presignedUrl.useMutation()
-
+  const onAddCar = (newForm: TCar | undefined = data) => mutateCar(newForm)
+  const onAddAssets = async ({ images = form.step5.images, carId }: { images?: any[], carId: number }) => {
+    setIsUploading(true)
+    try {
+      const presignedUrl = await Promise.all(images.map((image: any) => mutateAsync().then((data) => ({ data, image }))))
+      console.log('url signeds', presignedUrl)
+      const uploadKeys = await axios.all(presignedUrl.map(({ data, image }) => axios.put(data.url, image).then(() => data.key)))
+      await setAssets({ carId, images: uploadKeys })
+      setIsUploading(false)
+      setIsSuccess(true)
+    } catch (error) {
+      console.log('error uploading images', error)
+      setIsUploading(false)
+      setErrorUploading("Error uploading images")
+    }
+  }
   return (
     <>
       <div className="space-y-6 p-10">
@@ -205,26 +228,10 @@ const NewCarPage = ({
             {step == 6 &&
               <Step6 data={data} onNext={(value: TStep6) => {
                 const newForm = { ...form, step6: value }
-                Promise.all(newForm.step5.images.map((image: any) => mutateAsync().then((data) => ({ data, image })))).then((values) => {
-                  console.log('url signeds', values)
-                  axios.all(values.map(({ data, image }) => axios.put(data, image,{
-                    headers:{
-                      "Access-Control-Allow-Origin": "*",
-                    }
-                  }))).then((values) => {
-                    console.log('upload images', values)
-                    //const images = values.map((value) => value.data.url)
-                  //  mutate({ ...newForm, step5: { ...newForm.step5, images } })
-                  }).catch((err) => {
-                    console.log('err', err)
-                  })
-                  // const images = values.map((value) => value.data.url)
-                  //mutate({ ...newForm, step5: { ...newForm.step5, images } })
-                }).catch((err) => {
-                  console.log('err', err)
-                })
-                // mutate(newForm)
-                // setForm(newForm)
+
+                onAddCar(newForm)
+                setIsOpen(true)
+                setForm(newForm)
               }
               } value={form.step6} onBack={back} />}
 
@@ -233,15 +240,43 @@ const NewCarPage = ({
       </div>
       <Modal
         // backdrop="blur"
-        isOpen={isLoading}
-      // onOpenChange={setIsOpen}
-
-      >
+        isOpen={isOpen}
+        // onOpenChange={setIsOpen}
+         hideCloseButton={!(isLoading || isUploading)}
+        isDismissable={!(isLoading || isUploading)}>
+          
         <ModalContent>
-
-
           <ModalBody className="center py-10">
-            <Spinner size="lg" />
+            {(isLoading || isUploading) && <Spinner size="lg" />}
+           <div className="flex flex-col items-center">
+           <span>{isLoading && "Publishing your car..."}
+            </span>
+            <span>
+
+            {isUploading && "Uploading your images..."}
+            </span>
+            <span>
+
+            {isError && "Error publishing your car"}
+            </span>
+           </div>
+            {isSuccess ? <div className="flex flex-col items-center">
+              <div className="w-[200px] -translate-y-6 ">
+                <Lottie animationData={SuccessAnimation}/>
+              </div>
+              <div className="flex flex-col items-center -translate-y-10 gap-4">
+              <span className="text-lg ">Your car has been published</span>
+              <Button color="primary" onClick={() => router.push(`car/${carId}`)}>View your car</Button>
+              </div>
+            </div> : !errorUploading || isError && <div>
+              <Button  startContent={<RotateCcw size={20}/>} fullWidth variant="faded"  onClick={() => {
+                if (isError) onAddCar()
+                else if (errorUploading && !!carId) onAddAssets({ carId })
+
+              }}>
+                Retry
+              </Button>
+            </div>}
           </ModalBody>
 
 

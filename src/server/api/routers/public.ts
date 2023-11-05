@@ -19,35 +19,21 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 const presignedUrl = publicProcedure.mutation(async()=>{
        const key=uuidv4()
-        // const { url, fields } = await createPresignedPost(s3, {
-        //   Bucket: env.C_AWS_BUCKET,
-        //   Key: `carnet/${key}`,
-        //   Conditions: [
-        //     ['content-length-range', 0, 5 * 1024 * 1024] // 5 MB max
-        //   ],
-        //   Fields: {
-        //     success_action_status: '201',
-        //     'Content-Type': 'image/*',
-            
-        //   },
-        //   Expires: 3600,
-          
-        // })
-
-       return  getSignedUrl(s3,  new PutObjectCommand({
-          
+      
+       const url = await getSignedUrl(s3,new PutObjectCommand({
           Bucket: env.C_AWS_BUCKET,
           Key: `carnet/${key}`,
-          ContentType: 'image/*',
-          
-          
-        },))
-       
+          ContentType: 'image/*'
+        }))
+        return {
+          url,
+          key
+        }
 })
 
 export const publicRouter = createTRPCRouter({
   presignedUrl,
-  newCarData: publicProcedure.query(({ ctx }) => {
+  carData: publicProcedure.query(({ ctx }) => {
     return ctx.db.transaction(async (trx) => {
       const ctries = await trx.select().from(countries).orderBy(countries.name);
       const cties = await trx.select().from(cities).orderBy(cities.name);

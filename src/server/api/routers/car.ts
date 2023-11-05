@@ -2,11 +2,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { auctionDetails, carAssets, carSpecs, carSpecsRating, carToOption } from './../../db/schema';
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { brand, cars, model } from "~/server/db/schema";
 import { type InferInsertModel, and, eq } from "drizzle-orm";
 
 import { z } from 'zod';
+import { type FullCar } from '~/types';
 
 
 const numSchema = z.number().or(z.string().transform((v) => Number(v) || undefined));
@@ -148,7 +149,7 @@ const addCar = protectedProcedure.input(carSchema).mutation(async ({ input, ctx 
 
         }
         const car = await trx.insert(cars).values(carData)
-
+        if(options.length > 0)
         await trx.insert(carToOption).values(options.map((opt) => ({ carId: parseInt(car.insertId), optionId: opt })))
 
         await trx.insert(carSpecs).values({
@@ -178,10 +179,53 @@ const addAssets = protectedProcedure.input(z.object({
     const { db } = ctx
     const { images, carId } = input
     const assets: InferInsertModel<typeof carAssets>[] = images.map((img) => ({ carId, key: img }))
-    return db.insert(carAssets).values(assets)
+    return assets.length>0? db.insert(carAssets).values(assets) : []
 })
+
+
+const getCars = protectedProcedure.query(({ctx})=>{
+    const {db} = ctx
+    return db.query.cars.findMany({
+        with:{
+            images:true,
+            auctionDetails:true,
+            brand:true,
+            model:true,
+            specs:true,
+            body:true,
+            color:true,
+        }
+    }).then((cars:any)=>cars as unknown as FullCar[])
+})
+
+const getCarById = publicProcedure.input(z.number()).query(async ({input, ctx})=>{
+    const {db} = ctx
+    const car = await db.query.cars.findFirst({
+        where:eq(cars.id, input),
+        with:{
+            images:true,
+            auctionDetails:true,
+            brand:true,
+            model:true,
+            specs:true,
+            body:true,
+            color:true,
+            options:{
+                with:{
+                    option:true,
+                    
+                }
+            },
+            specsRating:true,
+        }
+    })
+    return car as unknown as FullCar
+}
+)
 
 export const carRouter = createTRPCRouter({
     addCar,
-    addAssets
+    addAssets,
+    getCars,
+    getCarById
 })

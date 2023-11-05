@@ -87,7 +87,7 @@ const Step1 = ({
         )} />
   
      <Controller name="fuel" control={control} render={({ field: { value, onChange, onBlur } }) => (
-          <CSelect label="Fuel" onChange={onChange} onBlur={onBlur} value={value} options={["gasoline", "diesel", "electricity", "hybrid"].map((b) => ({
+          <CSelect type="text" label="Fuel" onChange={onChange} onBlur={onBlur} value={value} options={["gasoline", "diesel", "electricity", "hybrid"].map((b) => ({
               label: b.toString(),
               value: b.toString()
             }))} />

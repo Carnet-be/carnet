@@ -302,6 +302,7 @@ export const carToOption = mysqlTable(
     optionIdIdx: index("option_id_idx").on(table.optionId),
   }),
 );
+export type CarToOption = InferSelectModel<typeof carToOption>;
 
 export const carToOptionRelations = relations(carToOption, ({ one }) => ({
   car: one(cars, {

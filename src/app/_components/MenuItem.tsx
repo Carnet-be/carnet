@@ -25,7 +25,7 @@ const MenuItem = ({ children }: { children: TMenuItem }) => {
             className={cx("flex no-underline items-center p-2 text-base font-medium rounded-lg  group",isActive?"text-primary-foreground  bg-primary ":"text-gray-600 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700")}
         >
             {children.icon}
-            <span className="ml-3">
+            <span className="ml-3 font-normal text-sm">
                 {children.label}
             </span>
 
