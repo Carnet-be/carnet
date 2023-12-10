@@ -1,3 +1,4 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button,  } from "@nextui-org/react";
 import { ArrowUpNarrowWide } from "lucide-react";
@@ -6,10 +7,11 @@ import {  SearchSection } from "./_component";
 import CarCard from "~/app/_components/carCard";
 
 
-const data = await api.public.carData.query()
+
+export default async  function  DashboardPage() {
+  const data = await api.public.carData.query()
 const cars=await api.car.getCars.query()
 
-export default function  DashboardPage() {
     return (
       <div className="">
       <div>

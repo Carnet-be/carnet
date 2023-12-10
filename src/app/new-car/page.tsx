@@ -4,9 +4,10 @@ import NewCarPage from '../_components/pages/NewCarPage'
 import { api } from '~/trpc/server'
 import { auth } from '@clerk/nextjs'
 
-const data= await api.public.carData.query()
-const {userId,orgId} = auth()
-export default function NewCar() {
+
+export default async function NewCar() {
+  const {userId,orgId} = auth()
+  const data= await api.public.carData.query()
 
   return (
     <div className='bg-white'>
