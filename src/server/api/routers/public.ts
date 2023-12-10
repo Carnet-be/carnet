@@ -1,21 +1,20 @@
-import { z } from "zod";
+
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import {
-  brand,
-  carOption,
-  cities,
-  countries,
-  model,
-  body,
-  colors,
-} from "~/server/db/schema";
+
 
 import { v4 as uuidv4 } from 'uuid';
 import { env } from "~/env.mjs";
-import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import s3 from "~/server/s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+
+import body from "~/server/db/schema/bodies";
+import brand from "~/server/db/schema/brands";
+import carOption from "~/server/db/schema/car_options";
+import cities from "~/server/db/schema/cities";
+import countries from "~/server/db/schema/countries";
+import model from "~/server/db/schema/models";
+import colors from "~/server/db/schema/colors";
 
 const presignedUrl = publicProcedure.mutation(async()=>{
        const key=uuidv4()

@@ -3,19 +3,23 @@ import Image from 'next/image'
 import React from 'react'
 import { api } from '~/trpc/server'
 import { type FullCar } from '~/types'
-import { getCarImage } from '~/utils/function'
+import { getCarImage, priceFormatter } from '~/utils/function'
 import cx from 'classnames'
 import Map from '~/app/_components/ui/map'
 import { ContentCarPage } from './_components'
+import { auth } from '@clerk/nextjs'
+import { Button, Input } from '@nextui-org/react'
 export default async function CarPage({ params }: Page) {
   const carId: number = parseInt(params.carId!)
   const car = await api.car.getCarById.query(carId)
-  console.log("car",car)
+  const user = auth()
+  const mine = car.belongsTo === user?.orgId || car.belongsTo === user?.userId
+  console.log("car", car)
   return (
     <div>
       <div className="flex flex-wrap justify-center gap-6 mb-10">
         <LeftSide car={car} />
-        <RightSide car={car} />
+        <RightSide car={car} mine={mine} />
       </div>
     </div>
   )
@@ -40,18 +44,20 @@ const LeftSide = ({ car }: { car: FullCar }) => {
         />
       </div>
       <div className='py-2'></div>
-      <ContentCarPage car={car}/>
-     
+      <ContentCarPage car={car} />
+
     </div>
   );
 };
 
 const RightSide = ({
   car,
+  mine = false
 }: {
   car: FullCar;
+  mine?: boolean
 }) => {
- 
+
   return (
     <div className=" w-full lg:w-[40%] ">
       <div className="w-full space-y-4 rounded-xl bg-white p-3">
@@ -152,22 +158,68 @@ const RightSide = ({
       {!isBuyNow && (
         <BidSection user={user} car={car} isTimeOut={isTimeOut} />
       )} */}
+      <div className='py-7 space-y-4'>
+        <div className='flex flex-wrap gap-2 items-center justify-between p-3 bg-gray-100 rounded-md'>
+          <div className='flex flex-col justify-center items-center'>
+            <span className='text-black font-semibold'>
+              10d 12h
+            </span>
+            <span className='text-[12px] text-gray-500'>
+              Time left
+            </span>
+          </div>
+          <div className='flex flex-col justify-center items-center'>
+            <span className='text-black font-semibold'>
+            Sunday, 12:00
+            </span>
+            <span className='text-[12px] text-gray-500'>
+              Auction ends
+            </span>
+          </div>
+          <div className='flex flex-col justify-center items-center'>
+            <span className='text-black font-semibold'>
+             13
+            </span>
+            <span className='text-[12px] text-gray-500'>
+            Active bid
+            </span>
+          </div>
+          <div className='flex flex-col justify-center items-center'>
+            <span className='text-black font-semibold'>
+            {priceFormatter.format(car.detail?.startingPrice ?? 0)}
+            </span>
+            <span className='text-[12px] text-gray-500'>
+              Current bid
+            </span>
+          </div>
+        </div>
+        <form className='flex items-end gap-3 pt-3'>
+        <Input name="bid" startContent={
+            <div className="pointer-events-none flex items-center">
+              <span className="text-default-400 text-small">€</span>
+            </div>
+          } labelPlacement='outside' type='number' step={100} variant="bordered" label={"Entrer your bid (Minimum $14,000)"}/>
+        <Button type='submit' color="primary">
+          Place bid
+        </Button>
+        </form>
+      </div>
       {car.lat && car.lon && (
-       <Map  
-       center={{
+        <Map
+          center={{
             lat: car.lat,
             lng: car.lon,
-       
-       }}
-         className="rounded-xl overflow-hidden w-full h-[300px] bg-red-100 mt-10"
-        
-         markers={[{
+
+          }}
+          className="rounded-xl overflow-hidden w-full h-[300px] bg-red-100 mt-10"
+
+          markers={[{
             lat: car.lat,
             lng: car.lon
-          
-         }]}
-         
-         />
+
+          }]}
+
+        />
       )}
     </div>
   );
@@ -205,9 +257,9 @@ const MiniCard = (props: {
             style={{ backgroundColor: value }}
             className={cx("h-8 w-8 rounded-full border")}
           ></div>
-        <span className='text-[12px]'>
-          {color}
-        </span>
+          <span className='text-[12px]'>
+            {color}
+          </span>
         </>
       ) : (
         <span className="text-[12px]">{value}</span>

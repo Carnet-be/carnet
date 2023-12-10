@@ -6,6 +6,7 @@ import React from "react";
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 import { type FullCar } from "~/types";
 import RatingStar from "~/app/_components/ui/ratingStar";
+import { CarOption } from "~/server/db/schema/car_options";
 
 
 export function ContentCarPage({ car }: { car: FullCar }) {
@@ -55,9 +56,9 @@ export function ContentCarPage({ car }: { car: FullCar }) {
                         <CardBody>
                             <div className="flex flex-wrap gap-3">
                                 {car.options
-                                    .map((k) => {
+                                    .map((k:CarOption) => {
                                         return <div key={k.id} className="text-sm opacity-70 rounded-xl border p-1 px-2 transition-all duration-300 border-primary text-primary text-opacity-100">
-                                            {k.option.name}
+                                            {k.name}
                                         </div>;
                                     })}
                                      {car.options.length == 0 && <div className="text-center font-light opacity-50">No options !</div>}

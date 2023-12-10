@@ -9,7 +9,6 @@ const data = await api.public.carData.query()
 const cars=await api.car.getCars.query()
 
 export default function  DashboardPage() {
-
     return (
       <div className="">
       <div>

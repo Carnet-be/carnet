@@ -4,6 +4,7 @@ import Link from 'next/link'
 import React from 'react'
 import { type FullCar } from '~/types'
 import { getCarImage, priceFormatter } from '~/utils/function'
+import { AuctionIcon } from './icons'
 
 
 const getPrice = (car: FullCar) => {
@@ -32,6 +33,7 @@ const CarCard = ({ children: car }: { children: FullCar }) => {
           <span className='text-sm font-semibold text-black'>
             {car.name}
           </span>
+          {car.type === "auction" && <AuctionIcon className='text-primary'/>}
         </div>
         <hr />
         <div className='flex flex-row items-start justify-between gap-1'>

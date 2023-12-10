@@ -7,7 +7,9 @@ await import("./src/env.mjs");
 /** @type {import("next").NextConfig} */
 const config = {
     images: {
-        domains: ["cdn.clerk.dev","orderbell-upload.s3.eu-north-1.amazonaws.com"],
+        domains: ["cdn.clerk.dev",
+        "orderbell-upload.s3.eu-north-1.amazonaws.com"
+    ],
     },
 };
 

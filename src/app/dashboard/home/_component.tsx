@@ -4,7 +4,9 @@
 "use client"
 import { Select, SelectItem } from '@nextui-org/react'
 import React from 'react'
-import { type Body, type Brand, type Model } from '~/server/db/schema'
+import { Body } from '~/server/db/schema/bodies'
+import { Brand } from '~/server/db/schema/brands'
+import { Model } from '~/server/db/schema/models'
 
 export const CarsSections = () => {
     return (
