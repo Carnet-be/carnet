@@ -10,7 +10,7 @@ import { AuctionIcon } from './icons'
 const getPrice = (car: FullCar) => {
   if (car.type = "direct") {
     if (car.inRange && car.minPrice && car.maxPrice) {
-      return priceFormatter.formatRange(car.minPrice, car.maxPrice)
+      return `${car.minPrice}-${car.maxPrice}` //priceFormatter.formatRange(car.minPrice, car.maxPrice)
     }
     if (car.price) {
       return priceFormatter.format(car.price)
