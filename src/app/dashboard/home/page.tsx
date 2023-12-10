@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button,  } from "@nextui-org/react";
 import { ArrowUpNarrowWide } from "lucide-react";
 import { api } from "~/trpc/server";
@@ -31,7 +32,7 @@ export default function  DashboardPage() {
             </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {cars.map((car) => (<CarCard key={car.id}>{car}</CarCard>))}
+            {cars.map((car) => (<CarCard key={car.id}>{car as any}</CarCard>))}
           </div>
         </div>
       </div>

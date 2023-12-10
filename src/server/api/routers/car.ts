@@ -12,10 +12,10 @@ import brand from "~/server/db/schema/brands";
 import cars from "~/server/db/schema/cars";
 import auctionDetails from "~/server/db/schema/auction_details";
 import { CarAssets, carAssets } from "~/server/db/schema/car_assets";
-import carSpecs, { CarSpecs } from "~/server/db/schema/car_specs";
+import carSpecs, { type CarSpecs } from "~/server/db/schema/car_specs";
 import carSpecsRating from "~/server/db/schema/car_specs_rating";
 import carToOption from "~/server/db/schema/car_to_optons";
-import carOption, { CarOption } from "~/server/db/schema/car_options";
+import carOption, { type CarOption } from "~/server/db/schema/car_options";
 import { TRPCClientError } from "@trpc/client";
 import colors from "~/server/db/schema/colors";
 import body from "~/server/db/schema/bodies";
@@ -314,7 +314,7 @@ const getCarById = publicProcedure
         if (!result) new TRPCClientError("Car not found")
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       
-        return result as FullCar
+        return result as unknown as FullCar
 
     });
 

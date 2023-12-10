@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -6,13 +8,15 @@ import { type TStep1, step1Schema } from ".";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, ScrollShadow, Select, SelectItem } from "@nextui-org/react";
-import { type Model, type Brand, type Color } from "~/server/db/schema";
 import { YEARS } from "~/utils/constants";
 import { motion } from "framer-motion";
 import CSelect from "../../ui/CSelect";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import cx from "classnames";
 import { invertColor } from "~/utils/function";
+import type { Brand } from "~/server/db/schema/brands";
+import type { Color } from "~/server/db/schema/colors";
+import type { Model } from "~/server/db/schema/models";
 const Step1 = ({
   value: defaultValues,
   onNext,
@@ -129,9 +133,9 @@ const ColorSelection = ({
 }) => {
   const carousel = useRef<HTMLDivElement | null>(null);
   const next = () =>
-    carousel.current?.scrollBy({ left: 300, behavior: "smooth" });
+    (carousel.current as any)?.scrollBy({ left: 300, behavior: "smooth" });
   const prev = () =>
-    carousel.current?.scrollBy({ left: -300, behavior: "smooth" });
+    (carousel.current as any)?.scrollBy({ left: -300, behavior: "smooth" });
   //TODO: scroll to the element
   return (
     <div className="flex flex-row items-center gap-2">

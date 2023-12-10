@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 
-const LayoutGarage = ({ children }: Page) => {
+const LayoutGarage = ({ children }: any) => {
   return (
     <div>
         {children}

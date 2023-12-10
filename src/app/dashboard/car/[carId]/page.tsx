@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import Image from 'next/image'
 import React from 'react'
@@ -9,7 +13,7 @@ import Map from '~/app/_components/ui/map'
 import { ContentCarPage } from './_components'
 import { auth } from '@clerk/nextjs'
 import { Button, Input } from '@nextui-org/react'
-export default async function CarPage({ params }: Page) {
+export default async function CarPage({ params }: any) {
   const carId: number = parseInt(params.carId!)
   const car = await api.car.getCarById.query(carId)
   const user = auth()

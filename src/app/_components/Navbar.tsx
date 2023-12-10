@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @next/next/no-img-element */
 "use client"
 import React, { useEffect } from 'react'

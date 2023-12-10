@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 import Navbar from '../_components/Navbar'
 import Sidebar from '../_components/Sidebar'
 import { auth } from '@clerk/nextjs'
 import { type SignedInAuthObject } from '@clerk/nextjs/dist/types/server'
 
-const DashboardLayout = ({ children }: Page) => {
+const DashboardLayout = ({ children }: any) => {
    const authData = auth()
     return <div className="antialiased ">
 

@@ -6,9 +6,9 @@ import { type TStep3, step3Schema } from ".";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@nextui-org/react";
-import { type CarOption } from "~/server/db/schema";
 import { motion } from "framer-motion";
 import cx from "classnames";
+import { CarOption } from "~/server/db/schema/car_options";
 const Step3 = ({
   value,
   onNext,

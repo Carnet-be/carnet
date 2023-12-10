@@ -15,7 +15,7 @@ export default MyCars
 
 
 
-export const BannierAddAuction = () => {
+const BannierAddAuction = () => {
     
   return (
     <div

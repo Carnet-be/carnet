@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Select, SelectItem } from '@nextui-org/react'
@@ -22,9 +24,9 @@ function CSelect({className, value,type="number", onBlur,isDisabled=false, onCha
         selectedKeys={value ? [value?.toString()] : []}
         onChange={(e) => {
             if(type==="number")
-            onChange(parseInt(e.target.value) ?? undefined)
+            onChange(parseInt((e.target as any).value)  ?? undefined)
             else{
-                onChange(e.target.value)
+                onChange((e.target as any).value)
             }
         }}
 

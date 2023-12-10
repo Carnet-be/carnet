@@ -1,5 +1,15 @@
-import {type  CarToOption, } from './../server/db/schema';
-import { type CarOption, type AuctionDetails, type Body, type Brand, type Car, type CarAssets, type CarSpecs, type Color, type Model, type CarSpecsRating } from "~/server/db/schema";
+
+import type { AuctionDetails } from "~/server/db/schema/auction_details";
+import type { Body } from "~/server/db/schema/bodies";
+import type { Brand } from "~/server/db/schema/brands";
+import type { CarAssets } from "~/server/db/schema/car_assets";
+import type { CarOption } from "~/server/db/schema/car_options";
+import type { CarSpecs } from "~/server/db/schema/car_specs";
+import type { CarSpecsRating } from "~/server/db/schema/car_specs_rating";
+import type { CarToOption } from "~/server/db/schema/car_to_optons";
+import type { Car } from "~/server/db/schema/cars";
+import type { Color } from "~/server/db/schema/colors";
+import type { Model } from "~/server/db/schema/models";
 
 export type FullCar = Car & {
     brand?: Brand,
@@ -9,6 +19,6 @@ export type FullCar = Car & {
     detail:AuctionDetails,
     body?:Body,
     specs?:CarSpecs,
-    options: Array<CarToOption & {option:CarOption}>,
+    options: Array<CarOption>,
     specsRating?:CarSpecsRating,
 }

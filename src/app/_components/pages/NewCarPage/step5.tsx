@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -10,9 +13,10 @@ import { motion } from "framer-motion";
 import { type TStep5, step5Schema } from ".";
 import { Trash2, ImagePlus } from "lucide-react";
 import Image from "next/image";
-import { type City, type Country } from "~/server/db/schema";
 import Map from "../../ui/map";
 import CSelect from "../../ui/CSelect";
+import { type City } from "~/server/db/schema/cities";
+import { type Country } from "~/server/db/schema/countries";
 const Step5 = ({
   value,
   onNext,
@@ -135,7 +139,7 @@ const Uploader = ({ value = [], onChange }: { value?: Array<File | string>, onCh
       //accept only image
       accept="image/*"
       type="file" onChange={(e) => {
-        const newfiles = Array.from(e.target.files ?? []);
+        const newfiles = Array.from((e.target as any).files ?? []) as File[];
         onChange?.([...value, ...newfiles]);
       }} ref={inputRef} className="hidden" />
     <div  className="grid grid-cols-4 gap-3 items-center">
@@ -154,7 +158,7 @@ const Uploader = ({ value = [], onChange }: { value?: Array<File | string>, onCh
           </div>
         </div>
       })}
-      <div key={"button"} onClick={() => inputRef.current?.click()} className="aspect-[3/2] cursor-pointer rounded-md border center">
+      <div key={"button"} onClick={() => (inputRef.current as any)?.click()} className="aspect-[3/2] cursor-pointer rounded-md border center">
 
         <ImagePlus size={20} />
 
