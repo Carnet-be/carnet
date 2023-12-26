@@ -1,13 +1,12 @@
-"use client"
 import { api } from "~/trpc/server";
-import { AdminSearchSection, CarsTable, TabsSection } from "./_components";
-import { Chip, Tab, Tabs } from "@nextui-org/react";
-import { GalleryHorizontal, Music, VideoIcon } from "lucide-react";
+import { AdminSearchSection, CarTypeSwitch, CarsTable, TabsSection } from "./_components";
 
 // const data = await api.public.carData.query()
 // const cars = await api.car.getCars.query()
 
-function CarsPage() {
+async function CarsPage() {
+    const count = await api.bo.car.getCounts.query()
+    const filters = await api.bo.car.getFilters.query()
     return (
         <div className="space-y-8">
             <div>
@@ -20,14 +19,13 @@ function CarsPage() {
                     </span>
                 </div>
             </div>
-            <AdminSearchSection data={[]} />
+            <CarTypeSwitch counts={count} />
+            <AdminSearchSection filters={filters} />
 
-           <TabsSection/>
+            <TabsSection />
 
             <div>
-                <CarsTable>
-                    {[]}
-                </CarsTable>
+                <CarsTable />
             </div>
         </div>
 
@@ -35,3 +33,4 @@ function CarsPage() {
 }
 
 export default CarsPage;
+

@@ -13,12 +13,15 @@ import type { Model } from "~/server/db/schema/models";
 
 export type FullCar = Car & {
     brand?: Brand,
-    model?:Model,
-    images:CarAssets[],
-    color?:Color,
-    detail:AuctionDetails,
-    body?:Body,
-    specs?:CarSpecs,
+    model?: Model,
+    images: CarAssets[],
+    color?: Color,
+    detail: AuctionDetails,
+    body?: Body,
+    specs?: CarSpecs,
     options: Array<CarOption>,
-    specsRating?:CarSpecsRating,
+    specsRating?: CarSpecsRating,
 }
+
+export const CAR_STATUS = ['pending', 'published', 'paused', 'finished', 'completed', 'sold'] as const
+export type CarStatus = typeof CAR_STATUS[number]

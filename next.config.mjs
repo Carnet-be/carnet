@@ -8,7 +8,9 @@ await import("./src/env.mjs");
 const config = {
     images: {
         domains: ["cdn.clerk.dev",
-        "orderbell-upload.s3.eu-north-1.amazonaws.com"
+        "orderbell-upload.s3.eu-north-1.amazonaws.com",
+        "images.pexels.com",
+        "img.clerk.com"
     ],
     },
 };

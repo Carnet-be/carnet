@@ -1,7 +1,6 @@
 import { Button } from '@nextui-org/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
 import { type FullCar } from '~/types'
 import { getCarImage, priceFormatter } from '~/utils/function'
 import { AuctionIcon } from './icons'
