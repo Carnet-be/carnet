@@ -11,14 +11,16 @@
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { getAuth, type SignedInAuthObject, type SignedOutAuthObject } from '@clerk/nextjs/server';
+import {
+  getAuth,
+  type SignedInAuthObject,
+  type SignedOutAuthObject,
+} from "@clerk/nextjs/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { db } from "~/server/db";
 
 import { type S3Client } from "@aws-sdk/client-s3";
-type  AuthContext =  SignedInAuthObject | SignedOutAuthObject;
-
-
+type AuthContext = SignedInAuthObject | SignedOutAuthObject;
 
 /**
  * 1. CONTEXT
@@ -30,7 +32,7 @@ type  AuthContext =  SignedInAuthObject | SignedOutAuthObject;
 
 interface CreateContextOptions {
   headers: Headers;
-  auth: AuthContext,
+  auth: AuthContext;
 }
 
 /**
@@ -44,7 +46,6 @@ interface CreateContextOptions {
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
 export const createInnerTRPCContext = (opts: CreateContextOptions) => {
- 
   return {
     headers: opts.headers,
     db,
@@ -111,4 +112,4 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
-export const protectedProcedure = t.procedure
+export const protectedProcedure = t.procedure;

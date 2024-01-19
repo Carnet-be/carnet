@@ -14,8 +14,8 @@ export const appRouter = createTRPCRouter({
   car: carRouter,
   garage: garageRouter,
   bo: createTRPCRouter({
-    car: boCarsRouter
-  })
+    car: boCarsRouter,
+  }),
 });
 
 // export type definition of API
