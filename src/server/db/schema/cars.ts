@@ -1,12 +1,21 @@
 import { type InferSelectModel } from "drizzle-orm";
-import { boolean, float, index, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
-
+import {
+  boolean,
+  float,
+  index,
+  int,
+  mysqlEnum,
+  mysqlTable,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/mysql-core";
 
 const cars = mysqlTable(
   "cars",
   {
     id: int("id").autoincrement().primaryKey(),
-    belongsTo: varchar("belongs_to", { length: 255 }).notNull(),
+    belongsTo: varchar("belongsTo", { length: 255 }).notNull(),
     state: mysqlEnum("state", ["new", "used"]),
     type: mysqlEnum("type", ["auction", "direct"]).notNull(),
     name: varchar("name", { length: 255 }).notNull(),
@@ -26,9 +35,10 @@ const cars = mysqlTable(
       "finished",
       "completed",
       "sold",
-    ]).notNull().default("pending"),
+    ])
+      .notNull()
+      .default("pending"),
     statusChangedAt: timestamp("status_changed_at"),
-    auctionDetailsId: int("auction_details_id"),
     minPrice: float("min_price"),
     maxPrice: float("max_price"),
     inRange: boolean("in_range").default(false),
@@ -39,6 +49,27 @@ const cars = mysqlTable(
     lat: float("lat"),
     lon: float("lon"),
     zipCode: varchar("zip_code", { length: 15 }),
+    startingPrice: float("starting_price").default(0.0),
+    commission: float("commission").default(0.0),
+    duration: mysqlEnum("duration", ["3d", "7d", "14d", "30d"]).default("3d"),
+    expectedPrice: float("expected_price").default(0.0),
+    startedAt: timestamp("started_at"),
+    endedAt: timestamp("ended_at"),
+    handling: int("handling"),
+    tires: int("tires"),
+    exterior: int("exterior"),
+    interior: int("interior"),
+    transmission: mysqlEnum("transmission", [
+      "manual",
+      "automatic",
+      "semi-automatic",
+    ]),
+    doors: int("doors"),
+    cv: float("cv"),
+    cc: float("cc"),
+    co2: float("co2"),
+    mileage: float("kilometrage"),
+    version: varchar("version", { length: 255 }),
   },
   (table) => ({
     belongsToIdx: index("belongs_to_idx").on(table.belongsTo),
@@ -49,4 +80,5 @@ const cars = mysqlTable(
 
 export type Car = InferSelectModel<typeof cars>;
 
-export default cars
+export default cars;
+

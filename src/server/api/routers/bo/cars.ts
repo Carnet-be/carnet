@@ -2,8 +2,8 @@ import { and, eq, getTableColumns, ilike, sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { assets } from "~/server/db/schema/assets";
 import brand from "~/server/db/schema/brands";
-import { carAssets } from "~/server/db/schema/car_assets";
 import cars from "~/server/db/schema/cars";
 import model from "~/server/db/schema/models";
 
@@ -109,10 +109,10 @@ export const boCarsRouter = createTRPCRouter({
           ...getTableColumns(cars),
           images: sql<
             { id: number; k: string }[]
-          >`IF(COUNT(${carAssets.id}) = 0, JSON_ARRAY(), json_arrayagg(json_object('id',${carAssets.id},'key',${carAssets.key})))`,
+          >`IF(COUNT(${assets.id}) = 0, JSON_ARRAY(), json_arrayagg(json_object('id',${assets.id},'key',${assets.key})))`,
         })
         .from(cars)
-        .leftJoin(carAssets, eq(cars.id, carAssets.carId))
+        .leftJoin(assets, eq(cars.id, assets.ref))
         .where(where)
         .groupBy(cars.id);
       return result;

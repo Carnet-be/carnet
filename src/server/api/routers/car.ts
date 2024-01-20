@@ -9,14 +9,15 @@ import {
   getTableColumns,
   sql,
   type InferInsertModel,
+  Table,
 } from "drizzle-orm";
 
 import { TRPCClientError } from "@trpc/client";
 import { z } from "zod";
+import { carAssets } from "~/server/db/schema/assets";
 import auctionDetails from "~/server/db/schema/auction_details";
 import body from "~/server/db/schema/bodies";
 import brand from "~/server/db/schema/brands";
-import { carAssets } from "~/server/db/schema/car_assets";
 import carOption, { type CarOption } from "~/server/db/schema/car_options";
 import carSpecs, { type CarSpecs } from "~/server/db/schema/car_specs";
 import carSpecsRating from "~/server/db/schema/car_specs_rating";
@@ -25,221 +26,172 @@ import cars from "~/server/db/schema/cars";
 import colors from "~/server/db/schema/colors";
 import model from "~/server/db/schema/models";
 import { type FullCar } from "~/types";
+import { createInsertSchema } from "drizzle-zod";
 
-const numSchema = z
-  .number()
-  .or(z.string().transform((v) => Number(v) || undefined));
-const step1Schema = z.object({
-  brand: z.number().min(1, { message: "Please select a brand" }),
-  model: z.number().min(1, { message: "Please select a model" }),
-  year: z.number().optional().nullable(),
-  fuel: z
-    .enum(["gasoline", "diesel", "electricity", "hybrid"])
-    .optional()
-    .nullable(),
-  color: z.number().optional().nullable(),
-  state: z.enum(["new", "used"]).optional().nullable(),
-});
+id: int("id").autoincrement().primaryKey(),
+belongsTo: varchar("belongsTo", { length: 255 }).notNull(),
+state: mysqlEnum("state", ["new", "used"]),
+type: mysqlEnum("type", ["auction", "direct"]).notNull(),
+name: varchar("name", { length: 255 }).notNull(),
+createdAt: timestamp("created_at").defaultNow(),
+updatedAt: timestamp("updated_at").onUpdateNow(),
+description: text("description"),
+bodyId: int("body_id"),
+brandId: int("brand_id").notNull(),
+modelId: int("model_id"),
+year: int("year"),
+colorId: int("color"),
+fuel: mysqlEnum("fuel", ["gasoline", "diesel", "electricity", "hybrid"]),
+status: mysqlEnum("status", [
+  "pending",
+  "published",
+  "paused",
+  "finished",
+  "completed",
+  "sold",
+])
+  .notNull()
+  .default("pending"),
+statusChangedAt: timestamp("status_changed_at"),
+minPrice: float("min_price"),
+maxPrice: float("max_price"),
+inRange: boolean("in_range").default(false),
+price: float("price"),
+countryId: int("country_id"),
+cityId: int("city_id"),
+address: varchar("address", { length: 255 }),
+lat: float("lat"),
+lon: float("lon"),
+zipCode: varchar("zip_code", { length: 15 }),
+startingPrice: float("starting_price").default(0.0),
+commission: float("commission").default(0.0),
+duration: mysqlEnum("duration", ["3d", "7d", "14d", "30d"]).default("3d"),
+expectedPrice: float("expected_price").default(0.0),
+startedAt: timestamp("started_at"),
+endedAt: timestamp("ended_at"),
+handling: int("handling"),
+tires: int("tires"),
+exterior: int("exterior"),
+interior: int("interior"),
+transmission: mysqlEnum("transmission", [
+  "manual",
+  "automatic",
+  "semi-automatic",
+]),
+doors: int("doors"),
+cv: float("cv"),
+cc: float("cc"),
+co2: float("co2"),
+mileage: float("kilometrage"),
+version: varchar("version", { length: 255 }),
+const addCar = protectedProcedure.input().mutation(async ({ input, ctx }) => {
+  //TODO: add state and description
+  const { db, auth } = ctx;
+  const belongsTo = (auth.orgId ?? auth.userId)!;
+  const {
+    color = null,
+    brand: bd,
+    model: ml,
+    fuel = null,
+    year = null,
+    state = null,
+  } = input.step1;
+  const { type, minPrice, maxPrice, inRange, price, startingPrice, duration } =
+    input.step6;
 
-const step2Schema = z.object({
-  body: z.number().optional().nullable(),
-  transmission: z
-    .enum(["manual", "automatic", "semi-automatic"])
-    .optional()
-    .nullable(),
-  //transform to number
-  mileage: numSchema.optional().nullable(),
-  doors: z.string().optional().nullable(),
-  cv: numSchema.optional().nullable(),
-  cc: numSchema.optional().nullable(),
-  co2: numSchema.optional().nullable(),
-  version: z.string().optional().nullable(),
-});
+  const {
+    city,
+    country,
+    address,
+    zipCode,
+    pos,
+    description = null,
+  } = input.step5;
+  const lat = pos?.lat ?? null;
+  const lon = pos?.lng ?? null;
+  const { handling, interior, exterior, tires } = input.step4;
+  const { options } = input.step3;
+  const {
+    cc = null,
+    cv = null,
+    co2 = null,
+    mileage = null,
+    version = null,
+    body,
+    transmission = null,
+    doors = null,
+  } = input.step2;
 
-const step3Schema = z.object({
-  options: z.array(z.number()).default([]),
-});
+  return db.transaction(async (trx) => {
+    const [name] = await trx
+      .select({
+        brandName: brand.name,
+        modelName: model.name,
+      })
+      .from(brand)
+      .innerJoin(model, eq(brand.id, model.brandId))
+      .where(and(eq(brand.id, bd), eq(model.id, ml)));
 
-const step4Schema = z.object({
-  handling: z.number().optional().nullable(),
-  tires: z.number().optional().nullable(),
-  exterior: z.number().optional().nullable(),
-  interior: z.number().optional().nullable(),
-});
+    const auctionDetail = await trx.insert(auctionDetails).values({
+      startingPrice,
+      duration,
+    });
+    const auctionDetailsId = parseInt(auctionDetail.insertId);
 
-const step5Schema = z.object({
-  country: z.number().optional().nullable(),
-  city: z.number().optional().nullable(),
-  address: z.string().optional().nullable(),
-  description: z.string().optional().nullable(),
-  pos: z
-    .object({
-      lat: z.number(),
-      lng: z.number(),
-    })
-    .optional()
-    .nullable(),
-  zipCode: z.string().optional().nullable(),
-});
-
-const step6Schema = z
-  .object({
-    startingPrice: numSchema.optional().nullable(),
-    duration: z.enum(["3d", "7d", "14d", "30d"]).optional().nullable(),
-    expectedPrice: numSchema.optional().nullable(),
-    minPrice: numSchema.optional().nullable(),
-    maxPrice: numSchema.optional().nullable(),
-    price: numSchema.optional().nullable(),
-    type: z.enum(["direct", "auction"]).default("direct"),
-    inRange: z.boolean().optional().nullable().default(false),
-  })
-  .refine(
-    (data) => {
-      if (data.inRange) {
-        return data.minPrice && data.maxPrice;
-      } else {
-        return true;
-      }
-    },
-    { message: "Please enter a min and max price" },
-  )
-  .refine(
-    (data) => {
-      if (data.type == "auction") {
-        return data.duration && data.startingPrice;
-      } else {
-        return true;
-      }
-    },
-    { message: "Please enter a duration and starting price" },
-  );
-
-const carSchema = z.object({
-  step1: step1Schema,
-  step2: step2Schema,
-  step3: step3Schema,
-  step4: step4Schema,
-  step5: step5Schema,
-  step6: step6Schema,
-});
-
-const addCar = protectedProcedure
-  .input(carSchema)
-  .mutation(async ({ input, ctx }) => {
-    //TODO: add state and description
-    const { db, auth } = ctx;
-    const belongsTo = (auth.orgId ?? auth.userId)!;
-    const {
-      color = null,
-      brand: bd,
-      model: ml,
-      fuel = null,
-      year = null,
-      state = null,
-    } = input.step1;
-    const {
+    const carData: InferInsertModel<typeof cars> = {
+      colorId: color,
+      brandId: bd,
+      modelId: ml,
+      fuel,
+      state,
+      year,
       type,
+      name: `${name?.brandName} ${name?.modelName}`,
+      belongsTo,
       minPrice,
       maxPrice,
       inRange,
       price,
-      startingPrice,
-      duration,
-    } = input.step6;
-
-    const {
-      city,
-      country,
+      bodyId: body,
+      cityId: city,
+      countryId: country,
       address,
       zipCode,
-      pos,
-      description = null,
-    } = input.step5;
-    const lat = pos?.lat ?? null;
-    const lon = pos?.lng ?? null;
-    const { handling, interior, exterior, tires } = input.step4;
-    const { options } = input.step3;
-    const {
-      cc = null,
-      cv = null,
-      co2 = null,
-      mileage = null,
-      version = null,
+      lat,
+      lon,
+      auctionDetailsId,
+      description,
+    };
+    const car = await trx.insert(cars).values(carData);
+    if (options.length > 0)
+      await trx.insert(carToOption).values(
+        options.map((opt) => ({
+          carId: parseInt(car.insertId),
+          optionId: opt,
+        })),
+      );
+
+    await trx.insert(carSpecs).values({
+      cc,
+      cv,
+      co2,
+      mileage,
+      carId: parseInt(car.insertId),
       body,
-      transmission = null,
-      doors = null,
-    } = input.step2;
-
-    return db.transaction(async (trx) => {
-      const [name] = await trx
-        .select({
-          brandName: brand.name,
-          modelName: model.name,
-        })
-        .from(brand)
-        .innerJoin(model, eq(brand.id, model.brandId))
-        .where(and(eq(brand.id, bd), eq(model.id, ml)));
-
-      const auctionDetail = await trx.insert(auctionDetails).values({
-        startingPrice,
-        duration,
-      });
-      const auctionDetailsId = parseInt(auctionDetail.insertId);
-
-      const carData: InferInsertModel<typeof cars> = {
-        colorId: color,
-        brandId: bd,
-        modelId: ml,
-        fuel,
-        state,
-        year,
-        type,
-        name: `${name?.brandName} ${name?.modelName}`,
-        belongsTo,
-        minPrice,
-        maxPrice,
-        inRange,
-        price,
-        bodyId: body,
-        cityId: city,
-        countryId: country,
-        address,
-        zipCode,
-        lat,
-        lon,
-        auctionDetailsId,
-        description,
-      };
-      const car = await trx.insert(cars).values(carData);
-      if (options.length > 0)
-        await trx.insert(carToOption).values(
-          options.map((opt) => ({
-            carId: parseInt(car.insertId),
-            optionId: opt,
-          })),
-        );
-
-      await trx.insert(carSpecs).values({
-        cc,
-        cv,
-        co2,
-        mileage,
-        carId: parseInt(car.insertId),
-        body,
-        version,
-        transmission: transmission as any,
-        doors: doors ? parseInt(doors as string) : null,
-      });
-      await trx.insert(carSpecsRating).values({
-        handling,
-        interior,
-        exterior,
-        tires,
-        carId: parseInt(car.insertId),
-      });
-      return parseInt(car.insertId);
+      version,
+      transmission: transmission as any,
+      doors: doors ? parseInt(doors as string) : null,
     });
+    await trx.insert(carSpecsRating).values({
+      handling,
+      interior,
+      exterior,
+      tires,
+      carId: parseInt(car.insertId),
+    });
+    return parseInt(car.insertId);
   });
+});
 
 const addAssets = protectedProcedure
   .input(

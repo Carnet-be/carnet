@@ -1,10 +1,9 @@
-import { Client } from "@planetscale/database";
+import { connect } from "@planetscale/database";
 import { drizzle } from "drizzle-orm/planetscale-serverless";
 
 import { env } from "~/env.mjs";
 
-export const db = drizzle(
-  new Client({
-    url: env.DATABASE_URL,
-  }).connection()
-);
+const connection = connect({
+  url: env.DATABASE_URL,
+});
+export const db = drizzle(connection);

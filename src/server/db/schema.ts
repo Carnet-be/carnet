@@ -2,21 +2,6 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { type InferSelectModel, relations } from "drizzle-orm";
-import {
-  index,
-  mysqlTable,
-  mysqlEnum,
-  timestamp,
-  varchar,
-  int,
-  unique,
-  float,
-  text,
-  boolean,
-  serial,
-} from "drizzle-orm/mysql-core";
-
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
  * database instance for multiple projects.
@@ -27,7 +12,7 @@ import {
 //   id: int("id").autoincrement().primaryKey(),
 //   name: varchar("name", { length: 255 }).notNull().unique(),
 //   flag: varchar("flag", { length: 255 }),
-//   createdAt: timestamp("created_at").defaultNow(),
+//   createdAt: timestamp("createdAt").defaultNow(),
 // });
 // export type Country = InferSelectModel<typeof countries>;
 
@@ -37,7 +22,7 @@ import {
 //     id: int("id").autoincrement().primaryKey(),
 //     name: varchar("name", { length: 255 }).notNull().unique(),
 //     countryId: int("country_id"),
-//     createdAt: timestamp("created_at").defaultNow(),
+//     createdAt: timestamp("createdAt").defaultNow(),
 //   },
 //   (table) => ({
 //     countryIdIdx: index("country_id_idx").on(table.countryId),
@@ -52,7 +37,7 @@ import {
 //   name: varchar("name", { length: 255 }).notNull().unique(),
 //   countryId: int("country_id"),
 //   logo: varchar("logo", { length: 255 }),
-//   createdAt: timestamp("created_at").defaultNow(),
+//   createdAt: timestamp("createdAt").defaultNow(),
 // });
 
 // export type Brand = InferSelectModel<typeof brand>;
@@ -73,7 +58,7 @@ import {
 //     id: int("id").autoincrement().primaryKey(),
 //     name: varchar("name", { length: 255 }).notNull().unique(),
 //     brandId: int("brand_id").notNull(),
-//     createdAt: timestamp("created_at").defaultNow(),
+//     createdAt: timestamp("createdAt").defaultNow(),
 //   },
 //   (table) => ({
 //     unq: unique().on(table.name, table.brandId),
@@ -95,7 +80,7 @@ import {
 //   id: int("id").autoincrement().primaryKey(),
 //   name: varchar("name", { length: 255 }).notNull().unique(),
 //   value: varchar("value", { length: 255 }).notNull().unique(),
-//   createdAt: timestamp("created_at").defaultNow(),
+//   createdAt: timestamp("createdAt").defaultNow(),
 // })
 
 // export type Color = InferSelectModel<typeof colors>;
@@ -106,12 +91,11 @@ import {
 
 /// Body
 
-
 // export const body = mysqlTable("body", {
 //   id: int("id").autoincrement().primaryKey(),
 //   name: varchar("name", { length: 255 }).notNull().unique(),
 //   logo: varchar("logo", { length: 255 }),
-//   createdAt: timestamp("created_at").defaultNow(),
+//   createdAt: timestamp("createdAt").defaultNow(),
 // });
 
 // export type Body = InferSelectModel<typeof body>;
@@ -125,8 +109,8 @@ import {
 //   expectedPrice: float("expected_price").default(0.0),
 //   startedAt: timestamp("started_at"),
 //   endedAt: timestamp("ended_at"),
-//   createdAt: timestamp("created_at").defaultNow(),
-//   updatedAt: timestamp("updated_at").onUpdateNow(),
+//   createdAt: timestamp("createdAt").defaultNow(),
+//   updatedAt: timestamp("updatedAt").onUpdateNow(),
 // });
 
 // export type AuctionDetails = InferSelectModel<typeof auctionDetails>;
@@ -138,8 +122,8 @@ import {
 //     carId: int("car_id").notNull(),
 //     key: varchar("key", { length: 255 }).notNull(),
 //     url: varchar("url", { length: 255 }),
-//     createdAt: timestamp("created_at").defaultNow(),
-//     updatedAt: timestamp("updated_at").onUpdateNow(),
+//     createdAt: timestamp("createdAt").defaultNow(),
+//     updatedAt: timestamp("updatedAt").onUpdateNow(),
 //   },
 //   (table) => ({ carIdIdx: index("car_id_idx").on(table.carId) }),
 // );
@@ -161,8 +145,8 @@ import {
 //     state: mysqlEnum("state", ["new", "used"]),
 //     type: mysqlEnum("type", ["auction", "direct"]).notNull(),
 //     name: varchar("name", { length: 255 }).notNull(),
-//     createdAt: timestamp("created_at").defaultNow(),
-//     updatedAt: timestamp("updated_at").onUpdateNow(),
+//     createdAt: timestamp("createdAt").defaultNow(),
+//     updatedAt: timestamp("updatedAt").onUpdateNow(),
 //     description: text("description"),
 //     bodyId: int("body_id"),
 //     brandId: int("brand_id").notNull(),
@@ -243,8 +227,8 @@ import {
 //     co2: float("co2"),
 //     mileage: float("kilometrage"),
 //     version: varchar("version", { length: 255 }),
-//     createdAt: timestamp("created_at").defaultNow(),
-//     updatedAt: timestamp("updated_at").onUpdateNow(),
+//     createdAt: timestamp("createdAt").defaultNow(),
+//     updatedAt: timestamp("updatedAt").onUpdateNow(),
 //     carId: int("car_id").notNull(),
 //   },
 //   (table) => ({
@@ -262,8 +246,8 @@ import {
 //     tires: int("tires"),
 //     exterior: int("exterior"),
 //     interior: int("interior"),
-//     createdAt: timestamp("created_at").defaultNow(),
-//     updatedAt: timestamp("updated_at").onUpdateNow(),
+//     createdAt: timestamp("createdAt").defaultNow(),
+//     updatedAt: timestamp("updatedAt").onUpdateNow(),
 //     carId: int("car_id").notNull(),
 //   },
 //   (table) => ({
@@ -284,8 +268,8 @@ import {
 // export const carOption = mysqlTable("car_option", {
 //   id: int("id").autoincrement().primaryKey(),
 //   name: varchar("name", { length: 255 }),
-//   createdAt: timestamp("created_at").defaultNow(),
-//   updatedAt: timestamp("updated_at").onUpdateNow(),
+//   createdAt: timestamp("createdAt").defaultNow(),
+//   updatedAt: timestamp("updatedAt").onUpdateNow(),
 // });
 
 // export type CarOption = InferSelectModel<typeof carOption>;
@@ -295,8 +279,8 @@ import {
 //     id: int("id").autoincrement().primaryKey(),
 //     carId: int("car_id"),
 //     optionId: int("option_id"),
-//     createdAt: timestamp("created_at").defaultNow(),
-//     updatedAt: timestamp("updated_at").onUpdateNow(),
+//     createdAt: timestamp("createdAt").defaultNow(),
+//     updatedAt: timestamp("updatedAt").onUpdateNow(),
 //   },
 //   (table) => ({
 //     carIdIdx: index("car_id_idx").on(table.carId),
@@ -325,7 +309,7 @@ import {
 //     carId: int("car_id").notNull(),
 //     bidderId: int("bidder_id").notNull(),
 //     amount: float("amount").notNull(),
-//     createdAt: timestamp("created_at").defaultNow(),
+//     createdAt: timestamp("createdAt").defaultNow(),
 //     isWinner: boolean("is_winner").default(false),
 //   },
 //   (table) => ({
@@ -343,17 +327,15 @@ import {
 //   }),
 // }));
 
-
-
 // export const garages= mysqlTable('garages',{
 //   id:serial('id').primaryKey(),
 //   name:varchar('name',{length:255}).notNull(),
 //   orgId: varchar('org_id',{length:255}).notNull(),
 //   cover:varchar('cover',{length:255}),
 //   about:text('about'),
-  
-//   createdAt:timestamp('created_at').defaultNow(),
-//   updatedAt:timestamp('updated_at').onUpdateNow()
+
+//   updatedAt:timestamp('updatedAt').defaultNow(),
+//   updatedAt:timestamp('updatedAt').onUpdateNow()
 // }, (table) => ({
 //   orgIdIdx: index("org_id_idx").on(table.orgId),
 // }))
@@ -365,11 +347,9 @@ import {
 //   garageId:int('garage_id').notNull(),
 //   userId:int('user_id'),
 //   action:varchar('action',{length:100, enum:["view", "follow", "share"]}).notNull(),
-//   createdAt:timestamp('created_at').defaultNow(),
+//   updatedAt:timestamp('updatedAt').defaultNow(),
 // }, (table) => ({
 //   garageIdIdx: index("garage_id_idx").on(table.garageId),
 // }))
 
 // export type GarageStatistics = InferSelectModel<typeof garageStatistics>
-
-

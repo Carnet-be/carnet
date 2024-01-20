@@ -370,7 +370,7 @@ export const CarsTable = () => {
       label: "STATE",
     },
     {
-      key: "createdAt",
+      key: "updatedAt",
       label: "CREATED AT",
     },
     {
@@ -409,7 +409,7 @@ export const CarsTable = () => {
             />
           </div>
         );
-      case "createdAt":
+      case "updatedAt":
       case "updatedAt":
         return value ? new Date(value).toLocaleDateString() : "-";
       case "state":
