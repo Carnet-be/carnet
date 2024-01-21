@@ -1,52 +1,81 @@
-
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-
-import { v4 as uuidv4 } from 'uuid';
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { v4 as uuidv4 } from "uuid";
 import { env } from "~/env.mjs";
 import s3 from "~/server/s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 
-import body from "~/server/db/schema/bodies";
-import brand from "~/server/db/schema/brands";
-import carOption from "~/server/db/schema/car_options";
-import cities from "~/server/db/schema/cities";
-import countries from "~/server/db/schema/countries";
-import model from "~/server/db/schema/models";
-import colors from "~/server/db/schema/colors";
+import { type InferSelectModel } from "drizzle-orm";
+import {
+  bodies,
+  brands,
+  carOptions,
+  cities,
+  colors,
+  countries,
+  models,
+} from "drizzle/schema";
 
-const presignedUrl = publicProcedure.mutation(async()=>{
-       const key=uuidv4()
-      
-       const url = await getSignedUrl(s3,new PutObjectCommand({
-          Bucket: env.C_AWS_BUCKET,
-          Key: `carnet/${key}`,
-          ContentType: 'image/*'
-        }))
-        return {
-          url,
-          key
-        }
-})
+const presignedUrl = publicProcedure.mutation(async () => {
+  const key = uuidv4();
 
+  const url = await getSignedUrl(
+    s3,
+    new PutObjectCommand({
+      Bucket: env.C_AWS_BUCKET,
+      Key: `carnet/${key}`,
+      ContentType: "image/*",
+    }),
+  );
+  return {
+    url,
+    key,
+  };
+});
+
+const groupModelYear = (data: InferSelectModel<typeof models>[]) => {
+  const names: {
+    id: number;
+    name: string;
+    brandId: number;
+  }[] = [];
+  data.forEach((d) => {
+    const { id, name, brandId } = d;
+    if (!names.find((n) => n.name === name && n.brandId === brandId)) {
+      names.push({ id, name, brandId });
+    }
+  });
+  const years = data
+    .filter((d) => d.year)
+    .map((d) => ({
+      id: d.id,
+      year: d.year!,
+      modelName: d.name,
+    }))
+    .sort((a, b) => b.year - a.year);
+  return {
+    models: names,
+    years,
+  };
+};
 export const publicRouter = createTRPCRouter({
   presignedUrl,
   carData: publicProcedure.query(({ ctx }) => {
     return ctx.db.transaction(async (trx) => {
       const ctries = await trx.select().from(countries).orderBy(countries.name);
       const cties = await trx.select().from(cities).orderBy(cities.name);
-      const opts = await trx.select().from(carOption).orderBy(carOption.name);
-      const brds = await trx.select().from(brand).orderBy(brand.name);
-      const models = await trx.select().from(model).orderBy(model.name);
-      const bdy = await trx.select().from(body);
+      const opts = await trx.select().from(carOptions).orderBy(carOptions.name);
+      const brds = await trx.select().from(brands).orderBy(brands.name);
+      const modelsData = await trx.select().from(models).orderBy(models.name);
+      const bdy = await trx.select().from(bodies);
       const clors = await trx.select().from(colors).orderBy(colors.id);
       return {
         countries: ctries,
         cities: cties,
         carOptions: opts,
         brands: brds,
-        models: models,
+        ...groupModelYear(modelsData),
         bodies: bdy,
         colors: clors,
       };

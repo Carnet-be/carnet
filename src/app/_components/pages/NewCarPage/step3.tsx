@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React from "react";
-import { type TStep3, step3Schema } from ".";
-import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@nextui-org/react";
-import { motion } from "framer-motion";
 import cx from "classnames";
-import { CarOption } from "~/server/db/schema/car_options";
+import { motion } from "framer-motion";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { type RouterInputs, type RouterOutputs } from "~/trpc/shared";
+
+type TStep3 = RouterInputs["car"]["addCar"]["step3"];
 const Step3 = ({
   value,
   onNext,
@@ -16,18 +17,19 @@ const Step3 = ({
   onBack,
 }: {
   value: TStep3;
-  onNext: (values:TStep3) => void;
+  onNext: (values: TStep3) => void;
   onBack: () => void;
-  data: any;
+  data: RouterOutputs["public"]["carData"];
 }) => {
-  const {
-    handleSubmit,
-    control,
-  } = useForm({
+  const { handleSubmit, control } = useForm({
     defaultValues: value,
-    resolver: zodResolver(step3Schema),
+    resolver: zodResolver(
+      z.object({
+        options: z.array(z.number()).default([]),
+      }),
+    ),
   });
-  const options: CarOption[] = data?.carOptions;
+  const options = data?.carOptions;
   return (
     <motion.form
       initial={{ opacity: 0.2, y: -100 }}
@@ -42,28 +44,27 @@ const Step3 = ({
       </h2>
       <div className="flex flex-wrap items-center justify-center gap-3">
         {options.map((o) => {
-        
           return (
             <Controller
               key={o.id}
               control={control}
-              render={({field:{value,onChange}}) => (
+              render={({ field: { value, onChange } }) => (
                 <div
                   onClick={() => {
                     if (value?.includes(o.id)) {
-                      const newList = value||[];
+                      const newList = value || [];
                       newList.splice(newList.indexOf(o.id), 1);
-                      onChange( newList);
+                      onChange(newList);
                     } else {
-                      const newList = value||[];
+                      const newList = value ?? [];
                       newList.push(o.id);
-                      onChange( newList);
+                      onChange(newList);
                     }
                   }}
                   className={cx(
-                    "cursor-pointer text-sm opacity-70 rounded-xl border p-3 transition-all duration-300",
+                    "cursor-pointer rounded-xl border p-3 text-sm opacity-70 transition-all duration-300",
                     value?.includes(o.id)
-                      ? " border-primary text-primary shadow-2xl text-opacity-100"
+                      ? " border-primary text-primary text-opacity-100 shadow-2xl"
                       : "",
                   )}
                 >

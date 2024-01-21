@@ -8,18 +8,17 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
-import superjson from "superjson";
-import { ZodError } from "zod";
 import {
   getAuth,
   type SignedInAuthObject,
   type SignedOutAuthObject,
 } from "@clerk/nextjs/server";
+import { initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import superjson from "superjson";
+import { ZodError } from "zod";
 import { db } from "~/server/db";
 
-import { type S3Client } from "@aws-sdk/client-s3";
 type AuthContext = SignedInAuthObject | SignedOutAuthObject;
 
 /**
@@ -112,4 +111,29 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
-export const protectedProcedure = t.procedure;
+export const protectedProcedure = t.procedure.use((opts) => {
+  const { auth } = opts.ctx;
+  const { userId } = auth;
+  if (!userId) {
+    throw new Error("Not authenticated");
+  }
+  return opts.next();
+});
+
+export const adminProcedure = t.procedure.use((opts) => {
+  const { auth } = opts.ctx;
+  const isAdmin = auth?.user?.publicMetadata?.role === "admin";
+  if (!isAdmin) {
+    throw new Error("You are not an admin");
+  }
+  return opts.next();
+});
+
+export const orgProcedure = protectedProcedure.use((opts) => {
+  const { auth } = opts.ctx;
+  const { orgId } = auth;
+  if (!orgId) {
+    throw new Error("Not a member of an organization");
+  }
+  return opts.next();
+});

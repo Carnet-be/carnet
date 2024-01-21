@@ -7,14 +7,16 @@ import { api } from "~/trpc/server";
 export default async function NewCar({
   params,
 }: {
-  params: { carId?: number };
+  params: { carId?: number | string };
 }) {
   const { userId, orgId, user } = auth();
   const data = await api.public.carData.query();
   const carId = params.carId;
+  console.log("carId", carId);
   let car;
-  if (carId) {
-    car = await api.car.getCarById.query(carId);
+  if (carId && carId !== "new") {
+    car = await api.car.getCarById.query(Number(carId));
+    console.log("car", car);
     if (!car) {
       return notFound();
     }
@@ -23,6 +25,7 @@ export default async function NewCar({
       car.belongsTo !== userId &&
       user?.publicMetadata?.role !== "admin"
     ) {
+      console.log("not mine");
       return notFound();
     }
   }

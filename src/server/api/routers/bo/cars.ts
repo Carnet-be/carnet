@@ -1,11 +1,8 @@
 import { and, eq, getTableColumns, ilike, sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
+import { assets, brands, cars, models } from "drizzle/schema";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import brand from "~/server/db/schema/brands";
-import { carAssets } from "~/server/db/schema/car_assets";
-import cars from "~/server/db/schema/cars";
-import model from "~/server/db/schema/models";
 
 const filterSchema = z.object({
   brand: z.string().optional().nullable(),
@@ -16,6 +13,7 @@ const filterSchema = z.object({
     .optional()
     .nullable(),
   search: z.string().optional().nullable(),
+  belongsTo: z.string().optional().nullable(),
 });
 
 export const boCarsRouter = createTRPCRouter({
@@ -33,30 +31,49 @@ export const boCarsRouter = createTRPCRouter({
       return ctx.db.update(cars).set(data).where(eq(cars.id, id));
     }),
 
-  getCounts: protectedProcedure.query(async ({ ctx }) => {
-    return ctx.db.transaction(async (trx) => {
-      const [direct] = await trx
-        .select({ count: sql<number>`count(*)` })
-        .from(cars)
-        .where(eq(cars.type, "direct"));
-      const [auction] = await trx
-        .select({ count: sql<number>`count(*)` })
-        .from(cars)
-        .where(eq(cars.type, "auction"));
-      return {
-        direct: direct?.count ?? 0,
-        auction: auction?.count ?? 0,
-      };
-    });
-  }),
+  getCounts: protectedProcedure
+    .input(
+      z
+        .object({
+          belongsTo: z.string(),
+        })
+        .optional(),
+    )
+    .query(async ({ ctx, input }) => {
+      const belongsTo = input?.belongsTo;
+      return ctx.db.transaction(async (trx) => {
+        const [direct] = await trx
+          .select({ count: sql<number>`count(*)` })
+          .from(cars)
+          .where(
+            and(
+              eq(cars.type, "direct"),
+              belongsTo ? eq(cars.belongsTo, belongsTo) : undefined,
+            ),
+          );
+        const [auction] = await trx
+          .select({ count: sql<number>`count(*)` })
+          .from(cars)
+          .where(
+            and(
+              eq(cars.type, "auction"),
+              belongsTo ? eq(cars.belongsTo, belongsTo) : undefined,
+            ),
+          );
+        return {
+          direct: direct?.count ?? 0,
+          auction: auction?.count ?? 0,
+        };
+      });
+    }),
   getFilters: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db.transaction(async (trx) => {
       const brandsData = await trx
-        .select({ id: brand.id, label: brand.name })
-        .from(brand);
+        .select({ id: brands.id, label: brands.name })
+        .from(brands);
       const modelsData = await trx
-        .select({ id: model.id, label: model.name, brandId: model.brandId })
-        .from(model);
+        .select({ id: models.id, label: models.name, brandId: models.brandId })
+        .from(models);
       return {
         brands: brandsData,
         models: modelsData,
@@ -66,13 +83,14 @@ export const boCarsRouter = createTRPCRouter({
   getStatusCounts: protectedProcedure
     .input(filterSchema.omit({ status: true }))
     .query(async ({ ctx, input }) => {
-      const { brand, model, type, search } = input;
+      const { brand, model, type, search, belongsTo } = input;
       const where = input
         ? and(
             brand ? eq(cars.brandId, Number(brand)) : undefined,
             model ? eq(cars.modelId, Number(model)) : undefined,
             type ? eq(cars.type, type) : undefined,
             search ? ilike(cars.name, `%${search}%`) : undefined,
+            belongsTo ? eq(cars.belongsTo, belongsTo) : undefined,
           )
         : undefined;
       const result = await ctx.db
@@ -109,10 +127,10 @@ export const boCarsRouter = createTRPCRouter({
           ...getTableColumns(cars),
           images: sql<
             { id: number; k: string }[]
-          >`IF(COUNT(${carAssets.id}) = 0, JSON_ARRAY(), json_arrayagg(json_object('id',${carAssets.id},'key',${carAssets.key})))`,
+          >`IF(COUNT(${assets.id}) = 0, JSON_ARRAY(), json_arrayagg(json_object('id',${assets.id},'key',${assets.key})))`,
         })
         .from(cars)
-        .leftJoin(carAssets, eq(cars.id, carAssets.carId))
+        .leftJoin(assets, eq(cars.id, assets.ref))
         .where(where)
         .groupBy(cars.id);
       return result;

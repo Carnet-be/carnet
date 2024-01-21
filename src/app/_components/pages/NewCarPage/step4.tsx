@@ -1,28 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Divider } from "@nextui-org/react";
 import { motion } from "framer-motion";
-import { type TStep4, step4Schema } from ".";
+import { Controller, useForm } from "react-hook-form";
+
+import { z } from "zod";
+import { type RouterInputs } from "~/trpc/shared";
 import RatingStar from "../../ui/ratingStar";
+
+type TStep4 = RouterInputs["car"]["addCar"]["step4"];
 const Step4 = ({
   value,
   onNext,
   onBack,
 }: {
   value: TStep4;
-  onNext: (values:TStep4) => void;
+  onNext: (values: TStep4) => void;
   onBack: () => void;
 }) => {
-  const {
-    handleSubmit,
-    control,
-  } = useForm({
+  const { handleSubmit, control } = useForm({
     defaultValues: value,
-    resolver: zodResolver(step4Schema),
+    resolver: zodResolver(
+      z.object({
+        handling: z.number().optional().nullable(),
+        tires: z.number().optional().nullable(),
+        exterior: z.number().optional().nullable(),
+        interior: z.number().optional().nullable(),
+      }),
+    ),
   });
   return (
     <motion.form
@@ -43,7 +50,7 @@ const Step4 = ({
               <span className="text-end font-semibold">Handling</span>
               <Divider orientation="vertical" />
               <RatingStar
-                value={value}
+                value={value ?? undefined}
                 onChange={onChange}
                 tooltips={[
                   "Doesn't start nor drive",
@@ -64,7 +71,7 @@ const Step4 = ({
               <span className="text-end font-semibold">Exterion</span>
               <Divider orientation="vertical" />
               <RatingStar
-                value={value}
+                value={value ?? undefined}
                 onChange={onChange}
                 tooltips={[
                   "Involved in a (serious) accident",
@@ -85,7 +92,7 @@ const Step4 = ({
               <span className="text-end font-semibold">Interior</span>
               <Divider orientation="vertical" />
               <RatingStar
-                value={value}
+                value={value ?? undefined}
                 onChange={onChange}
                 tooltips={[
                   "Very bad condition (the airbags have gone off …)",
@@ -106,7 +113,7 @@ const Step4 = ({
               <span className="text-end font-semibold">Tires</span>
               <Divider orientation="vertical" />
               <RatingStar
-                value={value}
+                value={value ?? undefined}
                 onChange={onChange}
                 tooltips={[
                   "Required replacement ASAP",
@@ -137,4 +144,3 @@ const Step4 = ({
 };
 
 export default Step4;
-

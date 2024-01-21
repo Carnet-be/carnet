@@ -3,34 +3,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useRef } from "react";
-import { type TStep1, step1Schema } from ".";
-import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, ScrollShadow, Select, SelectItem } from "@nextui-org/react";
-import { YEARS } from "~/utils/constants";
-import { motion } from "framer-motion";
-import CSelect from "../../ui/CSelect";
-import { Check, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Button,
+  ScrollShadow,
+  Select,
+  SelectItem,
+  SelectSection,
+} from "@nextui-org/react";
 import cx from "classnames";
+import { motion } from "framer-motion";
+import { Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { type RouterInputs, type RouterOutputs } from "~/trpc/shared";
+
 import { invertColor } from "~/utils/function";
-import type { Brand } from "~/server/db/schema/brands";
-import type { Color } from "~/server/db/schema/colors";
-import type { Model } from "~/server/db/schema/models";
+
+import { z } from "zod";
+import CSelect from "../../ui/CSelect";
+
 const Step1 = ({
   value: defaultValues,
   onNext,
   data,
 }: {
-  value: TStep1;
-  onNext: (values: TStep1) => void;
-  data: any;
+  value: RouterInputs["car"]["addCar"]["step1"];
+  onNext: (values: RouterInputs["car"]["addCar"]["step1"]) => void;
+  data: RouterOutputs["public"]["carData"];
 }) => {
-  const brands: Brand[] = data?.brands;
-  const models: Model[] = data?.models;
-  const colors:Color[]= data?.colors
+  const brands = data?.brands;
+  const models = data?.models;
+  const colors = data?.colors;
+  const years = data?.years;
   const {
-    register,
     handleSubmit,
     watch,
     control,
@@ -38,10 +44,20 @@ const Step1 = ({
     formState: { errors },
   } = useForm({
     defaultValues,
-    resolver: zodResolver(step1Schema)
+    resolver: zodResolver(
+      z.object({
+        brand: z.number().min(1, { message: "Please select a brand" }),
+        model: z.number().min(1, { message: "Please select a model" }),
+        fuel: z
+          .enum(["gasoline", "diesel", "electricity", "hybrid"])
+          .optional()
+          .nullable(),
+        color: z.number().optional().nullable(),
+        state: z.enum(["new", "used"]).optional().nullable(),
+      }),
+    ),
   });
 
-  console.log('models', models)
   return (
     <motion.form
       initial={{ opacity: 0.2, y: -100 }}
@@ -49,7 +65,7 @@ const Step1 = ({
       transition={{ type: "spring", stiffness: 100 }}
       exit={{ opacity: 0.2, y: 100 }}
       onSubmit={handleSubmit(onNext, (err) => {
-        console.log('err', err)
+        console.log("err", err);
       })}
       className="flex  w-full max-w-[700px] flex-col gap-10 md:gap-20"
     >
@@ -57,61 +73,140 @@ const Step1 = ({
         Start by giving us some information about your car
       </h2>
       <div className="space-y-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <Controller
+            name="brand"
+            control={control}
+            render={({ field: { value, onChange, onBlur } }) => (
+              <CSelect
+                required
+                error={errors.brand?.message}
+                isInvalid={!!errors.brand}
+                label={!watch("brand") ? "Select a brand (Required)" : "Brand"}
+                onChange={onChange}
+                onBlur={onBlur}
+                value={value}
+                options={brands.map((b) => ({
+                  label: b.name,
+                  value: b.id.toString(),
+                }))}
+              />
+            )}
+          />
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Controller  name="brand" control={control} render={({ field: { value, onChange, onBlur } }) => (
-          <CSelect error={errors.brand?.message} isInvalid={!!errors.brand} label="Brand" onChange={onChange} onBlur={onBlur} value={value} options={brands.map((b) => ({
-            label: b.name,
-            value: b.id.toString()
-          }))} />
-          )} />
+          <Controller
+            name="model"
+            control={control}
+            render={({ field: { value, onChange, onBlur } }) => (
+              <Select
+                isDisabled={!watch("brand")}
+                errorMessage={errors.model?.message}
+                isInvalid={!!errors.model}
+                scrollShadowProps={{
+                  isEnabled: false,
+                }}
+                label={
+                  watch("model")
+                    ? "Model"
+                    : watch("brand")
+                      ? `Select a model of ${
+                          brands.find((b) => b.id == watch("brand"))?.name
+                        }`
+                      : "Select a model (Required)"
+                }
+                onChange={(e) => {
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                  onChange(parseInt((e.target as any).value) ?? undefined);
+                }}
+                onBlur={onBlur}
+                value={value}
+                startContent={
+                  <span className="whitespace-nowrap text-[14px]">
+                    {watch("brand")
+                      ? years.find((b) => b.id == watch("model"))?.modelName
+                      : ""}
+                  </span>
+                }
+              >
+                {models
+                  .filter((m) => m.brandId == watch("brand"))
+                  .map((m) => (
+                    <SelectSection
+                      title={m.name}
+                      key={`${m.name} ${m.brandId}`}
+                      classNames={{
+                        heading:
+                          "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-small rounded-small",
+                      }}
+                    >
+                      {years
+                        .filter((f) => f.modelName === m.name)
+                        .map((y) => (
+                          <SelectItem key={y.id} value={y.id}>
+                            {y.year?.toString()}
+                          </SelectItem>
+                        ))}
+                    </SelectSection>
+                  ))}
+              </Select>
+            )}
+          />
+        </div>
+        <div className="flex flex-row items-center gap-4">
+          <Controller
+            name="state"
+            control={control}
+            render={({ field: { value, onChange, onBlur } }) => (
+              <CSelect
+                type="text"
+                className="w-[300px]"
+                label={
+                  watch("state")
+                    ? "State"
+                    : "Select the state of your car (Required)"
+                }
+                onChange={onChange}
+                onBlur={onBlur}
+                value={value?.toString()}
+                options={["new", "used"].map((b) => ({
+                  label: b === "new" ? "New car" : "Used car",
+                  value: b.toString(),
+                }))}
+              />
+            )}
+          />
 
-        <Controller name="model" control={control} render={({ field: { value, onChange, onBlur } }) => (
-          <CSelect isDisabled={!watch("brand")} error={errors.model?.message} isInvalid={!!errors.model} label="Model" onChange={onChange} onBlur={onBlur} value={value} options={models
-            .filter((m) => m.brandId.toString() == watch("brand")?.toString()).map((b) => ({
-              label: b.name,
-              value: b.id.toString()
-            }))} />
-            )} />
-    
-        
-      </div>
-      <div className="flex flex-row items-center gap-4">
-      <Controller name="year" control={control} render={({ field: { value, onChange, onBlur } }) => (
-          <CSelect label="Year" onChange={onChange} onBlur={onBlur} value={value} options={YEARS.map((b) => ({
-              label: b.toString(),
-              value: b.toString()
-            }))} />
-        )} />
-     <Controller  name="state" control={control} render={({ field: { value, onChange, onBlur } }) => (
-          <CSelect type="text" className="w-[280px]" label="State" onChange={onChange} onBlur={onBlur} value={value} options={["new","used"].map((b) => ({
-              label: b.toString(),
-              value: b.toString()
-            }))} />
-        )} />
-  
-     <Controller name="fuel" control={control} render={({ field: { value, onChange, onBlur } }) => (
-          <CSelect type="text" label="Fuel" onChange={onChange} onBlur={onBlur} value={value} options={["gasoline", "diesel", "electricity", "hybrid"].map((b) => ({
-              label: b.toString(),
-              value: b.toString()
-            }))} />
-        )} />
-      </div>
-      <ColorSelection
+          <Controller
+            name="fuel"
+            control={control}
+            render={({ field: { value, onChange, onBlur } }) => (
+              <CSelect
+                type="text"
+                label={
+                  watch("fuel") ? "Fuel" : "Select the type of fuel (Required)"
+                }
+                onChange={onChange}
+                onBlur={onBlur}
+                value={value?.toString()}
+                options={["gasoline", "diesel", "electricity", "hybrid"].map(
+                  (b) => ({
+                    label: b.toString(),
+                    value: b.toString(),
+                  }),
+                )}
+              />
+            )}
+          />
+        </div>
+        <ColorSelection
           bodies={colors}
-          selectedBody={watch("color")}
+          selectedBody={watch("color") ?? undefined}
           onSelect={(id) => setValue("color", id)}
         />
-            </div>
+      </div>
       <div className="flex flex-row items-center justify-between">
         <div className="flex-grow"></div>
-        <Button
-
-          type="submit"
-          variant="shadow"
-          color="primary"
-          className="px-5"
-        >
+        <Button type="submit" variant="shadow" color="primary" className="px-5">
           Next
         </Button>
       </div>
@@ -121,13 +216,12 @@ const Step1 = ({
 
 export default Step1;
 
-
 const ColorSelection = ({
   bodies,
   selectedBody,
   onSelect,
 }: {
-  bodies: Color[];
+  bodies: RouterOutputs["public"]["carData"]["colors"];
   selectedBody?: number;
   onSelect: (id: number) => void;
 }) => {
@@ -159,14 +253,14 @@ const ColorSelection = ({
                 height: "60px",
               }}
               className={cx(
-                "w-[60px] relative h-[60px] center rounded-full cursor-pointer   border transition-all duration-300",
-                isSelected
-                  ? "border-2  text-primary shadow-4xl"
-                  : "",
+                "center relative h-[60px] w-[60px] cursor-pointer rounded-full   border transition-all duration-300",
+                isSelected ? "shadow-4xl  border-2 text-primary" : "",
               )}
             >
-              <div className="w-[60px] center">
-               {isSelected && <Check color={invertColor(b.value)} size={20} className="shadow-xl" />}
+              <div className="center w-[60px]">
+                {isSelected && (
+                  <Check color={invertColor(b.value)} size={30} className="" />
+                )}
               </div>
             </div>
           );

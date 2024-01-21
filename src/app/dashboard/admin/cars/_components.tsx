@@ -78,7 +78,13 @@ export const CarTypeSwitch = ({
     </Tabs>
   );
 };
-export function TabsSection() {
+export function TabsSection({
+  filter,
+}: {
+  filter: {
+    belongsTo?: string;
+  };
+}) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -88,6 +94,7 @@ export function TabsSection() {
     brand: searchParams.get("brand"),
     model: searchParams.get("model"),
     type: (searchParams.get("type") as any) ?? "direct",
+    belongsTo: filter.belongsTo,
   });
 
   return (
