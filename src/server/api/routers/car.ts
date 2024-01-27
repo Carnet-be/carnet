@@ -7,6 +7,7 @@ import {
   and,
   eq,
   getTableColumns,
+  gt,
   sql,
   type InferInsertModel,
   type InferSelectModel,
@@ -18,6 +19,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import {
   assets,
+  biddings,
   bodies,
   brands,
   carOptions,
@@ -25,7 +27,7 @@ import {
   cars,
   colors,
   models,
-} from "drizzle/schema";
+} from "../../db/schema";
 
 const numSchema = z
   .number()
@@ -114,6 +116,18 @@ export const updateCarSchema = z.object({
   step5: step5Schema.partial(),
   step6: step6Schema.partial(),
 });
+
+const getEndDate = (t: "3d" | "7d" | "14d" | "30d" | undefined | null) => {
+  if (!t) return null;
+  const now = new Date();
+  const days = {
+    "3d": 3,
+    "7d": 7,
+    "14d": 14,
+    "30d": 30,
+  };
+  return new Date(now.setDate(now.getDate() + days[t]));
+};
 const addCar = protectedProcedure
   .input(createCarSchema)
   .mutation(async ({ input, ctx }) => {
@@ -171,13 +185,14 @@ const addCar = protectedProcedure
         modelId: ml,
         fuel,
         state,
+        endedAt: getEndDate(duration),
         year,
         type,
         name: `${name?.brandName} ${name?.modelName} ${name?.year}`,
         belongsTo,
         minPrice,
         maxPrice,
-        inRange: inRange ? 1 : 0,
+        inRange,
         startingPrice,
         duration,
         price,
@@ -256,9 +271,10 @@ const updateCar = protectedProcedure
           ...step5,
           brandId: brand,
           modelId: model,
+          endedAt: getEndDate(input.step6.duration),
           bodyId: body,
           kilometrage: mileage,
-          inRange: input.step6.inRange ? 1 : 0,
+          inRange: input.step6.inRange,
           doors: doors ? parseInt(doors as string) : null,
           lat,
           lon,
@@ -411,6 +427,85 @@ const getMyCars = protectedProcedure.query(async ({ ctx, input }) => {
   return result;
 });
 
+const getBidsCount = protectedProcedure
+  .input(z.number())
+  .query(async ({ ctx, input }) => {
+    return ctx.db
+      .select({
+        count: sql<number>`COUNT(${biddings.id})`,
+        maxAmount: sql<number>`MAX(${biddings.amount})`,
+      })
+      .from(biddings)
+      .where(eq(biddings.carId, input))
+      .then((res) => res?.[0]);
+  });
+
+const addBid = protectedProcedure
+  .input(
+    z.object({
+      amount: z.number(),
+      carId: z.number(),
+    }),
+  )
+  .mutation(async ({ ctx, input }) => {
+    const { db, auth } = ctx;
+    const id = auth.userId;
+
+    if (!id)
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Not authenticated",
+      });
+
+    const bid = await db
+      .select({
+        count: sql<number>`COUNT(${biddings.id})`,
+      })
+      .from(biddings)
+      .where(
+        and(eq(biddings.carId, input.carId), gt(biddings.amount, input.amount)),
+      )
+      .then((res) => res?.[0]?.count ?? 0);
+
+    if (bid > 0)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Bid is lower than the current bid",
+      });
+
+    const result = await db.insert(biddings).values({
+      amount: input.amount,
+      carId: input.carId,
+      bidderId: id,
+    });
+
+    return result;
+  });
+const getMyBids = protectedProcedure.query(async ({ ctx }) => {
+  const { db, auth } = ctx;
+  const id = auth.userId;
+
+  if (!id) throw new Error("Not authenticated");
+
+  const result = await db
+    .select({
+      ...getTableColumns(biddings),
+      number: sql<number>`ROW_NUMBER() OVER (PARTITION BY ${biddings.carId} ORDER BY ${biddings.amount} DESC)`,
+      car: {
+        ...getTableColumns(cars),
+        images: sql<
+          InferSelectModel<typeof assets>[]
+        >`IF(COUNT(${assets.id}) = 0, JSON_ARRAY(), json_arrayagg(json_object('id',${assets.id},'key',${assets.key})))`,
+      },
+    })
+    .from(biddings)
+    .leftJoin(cars, eq(biddings.carId, cars.id))
+    .leftJoin(assets, eq(cars.id, assets.ref))
+    .where(eq(biddings.bidderId, id))
+    .groupBy(() => [biddings.id]);
+
+  return result;
+});
 export const carRouter = createTRPCRouter({
   addCar,
   addAssets,
@@ -418,4 +513,7 @@ export const carRouter = createTRPCRouter({
   getCarById,
   getMyCars,
   updateCar,
+  getBidsCount,
+  addBid,
+  getMyBids,
 });

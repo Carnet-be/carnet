@@ -3,16 +3,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
+import { auth } from "@clerk/nextjs";
+import cx from "classnames";
 import Image from "next/image";
-import React from "react";
+import Map from "~/app/_components/ui/map";
 import { api } from "~/trpc/server";
 import { type FullCar } from "~/types";
-import { getCarImage, priceFormatter } from "~/utils/function";
-import cx from "classnames";
-import Map from "~/app/_components/ui/map";
-import { ContentCarPage } from "./_components";
-import { auth } from "@clerk/nextjs";
-import { Button, Input } from "@nextui-org/react";
+import { getCarImage } from "~/utils/function";
+import { BidSection, ContentCarPage } from "./_components";
 export default async function CarPage({ params }: any) {
   const carId: number = parseInt(params.carId!);
   const car = await api.car.getCarById.query(carId);
@@ -145,46 +143,7 @@ const RightSide = ({ car, mine = false }: { car: FullCar; mine?: boolean }) => {
       {!isBuyNow && (
         <BidSection user={user} car={car} isTimeOut={isTimeOut} />
       )} */}
-      <div className="space-y-4 py-7">
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-gray-100 p-3">
-          <div className="flex flex-col items-center justify-center">
-            <span className="font-semibold text-black">10d 12h</span>
-            <span className="text-[12px] text-gray-500">Time left</span>
-          </div>
-          <div className="flex flex-col items-center justify-center">
-            <span className="font-semibold text-black">Sunday, 12:00</span>
-            <span className="text-[12px] text-gray-500">Auction ends</span>
-          </div>
-          <div className="flex flex-col items-center justify-center">
-            <span className="font-semibold text-black">13</span>
-            <span className="text-[12px] text-gray-500">Active bid</span>
-          </div>
-          <div className="flex flex-col items-center justify-center">
-            <span className="font-semibold text-black">
-              {priceFormatter.format(car.detail?.startingPrice ?? 0)}
-            </span>
-            <span className="text-[12px] text-gray-500">Current bid</span>
-          </div>
-        </div>
-        <form className="flex items-end gap-3 pt-3">
-          <Input
-            name="bid"
-            startContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-small text-default-400">€</span>
-              </div>
-            }
-            labelPlacement="outside"
-            type="number"
-            step={100}
-            variant="bordered"
-            label={"Entrer your bid (Minimum $14,000)"}
-          />
-          <Button type="submit" color="primary">
-            Place bid
-          </Button>
-        </form>
-      </div>
+      <BidSection car={car} />
       {car.lat && car.lon && (
         <Map
           center={{
