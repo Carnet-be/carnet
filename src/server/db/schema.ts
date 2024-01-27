@@ -257,13 +257,14 @@ export const garages = mysqlTable(
   "garages",
   {
     id: serial("id").notNull(),
-    name: varchar("name", { length: 255 }).notNull(),
     orgId: varchar("org_id", { length: 255 }).notNull(),
     cover: varchar("cover", { length: 255 }),
     about: text("about"),
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "string" }).onUpdateNow(),
-    state: varchar("state", { length: 100 }),
+    state: mysqlEnum("state", ["published", "draft", "expired"]).default(
+      "draft",
+    ),
   },
   (table) => {
     return {

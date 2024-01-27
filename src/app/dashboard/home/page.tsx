@@ -35,7 +35,7 @@ export default async function DashboardPage() {
             <CarCard key={car.id}>{car as any}</CarCard>
           ))}
         </div>
-        {cars.length > 0 && (
+        {/* {cars.length > 0 && (
           <div className="flex flex-row items-center justify-center">
             <Button
               variant="flat"
@@ -45,7 +45,7 @@ export default async function DashboardPage() {
               Load More
             </Button>
           </div>
-        )}
+        )} */}
         {cars.length === 0 && (
           <div className="flex flex-col items-center justify-center py-10">
             <span className="text-2xl font-semibold text-black">
