@@ -31,6 +31,6 @@
     "**/*.cjs",
     "**/*.mjs",
     ".next/types/**/*.ts"
-, "../carnet_auth/src/server/auth.ts"  ],
+, "../carnet_auth/src/server/auth.ts", "withTwin.mjs"  ],
   "exclude": ["node_modules"]
 }
