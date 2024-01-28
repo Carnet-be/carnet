@@ -6,16 +6,30 @@ import Link from "next/link";
 import { getCarImage, priceFormatter } from "~/utils/function";
 import { AuctionIcon } from "./icons";
 
-export const getPrice = (car: InferSelectModel<typeof cars>) => {
-  if ((car.type = "direct")) {
-    if (car.inRange && car.minPrice && car.maxPrice) {
-      return `${car.minPrice}-${car.maxPrice}`; //priceFormatter.formatRange(car.minPrice, car.maxPrice)
+export const getPrice = ({
+  type,
+  maxPrice,
+  minPrice,
+  startingPrice,
+  inRange,
+  price,
+}: {
+  type: InferSelectModel<typeof cars>["type"];
+  inRange: boolean | null;
+  minPrice?: number | null;
+  maxPrice?: number | null;
+  startingPrice?: number | null;
+  price?: number | null;
+}) => {
+  if (type == "direct") {
+    if (inRange && minPrice && maxPrice) {
+      return `${minPrice}-${maxPrice}`; //priceFormatter.formatRange(car.minPrice, car.maxPrice)
     }
-    if (car.price) {
-      return priceFormatter.format(car.price);
+    if (price) {
+      return priceFormatter.format(price);
     }
   } else {
-    return priceFormatter.format(car.startingPrice ?? 0);
+    return priceFormatter.format(startingPrice ?? 0);
   }
 };
 
@@ -53,7 +67,16 @@ const CarCard = ({
         </div>
         <hr />
         <div className="flex flex-row items-start justify-between gap-1">
-          <span className="font-semibold text-primary">{getPrice(car)}</span>
+          <span className="font-semibold text-primary">
+            {getPrice({
+              startingPrice: car.startingPrice,
+              inRange: car.inRange == 1 ? true : false,
+              maxPrice: car.maxPrice,
+              minPrice: car.minPrice,
+              price: car.price,
+              type: car.type,
+            })}
+          </span>
           <Link href={`/dashboard/car/${car.id}`}>
             <Button size="sm" color="primary" variant="flat">
               Details

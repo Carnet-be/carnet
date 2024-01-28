@@ -13,7 +13,7 @@ import {
 import axios from "axios";
 import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 import { api } from "~/trpc/react";
 import { type RouterInputs, type RouterOutputs } from "~/trpc/shared";
@@ -38,55 +38,55 @@ const NewCarPage = ({
 }) => {
   const [isSuccess, setIsSuccess] = React.useState(false);
   const router = useRouter();
-  const {
-    form = {
-      step1: {
-        brand: car?.brandId ?? 0,
-        model: car?.modelId ?? 0,
-        //year: 0,
-        fuel: car?.fuel ?? "gasoline",
-        state: car?.state ?? "new",
-        // color: car?.colorId,
-        // year: car?.year,
-      },
-      step2: {
-        body: car?.bodyId ?? undefined,
-        transmission: car?.transmission ?? "manual",
-        mileage: car?.kilometrage ?? undefined,
-        cv: car?.cv ?? undefined,
-        cc: car?.cc ?? undefined,
-        co2: car?.co2 ?? undefined,
-        version: car?.version ?? undefined,
-      },
-      step3: {
-        options: car?.options.map((k) => k.id) ?? [],
-      },
-      step4: {
-        handling: car?.handling ?? undefined,
-        tires: car?.tires ?? undefined,
-        exterior: car?.exterior ?? undefined,
-        interior: car?.interior ?? undefined,
-      },
-      step5: {
-        images: car?.images?.map((k) => k.key) ?? [],
-      },
-      step6: {
-        //duration: "3d",
-        inRange: car?.inRange === 1 ? true : false,
-        startingPrice: car?.startingPrice ?? undefined,
-        duration: car?.duration ?? "3d",
-        expectedPrice: car?.expectedPrice ?? undefined,
-        minPrice: car?.minPrice ?? undefined,
-        maxPrice: car?.maxPrice ?? undefined,
-        price: car?.price ?? undefined,
-        type: car?.type ?? "direct",
-        description: car?.description ?? undefined,
-      },
+  const getForm = () => ({
+    step1: {
+      brand: car?.brandId ?? 0,
+      model: car?.modelId ?? 0,
+      //year: 0,
+      fuel: car?.fuel ?? "gasoline",
+      state: car?.state ?? "new",
+      // color: car?.colorId,
+      // year: car?.year,
     },
+    step2: {
+      body: car?.bodyId ?? undefined,
+      transmission: car?.transmission ?? "manual",
+      mileage: car?.kilometrage ?? undefined,
+      cv: car?.cv ?? undefined,
+      cc: car?.cc ?? undefined,
+      co2: car?.co2 ?? undefined,
+      version: car?.version ?? undefined,
+    },
+    step3: {
+      options: car?.options.map((k) => k.id) ?? [],
+    },
+    step4: {
+      handling: car?.handling ?? undefined,
+      tires: car?.tires ?? undefined,
+      exterior: car?.exterior ?? undefined,
+      interior: car?.interior ?? undefined,
+    },
+    step5: {
+      images: car?.images?.map((k) => k.key) ?? [],
+    },
+    step6: {
+      //duration: "3d",
+      inRange: car?.inRange ?? undefined,
+      startingPrice: car?.startingPrice ?? undefined,
+      duration: car?.duration ?? "3d",
+      expectedPrice: car?.expectedPrice ?? undefined,
+      minPrice: car?.minPrice ?? undefined,
+      maxPrice: car?.maxPrice ?? undefined,
+      price: car?.price ?? undefined,
+      type: car?.type ?? "direct",
+      description: car?.description ?? undefined,
+    },
+  });
+  const {
+    form = getForm(),
     setForm,
     step,
     setStep,
-    carId,
     setCarId,
   } = useFormCarStore();
   const { mutateAsync } = api.public.presignedUrl.useMutation();
@@ -102,7 +102,10 @@ const NewCarPage = ({
   >(undefined);
   const [isUploading, setIsUploading] = React.useState(false);
   const { mutateAsync: setAssets } = api.car.addAssets.useMutation();
-
+  useEffect(() => {
+    setForm(getForm());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [car]);
   const {
     mutate: mutateCar,
     isLoading,
@@ -157,7 +160,10 @@ const NewCarPage = ({
           ),
         );
         await setAssets({ carId, images: [...alreadyDeployed, ...uploadKeys] });
+      } else {
+        await setAssets({ carId, images: alreadyDeployed });
       }
+
       setIsUploading(false);
       if (car) {
         toast.success("Car updated successfully");
@@ -170,6 +176,7 @@ const NewCarPage = ({
       setErrorUploading("Error uploading images");
     }
   };
+
   return (
     <>
       <div className="space-y-6 p-10">

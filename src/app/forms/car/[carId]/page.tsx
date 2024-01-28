@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth, clerkClient } from "@clerk/nextjs";
 import { notFound } from "next/navigation";
 import NewCarPage from "~/app/_components/pages/NewCarPage";
 
@@ -9,7 +9,8 @@ export default async function NewCar({
 }: {
   params: { carId?: number | string };
 }) {
-  const { userId, orgId, user } = auth();
+  const { userId, orgId } = auth();
+
   const data = await api.public.carData.query();
   const carId = params.carId;
   console.log("carId", carId);
@@ -20,6 +21,9 @@ export default async function NewCar({
     if (!car) {
       return notFound();
     }
+
+    const user = await clerkClient.users.getUser(userId!);
+
     if (
       car.belongsTo !== orgId &&
       car.belongsTo !== userId &&
@@ -36,3 +40,4 @@ export default async function NewCar({
     </div>
   );
 }
+export const revalidate = 0;

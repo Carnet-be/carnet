@@ -72,7 +72,16 @@ const CarCard = ({
         </div>
 
         <div className="flex flex-row items-start justify-between gap-1">
-          <span className="font-semibold text-primary">{getPrice(car)}</span>
+          <span className="font-semibold text-green-300 ">
+            {getPrice({
+              startingPrice: car.startingPrice,
+              type: car.type,
+              inRange: car.inRange,
+              minPrice: car.minPrice,
+              maxPrice: car.maxPrice,
+              price: car.price,
+            })}
+          </span>
         </div>
         <div className="flex flex-row items-center justify-end gap-3">
           <Link href={`/forms/car/${car.id}`}>

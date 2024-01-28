@@ -33,6 +33,7 @@ import toast from "react-hot-toast";
 import { useDebounce } from "usehooks-ts";
 import { MoreIcon } from "~/app/_components/icons";
 import { api } from "~/trpc/react";
+import { RouterOutputs } from "~/trpc/shared";
 import { type FullCar } from "~/types";
 import { getCarImage } from "~/utils/function";
 
@@ -402,7 +403,10 @@ export const CarsTable = () => {
       },
     });
   const router = useRouter();
-  const render = (item: FullCar, columnKey: Key) => {
+  const render = (
+    item: RouterOutputs["bo"]["car"]["getCars"][number],
+    columnKey: Key,
+  ) => {
     const value = getKeyValue(item, columnKey);
     switch (columnKey) {
       case "image":
@@ -467,7 +471,14 @@ export const CarsTable = () => {
                 >
                   View
                 </DropdownItem>
-                <DropdownItem key="copy">Edit</DropdownItem>
+                <DropdownItem
+                  key="edit"
+                  onClick={() => {
+                    router.push(`/forms/car/${item.id}`);
+                  }}
+                >
+                  Edit
+                </DropdownItem>
 
                 <DropdownItem
                   key="delete"

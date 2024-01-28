@@ -11,7 +11,8 @@ const config = withTwin({
         domains: ["cdn.clerk.dev",
             "orderbell-upload.s3.eu-north-1.amazonaws.com",
             "images.pexels.com",
-            "img.clerk.com"
+            "img.clerk.com",
+            "images.unsplash.com"
         ],
     },
 });

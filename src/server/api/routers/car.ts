@@ -308,10 +308,11 @@ const addAssets = protectedProcedure
       key: img,
       type: "image",
     }));
+    console.log("results", results);
     return results.length > 0
-      ? db.transaction(async (trx) => {
+      ? await db.transaction(async (trx) => {
           await trx.delete(assets).where(eq(assets.ref, carId));
-          return trx.insert(assets).values(results);
+          return await trx.insert(assets).values(results);
         })
       : [];
   });

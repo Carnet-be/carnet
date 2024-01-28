@@ -3,8 +3,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { auth } from "@clerk/nextjs";
+import { auth, clerkClient } from "@clerk/nextjs";
 import cx from "classnames";
+import { Mail, PhoneCall } from "lucide-react";
 import Image from "next/image";
 import Map from "~/app/_components/ui/map";
 import { api } from "~/trpc/server";
@@ -44,7 +45,16 @@ const LeftSide = ({ car }: { car: FullCar }) => {
   );
 };
 
-const RightSide = ({ car, mine = false }: { car: FullCar; mine?: boolean }) => {
+const RightSide = async ({
+  car,
+  mine = false,
+}: {
+  car: FullCar;
+  mine?: boolean;
+}) => {
+  const org = await clerkClient.organizations.getOrganization({
+    organizationId: car.belongsTo,
+  });
   return (
     <div className=" w-full lg:w-[40%] ">
       <div className="w-full space-y-4 rounded-xl bg-white p-3">
@@ -143,7 +153,35 @@ const RightSide = ({ car, mine = false }: { car: FullCar; mine?: boolean }) => {
       {!isBuyNow && (
         <BidSection user={user} car={car} isTimeOut={isTimeOut} />
       )} */}
-      <BidSection car={car} />
+      {car.type === "direct" ? (
+        <div className="mt-5 flex flex-col gap-2 rounded-lg bg-primary p-4 text-white">
+          <span>Contact the owner of the car to buy it</span>
+          <div className="flex items-center gap-3">
+            <Image
+              src={org.imageUrl}
+              alt="logo"
+              width={50}
+              height={50}
+              className="rounded-full"
+            />
+            <span className="font-bold">{org.name}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex w-[50px] items-center justify-center">
+              <PhoneCall size={20} />
+            </div>
+            <span className="">00 1243 654 789</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex w-[50px] items-center justify-center">
+              <Mail size={20} />
+            </div>
+            <span className="">nima.contact@gmail.com</span>
+          </div>
+        </div>
+      ) : (
+        <BidSection car={car} />
+      )}
       {car.lat && car.lon && (
         <Map
           center={{

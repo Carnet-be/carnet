@@ -126,7 +126,7 @@ export const boCarsRouter = createTRPCRouter({
         .select({
           ...getTableColumns(cars),
           images: sql<
-            { id: number; k: string }[]
+            { id: number; key: string }[]
           >`IF(COUNT(${assets.id}) = 0, JSON_ARRAY(), json_arrayagg(json_object('id',${assets.id},'key',${assets.key})))`,
         })
         .from(cars)
