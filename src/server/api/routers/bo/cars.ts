@@ -1,8 +1,8 @@
 import { and, eq, getTableColumns, ilike, sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
-import { assets, brands, cars, models } from "drizzle/schema";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { assets, brands, cars, models } from "../../../db/schema";
 
 const filterSchema = z.object({
   brand: z.string().optional().nullable(),

@@ -9,7 +9,6 @@ import {
   cn,
 } from "@nextui-org/react";
 import { type InferSelectModel } from "drizzle-orm";
-import { type cars } from "drizzle/schema";
 import { Edit } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,6 +19,7 @@ import Retry from "~/app/_components/ui/retry";
 import { api } from "~/trpc/react";
 import { type RouterOutputs } from "~/trpc/shared";
 import { getCarImage } from "~/utils/function";
+import { type cars } from "../../../server/db/schema";
 
 export const CarsSection = () => {
   const { data, isError, isLoading, refetch } = api.car.getMyCars.useQuery();

@@ -15,7 +15,7 @@ import {
   colors,
   countries,
   models,
-} from "drizzle/schema";
+} from "../../db/schema";
 
 const presignedUrl = publicProcedure.mutation(async () => {
   const key = uuidv4();

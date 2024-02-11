@@ -1,9 +1,9 @@
 import { Button, cn } from "@nextui-org/react";
 import { type InferSelectModel } from "drizzle-orm";
-import { type assets, type cars } from "drizzle/schema";
 import Image from "next/image";
 import Link from "next/link";
 import { getCarImage, priceFormatter } from "~/utils/function";
+import { type assets, type cars } from "../../server/db/schema";
 import { AuctionIcon } from "./icons";
 
 export const getPrice = ({
@@ -70,7 +70,7 @@ const CarCard = ({
           <span className="font-semibold text-primary">
             {getPrice({
               startingPrice: car.startingPrice,
-              inRange: car.inRange == 1 ? true : false,
+              inRange: car.inRange,
               maxPrice: car.maxPrice,
               minPrice: car.minPrice,
               price: car.price,
