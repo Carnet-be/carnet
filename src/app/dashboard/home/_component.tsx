@@ -3,10 +3,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 "use client"
 import { Select, SelectItem } from '@nextui-org/react'
-import React from 'react'
-import { Body } from '~/server/db/schema/bodies'
-import { Brand } from '~/server/db/schema/brands'
-import { Model } from '~/server/db/schema/models'
+import { type RouterOutputs } from '~/trpc/shared'
+
 
 export const CarsSections = () => {
     return (
@@ -15,10 +13,10 @@ export const CarsSections = () => {
 }
 
 
-export const SearchSection = ({data}:{data:any}) => {
-    const bodies:Body[] = data?.bodies??[]
-    const brands: Brand[] = data?.brands??[]
-    const models:Model[] = data?.models??[]
+export const SearchSection = ({data}:{data:RouterOutputs["public"]["carData"]}) => {
+    const bodies = data?.bodies??[]
+    const brands= data?.brands??[]
+    const models = data?.models??[]
 
     return <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Select
@@ -29,7 +27,7 @@ export const SearchSection = ({data}:{data:any}) => {
             labelPlacement="outside"
         >
             {bodies.map((b) => (
-                <SelectItem key={b.id} value={b.name}>
+                <SelectItem key={b.id} value={b.name!}>
                     {b.name}
                 </SelectItem>
             ))}

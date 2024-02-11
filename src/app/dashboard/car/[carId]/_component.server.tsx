@@ -9,7 +9,7 @@ import { Mail, PhoneCall } from "lucide-react";
 import Image from "next/image";
 import Map from "~/app/_components/ui/map";
 import { api } from "~/trpc/server";
-import { type FullCar } from "~/types";
+import { type RouterOutputs } from "~/trpc/shared";
 import { getCarImage } from "~/utils/function";
 import { BidSection, ContentCarPage } from "./_components";
 export default async function CarPage({ params }: any) {
@@ -28,7 +28,7 @@ export default async function CarPage({ params }: any) {
   );
 }
 
-const LeftSide = ({ car }: { car: FullCar }) => {
+const LeftSide = ({ car }: { car: RouterOutputs["car"]["getCarById"]; }) => {
   return (
     <div className="flex  w-full flex-grow flex-col gap-3 lg:w-[57%]">
       <div className="relative flex aspect-[3/2] w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-white">
@@ -49,11 +49,11 @@ const RightSide = async ({
   car,
   mine = false,
 }: {
-  car: FullCar;
+  car: RouterOutputs["car"]["getCarById"];
   mine?: boolean;
 }) => {
   const org = await clerkClient.organizations.getOrganization({
-    organizationId: car.belongsTo,
+    organizationId: car.belongsTo!,
   });
   return (
     <div className=" w-full lg:w-[40%] ">
@@ -98,42 +98,42 @@ const RightSide = async ({
             size={110}
             title={"Transmission"}
             img={"/images/transmission.png"}
-            value={car?.specs?.transmission ?? "-"}
+            value={car?.transmission ?? "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
             title={"Horse Power"}
             img={"/images/horse.png"}
-            value={car.specs?.cc?.toString() ?? "-"}
+            value={car.cc?.toString() ?? "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
             title={"Mileage"}
             img={"/images/mileage.png"}
-            value={car.specs?.mileage?.toString() ?? "-"}
+            value={car.kilometrage?.toString() ?? "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%] text-primary"
             size={110}
             title="CO2"
             img={"/images/CO2.svg"}
-            value={car.specs?.co2?.toString() ?? "-"}
+            value={car.co2?.toString() ?? "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
             title={"Doors"}
             img={"/images/Doors.svg"}
-            value={car.specs?.doors?.toString() ?? "-"}
+            value={car.doors?.toString() ?? "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
             title={"Engine Size"}
             img={"/images/engine.svg"}
-            value={car.specs?.cc?.toString() ?? "-"}
+            value={car.cc?.toString() ?? "-"}
           />
         </div>
       </div>

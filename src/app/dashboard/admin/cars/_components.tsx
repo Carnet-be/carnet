@@ -33,8 +33,7 @@ import toast from "react-hot-toast";
 import { useDebounce } from "usehooks-ts";
 import { MoreIcon } from "~/app/_components/icons";
 import { api } from "~/trpc/react";
-import { RouterOutputs } from "~/trpc/shared";
-import { type FullCar } from "~/types";
+import { type RouterOutputs } from "~/trpc/shared";
 import { getCarImage } from "~/utils/function";
 
 export const CarTypeSwitch = ({
