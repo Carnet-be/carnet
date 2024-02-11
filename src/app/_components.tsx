@@ -633,7 +633,7 @@ export const About = () => {
                 sell car as auction
               </p>
               <a
-                href="javascript:void(0)"
+                href="/dashboard"
                 className="inline-flex items-center justify-center rounded-md border border-transparent bg-primary px-7 py-3 text-center text-base font-medium text-white hover:bg-opacity-90"
               >
                 Get Started
