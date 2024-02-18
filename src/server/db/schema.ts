@@ -1,291 +1,263 @@
 import {
   boolean,
-  float,
+  doublePrecision,
   index,
-  int,
-  mysqlEnum,
-  mysqlTable,
-  primaryKey,
+  integer,
+  pgTable,
   serial,
   text,
   timestamp,
-  tinyint,
   unique,
   varchar,
-} from "drizzle-orm/mysql-core";
+} from "drizzle-orm/pg-core";
 
-export const assets = mysqlTable(
+export const assets = pgTable(
   "assets",
   {
-    id: int("id").autoincrement().notNull(),
-    ref: int("ref").notNull(),
+    id: serial("id").notNull().primaryKey(),
+    ref: integer("ref").notNull(),
     key: varchar("key", { length: 255 }).notNull(),
     url: varchar("url", { length: 255 }),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).onUpdateNow(),
-    type: mysqlEnum("type", ["image", "video", "audio"]),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at"),
+    type: varchar("type", { length: 100, enum: ["image", "video", "audio"] }),
   },
   (table) => {
     return {
       refIdx: index("ref_idx").on(table.ref),
-      assetsId: primaryKey(table.id),
     };
   },
 );
 
-export const biddings = mysqlTable(
+export const biddings = pgTable(
   "biddings",
   {
-    id: int("id").autoincrement().notNull(),
-    carId: int("car_id").notNull(),
+    id: serial("id").notNull().primaryKey(),
+    carId: integer("car_id").notNull(),
     bidderId: varchar("bidder_id", { length: 255 }).notNull(),
-    amount: float("amount").notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    isWinner: tinyint("is_winner").default(0),
+    amount: doublePrecision("amount").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+    isWinner: integer("is_winner").default(0),
   },
   (table) => {
     return {
       bidderIdIdx: index("bidder_id_idx").on(table.bidderId),
       carIdIdx: index("car_id_idx").on(table.carId),
-      biddingsId: primaryKey(table.id),
     };
   },
 );
 
-export const bodies = mysqlTable(
-  "bodies",
-  {
-    id: int("id").autoincrement().notNull(),
-    name: varchar("name", { length: 255 }),
-    logo: varchar("logo", { length: 255 }),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-  },
-  (table) => {
-    return {
-      bodiesId: primaryKey(table.id),
-    };
-  },
-);
+export const bodies = pgTable("bodies", {
+  id: serial("id").notNull().primaryKey(),
+  name: varchar("name", { length: 255 }),
+  logo: varchar("logo", { length: 255 }),
+  createdAt: timestamp("created_at").defaultNow(),
+});
 
-export const brands = mysqlTable(
+export const brands = pgTable(
   "brands",
   {
-    id: int("id").autoincrement().notNull(),
+    id: serial("id").notNull().primaryKey(),
     name: varchar("name", { length: 255 }).notNull(),
-    countryId: int("country_id"),
+    countryId: integer("country_id"),
     logo: varchar("logo", { length: 255 }),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+    createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => {
     return {
-      brandsId: primaryKey(table.id),
       brandsNameUnique: unique("brands_name_unique").on(table.name),
     };
   },
 );
 
-export const carOptions = mysqlTable(
+export const carOptions = pgTable(
   "car_options",
   {
-    id: int("id").autoincrement().notNull(),
+    id: serial("id").notNull().primaryKey(),
     name: varchar("name", { length: 255 }).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+    createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => {
     return {
-      carOptionsId: primaryKey(table.id),
       carOptionsNameUnique: unique("car_options_name_unique").on(table.name),
     };
   },
 );
 
-export const carToOption = mysqlTable(
-  "car_to_option",
-  {
-    id: int("id").autoincrement().notNull(),
-    carId: int("car_id"),
-    optionId: int("option_id"),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-  },
-  (table) => {
-    return {
-      carIdIdx: index("car_id_idx").on(table.carId),
-      optionIdIdx: index("option_id_idx").on(table.optionId),
-      carToOptionId: primaryKey(table.id),
-    };
-  },
-);
+export const carToOption = pgTable("car_to_option", {
+  id: serial("id").notNull().primaryKey(),
+  carId: integer("car_id")
+    .references(() => cars.id)
+    .notNull(),
+  optionId: integer("option_id")
+    .references(() => carOptions.id)
+    .notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
 
-export const cars = mysqlTable(
+export const cars = pgTable(
   "cars",
   {
-    id: int("id").autoincrement().notNull(),
+    id: serial("id").notNull().primaryKey(),
     belongsTo: varchar("belongsTo", { length: 255 }).notNull(),
-    state: mysqlEnum("state", ["new", "used"]),
-    type: mysqlEnum("type", ["auction", "direct"]).notNull(),
+    state: varchar("state", { length: 100, enum: ["new", "used"] }),
+    type: varchar("type", {
+      length: 100,
+      enum: ["auction", "direct"],
+    }).notNull(),
     name: varchar("name", { length: 255 }).notNull(),
     createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").onUpdateNow(),
+    updatedAt: timestamp("updated_at"),
     description: text("description"),
-    bodyId: int("body_id"),
-    brandId: int("brand_id").notNull(),
-    modelId: int("model_id"),
-    year: int("year"),
-    color: int("color"),
-    fuel: mysqlEnum("fuel", ["gasoline", "diesel", "electricity", "hybrid"]),
-    status: mysqlEnum("status", [
-      "pending",
-      "published",
-      "paused",
-      "finished",
-      "completed",
-      "sold",
-    ])
+    bodyId: integer("body_id").references(() => bodies.id),
+    brandId: integer("brand_id").references(() => brands.id),
+    modelId: integer("model_id").references(() => models.id),
+    year: integer("year"),
+    color: integer("color").references(() => colors.id),
+    fuel: varchar("fuel", {
+      length: 100,
+      enum: ["gasoline", "diesel", "electricity", "hybrid"],
+    }),
+    status: varchar("status", {
+      length: 100,
+      enum: ["pending", "published", "paused", "finished", "completed", "sold"],
+    })
       .default("pending")
       .notNull(),
     statusChangedAt: timestamp("status_changed_at"),
-    minPrice: float("min_price"),
-    maxPrice: float("max_price"),
+    minPrice: doublePrecision("min_price"),
+    maxPrice: doublePrecision("max_price"),
     inRange: boolean("in_range"),
-    price: float("price"),
-    countryId: int("country_id"),
-    cityId: int("city_id"),
+    price: doublePrecision("price"),
+    countryId: integer("country_id"),
+    cityId: integer("city_id"),
     address: varchar("address", { length: 255 }),
-    lat: float("lat"),
-    lon: float("lon"),
+    lat: doublePrecision("lat"),
+    lon: doublePrecision("lon"),
     zipCode: varchar("zip_code", { length: 15 }),
-    startingPrice: float("starting_price"),
-    commission: float("commission"),
-    duration: mysqlEnum("duration", ["3d", "7d", "14d", "30d"]).default("3d"),
-    expectedPrice: float("expected_price"),
+    startingPrice: doublePrecision("starting_price"),
+    commission: doublePrecision("commission"),
+    duration: varchar("duration", {
+      length: 100,
+      enum: ["3d", "7d", "14d", "30d"],
+    }).default("3d"),
+    expectedPrice: doublePrecision("expected_price"),
     startedAt: timestamp("started_at"),
     endedAt: timestamp("ended_at"),
-    handling: int("handling"),
-    tires: int("tires"),
-    exterior: int("exterior"),
-    interior: int("interior"),
-    transmission: mysqlEnum("transmission", [
-      "manual",
-      "automatic",
-      "semi-automatic",
-    ]),
-    doors: int("doors"),
-    cv: float("cv"),
-    cc: float("cc"),
-    co2: float("co2"),
-    kilometrage: float("kilometrage"),
+    handling: integer("handling"),
+    tires: integer("tires"),
+    exterior: integer("exterior"),
+    interior: integer("interior"),
+    transmission: varchar("transmission", {
+      length: 100,
+      enum: ["manual", "automatic", "semi-automatic"],
+    }),
+    doors: integer("doors"),
+    cv: doublePrecision("cv"),
+    cc: doublePrecision("cc"),
+    co2: doublePrecision("co2"),
+    kilometrage: doublePrecision("kilometrage"),
     version: varchar("version", { length: 255 }),
   },
   (table) => {
     return {
       belongsToIdx: index("belongs_to_idx").on(table.belongsTo),
-      bodyIdIdx: index("body_id_idx").on(table.bodyId),
-      colorIdIdx: index("color_id_idx").on(table.color),
-      carsId: primaryKey(table.id),
     };
   },
 );
 
-export const cities = mysqlTable(
+export const cities = pgTable(
   "cities",
   {
-    id: int("id").autoincrement().notNull(),
+    id: serial("id").notNull().primaryKey(),
     name: varchar("name", { length: 255 }).notNull(),
-    countryId: int("country_id"),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+    countryId: integer("country_id")
+      .notNull()
+      .references(() => countries.id),
+    createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => {
     return {
-      countryIdIdx: index("country_id_idx").on(table.countryId),
-      citiesId: primaryKey(table.id),
       citiesNameUnique: unique("cities_name_unique").on(table.name),
     };
   },
 );
 
-export const colors = mysqlTable(
+export const colors = pgTable(
   "colors",
   {
-    id: int("id").autoincrement().notNull(),
+    id: serial("id").notNull().primaryKey(),
     name: varchar("name", { length: 255 }).notNull(),
     value: varchar("value", { length: 255 }).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+    createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => {
     return {
-      colorsId: primaryKey(table.id),
       colorsNameUnique: unique("colors_name_unique").on(table.name),
       colorsValueUnique: unique("colors_value_unique").on(table.value),
     };
   },
 );
 
-export const countries = mysqlTable(
+export const countries = pgTable(
   "countries",
   {
-    id: int("id").autoincrement().notNull(),
+    id: serial("id").notNull().primaryKey(),
     name: varchar("name", { length: 255 }).notNull(),
     flag: varchar("flag", { length: 255 }),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+    createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => {
     return {
-      countriesId: primaryKey(table.id),
       countriesNameUnique: unique("countries_name_unique").on(table.name),
     };
   },
 );
 
-export const garageStatistics = mysqlTable(
-  "garage_statistics",
-  {
-    id: serial("id").notNull(),
-    garageId: int("garage_id").notNull(),
-    userId: int("user_id"),
-    action: varchar("action", { length: 100 }).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-  },
-  (table) => {
-    return {
-      garageIdIdx: index("garage_id_idx").on(table.garageId),
-      garageStatisticsId: primaryKey(table.id),
-    };
-  },
-);
+// export const garageStatistics = pgTable("garage_statistics", {
+//   id: serial("id").notNull().primaryKey(),
+//   garageId: integer("garage_id")
+//     .references(() => garages.id)
+//     .notNull(),
+//   userId: integer("user_id"),
+//   action: varchar("action", { length: 100 }).notNull(),
+//   createdAt: timestamp("created_at").defaultNow(),
+// });
 
-export const garages = mysqlTable(
+export const garages = pgTable(
   "garages",
   {
-    id: serial("id").notNull(),
+    id: serial("id").notNull().primaryKey(),
     orgId: varchar("org_id", { length: 255 }).notNull(),
     cover: varchar("cover", { length: 255 }),
     about: text("about"),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).onUpdateNow(),
-    state: mysqlEnum("state", ["published", "draft", "expired"]).default(
-      "draft",
-    ),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at"),
+    state: varchar("state", {
+      length: 100,
+      enum: ["published", "draft", "expired"],
+    }).default("draft"),
   },
   (table) => {
     return {
       orgIdIdx: index("org_id_idx").on(table.orgId),
-      garagesId: primaryKey(table.id),
     };
   },
 );
 
-export const models = mysqlTable(
+export const models = pgTable(
   "models",
   {
-    id: int("id").autoincrement().notNull(),
+    id: serial("id").notNull().primaryKey(),
     name: varchar("name", { length: 255 }).notNull(),
-    brandId: int("brand_id").notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    year: int("year"),
+    brandId: integer("brand_id")
+      .notNull()
+      .references(() => brands.id),
+    createdAt: timestamp("created_at").defaultNow(),
+    year: integer("year"),
   },
   (table) => {
     return {
-      modelsId: primaryKey(table.id),
       modelsNameYearUnique: unique("models_name_year_unique").on(
         table.name,
         table.year,

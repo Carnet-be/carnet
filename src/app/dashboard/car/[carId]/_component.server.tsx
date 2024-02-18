@@ -5,13 +5,16 @@
 
 import { auth, clerkClient } from "@clerk/nextjs";
 import cx from "classnames";
-import { Mail, PhoneCall } from "lucide-react";
 import Image from "next/image";
 import Map from "~/app/_components/ui/map";
 import { api } from "~/trpc/server";
 import { type RouterOutputs } from "~/trpc/shared";
-import { getCarImage } from "~/utils/function";
-import { BidSection, ContentCarPage } from "./_components";
+import {
+  BidSection,
+  ContactSection,
+  ContentCarPage,
+  ImagesSection,
+} from "./_components";
 export default async function CarPage({ params }: any) {
   const carId: number = parseInt(params.carId!);
   const car = await api.car.getCarById.query(carId);
@@ -28,17 +31,16 @@ export default async function CarPage({ params }: any) {
   );
 }
 
-const LeftSide = ({ car }: { car: RouterOutputs["car"]["getCarById"]; }) => {
+const LeftSide = ({ car }: { car: RouterOutputs["car"]["getCarById"] }) => {
+  console.log("car", car);
   return (
     <div className="flex  w-full flex-grow flex-col gap-3 lg:w-[57%]">
-      <div className="relative flex aspect-[3/2] w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-white">
-        <Image
-          src={getCarImage(car.images[0]?.key)}
-          alt="photo"
-          layout="fill"
-          objectFit="cover"
-        />
-      </div>
+      <ImagesSection
+        images={
+          (car.images?.map((t) => (t as any)?.key) as string[] | undefined) ??
+          []
+        }
+      />
       <div className="py-2"></div>
       <ContentCarPage car={car} />
     </div>
@@ -166,18 +168,7 @@ const RightSide = async ({
             />
             <span className="font-bold">{org.name}</span>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex w-[50px] items-center justify-center">
-              <PhoneCall size={20} />
-            </div>
-            <span className="">00 1243 654 789</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex w-[50px] items-center justify-center">
-              <Mail size={20} />
-            </div>
-            <span className="">nima.contact@gmail.com</span>
-          </div>
+          <ContactSection />
         </div>
       ) : (
         <BidSection car={car} />

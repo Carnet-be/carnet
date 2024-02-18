@@ -236,7 +236,7 @@ const Step6 = ({
                     <div className="space-y-1">
                       <span className="text-sm">Duration</span>
                       <div className="flex flex-wrap gap-3">
-                        {["3d", "7d", "14d", "30d"].map((v) => {
+                        {["3d", "7d", "14d"].map((v) => {
                           const selected = v == value;
                           const day = parseInt(v.replace("d", ""));
                           const isDisabled = day > 3;

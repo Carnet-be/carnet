@@ -5,6 +5,7 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 import {
   and,
+  desc,
   eq,
   getTableColumns,
   gt,
@@ -17,6 +18,7 @@ import { TRPCClientError } from "@trpc/client";
 import { z } from "zod";
 
 import { TRPCError } from "@trpc/server";
+import { objArray } from "~/utils/dbUtils";
 import {
   assets,
   biddings,
@@ -217,15 +219,24 @@ const addCar = protectedProcedure
         tires,
         color: color ?? null,
       };
-      const car = await trx.insert(cars).values(carData);
+      const car = await trx
+        .insert(cars)
+        .values(carData)
+        .returning({ id: cars.id })
+        .then((res) => res[0]);
+      if (!car)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Car not created",
+        });
       if (options.length > 0)
         await trx.insert(carToOption).values(
           options.map((opt) => ({
-            carId: parseInt(car.insertId),
+            carId: car.id,
             optionId: opt,
           })),
         );
-      return parseInt(car.insertId);
+      return car.id;
     });
   });
 const updateCar = protectedProcedure
@@ -261,7 +272,7 @@ const updateCar = protectedProcedure
           code: "NOT_FOUND",
           message: "Brand and Model not found",
         });
-      const car = await trx
+      await trx
         .update(cars)
         .set({
           ...step1,
@@ -277,6 +288,7 @@ const updateCar = protectedProcedure
           inRange: input.step6.inRange,
           doors: doors ? parseInt(doors as string) : null,
           lat,
+          year,
           lon,
           name: `${name?.brandName} ${name?.modelName} ${name?.year}`,
         })
@@ -290,7 +302,7 @@ const updateCar = protectedProcedure
           })),
         );
 
-      return parseInt(car.insertId);
+      return cars.id;
     });
   });
 const addAssets = protectedProcedure
@@ -322,9 +334,10 @@ const getCars = protectedProcedure.query(async ({ ctx }) => {
   const result = await db
     .select({
       ...getTableColumns(cars),
-      images: sql<
-        InferSelectModel<typeof assets>[]
-      >`IF(COUNT(${assets.id}) = 0, JSON_ARRAY(), json_arrayagg(json_object('id',${assets.id},'key',${assets.key})))`,
+      images: objArray<InferSelectModel<typeof assets>[]>({
+        table: assets,
+        id: assets.id,
+      }),
 
       brand: brands,
       model: models,
@@ -337,7 +350,7 @@ const getCars = protectedProcedure.query(async ({ ctx }) => {
     .leftJoin(models, eq(cars.modelId, models.id))
     .leftJoin(colors, eq(cars.color, colors.id))
     .leftJoin(bodies, eq(cars.bodyId, bodies.id))
-    .groupBy(() => [cars.id]);
+    .groupBy(() => [cars.id, brands.id, models.id, bodies.id, colors.id]);
 
   console.log("result", result);
   return result;
@@ -351,17 +364,19 @@ const getCarById = publicProcedure
     const [result] = await db
       .select({
         ...getTableColumns(cars),
-        images: sql<
-          InferSelectModel<typeof assets>[]
-        >`IF(COUNT(${assets.id}) = 0, JSON_ARRAY(), json_arrayagg(json_object('id',${assets.id},'key',${assets.key}))) AS images`,
+        images: objArray({
+          table: assets,
+          id: assets.id,
+        }),
 
         brand: brands,
         model: models,
         body: bodies,
         color: colors,
-        options: sql<
-          InferSelectModel<typeof carOptions>[]
-        >`IF(COUNT(${carOptions.id}) = 0, JSON_ARRAY(),json_arrayagg(json_object('id',${carOptions.id},'name',${carOptions.name}))) AS options`,
+        options: objArray<InferSelectModel<typeof carOptions>[]>({
+          table: carOptions,
+          id: carOptions.id,
+        }),
       })
       .from(cars)
       .leftJoin(assets, eq(cars.id, assets.ref))
@@ -372,35 +387,17 @@ const getCarById = publicProcedure
       .leftJoin(colors, eq(cars.color, colors.id))
       .leftJoin(bodies, eq(cars.bodyId, bodies.id))
       .where(eq(cars.id, input))
-      .groupBy(() => [cars.id]);
+      .groupBy(() => [cars.id, brands.id, models.id, bodies.id, colors.id]);
     if (!result) new TRPCClientError("Car not found");
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     // image without duplicates
-    const images =
-      result?.images.reduce(
-        (acc, curr) => {
-          if (!acc.find((img) => img.id === curr.id)) acc.push(curr);
-          return acc;
-        },
-        [] as InferSelectModel<typeof assets>[],
-      ) ?? [];
-    const options =
-      result?.options.reduce(
-        (acc, curr) => {
-          if (!acc.find((opt) => opt.id === curr.id)) acc.push(curr);
-          return acc;
-        },
-        [] as InferSelectModel<typeof carOptions>[],
-      ) ?? [];
 
     return {
       ...result,
-      images,
-      options,
     };
   });
 
-const getMyCars = protectedProcedure.query(async ({ ctx, input }) => {
+const getMyCars = protectedProcedure.query(async ({ ctx }) => {
   const { db, auth } = ctx;
   const id = auth.orgId ?? auth.userId;
 
@@ -409,9 +406,10 @@ const getMyCars = protectedProcedure.query(async ({ ctx, input }) => {
   const result = await db
     .select({
       ...getTableColumns(cars),
-      images: sql<
-        InferSelectModel<typeof assets>[]
-      >`IF(COUNT(${assets.id}) = 0, JSON_ARRAY(), json_arrayagg(json_object('id',${assets.id},'key',${assets.key})))`,
+      images: objArray<InferSelectModel<typeof assets>[]>({
+        table: assets,
+        id: assets.id,
+      }),
 
       brand: brands,
       model: models,
@@ -423,7 +421,7 @@ const getMyCars = protectedProcedure.query(async ({ ctx, input }) => {
     .leftJoin(models, eq(cars.modelId, models.id))
     .leftJoin(bodies, eq(cars.bodyId, bodies.id))
     .where(eq(cars.belongsTo, id))
-    .groupBy(() => [cars.id]);
+    .groupBy(() => [cars.id, brands.id, models.id, bodies.id]);
 
   return result;
 });
@@ -433,12 +431,11 @@ const getBidsCount = protectedProcedure
   .query(async ({ ctx, input }) => {
     return ctx.db
       .select({
-        count: sql<number>`COUNT(${biddings.id})`,
-        maxAmount: sql<number>`MAX(${biddings.amount})`,
+        ...getTableColumns(biddings),
       })
       .from(biddings)
       .where(eq(biddings.carId, input))
-      .then((res) => res?.[0]);
+      .orderBy(desc(biddings.id));
   });
 
 const addBid = protectedProcedure

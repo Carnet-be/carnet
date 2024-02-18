@@ -5,7 +5,7 @@ import { env } from "~/env.mjs";
 export default {
   schema: "./src/server/db/schema.ts",
   out: "./drizzle",
-  driver: "mysql2",
+  driver: "pg",
   dbCredentials: {
     connectionString: env.DATABASE_URL,
   },

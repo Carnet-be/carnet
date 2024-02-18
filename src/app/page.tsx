@@ -9,6 +9,7 @@ import {
   Pricing,
   Services,
 } from "./_components";
+import { SearchButton } from "./_components.client";
 import Logo from "./_components/ui/logo";
 
 export const metadata: Metadata = {
@@ -114,12 +115,13 @@ export default function Page() {
                   </p>
                   <ul className="flex flex-wrap items-center">
                     <li>
-                      <a
+                      {/* <a
                         href="javascript:void(0)"
                         className="hover:bg-blue-dark inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-center text-base font-medium text-white lg:px-7"
                       >
                         Get Started
-                      </a>
+                      </a> */}
+                      <SearchButton />
                     </li>
                   </ul>
                   {/* <div className="clients pt-16">
@@ -200,8 +202,9 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <About />
       <CarSection />
+      <About />
+
       <Services />
       <Blog />
       <Pricing />

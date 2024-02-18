@@ -9,17 +9,21 @@ import {
   Input,
   Skeleton,
 } from "@nextui-org/react";
+import { Mail, PhoneCall } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { MdVisibility } from "react-icons/md";
 import { useInterval } from "usehooks-ts";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import { z } from "zod";
 import RatingStar from "~/app/_components/ui/ratingStar";
 import useDate from "~/hooks/use-date";
 import { api } from "~/trpc/react";
 import { type RouterOutputs } from "~/trpc/shared";
-import { priceFormatter } from "~/utils/function";
-
+import { getCarImage, priceFormatter } from "~/utils/function";
 export function ContentCarPage({
   car,
 }: {
@@ -155,12 +159,25 @@ export const BidSection = ({
     isLoading: gettingBids,
     refetch,
   } = api.car.getBidsCount.useQuery(car.id!);
+  const getMaxBid = () => {
+    let maxBid: RouterOutputs["car"]["getBidsCount"][number] | undefined =
+      undefined;
+    if (bids === undefined) {
+      return maxBid;
+    }
+    for (let i = 0; i < bids!.length; i++) {
+      if (maxBid === undefined || maxBid?.amount < bids[i]!.amount) {
+        maxBid = bids[i];
+      }
+    }
+    return maxBid;
+  };
   const bidSchema = z.object({
     amount: z
       .number({
         required_error: "Please enter a valid amount",
       })
-      .min((bids?.maxAmount ?? car.startingPrice ?? 0) + 100, {
+      .min((getMaxBid()?.amount ?? car.startingPrice ?? 0) + 100, {
         message: "Minimum bid is 100€ more than the current bid",
       }),
   });
@@ -203,7 +220,9 @@ export const BidSection = ({
           {gettingBids ? (
             <Skeleton className="h-[20px] w-[40px] rounded-md" />
           ) : (
-            <span className="font-semibold text-black">{bids?.count ?? 0}</span>
+            <span className="font-semibold text-black">
+              {bids?.length ?? 0}
+            </span>
           )}
           <span className="text-[12px] text-gray-500">Active bid</span>
         </div>
@@ -212,7 +231,9 @@ export const BidSection = ({
             <Skeleton className="h-[20px] w-[40px] rounded-md" />
           ) : (
             <span className="font-semibold text-black">
-              {priceFormatter.format(bids?.maxAmount ?? car.startingPrice ?? 0)}
+              {priceFormatter.format(
+                getMaxBid()?.amount ?? car.startingPrice ?? 0,
+              )}
             </span>
           )}
           <span className="text-[12px] text-gray-500">Current bid</span>
@@ -241,7 +262,7 @@ export const BidSection = ({
                 }}
                 variant="bordered"
                 label={`Entrer your bid (Minimum ${priceFormatter.format(
-                  (bids?.maxAmount ?? car.startingPrice ?? 0) + 100,
+                  (getMaxBid()?.amount ?? car.startingPrice ?? 0) + 100,
                 )})`}
               />
             )}
@@ -265,6 +286,96 @@ export const BidSection = ({
           {formState.errors.amount?.message ?? formState.errors.amount?.message}
         </span>
       </div>
+      <div className="flex max-h-[400px]  flex-col items-center justify-between gap-4 overflow-y-scroll rounded-md bg-gray-100 p-3">
+        {bids?.map((bid, i) => {
+          const num = bids?.length - i;
+          return (
+            <div
+              key={i}
+              className="flex w-full flex-row items-center justify-between"
+            >
+              <div className="flex flex-row items-center gap-2">
+                <div className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-primary text-sm text-white">
+                  {num}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-gray-500">
+                    #{bid?.id}
+                  </span>
+                  <span className="text-[12px] text-gray-500">
+                    {dayjs(bid?.createdAt).fromNow()}
+                  </span>
+                </div>
+              </div>
+              <span className="font-semibold text-black">
+                {priceFormatter.format(bid?.amount)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export const ContactSection = () => {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <div className="flex items-center gap-3">
+        <div className="flex w-[50px] items-center justify-center">
+          <PhoneCall size={20} />
+        </div>
+        <span className="">00 1243 654 789</span>
+      </div>
+      <div className="flex items-center gap-3">
+        <div className="flex w-[50px] items-center justify-center">
+          <Mail size={20} />
+        </div>
+        <span className="">nima.contact@gmail.com</span>
+      </div>
+      {!show && (
+        <div
+          onClick={() => {
+            setShow(true);
+          }}
+          className="absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center gap-2 backdrop-blur-md"
+        >
+          <MdVisibility className="text-lg" />
+          Show contact
+        </div>
+      )}
+    </div>
+  );
+};
+
+export const ImagesSection = ({ images }: { images: string[] }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div>
+      <div className="relative flex aspect-[3/2] w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border bg-white">
+        <Image
+          onClick={() => setOpen(true)}
+          src={getCarImage(images[0])}
+          alt="photo"
+          layout="fill"
+          objectFit="cover"
+        />
+        <div className="absolute left-3 top-3">
+          <span className="rounded-md bg-primary p-1 px-2 text-white">
+            {images.length} photos
+          </span>
+        </div>
+      </div>
+      <Lightbox
+        open={open}
+        close={() => setOpen(false)}
+        slides={images.map((img) => {
+          return {
+            src: getCarImage(img),
+          };
+        })}
+      />
     </div>
   );
 };
