@@ -30,7 +30,7 @@ export default function Error({
             Something went wrong. Please try again later.
           </div>
           <Button onClick={reset} className="mt-8">
-            Reload
+            Reload page
           </Button>
         </div>
       </div>
