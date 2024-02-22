@@ -39,11 +39,16 @@ export const garageRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const insert = await ctx.db.insert(garages).values({
-        orgId: input.orgId,
-        about: "Welcome to our garage",
-      });
-      return insert.insertId;
+      const insert = await ctx.db
+        .insert(garages)
+        .values({
+          orgId: input.orgId,
+          about: "Welcome to our garage",
+        })
+        .returning({ id: garages.id })
+        .then((res) => res[0]);
+
+      return insert?.id;
     }),
   updateGarage: protectedProcedure
     .input(
@@ -59,6 +64,6 @@ export const garageRouter = createTRPCRouter({
         .update(garages)
         .set(input)
         .where(eq(garages.id, input.id));
-      return update.rowsAffected;
+      return update.rows;
     }),
 });

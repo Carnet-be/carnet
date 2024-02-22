@@ -71,14 +71,14 @@ export function ContentCarPage({
       </Card>
 
       <Card shadow="none">
-        {car.options.length != 0 && (
+        {car?.options?.length != 0 && (
           <CardHeader>
             <span className="min-w-[100px]">Options : </span>
           </CardHeader>
         )}
         <CardBody>
           <div className="flex flex-wrap gap-3">
-            {car.options.map((k) => {
+            {car?.options?.map((k) => {
               return (
                 <div
                   key={k.id}
@@ -88,7 +88,7 @@ export function ContentCarPage({
                 </div>
               );
             })}
-            {car.options.length == 0 && (
+            {car?.options?.length == 0 && (
               <div className="text-center font-light opacity-50">
                 No options !
               </div>

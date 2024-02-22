@@ -334,7 +334,7 @@ const getCars = protectedProcedure.query(async ({ ctx }) => {
   const result = await db
     .select({
       ...getTableColumns(cars),
-      images: objArray<InferSelectModel<typeof assets>[]>({
+      images: objArray<InferSelectModel<typeof assets>>({
         table: assets,
         id: assets.id,
       }),
@@ -364,7 +364,7 @@ const getCarById = publicProcedure
     const [result] = await db
       .select({
         ...getTableColumns(cars),
-        images: objArray({
+        images: objArray<InferInsertModel<typeof assets>>({
           table: assets,
           id: assets.id,
         }),
@@ -373,7 +373,7 @@ const getCarById = publicProcedure
         model: models,
         body: bodies,
         color: colors,
-        options: objArray<InferSelectModel<typeof carOptions>[]>({
+        options: objArray<InferSelectModel<typeof carOptions>>({
           table: carOptions,
           id: carOptions.id,
         }),
@@ -406,7 +406,7 @@ const getMyCars = protectedProcedure.query(async ({ ctx }) => {
   const result = await db
     .select({
       ...getTableColumns(cars),
-      images: objArray<InferSelectModel<typeof assets>[]>({
+      images: objArray<InferSelectModel<typeof assets>>({
         table: assets,
         id: assets.id,
       }),

@@ -58,7 +58,7 @@ const NewCarPage = ({
       version: car?.version ?? undefined,
     },
     step3: {
-      options: car?.options.map((k) => k.id) ?? [],
+      options: car?.options?.map((k) => (k as any).id) ?? [],
     },
     step4: {
       handling: car?.handling ?? undefined,
@@ -67,7 +67,7 @@ const NewCarPage = ({
       interior: car?.interior ?? undefined,
     },
     step5: {
-      images: car?.images?.map((k) => k.key) ?? [],
+      images: car?.images?.map((k) => (k as any).key) ?? [],
     },
     step6: {
       //duration: "3d",
