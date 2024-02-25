@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,11 +8,12 @@ import {
   CardBody,
   CardHeader,
   Input,
+  ScrollShadow,
   Skeleton,
 } from "@nextui-org/react";
-import { Mail, PhoneCall } from "lucide-react";
+import { ChevronLeft, ChevronRight, Mail, PhoneCall } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { MdVisibility } from "react-icons/md";
@@ -148,10 +150,10 @@ export const BidSection = ({
   const formatTime = (time: number) => {
     const day = Math.floor(time / (1000 * 60 * 60 * 24));
     const hour = Math.floor((time / (1000 * 60 * 60)) % 24);
-    // const min = Math.floor((time / (1000 * 60)) % 60);
-    // const sec = Math.floor((time / 1000) % 60);
-    //return `${day}d ${hour}h ${min}m ${sec}s`;
-    return `${day}d ${hour}h`;
+    const min = Math.floor((time / (1000 * 60)) % 60);
+    const sec = Math.floor((time / 1000) % 60);
+    return `${day}d ${hour}h ${min}m ${sec}s`;
+    // return `${day}d ${hour}h`;
   };
   const { dayjs } = useDate();
   const {
@@ -203,13 +205,13 @@ export const BidSection = ({
   );
   return (
     <div className="space-y-4 py-7">
+      <div className="flex flex-col items-center justify-center">
+        <span className="text-xl font-semibold text-primary">
+          {formatTime(timeLeft)}
+        </span>
+        <span className="text-[12px] text-gray-500">Time left</span>
+      </div>
       <div className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-gray-100 p-3">
-        <div className="flex flex-col items-center justify-center">
-          <span className="font-semibold text-black">
-            {formatTime(timeLeft)}
-          </span>
-          <span className="text-[12px] text-gray-500">Time left</span>
-        </div>
         <div className="flex flex-col items-center justify-center">
           <span className="font-semibold text-black">
             {dayjs(car.endedAt).format("MMM DD, LT")}
@@ -239,6 +241,7 @@ export const BidSection = ({
           <span className="text-[12px] text-gray-500">Current bid</span>
         </div>
       </div>
+
       <div>
         <div className="flex items-end gap-3 pt-3">
           <Controller
@@ -351,11 +354,24 @@ export const ContactSection = () => {
 
 export const ImagesSection = ({ images }: { images: string[] }) => {
   const [open, setOpen] = useState(false);
+  const carousel = useRef<HTMLDivElement | null>(null);
+  const [imgs, setImgs] = useState<string[]>([]);
+  const onSelectImg = (img?: string) => {
+    const ims = images.filter((i) => i !== img);
+    setImgs([img ?? "", ...ims]);
+  };
+  const onClose = () => {
+    setImgs([]);
+  };
+  const next = () =>
+    (carousel.current as any)?.scrollBy({ left: 300, behavior: "smooth" });
+  const prev = () =>
+    (carousel.current as any)?.scrollBy({ left: -300, behavior: "smooth" });
   return (
     <div>
       <div className="relative flex aspect-[3/2] w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border bg-white">
         <Image
-          onClick={() => setOpen(true)}
+          onClick={() => onSelectImg(images[0])}
           src={getCarImage(images[0])}
           alt="photo"
           layout="fill"
@@ -367,10 +383,41 @@ export const ImagesSection = ({ images }: { images: string[] }) => {
           </span>
         </div>
       </div>
+      <div className="flex flex-row items-center gap-2 py-3">
+        <Button variant={"light"} isIconOnly onClick={prev}>
+          <ChevronLeft />
+        </Button>
+        <ScrollShadow
+          orientation="horizontal"
+          ref={carousel}
+          className="flex flex-grow flex-row gap-3 overflow-hidden"
+        >
+          {images.slice(1, images.length - 1).map((img, i) => {
+            return (
+              <div
+                key={i}
+                onClick={() => onSelectImg(img)}
+                className="relative flex aspect-[1/1] h-[120px] min-w-[140px] cursor-pointer cursor-pointer overflow-hidden rounded-lg border bg-white "
+              >
+                <Image
+                  onClick={() => setOpen(true)}
+                  src={getCarImage(img)}
+                  alt="photo"
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </div>
+            );
+          })}
+        </ScrollShadow>
+        <Button variant={"light"} isIconOnly onClick={next}>
+          <ChevronRight />
+        </Button>
+      </div>
       <Lightbox
-        open={open}
-        close={() => setOpen(false)}
-        slides={images.map((img) => {
+        open={imgs.length > 0}
+        close={onClose}
+        slides={imgs.map((img) => {
           return {
             src: getCarImage(img),
           };

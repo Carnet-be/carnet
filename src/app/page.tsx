@@ -2,7 +2,6 @@ import { type Metadata } from "next";
 import Image from "next/image";
 import {
   About,
-  Blog,
   CarSection,
   Contact,
   Footer,
@@ -59,14 +58,14 @@ export default function Page() {
                         Cars
                       </a>
                     </li>
-                    <li>
+                    {/* <li>
                       <a
                         href="#blogs"
                         className="text-dark flex py-2 text-base font-medium hover:text-primary dark:text-white lg:ml-10 lg:inline-flex"
                       >
                         Blogs
                       </a>
-                    </li>
+                    </li> */}
                     <li>
                       <a
                         href="#services"
@@ -206,7 +205,7 @@ export default function Page() {
       <About />
 
       <Services />
-      <Blog />
+      {/* <Blog /> */}
       <Pricing />
       <Contact />
       <Footer />

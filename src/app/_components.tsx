@@ -2003,7 +2003,7 @@ export const Contact = () => {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       clip-rule="evenodd"
                       d="M0 100C0 44.7715 0 0 0 0C55.2285 0 100 44.7715 100 100C100 100 100 100 0 100Z"
                       fill="#3056D3"
@@ -2976,12 +2976,14 @@ export const CarSection = () => {
                 <span className="mb-2 block text-sm font-medium text-primary">
                   BMW 2020
                 </span>
-                <h3 className="text-dark mb-5 text-xl font-bold dark:text-white">
+                <h3 className="text-dark text-xl font-bold dark:text-white">
                   {priceFormatter.format(200000)}
                 </h3>
+                <p>100 KM</p>
+
                 <a
                   href="/dashboard/car/1"
-                  className="border-stroke text-body-color dark:border-dark-3 dark:text-dark-6 inline-block rounded-md border px-7 py-[10px] text-sm font-medium transition hover:border-primary hover:bg-primary hover:text-white"
+                  className="border-stroke text-body-color dark:border-dark-3 dark:text-dark-6 mt-3 inline-block rounded-md border px-7 py-[10px] text-sm font-medium transition hover:border-primary hover:bg-primary hover:text-white"
                 >
                   View Details
                 </a>
@@ -3189,7 +3191,7 @@ export const Services = () => {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     clip-rule="evenodd"
                     d="M9.89195 14.625C10.9995 10.1252 13.769 7.875 18.1996 7.875C24.8458 7.875 25.6765 12.9375 28.9996 13.7812C31.2151 14.3439 33.1535 13.5002 34.815 11.25C33.7075 15.7498 30.9379 18 26.5073 18C19.8611 18 19.0304 12.9375 15.7073 12.0938C13.4918 11.5311 11.5535 12.3748 9.89195 14.625ZM1.58423 24.75C2.69174 20.2502 5.46132 18 9.89195 18C16.5381 18 17.3689 23.0625 20.692 23.9062C22.9075 24.4689 24.8458 23.6252 26.5073 21.375C25.3998 25.8748 22.6302 28.125 18.1996 28.125C11.5535 28.125 10.7227 23.0625 7.39963 22.2188C5.18405 21.6561 3.24576 22.4998 1.58423 24.75Z"
                     fill="white"

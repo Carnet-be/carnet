@@ -394,6 +394,7 @@ const getCarById = publicProcedure
 
     return {
       ...result,
+      images: [...new Set(result!.images)],
     };
   });
 
