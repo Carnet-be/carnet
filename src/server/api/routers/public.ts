@@ -75,7 +75,9 @@ export const publicRouter = createTRPCRouter({
       cities: cties,
       carOptions: opts,
       brands: brds,
-      ...groupModelYear(modelsData),
+      //  ...groupModelYear(modelsData),
+      models: [],
+      years: [],
       bodies: bdy,
       colors: clors,
     };
