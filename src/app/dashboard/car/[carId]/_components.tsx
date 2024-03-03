@@ -392,7 +392,7 @@ export const ImagesSection = ({ images }: { images: string[] }) => {
           ref={carousel}
           className="flex flex-grow flex-row gap-3 overflow-hidden"
         >
-          {images.slice(1, images.length - 1).map((img, i) => {
+          {images.slice(1, images.length).map((img, i) => {
             return (
               <div
                 key={i}

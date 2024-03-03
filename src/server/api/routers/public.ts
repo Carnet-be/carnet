@@ -61,24 +61,23 @@ const groupModelYear = (data: InferSelectModel<typeof models>[]) => {
 };
 export const publicRouter = createTRPCRouter({
   presignedUrl,
-  carData: publicProcedure.query(({ ctx }) => {
-    return ctx.db.transaction(async (trx) => {
-      const ctries = await trx.select().from(countries).orderBy(countries.name);
-      const cties = await trx.select().from(cities).orderBy(cities.name);
-      const opts = await trx.select().from(carOptions).orderBy(carOptions.name);
-      const brds = await trx.select().from(brands).orderBy(brands.name);
-      const modelsData = await trx.select().from(models).orderBy(models.name);
-      const bdy = await trx.select().from(bodies);
-      const clors = await trx.select().from(colors).orderBy(colors.id);
-      return {
-        countries: ctries,
-        cities: cties,
-        carOptions: opts,
-        brands: brds,
-        ...groupModelYear(modelsData),
-        bodies: bdy,
-        colors: clors,
-      };
-    });
+  carData: publicProcedure.query(async ({ ctx }) => {
+    const trx = ctx.db;
+    const ctries = await trx.select().from(countries).orderBy(countries.name);
+    const cties = await trx.select().from(cities).orderBy(cities.name);
+    const opts = await trx.select().from(carOptions).orderBy(carOptions.name);
+    const brds = await trx.select().from(brands).orderBy(brands.name);
+    const modelsData = await trx.select().from(models).orderBy(models.name);
+    const bdy = await trx.select().from(bodies);
+    const clors = await trx.select().from(colors).orderBy(colors.id);
+    return {
+      countries: ctries,
+      cities: cties,
+      carOptions: opts,
+      brands: brds,
+      ...groupModelYear(modelsData),
+      bodies: bdy,
+      colors: clors,
+    };
   }),
 });

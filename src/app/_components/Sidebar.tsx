@@ -1,12 +1,11 @@
 "use client";
 import { Button } from "@nextui-org/react";
-import { CarFront, Heart, Home, LucideDatabase, Users2 } from "lucide-react";
+import { CarFront, Heart, Home, LucideDatabase } from "lucide-react";
 import Link from "next/link";
 import { AiFillCar } from "react-icons/ai";
 import { BiRightArrow } from "react-icons/bi";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { RiAuctionLine } from "react-icons/ri";
-import { TbPremiumRights } from "react-icons/tb";
 import useIsAdmin from "~/hooks/use-is-admin";
 import MenuItem, { type TMenuItem } from "./MenuItem";
 import { GarageIcon } from "./icons";
@@ -24,11 +23,11 @@ const Sidebar = () => {
       icon: <CarFront size={20} />,
       route: "/dashboard/admin/cars",
     },
-    {
-      label: "Users",
-      icon: <Users2 size={20} />,
-      route: "/dashboard/admin/users",
-    },
+    // {
+    //   label: "Users",
+    //   icon: <Users2 size={20} />,
+    //   route: "/dashboard/admin/users",
+    // },
     {
       label: "Garages",
       icon: <GarageIcon size={20} />,
@@ -40,11 +39,11 @@ const Sidebar = () => {
       icon: <IoChatbubblesOutline size={20} />,
       route: "/dashboard/admin/chat",
     },
-    {
-      label: "Subscriptions",
-      icon: <TbPremiumRights size={20} />,
-      route: "/dashboard/admin/subscriptions",
-    },
+    // {
+    //   label: "Subscriptions",
+    //   icon: <TbPremiumRights size={20} />,
+    //   route: "/dashboard/admin/subscriptions",
+    // },
     {
       label: "Data",
       icon: <LucideDatabase size={20} />,

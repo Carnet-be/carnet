@@ -1,7 +1,15 @@
-import { and, eq, getTableColumns, ilike, sql } from "drizzle-orm";
+import {
+  and,
+  eq,
+  getTableColumns,
+  ilike,
+  sql,
+  type InferSelectModel,
+} from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { objArray } from "~/utils/dbUtils";
 import { assets, brands, cars, models } from "../../../db/schema";
 
 const filterSchema = z.object({
@@ -125,9 +133,10 @@ export const boCarsRouter = createTRPCRouter({
       const result = await ctx.db
         .select({
           ...getTableColumns(cars),
-          images: sql<
-            { id: number; key: string }[]
-          >`IF(COUNT(${assets.id}) = 0, JSON_ARRAY(), json_arrayagg(json_object('id',${assets.id},'key',${assets.key})))`,
+          images: objArray<InferSelectModel<typeof assets>>({
+            table: assets,
+            id: assets.id,
+          }),
         })
         .from(cars)
         .leftJoin(assets, eq(cars.id, assets.ref))
