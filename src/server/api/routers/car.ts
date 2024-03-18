@@ -350,7 +350,8 @@ const getCars = protectedProcedure.query(async ({ ctx }) => {
     .leftJoin(models, eq(cars.modelId, models.id))
     .leftJoin(colors, eq(cars.color, colors.id))
     .leftJoin(bodies, eq(cars.bodyId, bodies.id))
-    .groupBy(() => [cars.id, brands.id, models.id, bodies.id, colors.id]);
+    .groupBy(() => [cars.id, brands.id, models.id, bodies.id, colors.id])
+    .where(eq(cars.status, "published"));
 
   console.log("result", result);
   return result;
@@ -492,16 +493,18 @@ const getMyBids = protectedProcedure.query(async ({ ctx }) => {
       number: sql<number>`ROW_NUMBER() OVER (PARTITION BY ${biddings.carId} ORDER BY ${biddings.amount} DESC)`,
       car: {
         ...getTableColumns(cars),
-        images: sql<
-          InferSelectModel<typeof assets>[]
-        >`IF(COUNT(${assets.id}) = 0, JSON_ARRAY(), json_arrayagg(json_object('id',${assets.id},'key',${assets.key})))`,
+        images: objArray<InferSelectModel<typeof assets>>({
+          table: assets,
+          id: assets.id,
+        }),
       },
     })
     .from(biddings)
     .leftJoin(cars, eq(biddings.carId, cars.id))
     .leftJoin(assets, eq(cars.id, assets.ref))
     .where(eq(biddings.bidderId, id))
-    .groupBy(() => [biddings.id]);
+    .groupBy(() => [biddings.id, cars.id])
+    .orderBy(desc(biddings.id));
 
   return result;
 });

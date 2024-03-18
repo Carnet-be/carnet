@@ -2,5 +2,5 @@
 import CarPage from "~/app/dashboard/car/[carId]/_component.server";
 
 export default function CarPageEntreprise({ params }: any) {
-  return <CarPage params={params} />;
+  return <CarPage params={params} view={"admin"} />;
 }

@@ -3,9 +3,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { auth, clerkClient } from "@clerk/nextjs";
+import { clerkClient } from "@clerk/nextjs";
 import cx from "classnames";
 import Image from "next/image";
+import BackButton from "~/app/_components/ui/backButton";
 import Map from "~/app/_components/ui/map";
 import { api } from "~/trpc/server";
 import { type RouterOutputs } from "~/trpc/shared";
@@ -15,17 +16,22 @@ import {
   ContentCarPage,
   ImagesSection,
 } from "./_components";
-export default async function CarPage({ params }: any) {
+export default async function CarPage({
+  params,
+  view = "user",
+}: {
+  params: any;
+  view?: "admin" | "owner" | "user";
+}) {
   const carId: number = parseInt(params.carId!);
   const car = await api.car.getCarById.query(carId);
-  const user = auth();
-  const mine = car.belongsTo === user?.orgId || car.belongsTo === user?.userId;
-  console.log("car", car);
+
   return (
     <div>
+      <BackButton />
       <div className="mb-10 flex flex-wrap justify-center gap-6">
         <LeftSide car={car} />
-        <RightSide car={car} mine={mine} />
+        <RightSide car={car} />
       </div>
     </div>
   );
@@ -49,14 +55,30 @@ const LeftSide = ({ car }: { car: RouterOutputs["car"]["getCarById"] }) => {
 
 const RightSide = async ({
   car,
-  mine = false,
 }: {
   car: RouterOutputs["car"]["getCarById"];
   mine?: boolean;
 }) => {
-  const org = await clerkClient.organizations.getOrganization({
-    organizationId: car.belongsTo!,
-  });
+  console.log("car", car);
+  let img: string | undefined = undefined;
+  let name: string | undefined = undefined;
+
+  try {
+    if (car.belongsTo!.startsWith("user")) {
+      const user = await clerkClient.users.getUser(car.belongsTo!);
+      img = user?.imageUrl;
+      name = user?.firstName + " " + user?.lastName;
+    } else {
+      const org = await clerkClient.organizations.getOrganization({
+        organizationId: car.belongsTo!,
+      });
+      img = org?.imageUrl;
+      name = org?.name;
+    }
+  } catch (error) {
+    console.error("error", error);
+  }
+
   return (
     <div className=" w-full lg:w-[40%] ">
       <div className="w-full space-y-4 rounded-xl bg-white p-3">
@@ -159,14 +181,16 @@ const RightSide = async ({
         <div className="mt-5 flex flex-col gap-2 rounded-lg bg-primary p-4 text-white">
           <span>Contact the owner of the car to buy it</span>
           <div className="flex items-center gap-3">
-            <Image
-              src={org.imageUrl}
-              alt="logo"
-              width={50}
-              height={50}
-              className="rounded-full"
-            />
-            <span className="font-bold">{org.name}</span>
+            {img && (
+              <Image
+                src={img}
+                alt="logo"
+                width={50}
+                height={50}
+                className="rounded-full"
+              />
+            )}
+            <span className="font-bold">{name}</span>
           </div>
           <ContactSection />
         </div>

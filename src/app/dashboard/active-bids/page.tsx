@@ -81,7 +81,7 @@ export default function CarPageEntreprise() {
         <TableBody
           loadingState={isError ? "error" : isLoading ? "loading" : undefined}
           loadingContent={<Spinner />}
-          emptyContent={"No cars found"}
+          emptyContent={isLoading ? " " : "No bids found"}
           items={rows ?? []}
         >
           {(item) => (

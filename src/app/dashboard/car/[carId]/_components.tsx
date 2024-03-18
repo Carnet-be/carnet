@@ -65,7 +65,7 @@ export function ContentCarPage({
         <CardBody>
           <p className="whitespace-pre-line">{car.description}</p>
           {!car.description && (
-            <div className="text-center font-light opacity-50">
+            <div className="text-left font-light opacity-50">
               No description
             </div>
           )}
@@ -102,7 +102,7 @@ export function ContentCarPage({
       <Card shadow="none">
         {rating.filter((r) => !!r.rate).length != 0 && (
           <CardHeader>
-            <span className="min-w-[100px]">Rating : </span>
+            <span className="min-w-[100px] ">Rating : </span>
           </CardHeader>
         )}
         <CardBody>
@@ -118,7 +118,7 @@ export function ContentCarPage({
               );
             })}
           {rating.filter((r) => !!r.rate).length == 0 && (
-            <div className="text-center font-light opacity-50">No rating !</div>
+            <div className="text-left font-light opacity-50">No rating !</div>
           )}
         </CardBody>
       </Card>
@@ -206,9 +206,15 @@ export const BidSection = ({
   return (
     <div className="space-y-4 py-7">
       <div className="flex flex-col items-center justify-center">
-        <span className="text-xl font-semibold text-primary">
-          {formatTime(timeLeft)}
-        </span>
+        {timeLeft > 0 ? (
+          <span className="text-xl font-semibold text-primary">
+            {formatTime(timeLeft)}
+          </span>
+        ) : (
+          <span className="text-xl font-semibold text-red-500">
+            Auction ended
+          </span>
+        )}
         <span className="text-[12px] text-gray-500">Time left</span>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-gray-100 p-3">
@@ -243,48 +249,53 @@ export const BidSection = ({
       </div>
 
       <div>
-        <div className="flex items-end gap-3 pt-3">
-          <Controller
-            name="amount"
-            control={control}
-            render={({ field }) => (
-              <Input
-                startContent={
-                  <div className="pointer-events-none flex items-center">
-                    <span className="text-small text-default-400">€</span>
-                  </div>
-                }
-                labelPlacement="outside"
-                type="number"
-                step={100}
-                onBlur={field.onBlur}
-                value={field.value?.toString()}
-                onChange={(v) => {
-                  console.log(v.target.value);
-                  field.onChange(parseFloat(v.target.value));
-                }}
-                variant="bordered"
-                label={`Entrer your bid (Minimum ${priceFormatter.format(
-                  (getMaxBid()?.amount ?? car.startingPrice ?? 0) + 100,
-                )})`}
-              />
-            )}
-          />
-          <Button
-            isLoading={isAddingBid}
-            onClick={async () => {
-              await trigger();
-              if (!formState.isValid) return;
-              addBid({
-                carId: car.id!,
-                amount: getValues("amount"),
-              });
-            }}
-            color="primary"
-          >
-            Place bid
-          </Button>
-        </div>
+        {timeLeft > 0 && (
+          <div className="flex items-end gap-3 pt-3">
+            <Controller
+              name="amount"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  startContent={
+                    <div className="pointer-events-none flex items-center">
+                      <span className="text-small text-default-400">€</span>
+                    </div>
+                  }
+                  labelPlacement="outside"
+                  type="number"
+                  step={100}
+                  onBlur={field.onBlur}
+                  value={field.value?.toString()}
+                  onChange={(v) => {
+                    console.log(v.target.value);
+                    field.onChange(parseFloat(v.target.value));
+                  }}
+                  variant="bordered"
+                  label={`Entrer your bid (Minimum ${priceFormatter.format(
+                    (getMaxBid()?.amount ?? car.startingPrice ?? 0) + 100,
+                  )})`}
+                />
+              )}
+            />
+            <Button
+              isLoading={isAddingBid}
+              disabled={timeLeft <= 0}
+              variant={timeLeft <= 0 ? "flat" : undefined}
+              className={timeLeft <= 0 ? "cursor-not-allowed" : ""}
+              onClick={async () => {
+                await trigger();
+                if (!formState.isValid) return;
+                addBid({
+                  carId: car.id!,
+                  amount: getValues("amount"),
+                });
+              }}
+              color="primary"
+            >
+              Place bid
+            </Button>
+          </div>
+        )}
         <span className="text-sm text-red-500">
           {formState.errors.amount?.message ?? formState.errors.amount?.message}
         </span>
@@ -354,6 +365,7 @@ export const ContactSection = () => {
 
 export const ImagesSection = ({ images }: { images: string[] }) => {
   const [open, setOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(images[0]);
   const carousel = useRef<HTMLDivElement | null>(null);
   const [imgs, setImgs] = useState<string[]>([]);
   const onSelectImg = (img?: string) => {
@@ -371,8 +383,8 @@ export const ImagesSection = ({ images }: { images: string[] }) => {
     <div>
       <div className="relative flex aspect-[3/2] w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border bg-white">
         <Image
-          onClick={() => onSelectImg(images[0])}
-          src={getCarImage(images[0])}
+          onClick={() => onSelectImg(currentImage)}
+          src={getCarImage(currentImage)}
           alt="photo"
           layout="fill"
           objectFit="cover"
@@ -392,11 +404,11 @@ export const ImagesSection = ({ images }: { images: string[] }) => {
           ref={carousel}
           className="flex flex-grow flex-row gap-3 overflow-hidden"
         >
-          {images.slice(1, images.length).map((img, i) => {
+          {images.map((img, i) => {
             return (
               <div
                 key={i}
-                onClick={() => onSelectImg(img)}
+                onClick={() => setCurrentImage(img)}
                 className="relative flex aspect-[1/1] h-[120px] min-w-[140px] cursor-pointer cursor-pointer overflow-hidden rounded-lg border bg-white "
               >
                 <Image

@@ -1,9 +1,8 @@
 "use client";
 import { Button } from "@nextui-org/react";
-import { CarFront, Heart, Home, LucideDatabase } from "lucide-react";
+import { CarFront, CrownIcon, Home, LucideDatabase } from "lucide-react";
 import Link from "next/link";
 import { AiFillCar } from "react-icons/ai";
-import { BiRightArrow } from "react-icons/bi";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { RiAuctionLine } from "react-icons/ri";
 import useIsAdmin from "~/hooks/use-is-admin";
@@ -66,11 +65,11 @@ const Sidebar = () => {
       icon: <RiAuctionLine size={20} />,
       route: "/dashboard/active-bids",
     },
-    {
-      label: "Favorites",
-      icon: <Heart size={20} />,
-      route: "/dashboard/favorites",
-    },
+    // {
+    //   label: "Favorites",
+    //   icon: <Heart size={20} />,
+    //   route: "/dashboard/favorites",
+    // },
   ];
   return (
     <aside
@@ -149,17 +148,19 @@ const Sidebar = () => {
       </div>
       <div className="absolute bottom-0 left-0 z-20 hidden w-full justify-center space-x-4 bg-white p-8 dark:bg-gray-800 lg:flex">
         <ul className="w-full space-y-2">
-          <li>
-            <Link
-              href="https://buy.stripe.com/test_5kA9DH9UXaeubracMN"
-              className="group flex items-center justify-between rounded-lg bg-gradient-to-r from-cyan-500 to-amber-500 p-2 px-2 text-xs font-semibold text-white no-underline"
-            >
-              <span className="ml-3">Try Carnet Pro</span>
-              {/* animate with motion left and right */}
+          {!admin && (
+            <li>
+              <Link
+                href="https://buy.stripe.com/test_5kA9DH9UXaeubracMN"
+                className="group flex items-center justify-between rounded-lg bg-gradient-to-r from-cyan-500 to-amber-500 p-2 px-2 text-xs font-semibold text-white no-underline"
+              >
+                <span className="ml-3">Try Carnet Pro</span>
+                {/* animate with motion left and right */}
 
-              <BiRightArrow />
-            </Link>
-          </li>
+                <CrownIcon size={20} />
+              </Link>
+            </li>
+          )}
           {/* <li>
             <Link
               href="#"

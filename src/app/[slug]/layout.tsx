@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react'
+import { NavbarPublic } from "../_components/navbarPublic";
 
 const LayoutGarage = ({ children }: any) => {
   return (
     <div>
-        {children}
+      <NavbarPublic />
+      {children}
     </div>
-  )
-}
+  );
+};
 
-export default LayoutGarage
+export default LayoutGarage;
