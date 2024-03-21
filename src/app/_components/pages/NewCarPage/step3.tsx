@@ -36,7 +36,9 @@ const Step3 = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 100 }}
       exit={{ opacity: 0.2, y: 100 }}
-      onSubmit={handleSubmit(onNext)}
+      onSubmit={handleSubmit(onNext, (e) => {
+        console.log(e);
+      })}
       className="flex w-full max-w-[700px] flex-col gap-10 md:gap-20"
     >
       <h2 className="text-center text-xl">

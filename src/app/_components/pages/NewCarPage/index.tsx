@@ -67,7 +67,11 @@ const NewCarPage = ({
       interior: car?.interior ?? undefined,
     },
     step5: {
-      images: car?.images?.map((k) => (k as any).key) ?? [],
+      images: car?.images,
+      country: car?.countryId ?? undefined,
+      city: car?.cityId ?? undefined,
+      address: car?.address ?? undefined,
+      pos: car?.lat && car?.lon ? { lat: car?.lat, lng: car?.lon } : undefined,
     },
     step6: {
       //duration: "3d",
@@ -91,7 +95,7 @@ const NewCarPage = ({
   } = useFormCarStore();
   const { mutateAsync } = api.public.presignedUrl.useMutation();
   const [images, setImages] = React.useState<Array<File | string>>(
-    car?.images?.map((k) => k.key) ?? [],
+    car?.images ?? [],
   );
 
   const next = () => setStep(step + 1);

@@ -1,5 +1,6 @@
 import {
   and,
+  desc,
   eq,
   getTableColumns,
   ilike,
@@ -22,6 +23,7 @@ const filterSchema = z.object({
     .nullable(),
   search: z.string().optional().nullable(),
   belongsTo: z.string().optional().nullable(),
+  page: z.number(),
 });
 
 export const boCarsRouter = createTRPCRouter({
@@ -89,7 +91,7 @@ export const boCarsRouter = createTRPCRouter({
     });
   }),
   getStatusCounts: protectedProcedure
-    .input(filterSchema.omit({ status: true }))
+    .input(filterSchema.omit({ status: true, page: true }))
     .query(async ({ ctx, input }) => {
       const { brand, model, type, search, belongsTo } = input;
       const where = input
@@ -120,7 +122,9 @@ export const boCarsRouter = createTRPCRouter({
   getCars: protectedProcedure
     .input(filterSchema)
     .query(async ({ ctx, input }) => {
-      const { brand, model, type, status, search } = input;
+      const { brand, model, type, status, search, page } = input;
+      const limit = 10;
+      const offset = (page - 1) * limit;
       const where = input
         ? and(
             brand ? eq(cars.brandId, Number(brand)) : undefined,
@@ -130,18 +134,33 @@ export const boCarsRouter = createTRPCRouter({
             search ? ilike(cars.name, `%${search}%`) : undefined,
           )
         : undefined;
-      const result = await ctx.db
-        .select({
-          ...getTableColumns(cars),
-          images: objArray<InferSelectModel<typeof assets>>({
-            table: assets,
-            id: assets.id,
-          }),
-        })
-        .from(cars)
-        .leftJoin(assets, eq(cars.id, assets.ref))
-        .where(where)
-        .groupBy(cars.id);
-      return result;
+      return ctx.db.transaction(async (trx) => {
+        const data = await trx
+          .select({
+            ...getTableColumns(cars),
+            images: objArray<InferSelectModel<typeof assets>>({
+              table: assets,
+              id: assets.id,
+            }),
+          })
+          .from(cars)
+          .leftJoin(assets, eq(cars.id, assets.ref))
+          .where(where)
+          .limit(limit)
+          .offset(offset)
+          .groupBy(cars.id)
+          .orderBy(desc(cars.id));
+
+        const [total] = await ctx.db
+          .select({ count: sql<number>`cast(count(*) as integer)` })
+          .from(cars)
+          .where(where);
+
+        return {
+          data,
+          pages: Math.ceil((total?.count ?? 0) / limit),
+          page,
+        };
+      });
     }),
 });

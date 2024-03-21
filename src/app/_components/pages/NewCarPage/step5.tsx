@@ -133,6 +133,9 @@ const Step5 = ({
               placeholder="Where is exactly your car located? (optional)"
               {...register("address")}
               isInvalid={!!errors.address}
+              classNames={{
+                input: ["placeholder:text-default-700/40"],
+              }}
               errorMessage={errors.address?.message}
             />
             <Input
@@ -140,6 +143,9 @@ const Step5 = ({
               placeholder="What is the zip code of your car? (optional)"
               {...register("zipCode")}
               isInvalid={!!errors.zipCode}
+              classNames={{
+                input: ["placeholder:text-default-700/40"],
+              }}
               errorMessage={errors.zipCode?.message}
             />
           </div>

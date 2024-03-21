@@ -41,12 +41,7 @@ const LeftSide = ({ car }: { car: RouterOutputs["car"]["getCarById"] }) => {
   console.log("car", car);
   return (
     <div className="flex  w-full flex-grow flex-col gap-3 lg:w-[57%]">
-      <ImagesSection
-        images={
-          (car.images?.map((t) => (t as any)?.key) as string[] | undefined) ??
-          []
-        }
-      />
+      <ImagesSection images={car.images} />
       <div className="py-2"></div>
       <ContentCarPage car={car} />
     </div>

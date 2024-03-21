@@ -7,6 +7,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Pagination,
   Spinner,
   Table,
   TableBody,
@@ -16,11 +17,10 @@ import {
   TableRow,
   getKeyValue,
 } from "@nextui-org/react";
-import { useAsyncList } from "@react-stately/data";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, type Key } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { type Key } from "react";
 import { MoreIcon } from "~/app/_components/icons";
 import useDate from "~/hooks/use-date";
 import { api } from "~/trpc/react";
@@ -54,41 +54,19 @@ const columns = [
 ];
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export default function CarPageEntreprise() {
-  const [isLoading, setIsLoading] = useState(true);
-  const utils = api.useContext();
-  const [hasMore, setPage] = useState(true);
   const { dayjs } = useDate();
   const router = useRouter();
 
-  const list = useAsyncList<
-    RouterOutputs["bo"]["garage"]["getGarages"]["result"][number],
-    number
-  >({
-    async load({ cursor }) {
-      if (cursor) {
-        setPage(true);
-      }
-
-      // If no cursor is available, then we're loading the first page.
-      // Otherwise, the cursor is the next URL to load, as returned from the previous page.
-      const res = await utils.bo.garage.getGarages.fetch({
-        page: cursor ?? 1,
-      });
-
-      if (!cursor) {
-        setIsLoading(false);
-      }
-
-      // If the response has a `nextPage` property, then we can load more.
-      setPage(!!res.nextPage);
-
-      return {
-        items: res.result,
-        cursor: res.nextPage,
-      };
-    },
+  const searchParams = useSearchParams();
+  const {
+    data: rows,
+    isError,
+    isLoading,
+    refetch,
+  } = api.bo.garage.getGarages.useQuery({
+    page: parseInt(searchParams.get("page") ?? "1"),
   });
-
+  const pathname = usePathname();
   const render = (
     item: RouterOutputs["bo"]["garage"]["getGarages"]["result"][number],
     columnKey: Key,
@@ -173,24 +151,30 @@ export default function CarPageEntreprise() {
       <h1>Garages</h1>
       <Table
         aria-label="bids table"
-        classNames={{
-          base: "max-h-[720px] overflow-scroll",
-        }}
         bottomContent={
-          hasMore && !isLoading ? (
-            <div className="flex w-full justify-center">
-              <Button
-                isDisabled={list.isLoading}
-                variant="flat"
-                // eslint-disable-next-line @typescript-eslint/unbound-method
-                onPress={list.loadMore}
-              >
-                {list.isLoading && <Spinner color="white" size="sm" />}
-                Load More
-              </Button>
-            </div>
-          ) : null
+          <div className="flex w-full justify-center">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              // color="secondary"
+              page={
+                searchParams.get("page")
+                  ? parseInt(searchParams.get("page") ?? "1")
+                  : 1
+              }
+              total={rows?.pages ?? 1}
+              onChange={(page) => {
+                const params = new URLSearchParams(searchParams);
+                params.set("page", page.toString());
+                router.replace(`${pathname}?${params.toString()}`);
+              }}
+            />
+          </div>
         }
+        classNames={{
+          wrapper: "min-h-[222px]",
+        }}
       >
         <TableHeader columns={columns}>
           {(column) => (
@@ -201,7 +185,7 @@ export default function CarPageEntreprise() {
           loadingState={isLoading ? "loading" : undefined}
           loadingContent={<Spinner />}
           emptyContent={isLoading ? " " : "No bids found"}
-          items={list.items}
+          items={rows?.result ?? []}
         >
           {(item) => (
             <TableRow key={item.id}>

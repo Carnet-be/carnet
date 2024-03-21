@@ -107,6 +107,9 @@ const Step2 = ({
             placeholder="What is the version of your car?"
             {...register("version")}
             isInvalid={!!errors.version}
+            classNames={{
+              input: ["placeholder:text-default-700/40"],
+            }}
             errorMessage={errors.version?.message}
           />
 
@@ -115,7 +118,7 @@ const Step2 = ({
             control={control}
             render={({ field: { value, onChange, onBlur } }) => (
               <CSelect
-                className="w-[450px]"
+                className="w-[450px] placeholder:opacity-50"
                 type="text"
                 label="Doors (Optional)"
                 isInvalid={!!errors.transmission}
@@ -137,6 +140,9 @@ const Step2 = ({
             placeholder="How many kilometers has your car driven?"
             type="number"
             {...register("mileage")}
+            classNames={{
+              input: ["placeholder:text-default-700/40"],
+            }}
             isInvalid={!!errors.mileage}
             errorMessage={errors.mileage?.message}
           />
@@ -146,6 +152,9 @@ const Step2 = ({
             placeholder="How many engine size has your car?"
             {...register("cc")}
             isInvalid={!!errors.cc}
+            classNames={{
+              input: ["placeholder:text-default-700/40"],
+            }}
             errorMessage={errors.cc?.message}
           />
           <Input
@@ -154,6 +163,9 @@ const Step2 = ({
             placeholder="How many horse power has your car?"
             {...register("cv")}
             isInvalid={!!errors.cv}
+            classNames={{
+              input: ["placeholder:text-default-700/40"],
+            }}
             errorMessage={errors.cv?.message}
           />
           <Input
@@ -162,6 +174,9 @@ const Step2 = ({
             {...register("co2")}
             placeholder="How many CO2 emissions has your car?"
             isInvalid={!!errors.co2}
+            classNames={{
+              input: ["placeholder:text-default-700/40"],
+            }}
             errorMessage={errors.co2?.message}
           />
         </div>

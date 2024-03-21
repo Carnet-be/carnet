@@ -2,29 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
-    body {
-        @apply bg-gray-50
-    }
-    h1 {
-        @apply text-3xl font-bold text-black
-    }
-    h2 {
-        @apply text-2xl font-bold text-black
-    }
-    .center {
-        @apply flex items-center justify-center;
-    }
-    .iconButton{
-        @apply p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 
-    }
-    .icon {
-        @apply w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white
-    }
+  body {
+    @apply bg-gray-50 placeholder:text-opacity-30;
+  }
+  h1 {
+    @apply text-3xl font-bold text-black;
+  }
+  h2 {
+    @apply text-2xl font-bold text-black;
+  }
+  .center {
+    @apply flex items-center justify-center;
+  }
+  .iconButton {
+    @apply mr-1 rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white;
+  }
+  .icon {
+    @apply h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white;
+  }
 }
 
 #textarea-wrapper > div > div {
-    height: auto !important;
+  height: auto !important;
 }
-

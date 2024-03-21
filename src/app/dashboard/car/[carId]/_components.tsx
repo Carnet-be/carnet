@@ -80,13 +80,13 @@ export function ContentCarPage({
         )}
         <CardBody>
           <div className="flex flex-wrap gap-3">
-            {car?.options?.map((k) => {
+            {car?.options?.map((k, i) => {
               return (
                 <div
-                  key={k.id}
+                  key={i}
                   className="rounded-xl border border-primary p-1 px-2 text-sm text-primary text-opacity-100 opacity-70 transition-all duration-300"
                 >
-                  {k.name}
+                  {k?.name}
                 </div>
               );
             })}

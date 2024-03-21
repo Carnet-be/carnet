@@ -12,6 +12,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Input,
+  Pagination,
   Select,
   SelectItem,
   Spinner,
@@ -31,7 +32,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, type Key } from "react";
 import toast from "react-hot-toast";
 import { useDebounce } from "usehooks-ts";
-import { MoreIcon } from "~/app/_components/icons";
+import { MoreIcon, XIcon } from "~/app/_components/icons";
 import { api } from "~/trpc/react";
 import { type RouterOutputs } from "~/trpc/shared";
 import { getCarImage } from "~/utils/function";
@@ -95,6 +96,7 @@ export function TabsSection({
     model: searchParams.get("model"),
     type: (searchParams.get("type") as any) ?? "direct",
     belongsTo: filter.belongsTo,
+    //page: parseInt(searchParams.get("page") ?? "1"),
   });
 
   return (
@@ -320,7 +322,26 @@ export const AdminSearchSection = ({
             ))}
         </Select>
       </div>
-      <div className="flex flex-row items-center justify-end pt-4">
+      <div className="flex flex-row items-center justify-end gap-4 pt-4">
+        <Button
+          onClick={() => {
+            const params = new URLSearchParams(searchParams);
+            params.delete("search");
+            params.delete("brand");
+            params.delete("model");
+            router.replace(`${pathname}?${params.toString()}`);
+          }}
+          className={
+            searchParams.has("search") ||
+            searchParams.has("brand") ||
+            searchParams.has("model")
+              ? undefined
+              : "hidden"
+          }
+          startContent={<XIcon />}
+        >
+          Reset Filters
+        </Button>
         <Input
           //variant={variant}
           startContent={
@@ -341,23 +362,20 @@ export const AdminSearchSection = ({
 export const CarsTable = () => {
   const utils = api.useContext();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const {
     data: rows,
     isError,
     isLoading,
     refetch,
-  } = api.bo.car.getCars.useQuery(
-    {
-      search: searchParams.get("search"),
-      brand: searchParams.get("brand"),
-      model: searchParams.get("model"),
-      type: (searchParams.get("type") as any) ?? "direct",
-      status: (searchParams.get("status") as any) ?? "published",
-    },
-    {
-      initialData: [],
-    },
-  );
+  } = api.bo.car.getCars.useQuery({
+    search: searchParams.get("search"),
+    brand: searchParams.get("brand"),
+    model: searchParams.get("model"),
+    type: (searchParams.get("type") as any) ?? "direct",
+    status: (searchParams.get("status") as any) ?? "published",
+    page: parseInt(searchParams.get("page") ?? "1"),
+  });
   //
   const columns = [
     {
@@ -403,7 +421,7 @@ export const CarsTable = () => {
     });
   const router = useRouter();
   const render = (
-    item: RouterOutputs["bo"]["car"]["getCars"][number],
+    item: RouterOutputs["bo"]["car"]["getCars"]["data"][number],
     columnKey: Key,
   ) => {
     const value = getKeyValue(item, columnKey);
@@ -495,15 +513,41 @@ export const CarsTable = () => {
     }
   };
   return (
-    <Table aria-label="Example empty table">
+    <Table
+      aria-label="Example empty table"
+      bottomContent={
+        <div className="flex w-full justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            // color="secondary"
+            page={
+              searchParams.get("page")
+                ? parseInt(searchParams.get("page") ?? "1")
+                : 1
+            }
+            total={rows?.pages ?? 1}
+            onChange={(page) => {
+              const params = new URLSearchParams(searchParams);
+              params.set("page", page.toString());
+              router.replace(`${pathname}?${params.toString()}`);
+            }}
+          />
+        </div>
+      }
+      classNames={{
+        wrapper: "min-h-[222px]",
+      }}
+    >
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
       <TableBody
         loadingState={isError ? "error" : isLoading ? "loading" : undefined}
         loadingContent={<Spinner />}
-        emptyContent={"No cars found"}
-        items={rows}
+        emptyContent={isLoading ? "" : "No cars found"}
+        items={rows?.data ?? []}
       >
         {(item) => (
           <TableRow key={item.id}>

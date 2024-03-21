@@ -91,6 +91,9 @@ const Step6 = ({
             labelPlacement="outside"
             minRows={6}
             label="Describe your car"
+            classNames={{
+              input: ["placeholder:text-default-700/40"],
+            }}
             placeholder="What caracterize your car? What is its history? Feel free to tell us everything about it!"
             {...register("description")}
           />
@@ -148,6 +151,9 @@ const Step6 = ({
                         type="number"
                         {...register("minPrice")}
                         isInvalid={!!errors.minPrice}
+                        classNames={{
+                          input: ["placeholder:text-default-700/40"],
+                        }}
                         errorMessage={errors.minPrice?.message}
                         startContent={
                           <div className="pointer-events-none flex items-center">
@@ -164,6 +170,9 @@ const Step6 = ({
                         {...register("maxPrice")}
                         isInvalid={!!errors.maxPrice}
                         errorMessage={errors.maxPrice?.message}
+                        classNames={{
+                          input: ["placeholder:text-default-700/40"],
+                        }}
                         startContent={
                           <div className="pointer-events-none flex items-center">
                             <span className="text-small text-default-400">
@@ -187,6 +196,9 @@ const Step6 = ({
                       {...register("price")}
                       isInvalid={!!errors.price}
                       errorMessage={errors.price?.message}
+                      classNames={{
+                        input: ["placeholder:text-default-700/40"],
+                      }}
                       startContent={
                         <div className="pointer-events-none flex items-center">
                           <span className="text-small text-default-400">$</span>
@@ -221,6 +233,9 @@ const Step6 = ({
                 {...register("startingPrice")}
                 isInvalid={!!errors.startingPrice}
                 errorMessage={errors.startingPrice?.message}
+                classNames={{
+                  input: ["placeholder:text-default-700/40"],
+                }}
                 startContent={
                   <div className="pointer-events-none flex items-center">
                     <span className="text-small text-default-400">$</span>

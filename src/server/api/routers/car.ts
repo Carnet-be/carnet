@@ -393,9 +393,16 @@ const getCarById = publicProcedure
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     // image without duplicates
 
+    //remove duplicates from result.images
+    const images = result!.images.map((img) => img.key);
+    const options = [...new Set(result!.options.map((opt) => opt.name))];
+
     return {
       ...result,
-      images: [...new Set(result!.images)],
+      images: [...new Set(images)],
+      options: options.map((opt) =>
+        result!.options.find((o) => o.name === opt),
+      ),
     };
   });
 

@@ -10,6 +10,7 @@ import {
 } from "./_components";
 import { SearchButton } from "./_components.client";
 import Logo from "./_components/ui/logo";
+import UserButton from "./_components/ui/userButton";
 
 export const metadata: Metadata = {
   title: "Carnet | Marketplace for car",
@@ -86,12 +87,7 @@ export default function Page() {
                 </nav>
               </div>
               <div className="hidden justify-end pr-16 sm:flex lg:pr-0">
-                <a
-                  href="/dashboard"
-                  className="hover:bg-blue-dark rounded-md bg-primary px-7 py-3 text-base font-medium text-white"
-                >
-                  Get Started
-                </a>
+                <UserButton />
               </div>
             </div>
           </div>

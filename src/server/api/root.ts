@@ -2,6 +2,7 @@ import { publicRouter } from "~/server/api/routers/public";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { boCarsRouter } from "./routers/bo/cars";
 import { boGarageRouter } from "./routers/bo/garages";
+import { boUserRouter } from "./routers/bo/users";
 import { carRouter } from "./routers/car";
 import { garageRouter } from "./routers/garage";
 
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   bo: createTRPCRouter({
     car: boCarsRouter,
     garage: boGarageRouter,
+    user: boUserRouter,
   }),
 });
 
