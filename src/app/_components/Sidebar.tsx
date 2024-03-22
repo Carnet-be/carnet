@@ -2,6 +2,7 @@
 import { Button } from "@nextui-org/react";
 import { CarFront, CrownIcon, Home, Users2 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AiFillCar } from "react-icons/ai";
 import { RiAuctionLine } from "react-icons/ri";
 import useIsAdmin from "~/hooks/use-is-admin";
@@ -48,6 +49,7 @@ const Sidebar = () => {
     //   route: "/dashboard/admin/data",
     // },
   ];
+  const pathname = usePathname();
   const menu: TMenuItem[] = [
     {
       label: "Home",
@@ -162,10 +164,15 @@ const Sidebar = () => {
           )}
           {/* <li>
             <Link
-              href="#"
-              className="group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 no-underline hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              href="/dashboard/settings"
+              className={cn(
+                "group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 no-underline hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700",
+                !pathname.includes("/dashboard/settings")
+                  ? "bg-gray-100 dark:bg-gray-700"
+                  : "bg-primary text-white",
+              )}
             >
-              <Settings2Icon />
+              <Settings />
               <span className="ml-3">Settings</span>
             </Link>
           </li> */}
@@ -179,14 +186,15 @@ export default Sidebar;
 
 const SellCarBanner = () => {
   return (
-    <div className="center flex-col gap-4 rounded-lg bg-gray-50 p-4 text-center">
-      <span className="text-[12px] font-semibold opacity-40">
+    <div className="center flex-col gap-4 rounded-lg bg-gray-100 p-4 text-center">
+      <span className="text-[12px] font-semibold opacity-70">
         A new way to sell modern and classic cars
       </span>
       <Link href={"/forms/car/new"}>
         <Button
           size="sm"
-          className="bg-white text-sm font-semibold text-black"
+          color="primary"
+          className=" text-sm font-semibold"
           startContent={<AiFillCar />}
         >
           Sell your car

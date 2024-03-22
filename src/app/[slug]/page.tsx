@@ -8,6 +8,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { api } from "~/trpc/server";
 import { getImage } from "~/utils/function";
+import CarCard from "../_components/carCard";
 import Share from "../_components/share";
 
 export default async function GaragePagePublic({ params }: any) {
@@ -18,9 +19,11 @@ export default async function GaragePagePublic({ params }: any) {
   if (!org) return notFound();
   const garage = await api.garage.getGarageByOrgId.query(org.id);
   if (!garage || garage.state != "published") return notFound();
-  console.log("org", org);
-  const { name } = org;
-  const data = []; // await db.select().from(cars).where(eq(cars.belongsTo, org.id));
+
+  const name = org.name;
+
+  const cars = garage.cars ?? [];
+
   return (
     <div className="min-h-screen">
       <Head>
@@ -101,18 +104,17 @@ export default async function GaragePagePublic({ params }: any) {
         </div>
         <Divider />
 
-        {data.length == 0 ? (
+        {cars.length == 0 ? (
           <span className="py-5 opacity-60">No cars found</span>
         ) : (
           <div className="grid h-full w-full grid-cols-3 gap-8 bg-background  px-8 py-5">
-            {/* {data.map((a, i) => (
+            {cars.map((a, i) => (
               <CarCard key={i}>
                 {{
                   ...a,
-                  inRange: a.inRange ? 1:0,
                 }}
               </CarCard>
-            ))} */}
+            ))}
           </div>
         )}
       </div>

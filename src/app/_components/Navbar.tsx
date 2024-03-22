@@ -15,7 +15,7 @@ import {
   DropdownTrigger,
   Spinner,
 } from "@nextui-org/react";
-import { Bell } from "lucide-react";
+import { Bell, Dot } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -24,6 +24,7 @@ import { IoAnalyticsSharp } from "react-icons/io5";
 import { MdAdd, MdModeEditOutline, MdVisibility } from "react-icons/md";
 import { api } from "~/trpc/react";
 import { ADMIN_ROLES, type AdminRole } from "~/utils/constants";
+import ContactProfileSeciton from "./pages/profile/contact";
 import Logo from "./ui/logo";
 const Navbar = ({
   auth,
@@ -33,7 +34,7 @@ const Navbar = ({
     userId: string;
   };
 }) => {
-  const { orgId } = auth;
+  const { orgId, userId } = auth;
 
   const { user } = useUser();
   const role = user?.publicMetadata?.role as AdminRole | undefined;
@@ -126,10 +127,29 @@ const Navbar = ({
 
           {!isAdmin && (
             <div className="translate-y-[3px]">
-              <OrganizationSwitcher />
+              <OrganizationSwitcher>
+                <OrganizationSwitcher.OrganizationProfilePage
+                  label="Contact"
+                  labelIcon={<Dot size={18} />}
+                  url="contact"
+                >
+                  <ContactProfileSeciton id={orgId} />
+                </OrganizationSwitcher.OrganizationProfilePage>
+              </OrganizationSwitcher>
             </div>
           )}
-          <UserButton />
+          <UserButton afterSignOutUrl="/">
+            {/* You can pass the content as a component */}
+
+            {/* You can also pass the content as direct children */}
+            <UserButton.UserProfilePage
+              label="Contact"
+              labelIcon={<Dot size={18} />}
+              url="contact"
+            >
+              <ContactProfileSeciton id={userId} />
+            </UserButton.UserProfilePage>
+          </UserButton>
         </div>
       </div>
     </nav>

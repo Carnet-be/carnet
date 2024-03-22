@@ -1,4 +1,5 @@
 import Logo from "./ui/logo";
+import UserButton from "./ui/userButton";
 
 export const NavbarPublic = () => {
   return (
@@ -69,12 +70,7 @@ export const NavbarPublic = () => {
               </nav>
             </div>
             <div className="hidden justify-end pr-16 sm:flex lg:pr-0">
-              <a
-                href="/dashboard"
-                className="hover:bg-blue-dark rounded-md bg-primary px-7 py-3 text-base font-medium text-white"
-              >
-                Get Started
-              </a>
+              <UserButton />
             </div>
           </div>
         </div>

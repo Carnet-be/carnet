@@ -1,5 +1,11 @@
 import { TRPCClientError } from "@trpc/client";
-import { and, eq } from "drizzle-orm";
+import {
+  and,
+  desc,
+  eq,
+  getTableColumns,
+  type InferSelectModel,
+} from "drizzle-orm";
 
 import { z } from "zod";
 import {
@@ -7,7 +13,8 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { garages } from "~/server/db/schema";
+import { assets, cars, garages } from "~/server/db/schema";
+import { objArray } from "~/utils/dbUtils";
 
 export const garageRouter = createTRPCRouter({
   checkMyGarage: protectedProcedure.query(async ({ ctx }) => {
@@ -30,7 +37,29 @@ export const garageRouter = createTRPCRouter({
         .select()
         .from(garages)
         .where(and(eq(garages.orgId, input), eq(garages.state, "published")));
-      return garage;
+
+      if (!garage) {
+        return null;
+      }
+      const result = await ctx.db
+        .select({
+          ...getTableColumns(cars),
+          images: objArray<InferSelectModel<typeof assets>>({
+            table: assets,
+            id: assets.id,
+          }),
+        })
+        .from(cars)
+        .leftJoin(assets, eq(cars.id, assets.ref))
+        .where(
+          and(eq(cars.belongsTo, garage?.orgId), eq(cars.status, "published")),
+        )
+        .groupBy(() => [cars.id])
+        .orderBy(desc(cars.createdAt), desc(cars.updatedAt));
+      return {
+        ...garage,
+        cars: result,
+      };
     }),
   createGarage: protectedProcedure
     .input(

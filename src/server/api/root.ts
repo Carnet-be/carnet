@@ -5,6 +5,7 @@ import { boGarageRouter } from "./routers/bo/garages";
 import { boUserRouter } from "./routers/bo/users";
 import { carRouter } from "./routers/car";
 import { garageRouter } from "./routers/garage";
+import { profileRouter } from "./routers/profile";
 
 /**
  * This is the primary router for your server.
@@ -15,6 +16,7 @@ export const appRouter = createTRPCRouter({
   public: publicRouter,
   car: carRouter,
   garage: garageRouter,
+  profile: profileRouter,
   bo: createTRPCRouter({
     car: boCarsRouter,
     garage: boGarageRouter,

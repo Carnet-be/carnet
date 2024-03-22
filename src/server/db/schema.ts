@@ -265,3 +265,12 @@ export const models = pgTable(
     };
   },
 );
+
+export const profiles = pgTable("organizations", {
+  id: varchar("id", { length: 255 }).notNull().primaryKey(),
+  email: varchar("email", { length: 255 }),
+  email2: varchar("email2", { length: 255 }),
+  phone: varchar("phone", { length: 255 }),
+  phone2: varchar("phone2", { length: 255 }),
+  address: text("address"),
+});

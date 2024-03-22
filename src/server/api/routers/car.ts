@@ -9,6 +9,7 @@ import {
   eq,
   getTableColumns,
   gt,
+  lt,
   sql,
   type InferInsertModel,
   type InferSelectModel,
@@ -329,33 +330,54 @@ const addAssets = protectedProcedure
       : [];
   });
 
-const getCars = protectedProcedure.query(async ({ ctx }) => {
-  const { db } = ctx;
-  const result = await db
-    .select({
-      ...getTableColumns(cars),
-      images: objArray<InferSelectModel<typeof assets>>({
-        table: assets,
-        id: assets.id,
-      }),
+const getCars = protectedProcedure
+  .input(
+    z.object({
+      cursor: z.number().nullish(),
+    }),
+  )
+  .query(async ({ ctx, input }) => {
+    const { db } = ctx;
+    const limit = 20;
+    const { cursor: offset = 0 } = input;
 
-      brand: brands,
-      model: models,
-      body: bodies,
-      color: colors,
-    })
-    .from(cars)
-    .leftJoin(assets, eq(cars.id, assets.ref))
-    .leftJoin(brands, eq(cars.brandId, brands.id))
-    .leftJoin(models, eq(cars.modelId, models.id))
-    .leftJoin(colors, eq(cars.color, colors.id))
-    .leftJoin(bodies, eq(cars.bodyId, bodies.id))
-    .groupBy(() => [cars.id, brands.id, models.id, bodies.id, colors.id])
-    .where(eq(cars.status, "published"));
+    const where = and(eq(cars.status, "published"));
 
-  console.log("result", result);
-  return result;
-});
+    const result = await db
+      .select({
+        ...getTableColumns(cars),
+        images: objArray<InferSelectModel<typeof assets>>({
+          table: assets,
+          id: assets.id,
+        }),
+
+        brand: brands,
+        model: models,
+        body: bodies,
+        color: colors,
+      })
+      .from(cars)
+      .leftJoin(assets, eq(cars.id, assets.ref))
+      .leftJoin(brands, eq(cars.brandId, brands.id))
+      .leftJoin(models, eq(cars.modelId, models.id))
+      .leftJoin(colors, eq(cars.color, colors.id))
+      .leftJoin(bodies, eq(cars.bodyId, bodies.id))
+      .groupBy(() => [cars.id, brands.id, models.id, bodies.id, colors.id])
+      .where(and(where, offset ? lt(cars.id, offset) : undefined))
+      .orderBy(desc(cars.id))
+      .limit(limit + 1)
+      .offset(offset!);
+
+    let cursor = null;
+    if (result.length > limit) {
+      cursor = result.pop()?.id ?? null;
+    }
+
+    return {
+      result,
+      cursor,
+    };
+  });
 
 const getCarById = publicProcedure
   .input(z.number())

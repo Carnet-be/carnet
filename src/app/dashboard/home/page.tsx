@@ -3,11 +3,10 @@ import { Button } from "@nextui-org/react";
 import { ArrowUpNarrowWide } from "lucide-react";
 import CarCard from "~/app/_components/carCard";
 import { api } from "~/trpc/server";
-import { SearchSection } from "./_component";
+import { CarsSections, SearchSection } from "./_component";
 
 export default async function DashboardPage() {
   const data = await api.public.carData.query();
-  const cars = await api.car.getCars.query();
 
   return (
     <div className="">
@@ -30,11 +29,7 @@ export default async function DashboardPage() {
             Filter
           </Button>
         </div>
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-          {cars.map((car) => (
-            <CarCard key={car.id}>{car as any}</CarCard>
-          ))}
-        </div>
+
         {/* {cars.length > 0 && (
           <div className="flex flex-row items-center justify-center">
             <Button
@@ -46,16 +41,7 @@ export default async function DashboardPage() {
             </Button>
           </div>
         )} */}
-        {cars.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-10">
-            <span className="text-2xl font-semibold text-black">
-              No cars found
-            </span>
-            <span className="text-black">
-              Try changing your search criteria
-            </span>
-          </div>
-        )}
+        <CarsSections />
       </div>
     </div>
   );
