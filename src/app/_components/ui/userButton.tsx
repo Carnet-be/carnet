@@ -3,7 +3,12 @@ import { User } from "@nextui-org/react";
 import Link from "next/link";
 
 async function UserButton() {
-  const user = await currentUser();
+  let user;
+  try {
+    user = await currentUser();
+  } catch (e) {
+    console.error(e);
+  }
   if (!user) {
     return (
       <a
