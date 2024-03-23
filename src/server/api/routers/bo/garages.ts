@@ -13,7 +13,7 @@ export const boGarageRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const { page = 1 } = input;
-      const limit = 2;
+      const limit = 20;
       const offset = (page! - 1) * limit;
       const orgs = await clerkClient.organizations.getOrganizationList({
         limit: limit ?? 2,
