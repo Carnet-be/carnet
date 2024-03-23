@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import { useAuth } from "@clerk/nextjs";
 import {
-  Button,
-  Chip,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  cn,
+    Button,
+    Chip,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+    cn,
 } from "@nextui-org/react";
 import { type InferSelectModel } from "drizzle-orm";
 import { Edit } from "lucide-react";
@@ -22,7 +23,8 @@ import { getCarImage } from "~/utils/function";
 import { type cars } from "../../../server/db/schema";
 
 export const CarsSection = () => {
-  const { data, isError, isLoading, refetch } = api.car.getMyCars.useQuery();
+  const {orgId,userId}=useAuth()
+  const { data, isError, isLoading, refetch } = api.car.getMyCars.useQuery(orgId??userId);
 
   if (isLoading) {
     return <LoadingSection />;

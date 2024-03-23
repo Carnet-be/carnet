@@ -5,6 +5,7 @@ import {
   desc,
   eq,
   getTableColumns,
+  ilike,
   inArray,
   type InferSelectModel,
 } from "drizzle-orm";
@@ -98,8 +99,22 @@ export const garageRouter = createTRPCRouter({
       return update.rows;
     }),
 
-  getGarages: publicProcedure.query(async ({ ctx }) => {
-    const garagesData = await ctx.db.select().from(garages).where(eq(garages.state, "published"));
+  getGarages: publicProcedure.input(z.object({
+    q: z.string().optional().nullable(),
+  })).query(async ({ ctx, input }) => {
+    const { q } = input;
+    const orgs = await clerkClient.organizations.getOrganizationList({ query: q ?? undefined })
+    if (!orgs.length) return []
+    const garagesData = await ctx.db.select().from(garages)
+      .where(
+        and(
+          inArray(garages.orgId, orgs.map((org) => org.id)),
+          eq(garages.state, "published"),
+        )).limit(20);
+
+    if (!garagesData.length) {
+      return [];
+    }
     const carsData = await ctx.db.select({
       ...getTableColumns(cars),
       images: objArray<InferSelectModel<typeof assets>>({
@@ -113,7 +128,9 @@ export const garageRouter = createTRPCRouter({
       .orderBy(desc(cars.createdAt), desc(cars.updatedAt));
     return garagesData.map((garage) => {
       const garageCars = carsData.filter((car) => car.belongsTo === garage.orgId);
+      const org = orgs.find((org) => org.id === garage.orgId);
       return {
+        ...org,
         ...garage,
         cars: garageCars,
       };

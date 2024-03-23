@@ -8,8 +8,8 @@ import { type RouterOutputs } from "~/trpc/shared"
 import { getImage } from "~/utils/function"
 import { CarsSectionGarage } from "./_components.client"
 
-export async function GarageItem({ garage }: { garage: RouterOutputs["garage"]["getGarages"][number] }) {
-  const org = await clerkClient.organizations.getOrganization({ organizationId: garage.orgId })
+export function GarageItem({ garage }: { garage: RouterOutputs["garage"]["getGarages"][number] }) {
+
   return (
     <div
       style={{
@@ -24,15 +24,15 @@ export async function GarageItem({ garage }: { garage: RouterOutputs["garage"]["
         <div className="flex flex-row justify-between px-4">
           <div className="">
             <Avatar
-              src={org.imageUrl}
+              src={garage.imageUrl}
               className="w-16 h-16 rounded-full border-2 border-white"
             />
-            <h2 className="text-2xl font-bold text-white">{org.name}</h2>
-            <p>{garage.about}</p>
+            <h2 className="text-2xl font-bold text-white">{garage.name}</h2>
+            <p className="max-w-[500px] line-clamp-1">{garage.about}</p>
           </div>
 
-          <Link href={`/${org.slug}`}>
-            <Button  color="secondary" className="shadow">Visite</Button>
+          <Link href={`/${garage.slug}`}>
+            <Button color="secondary" className="shadow">Visite</Button>
           </Link>
 
         </div>

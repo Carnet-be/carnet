@@ -324,9 +324,9 @@ const addAssets = protectedProcedure
     console.log("results", results);
     return results.length > 0
       ? await db.transaction(async (trx) => {
-          await trx.delete(assets).where(eq(assets.ref, carId));
-          return await trx.insert(assets).values(results);
-        })
+        await trx.delete(assets).where(eq(assets.ref, carId));
+        return await trx.insert(assets).values(results);
+      })
       : [];
   });
 
@@ -428,11 +428,8 @@ const getCarById = publicProcedure
     };
   });
 
-const getMyCars = protectedProcedure.query(async ({ ctx }) => {
-  const { db, auth } = ctx;
-  const id = auth.orgId ?? auth.userId;
-
-  if (!id) throw new Error("Not authenticated");
+const getMyCars = protectedProcedure.input(z.string().optional().nullable()).query(async ({ ctx, input }) => {
+  const { db } = ctx;
 
   const result = await db
     .select({
@@ -451,7 +448,7 @@ const getMyCars = protectedProcedure.query(async ({ ctx }) => {
     .leftJoin(brands, eq(cars.brandId, brands.id))
     .leftJoin(models, eq(cars.modelId, models.id))
     .leftJoin(bodies, eq(cars.bodyId, bodies.id))
-    .where(eq(cars.belongsTo, id))
+    .where(eq(cars.belongsTo, input ?? ""))
     .groupBy(() => [cars.id, brands.id, models.id, bodies.id]);
 
   return result;

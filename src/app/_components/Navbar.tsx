@@ -121,9 +121,9 @@ const Navbar = ({
         </div>
         <div className="flex items-center justify-center gap-4  lg:order-2">
           {orgId && <GarageButton id={orgId} />}
-          <button className="iconButton">
+          {/* <button className="iconButton">
             <Bell />
-          </button>
+          </button> */}
 
           {!isAdmin && (
             <div className="translate-y-[3px]">

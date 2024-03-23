@@ -1,20 +1,18 @@
 import { api } from "~/trpc/server";
 import { GarageItem } from "./_components";
 
-async function GaragesPage() {
-  const garages = await api.garage.getGarages.query();
+async function GaragesPage({ searchParams }: { searchParams: { q?: string } }) {
+
+  const garages = await api.garage.getGarages.query({ q: searchParams.q });
+  if (!garages.length) {
+    return <div className="w-full h-[300px] flex items-center justify-center">No garages found</div>
+  }
   return (
-    <div className="space-y-3">
-      <h1>Garages</h1>
-      <p>
-        Find a garage near you, for all your car needs.
-      </p>
-      <div className="py-3" />
-      <div className="flex flex-col gap-3 w-full">
-        {garages.map((g) => (<GarageItem key={g.id} garage={g} />))}
-      </div>
-      <div className="py-5" />
+
+    <div className="flex flex-col gap-3 w-full">
+      {garages.map((g) => (<GarageItem key={g.id} garage={g} />))}
     </div>
+
   );
 };
 
