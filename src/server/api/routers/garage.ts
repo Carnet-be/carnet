@@ -1,9 +1,11 @@
+import { clerkClient } from "@clerk/nextjs";
 import { TRPCClientError } from "@trpc/client";
 import {
   and,
   desc,
   eq,
   getTableColumns,
+  inArray,
   type InferSelectModel,
 } from "drizzle-orm";
 
@@ -95,4 +97,26 @@ export const garageRouter = createTRPCRouter({
         .where(eq(garages.id, input.id));
       return update.rows;
     }),
+
+  getGarages: publicProcedure.query(async ({ ctx }) => {
+    const garagesData = await ctx.db.select().from(garages).where(eq(garages.state, "published"));
+    const carsData = await ctx.db.select({
+      ...getTableColumns(cars),
+      images: objArray<InferSelectModel<typeof assets>>({
+        table: assets,
+        id: assets.id,
+      }),
+    }).from(cars)
+      .leftJoin(assets, eq(cars.id, assets.ref))
+      .where(and(eq(cars.status, "published"),
+        inArray(cars.belongsTo, garagesData.map((garage) => garage.orgId)))).groupBy(() => [cars.id])
+      .orderBy(desc(cars.createdAt), desc(cars.updatedAt));
+    return garagesData.map((garage) => {
+      const garageCars = carsData.filter((car) => car.belongsTo === garage.orgId);
+      return {
+        ...garage,
+        cars: garageCars,
+      };
+    });
+  })
 });

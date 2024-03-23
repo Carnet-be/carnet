@@ -11,10 +11,10 @@ import Map from "~/app/_components/ui/map";
 import { api } from "~/trpc/server";
 import { type RouterOutputs } from "~/trpc/shared";
 import {
-  BidSection,
-  ContactSection,
-  ContentCarPage,
-  ImagesSection,
+    BidSection,
+    ContactSection,
+    ContentCarPage,
+    ImagesSection,
 } from "./_components";
 export default async function CarPage({
   params,

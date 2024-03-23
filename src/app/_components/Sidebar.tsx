@@ -57,6 +57,11 @@ const Sidebar = () => {
       route: "/dashboard/home",
     },
     {
+      label: "Garages",
+      icon: <GarageIcon size={20} />,
+      route: "/dashboard/garages",
+    },
+    {
       label: "My cars",
       icon: <CarFront size={20} />,
       route: "/dashboard/my-cars",
