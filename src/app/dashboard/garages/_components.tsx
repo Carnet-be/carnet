@@ -18,17 +18,19 @@ export function GarageItem({ garage }: { garage: RouterOutputs["garage"]["getGar
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
-      className="relative w-full rounded-md overflow-hidden h-[450px]">
+      className="relative w-full rounded-md overflow-hidden h-[400px]">
 
       <div className="absolute bottom-0 left-0 right-0 text-white bg-gradient-to-r from-black to-black/20  h-full p-1 py-5">
-        <div className="flex flex-row justify-between px-4">
-          <div className="">
+        <div className="flex flex-row justify-between  px-10">
+          <div className="flex gap-3">
             <Avatar
               src={garage.imageUrl}
               className="w-16 h-16 rounded-full border-2 border-white"
             />
-            <h2 className="text-2xl font-bold text-white">{garage.name}</h2>
-            <p className="max-w-[500px] line-clamp-1">{garage.about}</p>
+            <div className="flex flex-col gap-1 justify-center items-start">
+              <h2 className="text-2xl font-bold text-white">{garage.name}</h2>
+              <p className="max-w-[500px] line-clamp-2">{garage.about}</p>
+            </div>
           </div>
 
           <Link href={`/${garage.slug}`}>

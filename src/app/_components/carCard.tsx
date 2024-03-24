@@ -36,11 +36,13 @@ export const getPrice = ({
 const CarCard = ({
   children: car,
   className,
+  link
 }: {
   children: InferSelectModel<typeof cars> & {
     images: InferSelectModel<typeof assets>[];
   };
   className?: string;
+  link?: string
 }) => {
   const primaryImage = getCarImage(car.images?.[0]?.key);
 
@@ -77,7 +79,7 @@ const CarCard = ({
               type: car.type,
             })}
           </span>
-          <Link href={`/dashboard/car/${car.id}`}>
+          <Link href={link ?? `/dashboard/car/${car.id}`}>
             <Button size="sm" color="primary" variant="flat">
               Details
             </Button>

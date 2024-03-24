@@ -11,24 +11,24 @@ import Map from "~/app/_components/ui/map";
 import { api } from "~/trpc/server";
 import { type RouterOutputs } from "~/trpc/shared";
 import {
-    BidSection,
-    ContactSection,
-    ContentCarPage,
-    ImagesSection,
+  BidSection,
+  ContactSection,
+  ContentCarPage,
+  ImagesSection,
 } from "./_components";
 export default async function CarPage({
   params,
   view = "user",
 }: {
   params: any;
-  view?: "admin" | "owner" | "user";
+  view?: "admin" | "owner" | "user" | "garage"
 }) {
   const carId: number = parseInt(params.carId!);
   const car = await api.car.getCarById.query(carId);
 
   return (
     <div>
-      <BackButton />
+      {view != "garage" && <BackButton />}
       <div className="mb-10 flex flex-wrap justify-center gap-6">
         <LeftSide car={car} />
         <RightSide car={car} />

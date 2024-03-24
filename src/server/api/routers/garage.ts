@@ -16,7 +16,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { assets, cars, garages } from "~/server/db/schema";
+import { assets, cars, garages, profiles } from "~/server/db/schema";
 import { objArray } from "~/utils/dbUtils";
 
 export const garageRouter = createTRPCRouter({
@@ -37,9 +37,14 @@ export const garageRouter = createTRPCRouter({
     .input(z.string())
     .query(async ({ ctx, input }) => {
       const [garage] = await ctx.db
-        .select()
+        .select({
+          ...getTableColumns(garages),
+          contact: getTableColumns(profiles)
+        })
         .from(garages)
-        .where(and(eq(garages.orgId, input), eq(garages.state, "published")));
+        .leftJoin(profiles, eq(garages.orgId, profiles.id))
+        .where(and(eq(garages.orgId, input), eq(garages.state, "published")))
+        .groupBy(() => [garages.id, profiles.id]);
 
       if (!garage) {
         return null;
