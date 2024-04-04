@@ -8,7 +8,7 @@ import {
   Pricing,
   Services,
 } from "./_components";
-import { SearchButton } from "./_components.client";
+import { InteractCard, SearchButton } from "./_components.client";
 import Logo from "./_components/ui/logo";
 import UserButton from "./_components/ui/userButton";
 
@@ -98,7 +98,7 @@ export default function Page() {
           <div className="container mx-auto">
             <div className="-mx-4 flex flex-wrap items-center">
               <div className="w-full px-4 lg:w-5/12">
-                <div className="hero-content">
+                <div className="hero-content w-full">
                   <h1 className="text-dark mb-5 text-4xl font-bold !leading-[1.208] dark:text-white sm:text-[42px] lg:text-[40px] xl:text-5xl">
                     The Greatest <br />
                     Journey Of Car <br />
@@ -108,15 +108,16 @@ export default function Page() {
                     With Carnet you can find the best car for you. We provide
                     the best car for you.
                   </p>
-                  <ul className="flex flex-wrap items-center">
-                    <li>
+                  <ul className="flex flex-wrap items-center w-full">
+                    <li className="w-full">
                       {/* <a
                         href="javascript:void(0)"
                         className="hover:bg-blue-dark inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-center text-base font-medium text-white lg:px-7"
                       >
                         Get Started
                       </a> */}
-                      <SearchButton />
+                      <InteractCard />
+                      {/* <SearchButton /> */}
                     </li>
                   </ul>
                   {/* <div className="clients pt-16">
