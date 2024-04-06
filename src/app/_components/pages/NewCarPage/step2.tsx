@@ -88,14 +88,14 @@ const Step2 = ({
               <CSelect
                 type="text"
                 label="Transmission (Optional)"
-                placeholder="What is the transmission of your car?"
+
                 isInvalid={!!errors.transmission}
                 error={errors.transmission?.message}
                 value={value?.toString()}
                 onChange={onChange}
                 onBlur={onBlur}
-                options={["automatic", "semi-automatic", "manual"].map((t) => ({
-                  value: t,
+                options={["Automatic", "Semi-Automatic", "Manual"].map((t) => ({
+                  value: t.toLowerCase(),
                   label: t,
                 }))}
               />

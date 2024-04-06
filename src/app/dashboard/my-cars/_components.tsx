@@ -2,12 +2,12 @@
 "use client";
 import { useAuth } from "@clerk/nextjs";
 import {
-    Button,
-    Chip,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-    cn,
+  Button,
+  Chip,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  cn,
 } from "@nextui-org/react";
 import { type InferSelectModel } from "drizzle-orm";
 import { Edit } from "lucide-react";
@@ -23,13 +23,22 @@ import { getCarImage } from "~/utils/function";
 import { type cars } from "../../../server/db/schema";
 
 export const CarsSection = () => {
-  const {orgId,userId}=useAuth()
-  const { data, isError, isLoading, refetch } = api.car.getMyCars.useQuery(orgId??userId);
+  const { orgId, userId } = useAuth()
+  const { data, isError, isLoading, refetch } = api.car.getMyCars.useQuery(orgId ?? userId);
 
   if (isLoading) {
     return <LoadingSection />;
   } else if (isError) {
     return <Retry onClick={refetch} />;
+  }
+  if (data?.length == 0) {
+    return <div className="flex flex-col items-center justify-center h-[50vh]">
+
+      <span className="text-2xl font-semibold">
+        You have no cars yet
+      </span>
+    </div>
+
   }
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
@@ -114,8 +123,8 @@ const StatusTag = ({
     children === "pending"
       ? "warning"
       : children === "published"
-      ? "success"
-      : "secondary";
+        ? "success"
+        : "secondary";
 
   const description = () => {
     switch (children) {

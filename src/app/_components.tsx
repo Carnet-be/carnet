@@ -1,13 +1,75 @@
 import Image from "next/image";
+import { api } from "~/trpc/server";
 import { priceFormatter } from "~/utils/function";
+import CarCard from "./_components/carCard";
 import Logo from "./_components/ui/logo";
 
 // Carnet is a morketplace for selling and buying cars, and also sell car as auction
+//
+//
+//
+//
+//
+
+export const HowItWorks = () => {
+  return (
+    <section
+      id="how-it-works"
+      className="dark:bg-dark overflow-hidden bg-white pb-12 pt-20 lg:pb-[90px] lg:pt-[120px]"
+    >
+      <div className="container mx-auto">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-primary dark:text-gray-100">
+            We offer Marketplace and Auction
+          </h2>
+
+        </div>
+        <div className="flex justify-around  gap-5 items-center py-10">
+          <Image src="/images/how_it_works.png" alt="How it works" width={350} height={350} />
+          <div>
+            <p className="pb-4">
+              On the Auction you get :
+            </p>
+
+            <ol className="relative border-s border-gray-200 dark:border-gray-700">
+              <li className="mb-10 ms-4">
+                <div className="absolute w-6 h-6 bg-gray-200 rounded-full mt-1.5 -start-3 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
+                {/* <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">February 2022</time> */}
+                <p className="text-lg ">No direct cost for you </p>
+                {/* <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Get access to over 20+ pages including a dashboard layout, charts, kanban board, calendar, and pre-order E-commerce & Marketing pages.</p> */}
+
+              </li>
+              <li className="mb-10 ms-4">
+                <div className="absolute w-6 h-6 bg-gray-200 rounded-full mt-1.5 -start-3 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
+                {/* <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">February 2022</time> */}
+                <p className="text-lg ">A guaranteed offer from a dealership</p>
+                {/* <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Get access to over 20+ pages including a dashboard layout, charts, kanban board, calendar, and pre-order E-commerce & Marketing pages.</p> */}
+
+              </li>
+              <li className="mb-10 ms-4">
+                <div className="absolute w-6 h-6 bg-gray-200 rounded-full mt-1.5 -start-3 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
+                {/* <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">February 2022</time> */}
+                <p className="text-lg ">No control technique needed</p>
+                {/* <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Get access to over 20+ pages including a dashboard layout, charts, kanban board, calendar, and pre-order E-commerce & Marketing pages.</p> */}
+
+              </li>
+            </ol>
+
+
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+
+
+}
+
 export const About = () => {
   return (
     <section
       id="about"
-      className="dark:bg-dark overflow-hidden bg-white pb-12 pt-20 lg:pb-[90px] lg:pt-[120px]"
+      className="dark:bg-dark overflow-hidden bg-white pb-12 pt-20 lg:pb-[40px] lg:pt-[60px]"
     >
       <div className="container mx-auto">
         <div className="-mx-4 flex flex-wrap items-center justify-between">
@@ -618,10 +680,8 @@ export const About = () => {
           </div>
           <div className="w-full px-4 lg:w-1/2 xl:w-5/12">
             <div className="mt-10 lg:mt-0">
-              <span className="mb-4 block text-lg font-semibold text-primary">
-                Why Choose Us
-              </span>
-              <h2 className="text-dark mb-5 text-3xl font-bold dark:text-white sm:text-[40px]/[48px]">
+
+              <h2 className="text-dark text-primary mb-5 text-3xl font-bold dark:text-white sm:text-[40px]/[48px]">
                 Make the best when buying a car
               </h2>
               <p className="text-body-color dark:text-dark-6 mb-5 text-base">
@@ -899,10 +959,8 @@ export const Pricing = () => {
         <div className="-mx-4 flex flex-wrap">
           <div className="w-full px-4">
             <div className="mx-auto mb-[60px] max-w-[510px] text-center">
-              <span className="mb-2 block text-lg font-semibold text-primary">
-                Pricing
-              </span>
-              <h2 className="text-dark mb-3 text-3xl font-bold leading-[1.208] dark:text-white sm:text-4xl md:text-[40px]">
+
+              <h2 className="text-dark text-primary  mb-3 text-3xl font-bold leading-[1.208] dark:text-white sm:text-4xl md:text-[40px]">
                 Our Pricing Plan
               </h2>
               <p className="text-body-color dark:text-dark-6 text-base">
@@ -949,8 +1007,9 @@ export const Pricing = () => {
                 </p>
               </div>
               <a
-                href="javascript:void(0)"
-                className="border-stroke dark:border-dark-3 block w-full rounded-md border bg-transparent p-3 text-center text-base font-medium text-primary transition hover:border-primary hover:bg-primary hover:text-white"
+                href="/auth/sign-up"
+
+                className="bg-primary p-3 text-center text-base font-medium text-white transition hover:bg-opacity-90 border-stroke dark:border-dark-3 block w-full rounded-md border"
               >
                 Choose Personal
               </a>
@@ -1256,11 +1315,12 @@ export const Pricing = () => {
                 </p>
               </div>
               <a
-                href="javascript:void(0)"
-                className="block w-full rounded-md border border-primary bg-primary p-3 text-center text-base font-medium text-white transition hover:bg-opacity-90"
+
+                className="block w-full rounded-md border p-3 text-center text-base font-medium text-primary transition hover:bg-opacity-90"
               >
-                Choose Business
+                Coming Soon
               </a>
+
 
               <div>
                 <span className="absolute right-0 top-7 z-[-1]">
@@ -1563,10 +1623,10 @@ export const Pricing = () => {
                 </p>
               </div>
               <a
-                href="javascript:void(0)"
+
                 className="border-stroke dark:border-dark-3 block w-full rounded-md border bg-transparent p-3 text-center text-base font-medium text-primary transition hover:border-primary hover:bg-primary hover:text-white"
               >
-                Choose Entreprise
+                Coming Soon
               </a>
 
               <div>
@@ -2819,10 +2879,8 @@ export const Blog = () => {
         <div className="-mx-4 flex flex-wrap justify-center">
           <div className="w-full px-4">
             <div className="mx-auto mb-[60px] max-w-[510px] text-center lg:mb-20">
-              <span className="mb-2 block text-lg font-semibold text-primary">
-                Our Blogs
-              </span>
-              <h2 className="text-dark mb-4 text-3xl font-bold dark:text-white sm:text-4xl md:text-[40px]">
+
+              <h2 className="text-dark text-primary mb-4 text-3xl font-bold dark:text-white sm:text-4xl md:text-[40px]">
                 Our Recent News
               </h2>
               <p className="text-body-color dark:text-dark-6 text-base">
@@ -2930,7 +2988,8 @@ export const Blog = () => {
   );
 };
 
-export const CarSection = () => {
+export const CarSection = async () => {
+  const cars = await api.car.getCars.query({ cursor: undefined, limit: 12 });
   return (
     <section
       id="cars"
@@ -2947,10 +3006,8 @@ export const CarSection = () => {
         <div className="-mx-4 flex flex-wrap">
           <div className="w-full px-4">
             <div className="mx-auto mb-[60px] max-w-[510px] text-center">
-              <span className="mb-2 block text-lg font-semibold text-primary">
-                Cars
-              </span>
-              <h2 className="text-dark mb-3 text-3xl font-bold leading-[1.208] sm:text-4xl md:text-[40px]">
+
+              <h2 className="text-dark text-primary mb-3 text-3xl font-bold leading-[1.208] sm:text-4xl md:text-[40px]">
                 Our Recent cars
               </h2>
               <p className="text-body-color dark:text-dark-6 text-base">
@@ -2960,171 +3017,12 @@ export const CarSection = () => {
           </div>
         </div>
         <div className="-mx-4 flex flex-wrap justify-center"></div>
-        <div className="-mx-4 flex flex-wrap">
-          <div className="w-full px-4 md:w-1/2 xl:w-1/3">
-            <div className="relative mb-12">
-              <div className="overflow-hidden rounded-[10px]">
-                <Image
-                  src="https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="portfolio"
-                  width={400}
-                  height={300}
-                  className=" w-full"
-                />
-              </div>
-              <div className="shadow-portfolio dark:bg-dark-2 dark:shadow-box-dark relative z-10 mx-7 -mt-20 rounded-lg bg-white px-3 py-[34px] text-center">
-                <span className="mb-2 block text-sm font-medium text-primary">
-                  BMW 2020
-                </span>
-                <h3 className="text-dark text-xl font-bold dark:text-white">
-                  {priceFormatter.format(200000)}
-                </h3>
-                <p>100 KM</p>
+        <div className="grid grid-cols-4 gap-5 items-center justify-center">
+          {cars?.result.map((car) => (
+            <CarCard key={car.id} className="bg-white">{car as any}</CarCard>
+          )
+          )}
 
-                <a
-                  href="/dashboard/car/1"
-                  className="border-stroke text-body-color dark:border-dark-3 dark:text-dark-6 mt-3 inline-block rounded-md border px-7 py-[10px] text-sm font-medium transition hover:border-primary hover:bg-primary hover:text-white"
-                >
-                  View Details
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="w-full px-4 md:w-1/2 xl:w-1/3">
-            <div className="relative mb-12">
-              <div className="overflow-hidden rounded-[10px]">
-                <Image
-                  src="https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="portfolio"
-                  width={400}
-                  height={300}
-                  className="w-full"
-                />
-              </div>
-              <div className="shadow-portfolio dark:bg-dark-2 dark:shadow-box-dark relative z-10 mx-7 -mt-20 rounded-lg bg-white px-3 py-[34px] text-center">
-                <span className="mb-2 block text-sm font-medium text-primary">
-                  Audi Civid 2023
-                </span>
-                <h3 className="text-dark mb-5 text-xl font-bold dark:text-white">
-                  {priceFormatter.format(340000)}
-                </h3>
-                <a
-                  href="/dashboard/car/1"
-                  className="border-stroke text-body-color dark:border-dark-3 dark:text-dark-6 inline-block rounded-md border px-7 py-[10px] text-sm font-medium transition hover:border-primary hover:bg-primary hover:text-white"
-                >
-                  View Details
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="w-full px-4 md:w-1/2 xl:w-1/3">
-            <div className="relative mb-12">
-              <div className="overflow-hidden rounded-[10px]">
-                <Image
-                  src="https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="portfolio"
-                  width={400}
-                  height={300}
-                  className=" w-full"
-                />
-              </div>
-              <div className="shadow-portfolio dark:bg-dark-2 dark:shadow-box-dark relative z-10 mx-7 -mt-20 rounded-lg bg-white px-3 py-[34px] text-center">
-                <span className="mb-2 block text-sm font-medium text-primary">
-                  Toyota 2020
-                </span>
-                <h3 className="text-dark mb-5 text-xl font-bold dark:text-white">
-                  {priceFormatter.format(100000)}
-                </h3>
-                <a
-                  href="/dashboard/car/1"
-                  className="border-stroke text-body-color dark:border-dark-3 dark:text-dark-6 inline-block rounded-md border px-7 py-[10px] text-sm font-medium transition hover:border-primary hover:bg-primary hover:text-white"
-                >
-                  View Details
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="w-full px-4 md:w-1/2 xl:w-1/3">
-            <div className="relative mb-12">
-              <div className="overflow-hidden rounded-[10px]">
-                <Image
-                  src="https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="portfolio"
-                  width={400}
-                  height={300}
-                  className="w-full"
-                />
-              </div>
-              <div className="shadow-portfolio dark:bg-dark-2 dark:shadow-box-dark relative z-10 mx-7 -mt-20 rounded-lg bg-white px-3 py-[34px] text-center">
-                <span className="mb-2 block text-sm font-medium text-primary">
-                  Bugatti Veron 2020
-                </span>
-                <h3 className="text-dark mb-5 text-xl font-bold dark:text-white">
-                  {priceFormatter.format(450000)}
-                </h3>
-                <a
-                  href="/dashboard/car/1"
-                  className="border-stroke text-body-color dark:border-dark-3 dark:text-dark-6 inline-block rounded-md border px-7 py-[10px] text-sm font-medium transition hover:border-primary hover:bg-primary hover:text-white"
-                >
-                  View Details
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="w-full px-4 md:w-1/2 xl:w-1/3">
-            <div className="relative mb-12">
-              <div className="overflow-hidden rounded-[10px]">
-                <Image
-                  src="https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="portfolio"
-                  width={400}
-                  height={300}
-                  className="w-full"
-                />
-              </div>
-              <div className="shadow-portfolio dark:bg-dark-2 dark:shadow-box-dark relative z-10 mx-7 -mt-20 rounded-lg bg-white px-3 py-[34px] text-center">
-                <span className="mb-2 block text-sm font-medium text-primary">
-                  Honda 2020
-                </span>
-                <h3 className="text-dark mb-5 text-xl font-bold dark:text-white">
-                  {priceFormatter.format(300000)}
-                </h3>
-                <a
-                  href="/dashboard/car/1"
-                  className="border-stroke text-body-color dark:border-dark-3 dark:text-dark-6 inline-block rounded-md border px-7 py-[10px] text-sm font-medium transition hover:border-primary hover:bg-primary hover:text-white"
-                >
-                  View Details
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="w-full px-4 md:w-1/2 xl:w-1/3">
-            <div className="relative mb-12">
-              <div className="overflow-hidden rounded-[10px]">
-                <Image
-                  src="https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="portfolio"
-                  width={400}
-                  height={300}
-                  className="w-full"
-                />
-              </div>
-              <div className="shadow-portfolio dark:bg-dark-2 dark:shadow-box-dark relative z-10 mx-7 -mt-20 rounded-lg bg-white px-3 py-[34px] text-center">
-                <span className="mb-2 block text-sm font-medium text-primary">
-                  Mercedez-Benz 2020
-                </span>
-                <h3 className="text-dark mb-5 text-xl font-bold dark:text-white">
-                  {priceFormatter.format(200000)}
-                </h3>
-                <a
-                  href="/dashboard/car/1"
-                  className="border-stroke text-body-color dark:border-dark-3 dark:text-dark-6 inline-block rounded-md border px-7 py-[10px] text-sm font-medium transition hover:border-primary hover:bg-primary hover:text-white"
-                >
-                  View Details
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -3141,10 +3039,8 @@ export const Services = () => {
         <div className="-mx-4 flex flex-wrap">
           <div className="w-full px-4">
             <div className="mx-auto mb-12 max-w-[510px] text-center lg:mb-20">
-              <span className="mb-2 block text-lg font-semibold text-primary">
-                Our Services
-              </span>
-              <h2 className="text-dark mb-3 text-3xl font-bold leading-[1.2] dark:text-white sm:text-4xl md:text-[40px]">
+
+              <h2 className="text-dark text-primary mb-3 text-3xl font-bold leading-[1.2] dark:text-white sm:text-4xl md:text-[40px]">
                 What We Offer
               </h2>
               <p className="text-body-color dark:text-dark-6 text-base">

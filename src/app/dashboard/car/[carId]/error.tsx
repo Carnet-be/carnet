@@ -9,8 +9,8 @@ import { useEffect } from "react";
 import { BiHome } from "react-icons/bi";
 import { GrLogout } from "react-icons/gr";
 import { IoReload } from "react-icons/io5";
-import { BackIcon } from "./_components/icons";
-import BackButton from "./_components/ui/backButton";
+import { BackIcon } from "~/app/_components/icons";
+
 
 export default function Error({
   error,
@@ -33,42 +33,28 @@ export default function Error({
           <Image src="/logo.png" width={200} height={200} alt="Error" />
 
           <div className="mt-10 text-3xl font-bold md:text-5xl lg:text-6xl xl:text-7xl">
-            An error occurred
+            Car not found
           </div>
 
           <div className="mt-8 max-w-2xl text-center text-sm  text-gray-400">
-            We apologize for the inconvenience. It seems like something unexpected happened on our end. Our team is actively working to fix the issue and get everything back to normal as soon as possible. Your patience and understanding are greatly appreciated. In the meantime, if you have any urgent concerns or questions, please don't hesitate to reach out to us. Thank you for your understanding.
+            The car you are looking for is not available. Please try again later
           </div>
           <div className="flex flex-row gap-7 items-center">
-          <Button
-
-            onClick={() => {
-              router.back();
-            }}
-            startContent={<BackIcon />}
-            variant="flat"
-           className="mt-8"
-          >
-            Back
-          </Button>
-            <Link href={"/"}>
-              <Button
-                startContent={<BiHome />}
-                color={"primary"} className="mt-8">
-                Home Page
-              </Button>
-            </Link>
-
             <Button
-              startContent={<GrLogout />}
-              color="danger"
-              onClick={() => signOut(() => router.push("/"))}
-              className="mt-8">
-              Logout
+              className="mt-8"
+              onClick={() => {
+                router.back();
+              }}
+              startContent={<BackIcon />}
+              variant="flat"
+
+            >
+              Back
             </Button>
+
             <Button
               startContent={<IoReload />}
-               onClick={reset}
+              onClick={() => reset()}
               className="mt-8">
               Try again
             </Button>

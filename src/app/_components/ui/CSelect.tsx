@@ -2,9 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { Select, SelectItem } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, } from "@nextui-org/react";
 import React from "react";
-
 interface Props {
   label?: string;
   options: Array<{ value: string; label: string }>;
@@ -34,30 +33,37 @@ function CSelect({
   isInvalid,
 }: Props) {
   return (
-    <Select
+    <Autocomplete
       label={label}
       placeholder={placeholder}
+      selectedKey={value?.toString()}
       className={className ?? "max-w-md"}
-      selectedKeys={value ? [value?.toString()] : []}
-      required={required}
-      onChange={(e) => {
-        if (type === "number")
-          onChange(parseInt((e.target as any).value) ?? undefined);
+      // selectedKeys={value ? [value?.toString()] : []}
+      // value={typeof value === "number" ? value?.toString() : value}
+      onSelectionChange={(e) => {
+
+        if (e && type === "number")
+          onChange(parseInt(e.toString()));
         else {
-          onChange((e.target as any).value);
+          onChange(e);
         }
+
       }}
       onBlur={onBlur}
       isDisabled={isDisabled}
       isInvalid={isInvalid}
       errorMessage={error}
+
+      scrollShadowProps={{
+        isEnabled: false,
+      }}
     >
       {options.map((animal) => (
-        <SelectItem key={animal.value} value={animal.value}>
+        <AutocompleteItem key={animal.value} value={animal.value}>
           {animal.label}
-        </SelectItem>
+        </AutocompleteItem>
       ))}
-    </Select>
+    </Autocomplete>
   );
 }
 

@@ -1,5 +1,5 @@
 import { Tooltip } from "@nextui-org/react";
-import cx from "classnames"
+import cx from "classnames";
 
 const RatingStar = ({
     value = 0,

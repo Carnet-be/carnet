@@ -24,7 +24,10 @@ export default async function CarPage({
   view?: "admin" | "owner" | "user" | "garage"
 }) {
   const carId: number = parseInt(params.carId!);
-  const car = await api.car.getCarById.query(carId);
+  const car = await api.car.getCarById.query({
+    id: carId,
+    view
+  });
 
   return (
     <div>

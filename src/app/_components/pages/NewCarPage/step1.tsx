@@ -5,6 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Autocomplete, AutocompleteItem,
   Button,
   ScrollShadow,
   Select,
@@ -17,11 +18,20 @@ import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { type RouterInputs, type RouterOutputs } from "~/trpc/shared";
-
 import { invertColor } from "~/utils/function";
 
 import { z } from "zod";
 import CSelect from "../../ui/CSelect";
+
+
+const getListOfYearFrom1990 = () => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let i = currentYear; i >= 1990; i--) {
+    years.push(i);
+  }
+  return years;
+};
 
 const Step1 = ({
   value: defaultValues,
@@ -35,7 +45,6 @@ const Step1 = ({
   const brands = data?.brands;
   const models = data?.models;
   const colors = data?.colors;
-  const years = data?.years;
   const {
     handleSubmit,
     watch,
@@ -98,72 +107,114 @@ const Step1 = ({
             name="model"
             control={control}
             render={({ field: { value, onChange, onBlur } }) => (
-              <Select
+
+
+              <CSelect
                 isDisabled={!watch("brand")}
-                errorMessage={errors.model?.message}
+                error={errors.model?.message}
                 isInvalid={!!errors.model}
-                scrollShadowProps={{
-                  isEnabled: false,
-                }}
+
                 label={
                   watch("model")
                     ? "Model"
                     : watch("brand")
-                      ? `Select a model of ${
-                          brands.find((b) => b.id == watch("brand"))?.name
-                        }`
+                      ? `Select a model of ${brands.find((b) => b.id == watch("brand"))?.name
+                      }`
                       : "Select a model (Required)"
                 }
-                onChange={(e) => {
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                  onChange(parseInt((e.target as any).value) ?? undefined);
-                }}
+                onChange={onChange}
                 onBlur={onBlur}
                 value={value}
-                startContent={
-                  <span className="whitespace-nowrap text-[14px]">
-                    {watch("brand")
-                      ? years.find((b) => b.id == watch("model"))?.modelName
-                      : ""}
-                  </span>
-                }
-              >
-                {models
+                options={models
                   .filter((m) => m.brandId == watch("brand"))
-                  .map((m) => (
-                    <SelectSection
-                      title={m.name}
-                      key={`${m.name} ${m.brandId}`}
-                      classNames={{
-                        heading:
-                          "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-small rounded-small",
-                      }}
-                    >
-                      {years
-                        .filter((f) => f.modelName === m.name)
-                        .map((y) => (
-                          <SelectItem key={y.id} value={y.id}>
-                            {y.year?.toString()}
-                          </SelectItem>
-                        ))}
-                    </SelectSection>
-                  ))}
-              </Select>
+                  .map((m) => ({
+                    label: m.name,
+                    value: m.id.toString(),
+                  }))}
+              />
+              // <Select
+              //   isDisabled={!watch("brand")}
+              //   errorMessage={errors.model?.message}
+              //   isInvalid={!!errors.model}
+              //   scrollShadowProps={{
+              //     isEnabled: false,
+              //   }}
+              //   label={
+              //     watch("model")
+              //       ? "Model"
+              //       : watch("brand")
+              //         ? `Select a model of ${brands.find((b) => b.id == watch("brand"))?.name
+              //         }`
+              //         : "Select a model (Required)"
+              //   }
+              //   onChange={(e) => {
+              //     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+              //     onChange(parseInt((e.target as any).value) ?? undefined);
+              //   }}
+              //   onBlur={onBlur}
+              //   value={value}
+              //   startContent={
+              //     <span className="whitespace-nowrap text-[14px]">
+              //       {watch("brand")
+              //         ? models.find((b) => b.id == watch("model"))?.name
+              //         : ""}
+              //     </span>
+              //   }
+              // >
+              //   {models
+              //     .filter((m) => m.brandId == watch("brand"))
+              //     .map((m) => (
+              //       <SelectSection
+              //         title={m.name}
+              //         key={`${m.name} ${m.brandId}`}
+              //         classNames={{
+              //           heading:
+              //             "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-small rounded-small",
+              //         }}
+              //       >
+              //         {models.map((y) => (
+              //           <SelectItem key={y.id} value={y.id}>
+              //             {y.year?.toString()}
+              //           </SelectItem>
+              //         ))}
+              //       </SelectSection>
+              //     ))}
+              // </Select>
             )}
           />
         </div>
         <div className="flex flex-row items-center gap-4">
+          <Controller
+            name="year"
+            control={control}
+            render={({ field: { value, onChange, onBlur } }) => (
+              <CSelect
+                type="number"
+                className="w-[500px]"
+                label={
+                  watch("year")
+                    ? "Year of the car"
+                    : "Select the year of your car"
+                }
+                onChange={onChange}
+                onBlur={onBlur}
+                value={value?.toString()}
+                options={getListOfYearFrom1990().map((b) => ({
+                  label: b.toString(),
+                  value: b.toString(),
+                }))}
+              />
+            )}
+          />
           <Controller
             name="state"
             control={control}
             render={({ field: { value, onChange, onBlur } }) => (
               <CSelect
                 type="text"
-                className="w-[300px]"
+                className="w-[400px]"
                 label={
-                  watch("state")
-                    ? "State"
-                    : "Select the state of your car (Required)"
+                  "State of the car"
                 }
                 onChange={onChange}
                 onBlur={onBlur}
@@ -188,10 +239,10 @@ const Step1 = ({
                 onChange={onChange}
                 onBlur={onBlur}
                 value={value?.toString()}
-                options={["gasoline", "diesel", "electricity", "hybrid"].map(
+                options={["Gasoline", "Diesel", "Electricity", "Hybrid"].map(
                   (b) => ({
                     label: b.toString(),
-                    value: b.toString(),
+                    value: b.toString().toLowerCase(),
                   }),
                 )}
               />

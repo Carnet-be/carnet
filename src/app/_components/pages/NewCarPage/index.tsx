@@ -12,6 +12,7 @@ import {
 } from "@nextui-org/react";
 import axios from "axios";
 import { AnimatePresence } from "framer-motion";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
@@ -126,9 +127,10 @@ const NewCarPage = ({
   });
   const { mutate: updateCar, isLoading: isUpdaing } =
     api.car.updateCar.useMutation({
-      onSuccess: () => {
+      onSuccess: async () => {
         setCarId(car?.id ?? 0);
-        onAddAssets({ carId: car?.id ?? 0 });
+        await onAddAssets({ carId: car?.id ?? 0 });
+        router.back();
       },
       onError: (error) => {
         console.log("error updating car", error);
@@ -256,14 +258,14 @@ const NewCarPage = ({
                 onUpdate={
                   car
                     ? (value) => {
-                        const newForm = { ...form, step6: value };
-                        updateCar({
-                          ...newForm,
-                          id: car.id!,
-                        });
-                        setIsOpen(true);
-                        setForm(newForm);
-                      }
+                      const newForm = { ...form, step6: value };
+                      updateCar({
+                        ...newForm,
+                        id: car.id!,
+                      });
+                      setIsOpen(true);
+                      setForm(newForm);
+                    }
                     : undefined
                 }
                 value={form.step6}
@@ -278,7 +280,10 @@ const NewCarPage = ({
         // backdrop="blur"
         isOpen={isLoading || isUploading || isUpdaing}
         // onOpenChange={setIsOpen}
-        isDismissable={false}
+
+        isDismissable={!(isLoading || isUploading || isUpdaing)}
+        hideCloseButton={!(isLoading || isUploading || isUpdaing)}
+
       >
         <ModalContent>
           <ModalBody className="center p-10">
@@ -293,10 +298,13 @@ const NewCarPage = ({
       </Modal>
       <Modal
         // backdrop="blur"
+        isDismissable={false}
         isOpen={isSuccess}
-        onClose={() => {
-          setIsSuccess(false);
-        }}
+
+        hideCloseButton={true}
+      // onClose={() => {
+      //   setIsSuccess(false);
+      // }}
       >
         <ModalContent>
           <ModalBody className="center p-10">
@@ -306,12 +314,22 @@ const NewCarPage = ({
               </div>
               <div className="flex -translate-y-10 flex-col items-center gap-4">
                 <span className="text-lg ">Your car has been published</span>
-                <Button
-                  color="primary"
-                  onClick={() => router.push(`/dashboard/my-cars`)}
-                >
-                  View yours cars
-                </Button>
+                <div className="flex justify-around items-end w-full gap-4">
+                  <Button
+                    color="primary"
+                    size="sm"
+                    startContent={<Plus />}
+                    onClick={() => router.replace(`/forms/car/new`)}
+                  >
+                    Add another car
+                  </Button>
+                  <Button
+                    variant="flat"
+                    onClick={() => router.push(`/dashboard/my-cars`)}
+                  >
+                    View yours cars
+                  </Button>
+                </div>
               </div>
             </div>
           </ModalBody>

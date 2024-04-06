@@ -5,6 +5,7 @@ import {
   CarSection,
   Contact,
   Footer,
+  HowItWorks,
   Pricing,
   Services,
 } from "./_components";
@@ -198,6 +199,7 @@ export default function Page() {
           </div>
         </div>
       </div>
+      <HowItWorks />
       <CarSection />
       <About />
 

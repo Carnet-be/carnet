@@ -2,33 +2,35 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import {
-  OrganizationSwitcher,
-  UserButton,
-  useAuth,
-  useUser,
+    OrganizationSwitcher,
+    UserButton,
+    useAuth,
+    useUser,
 } from "@clerk/nextjs";
 import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  Spinner,
+    Button,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger,
+    Spinner,
 } from "@nextui-org/react";
-import { Bell, Dot } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import {  Dot } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, {  useState } from "react";
 import toast from "react-hot-toast";
 import { GiHomeGarage } from "react-icons/gi";
 import { IoAnalyticsSharp } from "react-icons/io5";
 import { MdAdd, MdModeEditOutline, MdVisibility } from "react-icons/md";
 import { api } from "~/trpc/react";
-import { ADMIN_ROLES, type AdminRole } from "~/utils/constants";
+
 import ContactProfileSeciton from "./pages/profile/contact";
 import Logo from "./ui/logo";
 const Navbar = ({
   auth,
+  isAdmin = false,
 }: {
+  isAdmin?:boolean,
   auth: {
     orgId: string;
     userId: string;
@@ -36,15 +38,10 @@ const Navbar = ({
 }) => {
   const { orgId, userId } = auth;
 
-  const { user } = useUser();
-  const role = user?.publicMetadata?.role as AdminRole | undefined;
-  const [isAdmin, setIsAdmin] = React.useState<boolean | undefined>(false);
-  useEffect(() => {
-    setIsAdmin(role && ADMIN_ROLES.includes(role));
-  }, [role, user]);
+
 
   const searchParams = useSearchParams();
-  const pathname = usePathname();
+
   const router = useRouter();
   const [seach, setSearch] = useState(searchParams.get("q") ?? "");
   return (

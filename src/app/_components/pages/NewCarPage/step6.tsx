@@ -72,6 +72,7 @@ const Step6 = ({
     ),
   });
 
+  console.log(value);
   return (
     <motion.form
       initial={{ opacity: 0.2, y: -100 }}
@@ -193,6 +194,7 @@ const Step6 = ({
                     <Input
                       label="Price"
                       type="number"
+                      defaultValue={(value.price?.toString() ?? undefined)}
                       {...register("price")}
                       isInvalid={!!errors.price}
                       errorMessage={errors.price?.message}

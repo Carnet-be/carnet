@@ -110,8 +110,8 @@ const Step5 = ({
                 label={
                   watch("country")
                     ? `Select a city of ${countries.find(
-                        (c) => c.id == watch("country"),
-                      )?.name}`
+                      (c) => c.id == watch("country"),
+                    )?.name}`
                     : `City`
                 }
                 isDisabled={!watch("country")}
@@ -127,7 +127,7 @@ const Step5 = ({
             )}
           />
 
-          <div className="space-y-3">
+          {/* <div className="space-y-3">
             <Input
               label="Address"
               placeholder="Where is exactly your car located? (optional)"
@@ -148,7 +148,7 @@ const Step5 = ({
               }}
               errorMessage={errors.zipCode?.message}
             />
-          </div>
+          </div> */}
 
           <Controller
             name="pos"
@@ -159,21 +159,21 @@ const Step5 = ({
                   center={
                     field?.value
                       ? {
-                          lat: field?.value.lat,
-                          lng: field?.value.lng,
-                        }
+                        lat: field?.value.lat,
+                        lng: field?.value.lng,
+                      }
                       : undefined
                   }
-                  className="overflow-hidden rounded-xl"
+                  className="overflow-hidden rounded-xl col-span-2 h-[200px]"
                   onClick={(pos) => field.onChange(pos)}
                   markers={
                     field.value?.lat && field.value?.lng
                       ? [
-                          {
-                            lat: field.value.lat,
-                            lng: field.value.lng,
-                          },
-                        ]
+                        {
+                          lat: field.value.lat,
+                          lng: field.value.lng,
+                        },
+                      ]
                       : undefined
                   }
                 />

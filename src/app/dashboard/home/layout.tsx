@@ -10,7 +10,7 @@ import { type AdminRole } from "~/utils/constants";
 
 async function DashboardLayout({ children }: any) {
   const user = await currentUser();
-  const role = user?.publicMetadata?.role as AdminRole | undefined;
+  const role = user?.privateMetadata?.role as AdminRole | undefined;
   if (role) redirect("admin/overview");
   return children;
 }

@@ -122,7 +122,7 @@ export const protectedProcedure = t.procedure.use((opts) => {
 
 export const adminProcedure = t.procedure.use((opts) => {
   const { auth } = opts.ctx;
-  const isAdmin = auth?.user?.publicMetadata?.role === "admin";
+  const isAdmin = auth?.user?.privateMetadata?.role === "admin";
   if (!isAdmin) {
     throw new Error("You are not an admin");
   }

@@ -1,16 +1,17 @@
 "use client";
-import { Button } from "@nextui-org/react";
-import { CarFront, CrownIcon, Home, Users2 } from "lucide-react";
+import { Button, cn } from "@nextui-org/react";
+import { CarFront, CrownIcon, Home, Settings, Users2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AiFillCar } from "react-icons/ai";
 import { RiAuctionLine } from "react-icons/ri";
-import useIsAdmin from "~/hooks/use-is-admin";
 import MenuItem, { type TMenuItem } from "./MenuItem";
 import { GarageIcon } from "./icons";
 
-const Sidebar = () => {
-  const admin = useIsAdmin();
+const Sidebar = ({ isAdmin = false }: {
+  isAdmin?: boolean
+}) => {
+
   const menuAdmin: TMenuItem[] = [
     {
       label: "Overview",
@@ -113,7 +114,7 @@ const Sidebar = () => {
           </div>
         </form>
         <ul className="space-y-3">
-          {(admin ? menuAdmin : menu).map((m, i) => {
+          {(isAdmin ? menuAdmin : menu).map((m, i) => {
             return (
               <li key={i}>
                 <MenuItem>{m}</MenuItem>
@@ -121,7 +122,7 @@ const Sidebar = () => {
             );
           })}
         </ul>
-        {!admin && (
+        {!isAdmin && (
           <>
             <div className="my-7 border-t border-gray-200"></div>
             <ul className=" space-y-2  dark:border-gray-700">
@@ -154,7 +155,7 @@ const Sidebar = () => {
       </div>
       <div className="absolute bottom-0 left-0 z-20 hidden w-full justify-center space-x-4 bg-white p-8 dark:bg-gray-800 lg:flex">
         <ul className="w-full space-y-2">
-          {!admin && (
+          {!isAdmin && (
             <li>
               <Link
                 href="https://buy.stripe.com/test_5kA9DH9UXaeubracMN"
@@ -167,20 +168,20 @@ const Sidebar = () => {
               </Link>
             </li>
           )}
-          {/* <li>
+          <li>
             <Link
-              href="/dashboard/settings"
+              href={isAdmin ? "/dashboard/admin/settings" : "/dashboard/settings"}
               className={cn(
                 "group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 no-underline hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700",
-                !pathname.includes("/dashboard/settings")
-                  ? "bg-gray-100 dark:bg-gray-700"
+                !pathname.includes("/settings")
+                  ? "bg-gray-50"
                   : "bg-primary text-white",
               )}
             >
               <Settings />
               <span className="ml-3">Settings</span>
             </Link>
-          </li> */}
+          </li>
         </ul>
       </div>
     </aside>

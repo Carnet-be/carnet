@@ -34,31 +34,7 @@ const presignedUrl = publicProcedure.mutation(async () => {
   };
 });
 
-const groupModelYear = (data: InferSelectModel<typeof models>[]) => {
-  const names: {
-    id: number;
-    name: string;
-    brandId: number;
-  }[] = [];
-  data.forEach((d) => {
-    const { id, name, brandId } = d;
-    if (!names.find((n) => n.name === name && n.brandId === brandId)) {
-      names.push({ id, name, brandId });
-    }
-  });
-  const years = data
-    .filter((d) => d.year)
-    .map((d) => ({
-      id: d.id,
-      year: d.year!,
-      modelName: d.name,
-    }))
-    .sort((a, b) => b.year - a.year);
-  return {
-    models: names,
-    years,
-  };
-};
+
 export const publicRouter = createTRPCRouter({
   presignedUrl,
   carData: publicProcedure.query(async ({ ctx }) => {
@@ -75,7 +51,7 @@ export const publicRouter = createTRPCRouter({
       cities: cties,
       carOptions: opts,
       brands: brds,
-      ...groupModelYear(modelsData),
+      models: modelsData,
 
       bodies: bdy,
       colors: clors,

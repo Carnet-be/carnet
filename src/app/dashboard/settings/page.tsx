@@ -1,35 +1,54 @@
-"use client";
-import { UserButton, UserProfile } from "@clerk/nextjs";
-import { DotIcon } from "lucide-react";
+"use client"
+import { OrganizationList, OrganizationProfile, OrganizationSwitcher, UserButton, UserProfile, useAuth } from "@clerk/nextjs";
+import { Tab, Tabs } from "@nextui-org/react";
+import { Dot } from "lucide-react";
+import { type ReactNode } from "react";
+import { default as ContactProfileSeciton, } from "~/app/_components/pages/profile/contact";
 
-const SettingPage = () => {
-  return (
-    <div className="">
-      {/* <UserProfile /> */}
-      <UserButton afterSignOutUrl="/">
-        {/* You can pass the content as a component */}
-        <UserButton.UserProfilePage
-          label="Custom Page"
-          url="custom"
-          labelIcon={<DotIcon />}
-        >
-          <UserProfile />
-        </UserButton.UserProfilePage>
+const LayoutSettings = () => {
+  const { userId, orgId } = useAuth();
+  if (!userId) return null;
+  return <div>
+    <Tabs aria-label="Options">
+      {orgId && <Tab key="organization" title="Organization">
+        <OrganizationProfile path="settings" appearance={{
+          elements: {
+            card: "shadow-none"
+          }
+        }} >
+          <OrganizationSwitcher.OrganizationProfilePage
+            label="Contact"
+            labelIcon={<Dot size={18} />}
+            url="contact-org"
+          >
+            <ContactProfileSeciton id={orgId} />
+          </OrganizationSwitcher.OrganizationProfilePage>
+        </OrganizationProfile>
+      </Tab>
+      }
+      <Tab key="personal" title="Personal">
+        <UserProfile
+          path="settings"
+          appearance={{
+            elements: {
+              card: "shadow-none"
+            }
+          }} >
+          <UserButton.UserProfilePage
+            label="Contact"
+            labelIcon={<Dot size={18} />}
+            url="contact"
+          >
+            <ContactProfileSeciton id={userId!} />
+          </UserButton.UserProfilePage>
+        </UserProfile>
+      </Tab>
 
-        {/* You can also pass the content as direct children */}
-        <UserButton.UserProfilePage
-          label="Terms"
-          labelIcon={<DotIcon />}
-          url="terms"
-        >
-          <div>
-            <h1>Custom Terms Page</h1>
-            <p>This is the custom terms page</p>
-          </div>
-        </UserButton.UserProfilePage>
-      </UserButton>
-    </div>
-  );
-};
+    </Tabs>
 
-export default SettingPage;
+
+
+  </div>
+}
+
+export default LayoutSettings;

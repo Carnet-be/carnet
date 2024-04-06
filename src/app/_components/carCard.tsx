@@ -36,29 +36,34 @@ export const getPrice = ({
 const CarCard = ({
   children: car,
   className,
-  link
+  link,
 }: {
   children: InferSelectModel<typeof cars> & {
     images: InferSelectModel<typeof assets>[];
   };
   className?: string;
-  link?: string
+  link?: string;
 }) => {
   const primaryImage = getCarImage(car.images?.[0]?.key);
 
   return (
-    <div
+    <Link
+      href={link ?? `/dashboard/car/${car.id}`}
       style={{
         boxShadow: "0px 0px 65px -58px rgba(0,0,0,0.7)",
       }}
-      className={cn("overflow-hidden rounded-xl bg-gray-50", className)}
+      className={cn(
+        "overflow-hidden rounded-xl bg-gray-50 transition duration-300 hover:shadow-2xl group",
+        className,
+      )}
     >
-      <div className="relative aspect-[5/3]">
+      <div className="relative aspect-[5/3]  overflow-hidden">
         <Image
           priority
           src={primaryImage}
           layout="fill"
           objectFit="cover"
+          className="transition duration-400 group-hover:scale-110"
           alt={car.name}
         />
       </div>
@@ -86,7 +91,7 @@ const CarCard = ({
           </Link>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

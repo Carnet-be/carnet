@@ -42,7 +42,7 @@ const Step4 = ({
     >
       <h2 className="text-center text-xl">Rate each parts of your car</h2>
 
-      <div className="space-y-5">
+      <div className="space-y-10">
         <Controller
           control={control}
           render={({ field: { value, onChange } }) => (

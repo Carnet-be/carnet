@@ -16,7 +16,7 @@ export default async function NewCar({
   console.log("carId", carId);
   let car;
   if (carId && carId !== "new") {
-    car = await api.car.getCarById.query(Number(carId));
+    car = await api.car.getCarById.query({ id: Number(carId), mine: true });
     console.log("car", car);
     if (!car) {
       return notFound();
@@ -27,7 +27,7 @@ export default async function NewCar({
     if (
       car.belongsTo !== orgId &&
       car.belongsTo !== userId &&
-      user?.publicMetadata?.role !== "admin"
+      user?.privateMetadata?.role !== "admin"
     ) {
       console.log("not mine");
       return notFound();

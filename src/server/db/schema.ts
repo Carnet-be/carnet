@@ -254,13 +254,12 @@ export const models = pgTable(
       .notNull()
       .references(() => brands.id),
     createdAt: timestamp("created_at").defaultNow(),
-    year: integer("year"),
   },
   (table) => {
     return {
-      modelsNameYearUnique: unique("models_name_year_unique").on(
+      modelsNameYearUnique: unique("models_name_brand_unique").on(
         table.name,
-        table.year,
+        table.brandId,
       ),
     };
   },

@@ -5,9 +5,9 @@ import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { type AdminRole } from "~/utils/constants";
 
-export default async function  DashboardPage() {
-   const user = await currentUser()
-   const role=user?.publicMetadata?.role as (AdminRole | undefined)
-   if(role) redirect('dashboard/admin/overview')
-   redirect("/dashboard/home");
+export default async function DashboardPage() {
+  const user = await currentUser()
+  const role = user?.privateMetadata?.role as (AdminRole | undefined)
+  if (role) redirect('dashboard/admin/overview')
+  redirect("/dashboard/home");
 }

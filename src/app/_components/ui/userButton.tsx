@@ -2,6 +2,7 @@ import { currentUser } from "@clerk/nextjs";
 import { Avatar, Button, Card, CardBody, CardFooter, CardHeader, Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger, User } from "@nextui-org/react";
 import Link from "next/link";
 import { MdDashboard, MdLogout, MdPerson } from "react-icons/md";
+import LogoutButton from "./logoutButton";
 
 async function UserButton() {
   let user;
@@ -10,6 +11,7 @@ async function UserButton() {
   } catch (e) {
     console.error(e);
   }
+
   if (!user) {
     return (
       <div className="flex gap-3">
@@ -28,6 +30,8 @@ async function UserButton() {
       </div>
     );
   }
+
+  const isAdmin = user.privateMetadata?.rolesv === "admin";
 
   return (
     <Popover showArrow placement="bottom">
@@ -61,7 +65,7 @@ async function UserButton() {
                 Dashboard
               </Button>
             </Link>
-            <Link href="/dashboard">
+            <Link href="/dashboard/settings">
               <Button variant="light" size="sm" fullWidth startContent={<MdPerson />} className="flex justify-start">
                 Profile
               </Button>
@@ -70,9 +74,8 @@ async function UserButton() {
 
           </CardBody>
           <CardFooter className="gap-3">
-            <Button color="danger" variant="flat" size="sm" fullWidth startContent={<MdLogout />} className="flex justify-start">
-              Logout
-            </Button>
+            <LogoutButton />
+
           </CardFooter>
         </Card>
       </PopoverContent>

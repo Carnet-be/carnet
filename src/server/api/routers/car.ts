@@ -18,6 +18,8 @@ import {
 import { TRPCClientError } from "@trpc/client";
 import { z } from "zod";
 
+import { currentUser } from "@clerk/nextjs";
+import { clerkClient } from "@clerk/nextjs/dist/types/server-helpers.server";
 import { TRPCError } from "@trpc/server";
 import { objArray } from "~/utils/dbUtils";
 import {
@@ -177,7 +179,6 @@ const addCar = protectedProcedure
         .select({
           brandName: brands.name,
           modelName: models.name,
-          year: models.year,
         })
         .from(brands)
         .innerJoin(models, eq(brands.id, models.brandId))
@@ -191,7 +192,7 @@ const addCar = protectedProcedure
         endedAt: getEndDate(duration),
         year,
         type,
-        name: `${name?.brandName} ${name?.modelName} ${name?.year}`,
+        name: `${name?.brandName} ${name?.modelName}${year ? ` ${year}` : ""}`,
         belongsTo,
         minPrice,
         maxPrice,
@@ -245,8 +246,8 @@ const updateCar = protectedProcedure
   .mutation(async ({ input, ctx }) => {
     //TODO: add state and description
     const { db } = ctx;
-
-    const { pos, ...step5 } = input.step5;
+    console.log("input", input)
+    const { pos, images, ...step5 } = input.step5;
     const { year, brand, model, ...step1 } = input.step1;
     delete step5.images;
     const lat = pos?.lat ?? null;
@@ -254,21 +255,22 @@ const updateCar = protectedProcedure
     const { options } = input.step3;
     const { mileage, doors, body, ...step2 } = input.step2;
     return db.transaction(async (trx) => {
-      const [name] = await trx
+      const [dataCar] = await trx
         .select({
           brandName: brands.name,
           modelName: models.name,
-          year: models.year,
+          modelId: models.id,
+          brandId: brands.id,
         })
         .from(brands)
         .innerJoin(models, eq(brands.id, models.brandId))
         .where(
           and(
-            eq(brands.id, input.step1.brand ?? 0),
-            eq(models.id, input.step1.model ?? 0),
+            eq(models.id, model ?? 0),
           ),
         );
-      if (!name)
+
+      if (!dataCar)
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Brand and Model not found",
@@ -280,9 +282,13 @@ const updateCar = protectedProcedure
           ...step2,
           ...input.step4,
           ...input.step6,
-          ...step5,
-          brandId: brand,
-          modelId: model,
+          // ...step5,
+          countryId: step5.country,
+          cityId: step5.city,
+          address: step5.address,
+          zipCode: step5.zipCode,
+          brandId: dataCar.brandId,
+          modelId: dataCar.modelId,
           endedAt: getEndDate(input.step6.duration),
           bodyId: body,
           kilometrage: mileage,
@@ -291,7 +297,7 @@ const updateCar = protectedProcedure
           lat,
           year,
           lon,
-          name: `${name?.brandName} ${name?.modelName} ${name?.year}`,
+          name: `${dataCar?.brandName} ${dataCar?.modelName}${year ? ` ${year}` : ""}`,
         })
         .where(eq(cars.id, input.id));
       await trx.delete(carToOption).where(eq(carToOption.carId, input.id));
@@ -303,7 +309,7 @@ const updateCar = protectedProcedure
           })),
         );
 
-      return cars.id;
+      return input.id;
     });
   });
 const addAssets = protectedProcedure
@@ -330,15 +336,16 @@ const addAssets = protectedProcedure
       : [];
   });
 
-const getCars = protectedProcedure
+const getCars = publicProcedure
   .input(
     z.object({
       cursor: z.number().nullish(),
+      limit: z.number().optional(),
     }),
   )
   .query(async ({ ctx, input }) => {
     const { db } = ctx;
-    const limit = 20;
+    const limit = input.limit ?? 20;
     const { cursor: offset = 0 } = input;
 
     const where = and(eq(cars.status, "published"));
@@ -380,10 +387,23 @@ const getCars = protectedProcedure
   });
 
 const getCarById = publicProcedure
-  .input(z.number())
+  .input(z.object({
+    id: z.number(),
+    mine: z.boolean().optional(),
+  }))
   .query(async ({ input, ctx }) => {
     const { db } = ctx;
-
+    const { userId, orgId } = ctx.auth;
+    const belongsId = orgId ?? userId;
+    let isAdmin = false;
+    if (userId) {
+      const user = await currentUser()
+      isAdmin = user?.privateMetadata?.role === "admin"
+    }
+    const where = and(
+      eq(cars.id, input.id),
+      isAdmin ? undefined : input.mine && belongsId ? eq(cars.belongsTo, belongsId) : sql`CASE WHEN ${cars.status} = 'published' THEN TRUE ELSE ${cars.belongsTo} = ${belongsId} END`
+    );
     const [result] = await db
       .select({
         ...getTableColumns(cars),
@@ -409,9 +429,12 @@ const getCarById = publicProcedure
       .leftJoin(carOptions, eq(carToOption.optionId, carOptions.id))
       .leftJoin(colors, eq(cars.color, colors.id))
       .leftJoin(bodies, eq(cars.bodyId, bodies.id))
-      .where(eq(cars.id, input))
+      .where(where)
       .groupBy(() => [cars.id, brands.id, models.id, bodies.id, colors.id]);
-    if (!result) new TRPCClientError("Car not found");
+    if (!result) throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Car not found",
+    });
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     // image without duplicates
 
@@ -428,7 +451,7 @@ const getCarById = publicProcedure
     };
   });
 
-const getMyCars = protectedProcedure.input(z.string().optional().nullable()).query(async ({ ctx, input }) => {
+const getMyCars = publicProcedure.input(z.string().optional().nullable()).query(async ({ ctx, input }) => {
   const { db } = ctx;
 
   const result = await db
