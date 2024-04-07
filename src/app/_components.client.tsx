@@ -63,12 +63,18 @@ export const InteractCard = () => {
             <Autocomplete
               label="Brand"
               placeholder="Search a brand"
+              inputProps={{
+                classNames: {
 
+                  inputWrapper: " bg-white",
+                },
+              }}
               labelPlacement="outside"
 
               // className="max-w-xs"
               scrollShadowProps={{
-                isEnabled: false
+                isEnabled: false,
+
               }}
             >
               {[].map((animal) => (
@@ -79,6 +85,12 @@ export const InteractCard = () => {
             </Autocomplete>
             <Autocomplete
               label="Model"
+              inputProps={{
+                classNames: {
+
+                  inputWrapper: " bg-white",
+                },
+              }}
               placeholder="Search a model"
 
               labelPlacement="outside"
@@ -97,7 +109,12 @@ export const InteractCard = () => {
             <Autocomplete
               label="Year"
               placeholder="Search a year"
+              inputProps={{
+                classNames: {
 
+                  inputWrapper: " bg-white",
+                },
+              }}
               labelPlacement="outside"
 
               // className="max-w-xs"
@@ -115,7 +132,12 @@ export const InteractCard = () => {
             <Autocomplete
               label="Fuel"
               placeholder="Search a brand"
+              inputProps={{
+                classNames: {
 
+                  inputWrapper: " bg-white",
+                },
+              }}
               labelPlacement="outside"
 
               // className="max-w-xs"
@@ -144,6 +166,6 @@ export const InteractCard = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 }

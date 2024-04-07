@@ -97,8 +97,8 @@ export default function Page() {
       <div>
         <div className="dark:bg-dark relative bg-white pb-[110px] pt-[30px] lg:pt-[50px]">
           <div className="container mx-auto">
-            <div className="-mx-4 flex flex-wrap items-center">
-              <div className="w-full px-4 lg:w-5/12">
+            <div className="-mx-4 flex gap-10 items-center">
+              <div className="grow">
                 <div className="hero-content w-full">
                   <h1 className="text-dark mb-5 text-4xl font-bold !leading-[1.208] dark:text-white sm:text-[42px] lg:text-[40px] xl:text-5xl">
                     The Greatest <br />
@@ -146,8 +146,8 @@ export default function Page() {
                   </div> */}
                 </div>
               </div>
-              <div className="hidden px-4 lg:block lg:w-1/12"></div>
-              <div className="w-full px-4 lg:w-6/12">
+
+              <div className="w-[40vw]">
                 <div className="lg:ml-auto lg:text-right">
                   <div className="relative z-10 inline-block pt-11 lg:pt-0">
                     <Image
@@ -199,9 +199,10 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <HowItWorks />
-      <CarSection />
       <About />
+      {/* <HowItWorks /> */}
+      <CarSection />
+
 
       <Services />
       {/* <Blog /> */}
