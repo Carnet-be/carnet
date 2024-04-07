@@ -2,6 +2,7 @@ import { Button, cn } from "@nextui-org/react";
 import { type InferSelectModel } from "drizzle-orm";
 import Image from "next/image";
 import Link from "next/link";
+import { RouterOutputs } from "~/trpc/shared";
 import { getCarImage, priceFormatter } from "~/utils/function";
 import { type assets, type cars } from "../../server/db/schema";
 import { AuctionIcon } from "./icons";
@@ -40,7 +41,7 @@ const CarCard = ({
 }: {
   children: InferSelectModel<typeof cars> & {
     images: InferSelectModel<typeof assets>[];
-  };
+  } | RouterOutputs['car']['getCars']['result'][number]
   className?: string;
   link?: string;
 }) => {

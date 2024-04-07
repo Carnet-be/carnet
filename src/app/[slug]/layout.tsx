@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { clerkClient } from "@clerk/nextjs";
 import { Divider } from "@nextui-org/react";
-import { Phone } from "lucide-react";
+
 import Head from "next/head";
 import Image from "next/image";
 import { notFound } from "next/navigation";

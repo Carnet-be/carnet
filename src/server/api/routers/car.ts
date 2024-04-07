@@ -4,15 +4,15 @@
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 import {
-  and,
-  desc,
-  eq,
-  getTableColumns,
-  gt,
-  lt,
-  sql,
-  type InferInsertModel,
-  type InferSelectModel,
+    and,
+    desc,
+    eq,
+    getTableColumns,
+    gt,
+    lt,
+    sql,
+    type InferInsertModel,
+    type InferSelectModel,
 } from "drizzle-orm";
 
 import { TRPCClientError } from "@trpc/client";
@@ -23,15 +23,15 @@ import { clerkClient } from "@clerk/nextjs/dist/types/server-helpers.server";
 import { TRPCError } from "@trpc/server";
 import { objArray } from "~/utils/dbUtils";
 import {
-  assets,
-  biddings,
-  bodies,
-  brands,
-  carOptions,
-  carToOption,
-  cars,
-  colors,
-  models,
+    assets,
+    biddings,
+    bodies,
+    brands,
+    carOptions,
+    carToOption,
+    cars,
+    colors,
+    models,
 } from "../../db/schema";
 
 const numSchema = z
@@ -249,7 +249,7 @@ const updateCar = protectedProcedure
     console.log("input", input)
     const { pos, images, ...step5 } = input.step5;
     const { year, brand, model, ...step1 } = input.step1;
-    delete step5.images;
+
     const lat = pos?.lat ?? null;
     const lon = pos?.lng ?? null;
     const { options } = input.step3;

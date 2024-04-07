@@ -1,6 +1,4 @@
-import { Button } from "@nextui-org/react";
-import Link from "next/link";
-import { BackIcon } from "~/app/_components/icons";
+
 import CarPage from "~/app/dashboard/car/[carId]/_component.server";
 import { BackGarageButton } from "./_components";
 

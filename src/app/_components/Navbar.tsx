@@ -5,7 +5,6 @@ import {
     OrganizationSwitcher,
     UserButton,
     useAuth,
-    useUser,
 } from "@clerk/nextjs";
 import {
     Button,
@@ -15,9 +14,9 @@ import {
     DropdownTrigger,
     Spinner,
 } from "@nextui-org/react";
-import {  Dot } from "lucide-react";
+import { Dot } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { GiHomeGarage } from "react-icons/gi";
 import { IoAnalyticsSharp } from "react-icons/io5";

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { api } from "~/trpc/server";
-import { priceFormatter } from "~/utils/function";
+
 import CarCard from "./_components/carCard";
 import Logo from "./_components/ui/logo";
 
@@ -3019,7 +3019,7 @@ export const CarSection = async () => {
         <div className="-mx-4 flex flex-wrap justify-center"></div>
         <div className="grid grid-cols-4 gap-5 items-center justify-center">
           {cars?.result.map((car) => (
-            <CarCard key={car.id} className="bg-white">{car as any}</CarCard>
+            <CarCard key={car.id} className="bg-white">{{ ...car }}</CarCard>
           )
           )}
 

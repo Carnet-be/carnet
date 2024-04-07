@@ -37,20 +37,20 @@ export default function Error({
           </div>
 
           <div className="mt-8 max-w-2xl text-center text-sm  text-gray-400">
-            We apologize for the inconvenience. It seems like something unexpected happened on our end. Our team is actively working to fix the issue and get everything back to normal as soon as possible. Your patience and understanding are greatly appreciated. In the meantime, if you have any urgent concerns or questions, please don't hesitate to reach out to us. Thank you for your understanding.
+            {"We apologize for the inconvenience. It seems like something unexpected happened on our end. Our team is actively working to fix the issue and get everything back to normal as soon as possible. Your patience and understanding are greatly appreciated. In the meantime, if you have any urgent concerns or questions, please don't hesitate to reach out to us. Thank you for your understanding."}
           </div>
           <div className="flex flex-row gap-7 items-center">
-          <Button
+            <Button
 
-            onClick={() => {
-              router.back();
-            }}
-            startContent={<BackIcon />}
-            variant="flat"
-           className="mt-8"
-          >
-            Back
-          </Button>
+              onClick={() => {
+                router.back();
+              }}
+              startContent={<BackIcon />}
+              variant="flat"
+              className="mt-8"
+            >
+              Back
+            </Button>
             <Link href={"/"}>
               <Button
                 startContent={<BiHome />}
@@ -68,7 +68,7 @@ export default function Error({
             </Button>
             <Button
               startContent={<IoReload />}
-               onClick={reset}
+              onClick={reset}
               className="mt-8">
               Try again
             </Button>
