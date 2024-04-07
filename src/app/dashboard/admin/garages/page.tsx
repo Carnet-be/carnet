@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 "use client";
 import {
-  Button,
-  Chip,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  Pagination,
-  Spinner,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-  getKeyValue,
+    Button,
+    Chip,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger,
+    Pagination,
+    Spinner,
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader,
+    TableRow,
+    getKeyValue,
 } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -96,7 +96,7 @@ export default function CarPageEntreprise() {
         const color = item.state === "published" ? "success" : "warning";
         return (
           <Chip size="sm" color={color}>
-            {item.state}
+            {item.state ?? 'draft'}
           </Chip>
         );
       case "createdAt":

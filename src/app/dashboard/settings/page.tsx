@@ -11,7 +11,7 @@ const LayoutSettings = () => {
   return <div>
     <Tabs aria-label="Options">
       {orgId && <Tab key="organization" title="Organization">
-        <OrganizationProfile path="settings" appearance={{
+        <OrganizationProfile path="/dashboard/settings" appearance={{
           elements: {
             card: "shadow-none"
           }
@@ -19,7 +19,7 @@ const LayoutSettings = () => {
           <OrganizationSwitcher.OrganizationProfilePage
             label="Contact"
             labelIcon={<Dot size={18} />}
-            url="contact-org"
+            url="contact"
           >
             <ContactProfileSeciton id={orgId} />
           </OrganizationSwitcher.OrganizationProfilePage>
@@ -28,7 +28,7 @@ const LayoutSettings = () => {
       }
       <Tab key="personal" title="Personal">
         <UserProfile
-          path="settings"
+          path="/dashboard/settings"
           appearance={{
             elements: {
               card: "shadow-none"

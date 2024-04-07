@@ -1,7 +1,9 @@
 import { currentUser } from "@clerk/nextjs";
 import { Avatar, Button, Card, CardBody, CardFooter, CardHeader, Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger, User } from "@nextui-org/react";
 import Link from "next/link";
+import { BiCar } from "react-icons/bi";
 import { MdDashboard, MdLogout, MdPerson } from "react-icons/md";
+import { GarageIcon } from "../icons";
 import LogoutButton from "./logoutButton";
 
 async function UserButton() {
@@ -47,7 +49,7 @@ async function UserButton() {
         />
       </PopoverTrigger>
       <PopoverContent className="p-1">
-        <Card shadow="none" className="max-w-[300px] border-none bg-transparent">
+        <Card shadow="none" className="w-[300px] border-none bg-transparent">
           <CardHeader className="justify-between">
             <div className="flex gap-3">
               <Avatar isBordered radius="full" size="md" src={user.imageUrl} />
@@ -60,11 +62,29 @@ async function UserButton() {
           <CardBody className="px-3 py-0 space-y-1">
 
 
-            <Link href="/dashboard">
+            {isAdmin ? <Link href="/dashboard/admin">
               <Button variant="light" size="sm" fullWidth startContent={<MdDashboard />} className="flex justify-start">
                 Dashboard
               </Button>
+            </Link> : <Link href="/dashboard/home">
+              <Button variant="light" size="sm" fullWidth startContent={<MdDashboard />} className="flex justify-start">
+                Marketplace
+              </Button>
+            </Link>}
+            <Link href={isAdmin ? "/dashboard/admin/garages" : "/dashboard/garages"}>
+              <Button variant="light" size="sm" fullWidth startContent={<GarageIcon />} className="flex justify-start">
+                Garages
+              </Button>
             </Link>
+            {isAdmin ? <Link href="/dashboard/admin/cars">
+              <Button variant="light" size="sm" fullWidth startContent={<BiCar />} className="flex justify-start">
+                Cars
+              </Button>
+            </Link> : <Link href="/dashboard/my-cars">
+              <Button variant="light" size="sm" fullWidth startContent={<BiCar />} className="flex justify-start">
+                My cars
+              </Button>
+            </Link>}
             <Link href="/dashboard/settings">
               <Button variant="light" size="sm" fullWidth startContent={<MdPerson />} className="flex justify-start">
                 Profile
