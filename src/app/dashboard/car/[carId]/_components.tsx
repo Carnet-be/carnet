@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
@@ -17,6 +16,7 @@ import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { MdVisibility } from "react-icons/md";
+import ImageGallery from "react-image-gallery";
 import { useInterval } from "usehooks-ts";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -380,8 +380,19 @@ export const ImagesSection = ({ images }: { images: string[] }) => {
   const prev = () =>
     (carousel.current as any)?.scrollBy({ left: -300, behavior: "smooth" });
   return (
-    <div>
+    <div className="relative">
+
       <div className="relative flex aspect-[3/2] w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border bg-white">
+        {/* {* <ImageGallery items={images.map((e) => ({
+          original: getCarImage(e),
+          thumbnail: getCarImage(e),
+          orignalHeight: 500,
+          originalWidth: 500,
+          thumbnailHeight: 100,
+          thumbnailWidth: 100,
+
+        }))} /> *} */}
+
         <Image
           onClick={() => onSelectImg(currentImage)}
           src={getCarImage(currentImage)}

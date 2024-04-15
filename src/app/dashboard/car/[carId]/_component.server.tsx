@@ -2,19 +2,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 import { clerkClient } from "@clerk/nextjs";
 import cx from "classnames";
 import Image from "next/image";
+
 import BackButton from "~/app/_components/ui/backButton";
 import Map from "~/app/_components/ui/map";
 import { api } from "~/trpc/server";
 import { type RouterOutputs } from "~/trpc/shared";
 import {
-    BidSection,
-    ContactSection,
-    ContentCarPage,
-    ImagesSection,
+  BidSection,
+  ContactSection,
+  ContentCarPage,
+  ImagesSection,
 } from "./_components";
 export default async function CarPage({
   params,
@@ -45,6 +45,7 @@ const LeftSide = ({ car }: { car: RouterOutputs["car"]["getCarById"] }) => {
   return (
     <div className="flex  w-full flex-grow flex-col gap-3 lg:w-[57%]">
       <ImagesSection images={car.images} />
+
       <div className="py-2"></div>
       <ContentCarPage car={car} />
     </div>

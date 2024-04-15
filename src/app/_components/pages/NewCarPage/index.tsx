@@ -4,11 +4,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  Spinner,
+    Button,
+    Modal,
+    ModalBody,
+    ModalContent,
+    Spinner,
 } from "@nextui-org/react";
 import axios from "axios";
 import { AnimatePresence } from "framer-motion";
@@ -325,6 +325,7 @@ const NewCarPage = ({
                   </Button>
                   <Button
                     variant="flat"
+                     size="sm"
                     onClick={() => router.push(`/dashboard/my-cars`)}
                   >
                     View yours cars

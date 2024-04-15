@@ -1,10 +1,10 @@
 
-import {  SignUp} from "@clerk/nextjs";
- 
+import { SignUp } from "@clerk/nextjs";
+
 export default function Example() {
 
- 
-  return <SignUp  redirectUrl={"/auth/organisation"} appearance={{
+
+  return <SignUp  redirectUrl={"/dashboard"} appearance={{
     elements:{
       card:'shadow-xl border'
     }
