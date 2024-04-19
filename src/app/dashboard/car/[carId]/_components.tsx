@@ -2,13 +2,13 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Input,
-  ScrollShadow,
-  Skeleton,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    Input,
+    ScrollShadow,
+    Skeleton,
 } from "@nextui-org/react";
 import { ChevronLeft, ChevronRight, Mail, PhoneCall } from "lucide-react";
 import Image from "next/image";
@@ -382,8 +382,8 @@ export const ImagesSection = ({ images }: { images: string[] }) => {
   return (
     <div className="relative">
 
-      <div className="relative flex aspect-[3/2] w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border bg-white">
-        {/* {* <ImageGallery items={images.map((e) => ({
+      {/* <div className="relative flex aspect-[3/2] w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border bg-white"> */}
+        <ImageGallery items={images.map((e) => ({
           original: getCarImage(e),
           thumbnail: getCarImage(e),
           orignalHeight: 500,
@@ -391,8 +391,10 @@ export const ImagesSection = ({ images }: { images: string[] }) => {
           thumbnailHeight: 100,
           thumbnailWidth: 100,
 
-        }))} /> *} */}
+        }))} />
+        {/* </div> */}
 
+{/*
         <Image
           onClick={() => onSelectImg(currentImage)}
           src={getCarImage(currentImage)}
@@ -445,7 +447,7 @@ export const ImagesSection = ({ images }: { images: string[] }) => {
             src: getCarImage(img),
           };
         })}
-      />
+      /> */}
     </div>
   );
 };
