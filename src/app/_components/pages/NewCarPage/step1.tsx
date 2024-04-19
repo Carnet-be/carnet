@@ -23,8 +23,9 @@ import { invertColor } from "~/utils/function";
 import { z } from "zod";
 import CSelect from "../../ui/CSelect";
 
+export const FUEL = ["Gasoline", "Diesel", "Electricity", "Hybrid"]
 
-const getListOfYearFrom1990 = () => {
+export const getListOfYearFrom1990 = () => {
   const currentYear = new Date().getFullYear();
   const years = [];
   for (let i = currentYear; i >= 1990; i--) {
@@ -239,7 +240,7 @@ const Step1 = ({
                 onChange={onChange}
                 onBlur={onBlur}
                 value={value?.toString()}
-                options={["Gasoline", "Diesel", "Electricity", "Hybrid"].map(
+                options={FUEL.map(
                   (b) => ({
                     label: b.toString(),
                     value: b.toString().toLowerCase(),

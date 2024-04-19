@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiSearch } from "react-icons/bi";
 import { CgAdd } from "react-icons/cg";
+import { api } from "~/trpc/react";
+import { FUEL, getListOfYearFrom1990 } from "./_components/pages/NewCarPage/step1";
 
 export const SearchButton = () => {
   const nouter = useRouter();
@@ -35,7 +37,13 @@ export const SearchButton = () => {
 
 export const InteractCard = () => {
   const [tab, setTab] = useState<"buy" | "sell">("buy")
+  const { data, isLoading } = api.public.getBrandsModel.useQuery()
+  const [brandId, setBrandId] = useState<number | undefined>(undefined)
+  const [modelId, setModelId] = useState<number | undefined>(undefined)
+  const [year, setYear] = useState<number | undefined>(undefined)
+  const [fuel, setFuel] = useState<string | undefined>(undefined)
   const router = useRouter();
+  //get years from
   return (
     <div className="w-full">
       <div className="flex flex-row gap-2">
@@ -63,6 +71,12 @@ export const InteractCard = () => {
             <Autocomplete
               label="Brand"
               placeholder="Search a brand"
+              isLoading={isLoading}
+              selectedKey={brandId}
+              onSelectionChange={(value) => {
+                setBrandId(value?.valueOf() as number)
+                setModelId(undefined)
+              }}
               inputProps={{
                 classNames: {
 
@@ -77,14 +91,15 @@ export const InteractCard = () => {
 
               }}
             >
-              {[].map((animal) => (
-                <AutocompleteItem key={animal} value={animal}>
-                  {animal}
+              {data?.brands?.map((animal) => (
+                <AutocompleteItem key={animal.id} value={animal.id}>
+                  {animal.name}
                 </AutocompleteItem>
-              ))}
+              )) ?? []}
             </Autocomplete>
             <Autocomplete
               label="Model"
+              isLoading={isLoading}
               inputProps={{
                 classNames: {
 
@@ -98,12 +113,19 @@ export const InteractCard = () => {
               scrollShadowProps={{
                 isEnabled: false
               }}
+              selectedKey={modelId}
+              onSelectionChange={(value) => {
+                setModelId(value?.valueOf() as number)
+                if (!brandId) {
+                  setBrandId(data?.models?.find((m) => m.id == value?.valueOf())?.brandId)
+                }
+              }}
             >
-              {[].map((animal) => (
-                <AutocompleteItem key={animal} value={animal}>
-                  {animal}
+              {data?.models?.filter((m) => brandId ? m.brandId == brandId : true)?.map((animal) => (
+                <AutocompleteItem key={animal.id} value={animal.id}>
+                  {animal.name}
                 </AutocompleteItem>
-              ))}
+              )) ?? []}
             </Autocomplete>
 
             <Autocomplete
@@ -121,10 +143,16 @@ export const InteractCard = () => {
               scrollShadowProps={{
                 isEnabled: false
               }}
+
+              selectedKey={year}
+              value={year}
+              onSelectionChange={(value) => {
+                setYear(value?.valueOf() as number)
+              }}
             >
-              {[].map((animal) => (
-                <AutocompleteItem key={animal} value={animal}>
-                  {animal}
+              {getListOfYearFrom1990().map((animal) => (
+                <AutocompleteItem key={animal} value={animal.toString()}>
+                  {animal.toString()}
                 </AutocompleteItem>
               ))}
             </Autocomplete>
@@ -132,6 +160,7 @@ export const InteractCard = () => {
             <Autocomplete
               label="Fuel"
               placeholder="Search a brand"
+
               inputProps={{
                 classNames: {
 
@@ -144,9 +173,14 @@ export const InteractCard = () => {
               scrollShadowProps={{
                 isEnabled: false
               }}
+
+              selectedKey={fuel}
+              onSelectionChange={(value) => {
+                setFuel(value?.valueOf() as string)
+              }}
             >
-              {["gasoline", "diesel", "electricity", "hybrid"].map((animal) => (
-                <AutocompleteItem key={animal} value={animal}>
+              {FUEL.map((animal) => (
+                <AutocompleteItem key={animal.toLowerCase()} value={animal.toLowerCase()}>
                   {animal}
                 </AutocompleteItem>
               ))}
@@ -154,12 +188,26 @@ export const InteractCard = () => {
           </div>
           <div className="flex w-full justify-end pt-4">
             {tab === "buy" && <Button
-              onClick={() => router.push("/dashboard/home")}
+              onClick={() => {
+                const query = new URLSearchParams()
+                if (brandId) query.append("brandId", brandId.toString())
+                if (modelId) query.append("modelId", modelId.toString())
+                if (year) query.append("year", year.toString())
+                if (fuel) query.append("fuel", fuel)
+                router.push("/dashboard/home?" + query.toString())
+              }}
               color="primary" startContent={<BiSearch />}>
               Search Car
             </Button>}
             {tab === "sell" && <Button
-              onClick={() => router.push("/forms/car/new")}
+              onClick={() => {
+                const query = new URLSearchParams()
+                if (brandId) query.append("brandId", brandId.toString())
+                if (modelId) query.append("modelId", modelId.toString())
+                if (year) query.append("year", year.toString())
+                if (fuel) query.append("fuel", fuel)
+                router.push("/forms/car/new?" + query.toString())
+              }}
               color="primary" startContent={<CgAdd />}>
               Sell Car
             </Button>}

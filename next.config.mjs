@@ -4,17 +4,19 @@
  * for Docker builds.
  */
 await import("./src/env.mjs");
+import createNextIntlPlugin from 'next-intl/plugin';
 
+const withNextIntl = createNextIntlPlugin();
 /** @type {import("next").NextConfig} */
 const config = {
-    images: {
-        domains: ["cdn.clerk.dev",
-            "orderbell-upload.s3.eu-north-1.amazonaws.com",
-            "images.pexels.com",
-            "img.clerk.com",
-            "images.unsplash.com"
-        ],
-    },
+  images: {
+    domains: ["cdn.clerk.dev",
+      "orderbell-upload.s3.eu-north-1.amazonaws.com",
+      "images.pexels.com",
+      "img.clerk.com",
+      "images.unsplash.com"
+    ],
+  },
 };
 
-export default config;
+export default withNextIntl(config);

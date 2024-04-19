@@ -37,6 +37,15 @@ const presignedUrl = publicProcedure.mutation(async () => {
 
 export const publicRouter = createTRPCRouter({
   presignedUrl,
+  getBrandsModel: publicProcedure.query(async ({ ctx }) => {
+    const trx = ctx.db;
+    const brandsData = await trx.select().from(brands).orderBy(brands.name);
+    const modelsData = await trx.select().from(models).orderBy(models.name);
+    return {
+      brands: brandsData,
+      models: modelsData,
+    };
+  }),
   carData: publicProcedure.query(async ({ ctx }) => {
     const trx = ctx.db;
     const ctries = await trx.select().from(countries).orderBy(countries.name);
