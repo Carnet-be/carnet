@@ -23,18 +23,17 @@ export const numSchema = z
   .or(z.string().transform((v) => Number(v) || undefined));
 
 const step2Schema = z.object({
-  body: z.number().optional().nullable(),
+  body: z.number().optional(),
   transmission: z
     .enum(["manual", "automatic", "semi-automatic"])
-    .optional()
-    .nullable(),
+    .optional(),
   //transform to number
-  mileage: numSchema.optional().nullable(),
-  doors: z.string().optional().nullable(),
-  cv: numSchema.optional().nullable(),
-  cc: numSchema.optional().nullable(),
-  co2: numSchema.optional().nullable(),
-  version: z.string().optional().nullable(),
+  mileage: numSchema.optional(),
+  doors: numSchema.optional(),
+  cv: numSchema.optional(),
+  cc: numSchema.optional(),
+  co2: numSchema.optional(),
+  version: z.string().optional(),
 });
 const Step2 = ({
   value,
@@ -60,6 +59,8 @@ const Step2 = ({
     defaultValues: value,
     resolver: zodResolver(step2Schema),
   });
+
+  console.log(value);
   return (
     <motion.form
       initial={{ opacity: 0.2, y: -100 }}
@@ -119,16 +120,16 @@ const Step2 = ({
             render={({ field: { value, onChange, onBlur } }) => (
               <CSelect
                 className="w-[450px] placeholder:opacity-50"
-                type="text"
+                type="number"
                 label="Doors (Optional)"
-                isInvalid={!!errors.transmission}
-                error={errors.transmission?.message}
+                isInvalid={!!errors.doors}
+                error={errors.doors?.message}
                 value={value?.toString()}
                 onChange={onChange}
                 onBlur={onBlur}
-                options={["1", "2", "3", "4", "5", "6", "7"].map((t) => ({
-                  value: t,
-                  label: t,
+                options={[1, 2, 3, 4, 5, 6, 7].map((t) => ({
+                  value: t.toString(),
+                  label: t.toString(),
                 }))}
               />
             )}
@@ -136,9 +137,10 @@ const Step2 = ({
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Input
-            label="Mileage (km) (Required)"
+            label="Mileage (km) (Optional)"
             placeholder="How many kilometers has your car driven?"
             type="number"
+            defaultValue={value.mileage?.toString() ?? undefined}
             {...register("mileage")}
             classNames={{
               input: ["placeholder:text-default-700/40"],
@@ -147,9 +149,10 @@ const Step2 = ({
             errorMessage={errors.mileage?.message}
           />
           <Input
-            label="Engine Size (cc)"
+            label="Engine Size (cc) (Optional)"
             type="number"
             placeholder="How many engine size has your car?"
+            defaultValue={value.cc?.toString() ?? undefined}
             {...register("cc")}
             isInvalid={!!errors.cc}
             classNames={{
@@ -158,8 +161,9 @@ const Step2 = ({
             errorMessage={errors.cc?.message}
           />
           <Input
-            label="Horse Power (CV)"
+            label="Horse Power (cv) (Optional)"
             type="number"
+            defaultValue={value.cv?.toString() ?? undefined}
             placeholder="How many horse power has your car?"
             {...register("cv")}
             isInvalid={!!errors.cv}
@@ -169,8 +173,9 @@ const Step2 = ({
             errorMessage={errors.cv?.message}
           />
           <Input
-            label={watch("co2") ? undefined : "CO2 Emissions (g/km)"}
+            label={"CO2 Emissions (g/km) (Optional)"}
             type="number"
+            defaultValue={value.co2?.toString() ?? undefined}
             {...register("co2")}
             placeholder="How many CO2 emissions has your car?"
             isInvalid={!!errors.co2}

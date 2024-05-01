@@ -100,6 +100,7 @@ export const InteractCard = () => {
             <Autocomplete
               label="Model"
               isLoading={isLoading}
+              isDisabled={!brandId}
               inputProps={{
                 classNames: {
 

@@ -4,17 +4,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import {
-    Button,
-    Modal,
-    ModalBody,
-    ModalContent,
-    Spinner,
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  Spinner,
 } from "@nextui-org/react";
 import axios from "axios";
 import { AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "~/trpc/react";
 import { type RouterInputs, type RouterOutputs } from "~/trpc/shared";
@@ -46,8 +46,8 @@ const NewCarPage = ({
       //year: 0,
       fuel: car?.fuel ?? "gasoline",
       state: car?.state ?? "new",
-      // color: car?.colorId,
-      // year: car?.year,
+      color: car?.color?.id,
+      year: car?.year ?? undefined,
     },
     step2: {
       body: car?.bodyId ?? undefined,
@@ -57,6 +57,7 @@ const NewCarPage = ({
       cc: car?.cc ?? undefined,
       co2: car?.co2 ?? undefined,
       version: car?.version ?? undefined,
+      doors: car?.doors ?? undefined,
     },
     step3: {
       options: car?.options?.map((k) => (k as any).id) ?? [],
@@ -90,11 +91,11 @@ const NewCarPage = ({
   const {
     form = getForm(),
     setForm,
-    step,
-    setStep,
+
     setCarId,
   } = useFormCarStore();
   const { mutateAsync } = api.public.presignedUrl.useMutation();
+  const [step, setStep] = useState(1);
   const [images, setImages] = React.useState<Array<File | string>>(
     car?.images ?? [],
   );
@@ -111,6 +112,8 @@ const NewCarPage = ({
     setForm(getForm());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [car]);
+
+
   const {
     mutate: mutateCar,
     isLoading,
@@ -196,6 +199,8 @@ const NewCarPage = ({
                 data={data}
                 onNext={(value) => {
                   next();
+                  //
+
                   setForm({ ...form, step1: value });
                 }}
                 value={form.step1}
@@ -319,13 +324,17 @@ const NewCarPage = ({
                     color="primary"
                     size="sm"
                     startContent={<Plus />}
-                    onClick={() => router.replace(`/forms/car/new`)}
+                    onClick={() => {
+                      setStep(1);
+                      router.replace(`/forms/car/new`)
+
+                    }}
                   >
                     Add another car
                   </Button>
                   <Button
                     variant="flat"
-                     size="sm"
+                    size="sm"
                     onClick={() => router.push(`/dashboard/my-cars`)}
                   >
                     View yours cars

@@ -38,6 +38,7 @@ function CSelect({
       placeholder={placeholder}
       selectedKey={value?.toString()}
       className={className ?? "max-w-md"}
+      defaultSelectedKey={value?.toString()}
       // selectedKeys={value ? [value?.toString()] : []}
       // value={typeof value === "number" ? value?.toString() : value}
       onSelectionChange={(e) => {

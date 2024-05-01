@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Autocomplete, AutocompleteItem,
   Button,
+  Input,
   ScrollShadow,
   Select,
   SelectItem,
@@ -64,6 +65,7 @@ const Step1 = ({
           .nullable(),
         color: z.number().optional().nullable(),
         state: z.enum(["new", "used"]).optional().nullable(),
+        year: z.number().optional().nullable(),
       }),
     ),
   });
@@ -185,6 +187,7 @@ const Step1 = ({
           />
         </div>
         <div className="flex flex-row items-center gap-4">
+
           <Controller
             name="year"
             control={control}
@@ -197,7 +200,13 @@ const Step1 = ({
                     ? "Year of the car"
                     : "Select the year of your car"
                 }
-                onChange={onChange}
+
+                onChange={
+                  (e) => {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                    onChange(e);
+                  }
+                }
                 onBlur={onBlur}
                 value={value?.toString()}
                 options={getListOfYearFrom1990().map((b) => ({
@@ -256,6 +265,9 @@ const Step1 = ({
           onSelect={(id) => setValue("color", id)}
         />
       </div>
+
+
+
       <div className="flex flex-row items-center justify-between">
         <div className="flex-grow"></div>
         <Button type="submit" variant="shadow" color="primary" className="px-5">
@@ -293,28 +305,56 @@ const ColorSelection = ({
         ref={carousel}
         className="flex flex-grow flex-row gap-6 overflow-x-hidden"
       >
-        {bodies.map((b) => {
+        {bodies.map((b, index) => {
           const isSelected = selectedBody == b.id;
           return (
-            <div
-              key={b.id}
+            <div key={index}
               onClick={() => onSelect(b.id)}
-              style={{
-                backgroundColor: b.value,
-                width: "60px",
-                height: "60px",
-              }}
               className={cx(
-                "center relative h-[60px] w-[60px] cursor-pointer rounded-full   border transition-all duration-300",
+                "center relative h-[60px] w-[60px] cursor-pointer rounded-[8px]   border transition-all duration-300",
                 isSelected ? "shadow-4xl  border-2 text-primary" : "",
               )}
-            >
+              style={{
+                width: '60px',
+                height: '60px',
+                margin: '5px',
+                position: 'relative',
+                backgroundColor: b.value,
+                borderRadius: '8px',
+
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+              }}>
+              <div style={{
+                position: 'absolute',
+                inset: '0',
+                background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.2))',
+                borderRadius: '8px'
+              }}></div>
               <div className="center w-[60px]">
                 {isSelected && (
                   <Check color={invertColor(b.value)} size={30} className="" />
                 )}
               </div>
             </div>
+            // <div
+            //   key={b.id}
+            //   onClick={() => onSelect(b.id)}
+            //   style={{
+            //     backgroundColor: b.value,
+            //     width: "60px",
+            //     height: "60px",
+            //   }}
+            //   className={cx(
+            //     "center relative h-[60px] w-[60px] cursor-pointer rounded-full   border transition-all duration-300",
+            //     isSelected ? "shadow-4xl  border-2 text-primary" : "",
+            //   )}
+            // >
+            //   <div className="center w-[60px]">
+            //     {isSelected && (
+            //       <Check color={invertColor(b.value)} size={30} className="" />
+            //     )}
+            //   </div>
+            // </div>
           );
         })}
       </ScrollShadow>

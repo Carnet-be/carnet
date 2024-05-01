@@ -57,7 +57,7 @@ const step2Schema = z.object({
     .nullable(),
   //transform to number
   mileage: numSchema.optional().nullable(),
-  doors: z.string().optional().nullable(),
+  doors: numSchema.optional().nullable(),
   cv: numSchema.optional().nullable(),
   cc: numSchema.optional().nullable(),
   co2: numSchema.optional().nullable(),
@@ -144,7 +144,7 @@ const addCar = protectedProcedure
       brand: bd,
       model: ml,
       fuel = null,
-      year = null,
+      year,
       state = null,
     } = input.step1;
     const {
@@ -184,6 +184,8 @@ const addCar = protectedProcedure
         .innerJoin(models, eq(brands.id, models.brandId))
         .where(and(eq(brands.id, bd), eq(models.id, ml)));
 
+
+      console.log({year})
       const carData: InferInsertModel<typeof cars> = {
         brandId: bd,
         modelId: ml,
@@ -214,7 +216,7 @@ const addCar = protectedProcedure
         kilometrage: mileage,
         version,
         transmission: transmission as any,
-        doors: doors ? parseInt(doors as string) : null,
+        doors,
         handling,
         interior,
         exterior,
@@ -293,11 +295,12 @@ const updateCar = protectedProcedure
           bodyId: body,
           kilometrage: mileage,
           inRange: input.step6.inRange,
-          doors: doors ? parseInt(doors as string) : null,
+          doors,
           lat,
           year,
           lon,
           name: `${dataCar?.brandName} ${dataCar?.modelName}${year ? ` ${year}` : ""}`,
+          updatedAt: new Date(),
         })
         .where(eq(cars.id, input.id));
       await trx.delete(carToOption).where(eq(carToOption.carId, input.id));
@@ -390,6 +393,7 @@ const getCarById = publicProcedure
   .input(z.object({
     id: z.number(),
     mine: z.boolean().optional(),
+    full: z.boolean().optional(),
   }))
   .query(async ({ input, ctx }) => {
     const { db } = ctx;
@@ -442,6 +446,10 @@ const getCarById = publicProcedure
     const images = result!.images.map((img) => img.key);
     const options = [...new Set(result!.options.map((opt) => opt.name))];
 
+    // let owner = null;
+    // if(input.full){
+
+    // }
     return {
       ...result,
       images: [...new Set(images)],

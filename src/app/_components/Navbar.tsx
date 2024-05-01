@@ -2,17 +2,17 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import {
-    OrganizationSwitcher,
-    UserButton,
-    useAuth,
+  OrganizationSwitcher,
+  UserButton,
+  useAuth,
 } from "@clerk/nextjs";
 import {
-    Button,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownTrigger,
-    Spinner,
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Spinner,
 } from "@nextui-org/react";
 import { Dot } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -29,7 +29,7 @@ const Navbar = ({
   auth,
   isAdmin = false,
 }: {
-  isAdmin?:boolean,
+  isAdmin?: boolean,
   auth: {
     orgId: string;
     userId: string;
@@ -83,7 +83,7 @@ const Navbar = ({
           </button>
 
           <div className="center w-56">
-            <Logo type={"1"} size={60} />
+            <Logo type={"1"} size={60} link={isAdmin ? "/dashboard/admin/overview" : "/dashboard/home"} />
           </div>
           <div className="hidden md:block md:pl-4">
             <label htmlFor="topbar-search" className="sr-only">
