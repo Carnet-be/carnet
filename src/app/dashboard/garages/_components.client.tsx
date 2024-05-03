@@ -1,11 +1,14 @@
 "use client"
 
-import { Button, ScrollShadow, cn } from "@nextui-org/react";
+import { Avatar, Button, ScrollShadow, cn } from "@nextui-org/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useLayoutEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useRef, useState } from "react";
+import { MdVisibility } from "react-icons/md";
 import CarCard from "~/app/_components/carCard";
 import { type RouterOutputs } from "~/trpc/shared";
+import { getImage } from "~/utils/function";
 
 export const CarsSectionGarage = ({
   cars
@@ -84,4 +87,68 @@ export const SearchGarage = () => {
     </Button>
   </div >
 
+}
+
+
+
+export function GarageItemContact({ org }: { org: RouterOutputs["car"]["getCarById"]["owner"] }) {
+  const [show, setShow] = useState(false);
+  if (!org) return null
+  const { garage } = org
+
+  const phone = org.publicMetadata?.phone || org.publicMetadata?.phone2 || "No phone number" as string
+  const email = org.publicMetadata?.email || org.publicMetadata?.email2 || "No email" as string
+  return (
+    <div
+      style={{
+        backgroundImage: `url(${getImage(garage?.cover)})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+      className="relative w-full rounded-md overflow-hidden h-[260px]">
+
+      <div className="absolute bottom-0 left-0 right-0 text-white bg-gradient-to-r from-black to-black/20  h-full p-3 py-5 space-y-3">
+        <div className="flex flex-row justify-between">
+          <div className="flex gap-3">
+            <Avatar
+              src={org?.imageUrl}
+              className="w-16 h-16 rounded-full border-2 border-white"
+            />
+            <div className="flex flex-col gap-1 justify-center items-start">
+              <h2 className="text-2xl font-bold text-white">{org.name}</h2>
+
+            </div>
+          </div>
+
+          <Link href={`/${org.slug}`}>
+            <Button color="secondary" className="shadow">Visite</Button>
+          </Link>
+
+        </div>
+        <p className="max-w-[500px] line-clamp-2">{garage.about}
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sunt, corporis! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsa libero cupiditate architecto perferendis doloribus! Minima iste, provident quis voluptatibus assumenda corporis? Reprehenderit placeat, obcaecati quaerat nam cum eos maiores ab!5
+        </p>
+        <div className="backdrop-blur-40 p-4 bg-white/20 rounded-md relative">
+          <div className="flex gap-2">
+            <span>{phone as string}</span>
+          </div>
+          <div className="flex gap-2">
+            <span>{email as string}</span>
+          </div>
+          {!show && (
+            <div
+              onClick={() => {
+                setShow(true);
+              }}
+              className="absolute left-0 top-0 flex h-full w-full cursor-pointer rounded-md items-center justify-center gap-2 backdrop-blur-md"
+            >
+              <MdVisibility className="text-lg" />
+              Show contact
+            </div>
+          )}
+        </div>
+      </div>
+    </div >
+  )
 }

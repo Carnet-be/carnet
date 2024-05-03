@@ -260,7 +260,7 @@ export const AdminSearchSection = ({
   );
   const debouncedValue = useDebounce<string>(searchInput, 400);
   useEffect(() => {
-    console.log("debouncedValue", debouncedValue);
+
     setSearch("search", debouncedValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
@@ -288,7 +288,7 @@ export const AdminSearchSection = ({
             <SelectItem
               key={b.id}
               value={b.id}
-              // startContent={<Avatar alt="Argentina" className="w-6 h-6" src="https://flagcdn.com/ar.svg" />}
+            // startContent={<Avatar alt="Argentina" className="w-6 h-6" src="https://flagcdn.com/ar.svg" />}
             >
               {b.label}
             </SelectItem>
@@ -333,8 +333,8 @@ export const AdminSearchSection = ({
           }}
           className={
             searchParams.has("search") ||
-            searchParams.has("brand") ||
-            searchParams.has("model")
+              searchParams.has("brand") ||
+              searchParams.has("model")
               ? undefined
               : "hidden"
           }

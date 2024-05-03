@@ -13,7 +13,7 @@ import {
 import axios from "axios";
 import { AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "~/trpc/react";
@@ -38,56 +38,64 @@ const NewCarPage = ({
   car?: RouterOutputs["car"]["getCarById"];
 }) => {
   const [isSuccess, setIsSuccess] = React.useState(false);
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const getForm = () => ({
-    step1: {
-      brand: car?.brandId ?? 0,
-      model: car?.modelId ?? 0,
-      //year: 0,
-      fuel: car?.fuel ?? "gasoline",
-      state: car?.state ?? "new",
-      color: car?.color?.id,
-      year: car?.year ?? undefined,
-    },
-    step2: {
-      body: car?.bodyId ?? undefined,
-      transmission: car?.transmission ?? "manual",
-      mileage: car?.kilometrage ?? undefined,
-      cv: car?.cv ?? undefined,
-      cc: car?.cc ?? undefined,
-      co2: car?.co2 ?? undefined,
-      version: car?.version ?? undefined,
-      doors: car?.doors ?? undefined,
-    },
-    step3: {
-      options: car?.options?.map((k) => (k as any).id) ?? [],
-    },
-    step4: {
-      handling: car?.handling ?? undefined,
-      tires: car?.tires ?? undefined,
-      exterior: car?.exterior ?? undefined,
-      interior: car?.interior ?? undefined,
-    },
-    step5: {
-      images: car?.images,
-      country: car?.countryId ?? undefined,
-      city: car?.cityId ?? undefined,
-      address: car?.address ?? undefined,
-      pos: car?.lat && car?.lon ? { lat: car?.lat, lng: car?.lon } : undefined,
-    },
-    step6: {
-      //duration: "3d",
-      inRange: car?.inRange ?? undefined,
-      startingPrice: car?.startingPrice ?? undefined,
-      duration: car?.duration ?? "3d",
-      expectedPrice: car?.expectedPrice ?? undefined,
-      minPrice: car?.minPrice ?? undefined,
-      maxPrice: car?.maxPrice ?? undefined,
-      price: car?.price ?? undefined,
-      type: car?.type ?? "direct",
-      description: car?.description ?? undefined,
-    },
-  });
+
+  const getForm = () => {
+    const brand = searchParams.get("brand") ? parseInt(searchParams.get("brand") ?? "") : undefined ?? car?.brandId ?? data.brands[0]?.id ?? 0;
+    const model = searchParams.get("model") ? parseInt(searchParams.get("model") ?? "") : undefined ?? car?.modelId ?? data.models.filter((k) => k.brandId == brand)[0]?.id ?? 0;
+    const year = searchParams.get("year") ? parseInt(searchParams.get("year") ?? "") : undefined ?? car?.year ?? undefined;
+    const fuel = (searchParams.get("fuel") as "gasoline" | "diesel" | "electricity" | "hybrid") ?? car?.fuel ?? "gasoline"
+    return ({
+      step1: {
+        brand,
+        model,
+        //year: 0,
+        fuel,
+        state: car?.state ?? "new",
+        color: car?.color?.id,
+        year,
+      },
+      step2: {
+        body: car?.bodyId ?? undefined,
+        transmission: car?.transmission ?? "manual",
+        mileage: car?.kilometrage ?? undefined,
+        cv: car?.cv ?? undefined,
+        cc: car?.cc ?? undefined,
+        co2: car?.co2 ?? undefined,
+        version: car?.version ?? undefined,
+        doors: car?.doors ?? undefined,
+      },
+      step3: {
+        options: car?.options?.map((k) => (k as any).id) ?? [],
+      },
+      step4: {
+        handling: car?.handling ?? undefined,
+        tires: car?.tires ?? undefined,
+        exterior: car?.exterior ?? undefined,
+        interior: car?.interior ?? undefined,
+      },
+      step5: {
+        images: car?.images,
+        country: car?.countryId ?? undefined,
+        city: car?.cityId ?? undefined,
+        address: car?.address ?? undefined,
+        pos: car?.lat && car?.lon ? { lat: car?.lat, lng: car?.lon } : undefined,
+      },
+      step6: {
+        //duration: "3d",
+        inRange: car?.inRange ?? undefined,
+        startingPrice: car?.startingPrice ?? undefined,
+        duration: car?.duration ?? "3d",
+        expectedPrice: car?.expectedPrice ?? undefined,
+        minPrice: car?.minPrice ?? undefined,
+        maxPrice: car?.maxPrice ?? undefined,
+        price: car?.price ?? undefined,
+        type: car?.type ?? "direct",
+        description: car?.description ?? undefined,
+      },
+    });
+  }
   const {
     form = getForm(),
     setForm,

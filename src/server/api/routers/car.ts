@@ -4,34 +4,35 @@
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 import {
-    and,
-    desc,
-    eq,
-    getTableColumns,
-    gt,
-    lt,
-    sql,
-    type InferInsertModel,
-    type InferSelectModel,
+  and,
+  desc,
+  eq,
+  getTableColumns,
+  gt,
+  ilike,
+  lt,
+  or,
+  sql,
+  type InferInsertModel,
+  type InferSelectModel
 } from "drizzle-orm";
 
-import { TRPCClientError } from "@trpc/client";
 import { z } from "zod";
 
-import { currentUser } from "@clerk/nextjs";
-import { clerkClient } from "@clerk/nextjs/dist/types/server-helpers.server";
+import { clerkClient, currentUser } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";
 import { objArray } from "~/utils/dbUtils";
 import {
-    assets,
-    biddings,
-    bodies,
-    brands,
-    carOptions,
-    carToOption,
-    cars,
-    colors,
-    models,
+  assets,
+  biddings,
+  bodies,
+  brands,
+  carOptions,
+  carToOption,
+  cars,
+  colors,
+  garages,
+  models,
 } from "../../db/schema";
 
 const numSchema = z
@@ -185,7 +186,7 @@ const addCar = protectedProcedure
         .where(and(eq(brands.id, bd), eq(models.id, ml)));
 
 
-      console.log({year})
+      console.log({ year })
       const carData: InferInsertModel<typeof cars> = {
         brandId: bd,
         modelId: ml,
@@ -344,14 +345,31 @@ const getCars = publicProcedure
     z.object({
       cursor: z.number().nullish(),
       limit: z.number().optional(),
+      filter: z.object({
+        body: z.number().optional(),
+        brand: z.number().optional(),
+        model: z.number().optional(),
+        q: z.string().optional(),
+      }).optional(),
     }),
   )
   .query(async ({ ctx, input }) => {
     const { db } = ctx;
     const limit = input.limit ?? 20;
     const { cursor: offset = 0 } = input;
+    const { body, brand, model, q } = input.filter ?? {};
+    const where = and(
+      eq(cars.status, "published"),
+      brand ? eq(cars.brandId, brand) : undefined,
+      model ? eq(cars.modelId, model) : undefined,
+      body ? eq(cars.bodyId, body) : undefined,
+      q ? or(
+        ilike(cars.name, `%${q}%`),
+        ilike(cars.description, `%${q}%`),
+        //sql`EXISTS (SELECT 1 FROM ${carToOption} inner join ${carOptions} on ${carOptions.id} = ${carToOption.optionId} WHERE ${carToOption.carId} = ${cars.id} AND ${carOptions.name} ILIKE '${q}%')`,
 
-    const where = and(eq(cars.status, "published"));
+      ) : undefined,
+    );
 
     const result = await db
       .select({
@@ -446,13 +464,30 @@ const getCarById = publicProcedure
     const images = result!.images.map((img) => img.key);
     const options = [...new Set(result!.options.map((opt) => opt.name))];
 
-    // let owner = null;
-    // if(input.full){
+    let owner = null;
+    let ownerUser = null;
+    if (input.full) {
+      if (result.belongsTo.startsWith("org_")) {
+        const org = await clerkClient.organizations.getOrganization({ organizationId: result.belongsTo })
+        const [resultGarage] = await db.select().from(garages).where(eq(garages.orgId, result.belongsTo))
+        if (resultGarage) {
+          owner = {
+            ...org,
+            garage: resultGarage,
+          };
+        }
+      }
+      if (result.belongsTo.startsWith("user_")) {
+        const user = await clerkClient.users.getUser(result.belongsTo)
+        ownerUser = user
 
-    // }
+      }
+    }
     return {
       ...result,
       images: [...new Set(images)],
+      owner,
+      ownerUser,
       options: options.map((opt) =>
         result!.options.find((o) => o.name === opt),
       ),

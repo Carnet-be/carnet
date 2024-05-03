@@ -1,10 +1,9 @@
 "use client";
 import { Button, cn } from "@nextui-org/react";
-import { CarFront, CrownIcon, Home, Settings, Users2 } from "lucide-react";
+import { CarFront, Home, Settings, Users2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AiFillCar } from "react-icons/ai";
-import { RiAuctionLine } from "react-icons/ri";
 import MenuItem, { type TMenuItem } from "./MenuItem";
 import { GarageIcon } from "./icons";
 
@@ -67,11 +66,11 @@ const Sidebar = ({ isAdmin = false }: {
       icon: <CarFront size={20} />,
       route: "/dashboard/my-cars",
     },
-    {
-      label: "Active bids",
-      icon: <RiAuctionLine size={20} />,
-      route: "/dashboard/active-bids",
-    },
+    // {
+    //   label: "Active bids",
+    //   icon: <RiAuctionLine size={20} />,
+    //   route: "/dashboard/active-bids",
+    // },
     // {
     //   label: "Favorites",
     //   icon: <Heart size={20} />,
@@ -155,19 +154,19 @@ const Sidebar = ({ isAdmin = false }: {
       </div>
       <div className="absolute bottom-0 left-0 z-20 hidden w-full justify-center space-x-4 bg-white p-8 dark:bg-gray-800 lg:flex">
         <ul className="w-full space-y-2">
-          {!isAdmin && (
+          {/* {!isAdmin && (
             <li>
               <Link
                 href="https://buy.stripe.com/test_5kA9DH9UXaeubracMN"
                 className="group flex items-center justify-between rounded-lg bg-gradient-to-r from-cyan-500 to-amber-500 p-2 px-2 text-xs font-semibold text-white no-underline"
               >
                 <span className="ml-3">Try Carnet Pro</span>
-                {/* animate with motion left and right */}
+               
 
                 <CrownIcon size={20} />
               </Link>
             </li>
-          )}
+          )} */}
           <li>
             <Link
               href={isAdmin ? "/dashboard/admin/settings" : "/dashboard/settings"}

@@ -10,11 +10,12 @@ import BackButton from "~/app/_components/ui/backButton";
 import Map from "~/app/_components/ui/map";
 import { api } from "~/trpc/server";
 import { type RouterOutputs } from "~/trpc/shared";
+import { GarageItemContact } from "../../garages/_components.client";
 import {
-    BidSection,
-    ContactSection,
-    ContentCarPage,
-    ImagesSection,
+  BidSection,
+  ContactSection,
+  ContentCarPage,
+  ImagesSection
 } from "./_components";
 export default async function CarPage({
   params,
@@ -32,9 +33,9 @@ export default async function CarPage({
   return (
     <div>
       {view != "garage" && <BackButton />}
-      <div className="mb-10 flex flex-wrap justify-center gap-6">
+      <div className="mb-10 flex flex-wrap justify-center gap-6 relative">
         <LeftSide car={car} />
-        <RightSide car={car} />
+        <RightSide car={car} view={view} />
       </div>
     </div>
   );
@@ -54,11 +55,13 @@ const LeftSide = ({ car }: { car: RouterOutputs["car"]["getCarById"] }) => {
 
 const RightSide = async ({
   car,
+  view
 }: {
   car: RouterOutputs["car"]["getCarById"];
   mine?: boolean;
+  view?: "admin" | "owner" | "user" | "garage"
 }) => {
-  console.log("car", car);
+
   let img: string | undefined = undefined;
   let name: string | undefined = undefined;
 
@@ -79,15 +82,20 @@ const RightSide = async ({
   }
 
   return (
-    <div className=" w-full lg:w-[40%] ">
+    <div className=" w-full lg:w-[40%] space-y-8 sticky top-0 right-0">
+      {car.type === "direct" && view !== "garage" && car.owner && (
+        <GarageItemContact org={car.owner as any} />
+
+      )}
+
+      {car.type === "direct" && car.ownerUser && (
+        <ContactSection user={car.ownerUser} />
+
+      )}
       <div className="w-full space-y-4 rounded-xl bg-white p-3">
+
         <div className="flex flex-row items-center justify-between gap-2 px-5">
-          {/* <MiniCard
-            containerClass="w-[70px]"
-            value={""}
-            size={94}
-            img="/assets/Cars/Audi.svg"
-          /> */}
+
           <div className="flex flex-col items-center font-semibold text-primary">
             <h6 className="text-lg">{car.name}</h6>
             {/* <span>{car.year}</span> */}
@@ -176,24 +184,7 @@ const RightSide = async ({
       {!isBuyNow && (
         <BidSection user={user} car={car} isTimeOut={isTimeOut} />
       )} */}
-      {car.type === "direct" ? (
-        <div className="mt-5 flex flex-col gap-2 rounded-lg bg-primary p-4 text-white">
-          <span>Contact the owner of the car to buy it</span>
-          <div className="flex items-center gap-3">
-            {img && (
-              <Image
-                src={img}
-                alt="logo"
-                width={50}
-                height={50}
-                className="rounded-full"
-              />
-            )}
-            <span className="font-bold">{name}</span>
-          </div>
-          <ContactSection />
-        </div>
-      ) : (
+      {car.type === "auction" && (
         <BidSection car={car} />
       )}
       {car.lat && car.lon && (

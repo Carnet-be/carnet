@@ -15,8 +15,8 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { Dot } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { GiHomeGarage } from "react-icons/gi";
 import { IoAnalyticsSharp } from "react-icons/io5";
@@ -42,7 +42,16 @@ const Navbar = ({
   const searchParams = useSearchParams();
 
   const router = useRouter();
+  const pathname = usePathname();
   const [seach, setSearch] = useState(searchParams.get("q") ?? "");
+
+  useEffect(() => {
+    if (!seach) {
+      router.push(`${pathname}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seach]);
+
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white px-4 py-2.5 dark:border-gray-700 dark:bg-gray-800">
       <div className="flex flex-wrap items-center justify-between">
@@ -94,6 +103,7 @@ const Navbar = ({
                 type="search"
                 value={seach}
                 onChange={(e) => setSearch(e.target.value)}
+
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5  text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                 placeholder="Looking for something?"
               />

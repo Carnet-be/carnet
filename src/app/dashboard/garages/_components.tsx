@@ -1,8 +1,7 @@
 
 
-import { clerkClient } from "@clerk/nextjs"
+
 import { Avatar, Button } from "@nextui-org/react"
-import { Link2 } from "lucide-react"
 import Link from "next/link"
 import { type RouterOutputs } from "~/trpc/shared"
 import { getImage } from "~/utils/function"
@@ -43,3 +42,4 @@ export function GarageItem({ garage }: { garage: RouterOutputs["garage"]["getGar
     </div >
   )
 }
+

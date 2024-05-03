@@ -7,10 +7,9 @@ import {
   CardBody,
   CardHeader,
   Input,
-  ScrollShadow,
-  Skeleton,
+  Skeleton
 } from "@nextui-org/react";
-import { ChevronLeft, ChevronRight, Mail, PhoneCall } from "lucide-react";
+import { Mail, PhoneCall } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -18,7 +17,6 @@ import toast from "react-hot-toast";
 import { MdVisibility } from "react-icons/md";
 import ImageGallery from "react-image-gallery";
 import { useInterval } from "usehooks-ts";
-import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { z } from "zod";
 import RatingStar from "~/app/_components/ui/ratingStar";
@@ -332,21 +330,27 @@ export const BidSection = ({
   );
 };
 
-export const ContactSection = () => {
+export const ContactSection = ({ user }: { user: RouterOutputs["car"]["getCarById"]["ownerUser"] }) => {
   const [show, setShow] = useState(false);
+  const phone = user?.publicMetadata?.phone || user?.publicMetadata?.phone2 || "No phone number" as string
+  const email = user?.publicMetadata?.email || user?.publicMetadata?.email2 || "No email" as string
   return (
     <div className="relative">
       <div className="flex items-center gap-3">
         <div className="flex w-[50px] items-center justify-center">
           <PhoneCall size={20} />
         </div>
-        <span className="">00 1243 654 789</span>
+        <span className="">
+          <a href={`tel:${phone as string}`}>{phone as string}</a>
+        </span>
       </div>
       <div className="flex items-center gap-3">
         <div className="flex w-[50px] items-center justify-center">
           <Mail size={20} />
         </div>
-        <span className="">nima.contact@gmail.com</span>
+        <span className="">
+          <a href={`mailto:${email as string}`}>{email as string}</a>
+        </span>
       </div>
       {!show && (
         <div

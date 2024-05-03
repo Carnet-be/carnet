@@ -191,8 +191,8 @@ export const InteractCard = () => {
             {tab === "buy" && <Button
               onClick={() => {
                 const query = new URLSearchParams()
-                if (brandId) query.append("brandId", brandId.toString())
-                if (modelId) query.append("modelId", modelId.toString())
+                if (brandId) query.append("brand", brandId.toString())
+                if (modelId) query.append("model", modelId.toString())
                 if (year) query.append("year", year.toString())
                 if (fuel) query.append("fuel", fuel)
                 router.push("/dashboard/home?" + query.toString())
@@ -203,8 +203,8 @@ export const InteractCard = () => {
             {tab === "sell" && <Button
               onClick={() => {
                 const query = new URLSearchParams()
-                if (brandId) query.append("brandId", brandId.toString())
-                if (modelId) query.append("modelId", modelId.toString())
+                if (brandId) query.append("brand", brandId.toString())
+                if (modelId) query.append("model", modelId.toString())
                 if (year) query.append("year", year.toString())
                 if (fuel) query.append("fuel", fuel)
                 router.push("/forms/car/new?" + query.toString())
