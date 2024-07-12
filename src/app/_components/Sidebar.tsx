@@ -1,16 +1,25 @@
 "use client";
-import { Button, cn } from "@nextui-org/react";
+import { useAuth } from "@clerk/nextjs";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  cn,
+  useDisclosure,
+} from "@nextui-org/react";
 import { CarFront, Home, Settings, Users2 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { AiFillCar } from "react-icons/ai";
+import { api } from "~/trpc/react";
 import MenuItem, { type TMenuItem } from "./MenuItem";
 import { GarageIcon } from "./icons";
 
-const Sidebar = ({ isAdmin = false }: {
-  isAdmin?: boolean
-}) => {
-
+const Sidebar = ({ isAdmin = false }: { isAdmin?: boolean }) => {
   const menuAdmin: TMenuItem[] = [
     {
       label: "Overview",
@@ -121,33 +130,9 @@ const Sidebar = ({ isAdmin = false }: {
             );
           })}
         </ul>
+        <div className="pt-5"></div>
         {!isAdmin && (
           <>
-            <div className="my-7 border-t border-gray-200"></div>
-            <ul className=" space-y-2  dark:border-gray-700">
-              <li>
-                <a
-                  href="#"
-                  className="group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 no-underline transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                >
-                  <svg
-                    aria-hidden="true"
-                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C15.802 8.249 16 9.1 16 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789.027zm-4.677-2.796a4.002 4.002 0 01-.041-2.08l-.08.08-1.53-1.533A5.98 5.98 0 004 10c0 .954.223 1.856.619 2.657l1.54-1.54zm1.088-6.45A5.974 5.974 0 0110 4c.954 0 1.856.223 2.657.619l-1.54 1.54a4.002 4.002 0 00-2.346.033L7.246 4.668zM12 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      clip-rule="evenodd"
-                    ></path>
-                  </svg>
-                  <span className="ml-3">Help</span>
-                </a>
-              </li>
-            </ul>
-            <div className="my-5"></div>
             <SellCarBanner />
           </>
         )}
@@ -169,7 +154,9 @@ const Sidebar = ({ isAdmin = false }: {
           )} */}
           <li>
             <Link
-              href={isAdmin ? "/dashboard/admin/settings" : "/dashboard/settings"}
+              href={
+                isAdmin ? "/dashboard/admin/settings" : "/dashboard/settings"
+              }
               className={cn(
                 "group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 no-underline hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700",
                 !pathname.includes("/settings")
@@ -190,21 +177,86 @@ const Sidebar = ({ isAdmin = false }: {
 export default Sidebar;
 
 const SellCarBanner = () => {
+  const utils = api.useContext();
+  const [loadin, setLoading] = useState(false);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const router = useRouter();
   return (
-    <div className="center flex-col gap-4 rounded-lg bg-gray-100 p-4 text-center">
-      <span className="text-[12px] font-semibold opacity-70">
-        A new way to sell modern and classic cars
-      </span>
-      <Link href={"/forms/car/new"}>
+    <>
+      <div className="center flex-col gap-4 rounded-lg bg-gray-100 p-4 text-center">
+        <span className="text-[12px] font-semibold opacity-70">
+          A new way to sell modern and classic cars
+        </span>
+
         <Button
           size="sm"
+          isLoading={loadin}
+          onClick={async () => {
+            setLoading(true);
+            const exist = await utils.profile.existProfile.fetch();
+            setLoading(false);
+            if (!exist) {
+              onOpen();
+              return;
+            }
+            router.push("/forms/car/new");
+          }}
           color="primary"
           className=" text-sm font-semibold"
           startContent={<AiFillCar />}
         >
           Sell your car
         </Button>
-      </Link>
-    </div>
+      </div>
+      <ModalCheckContact isOpen={isOpen} onOpenChange={onOpenChange} />
+    </>
+  );
+};
+
+export const ModalCheckContact = ({
+  isOpen,
+  onOpenChange,
+}: {
+  isOpen: boolean;
+  onOpenChange(): void;
+}) => {
+  const { orgId } = useAuth();
+  const router = useRouter();
+  return (
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <ModalContent>
+        {(onClose) => (
+          <>
+            <ModalHeader className="flex flex-col gap-1">
+              Contact information
+            </ModalHeader>
+            <ModalBody>
+              <p>
+                Before you can sell a car, you need to add a contact
+                information.
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={onClose}>
+                Close
+              </Button>
+              <Button
+                color="primary"
+                onPress={() => {
+                  if (orgId) {
+                    router.push("/dashboard/settings#/org-contact");
+                  } else {
+                    router.push("/dashboard/settings#/contact");
+                  }
+                  onClose();
+                }}
+              >
+                Add an address
+              </Button>
+            </ModalFooter>
+          </>
+        )}
+      </ModalContent>
+    </Modal>
   );
 };

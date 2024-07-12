@@ -173,7 +173,9 @@ export const cities = pgTable(
     name: varchar("name", { length: 255 }).notNull(),
     countryId: integer("country_id")
       .notNull()
-      .references(() => countries.id),
+      .references(() => countries.id, {
+        onDelete: "cascade",
+      }),
     createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => {
@@ -265,7 +267,7 @@ export const models = pgTable(
   },
 );
 
-export const profiles = pgTable("organizations", {
+export const profiles = pgTable("profiles", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   email: varchar("email", { length: 255 }),
   email2: varchar("email2", { length: 255 }),

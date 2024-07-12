@@ -23,6 +23,24 @@ export const profileRouter = createTRPCRouter({
       }
       return pro;
     }),
+  existProfile: protectedProcedure.query(async ({ ctx }) => {
+    const { orgId, userId } = ctx.auth;
+    const id = orgId ?? userId;
+    if (!id) {
+      return null;
+    }
+    const [pro] = await ctx.db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.id, orgId ?? userId ?? ""));
+
+    if (pro) {
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      return pro.email || pro.email2 || pro.phone || pro.phone2 ? true : false;
+    } else {
+      return false;
+    }
+  }),
   update: protectedProcedure
     .input(
       z.object({

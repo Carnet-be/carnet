@@ -14,7 +14,7 @@ import {
   or,
   sql,
   type InferInsertModel,
-  type InferSelectModel
+  type InferSelectModel,
 } from "drizzle-orm";
 
 import { z } from "zod";
@@ -33,6 +33,7 @@ import {
   colors,
   garages,
   models,
+  profiles,
 } from "../../db/schema";
 
 const numSchema = z
@@ -185,8 +186,7 @@ const addCar = protectedProcedure
         .innerJoin(models, eq(brands.id, models.brandId))
         .where(and(eq(brands.id, bd), eq(models.id, ml)));
 
-
-      console.log({ year })
+      console.log({ year });
       const carData: InferInsertModel<typeof cars> = {
         brandId: bd,
         modelId: ml,
@@ -249,7 +249,7 @@ const updateCar = protectedProcedure
   .mutation(async ({ input, ctx }) => {
     //TODO: add state and description
     const { db } = ctx;
-    console.log("input", input)
+    console.log("input", input);
     const { pos, images, ...step5 } = input.step5;
     const { year, brand, model, ...step1 } = input.step1;
 
@@ -267,11 +267,7 @@ const updateCar = protectedProcedure
         })
         .from(brands)
         .innerJoin(models, eq(brands.id, models.brandId))
-        .where(
-          and(
-            eq(models.id, model ?? 0),
-          ),
-        );
+        .where(and(eq(models.id, model ?? 0)));
 
       if (!dataCar)
         throw new TRPCError({
@@ -300,7 +296,9 @@ const updateCar = protectedProcedure
           lat,
           year,
           lon,
-          name: `${dataCar?.brandName} ${dataCar?.modelName}${year ? ` ${year}` : ""}`,
+          name: `${dataCar?.brandName} ${dataCar?.modelName}${
+            year ? ` ${year}` : ""
+          }`,
           updatedAt: new Date(),
         })
         .where(eq(cars.id, input.id));
@@ -334,9 +332,9 @@ const addAssets = protectedProcedure
     console.log("results", results);
     return results.length > 0
       ? await db.transaction(async (trx) => {
-        await trx.delete(assets).where(eq(assets.ref, carId));
-        return await trx.insert(assets).values(results);
-      })
+          await trx.delete(assets).where(eq(assets.ref, carId));
+          return await trx.insert(assets).values(results);
+        })
       : [];
   });
 
@@ -345,12 +343,14 @@ const getCars = publicProcedure
     z.object({
       cursor: z.number().nullish(),
       limit: z.number().optional(),
-      filter: z.object({
-        body: z.number().optional(),
-        brand: z.number().optional(),
-        model: z.number().optional(),
-        q: z.string().optional(),
-      }).optional(),
+      filter: z
+        .object({
+          body: z.number().optional(),
+          brand: z.number().optional(),
+          model: z.number().optional(),
+          q: z.string().optional(),
+        })
+        .optional(),
     }),
   )
   .query(async ({ ctx, input }) => {
@@ -363,12 +363,13 @@ const getCars = publicProcedure
       brand ? eq(cars.brandId, brand) : undefined,
       model ? eq(cars.modelId, model) : undefined,
       body ? eq(cars.bodyId, body) : undefined,
-      q ? or(
-        ilike(cars.name, `%${q}%`),
-        ilike(cars.description, `%${q}%`),
-        //sql`EXISTS (SELECT 1 FROM ${carToOption} inner join ${carOptions} on ${carOptions.id} = ${carToOption.optionId} WHERE ${carToOption.carId} = ${cars.id} AND ${carOptions.name} ILIKE '${q}%')`,
-
-      ) : undefined,
+      q
+        ? or(
+            ilike(cars.name, `%${q}%`),
+            ilike(cars.description, `%${q}%`),
+            //sql`EXISTS (SELECT 1 FROM ${carToOption} inner join ${carOptions} on ${carOptions.id} = ${carToOption.optionId} WHERE ${carToOption.carId} = ${cars.id} AND ${carOptions.name} ILIKE '${q}%')`,
+          )
+        : undefined,
     );
 
     const result = await db
@@ -408,23 +409,29 @@ const getCars = publicProcedure
   });
 
 const getCarById = publicProcedure
-  .input(z.object({
-    id: z.number(),
-    mine: z.boolean().optional(),
-    full: z.boolean().optional(),
-  }))
+  .input(
+    z.object({
+      id: z.number(),
+      mine: z.boolean().optional(),
+      full: z.boolean().optional(),
+    }),
+  )
   .query(async ({ input, ctx }) => {
     const { db } = ctx;
     const { userId, orgId } = ctx.auth;
     const belongsId = orgId ?? userId;
     let isAdmin = false;
     if (userId) {
-      const user = await currentUser()
-      isAdmin = user?.privateMetadata?.role === "admin"
+      const user = await currentUser();
+      isAdmin = user?.privateMetadata?.role === "admin";
     }
     const where = and(
       eq(cars.id, input.id),
-      isAdmin ? undefined : input.mine && belongsId ? eq(cars.belongsTo, belongsId) : sql`CASE WHEN ${cars.status} = 'published' THEN TRUE ELSE ${cars.belongsTo} = ${belongsId} END`
+      isAdmin
+        ? undefined
+        : input.mine && belongsId
+        ? eq(cars.belongsTo, belongsId)
+        : sql`CASE WHEN ${cars.status} = 'published' THEN TRUE ELSE ${cars.belongsTo} = ${belongsId} END`,
     );
     const [result] = await db
       .select({
@@ -442,6 +449,7 @@ const getCarById = publicProcedure
           table: carOptions,
           id: carOptions.id,
         }),
+        profile: profiles,
       })
       .from(cars)
       .leftJoin(assets, eq(cars.id, assets.ref))
@@ -451,12 +459,21 @@ const getCarById = publicProcedure
       .leftJoin(carOptions, eq(carToOption.optionId, carOptions.id))
       .leftJoin(colors, eq(cars.color, colors.id))
       .leftJoin(bodies, eq(cars.bodyId, bodies.id))
+      .leftJoin(profiles, eq(cars.belongsTo, profiles.id))
       .where(where)
-      .groupBy(() => [cars.id, brands.id, models.id, bodies.id, colors.id]);
-    if (!result) throw new TRPCError({
-      code: "NOT_FOUND",
-      message: "Car not found",
-    });
+      .groupBy(() => [
+        cars.id,
+        brands.id,
+        models.id,
+        bodies.id,
+        colors.id,
+        profiles.id,
+      ]);
+    if (!result)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Car not found",
+      });
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     // image without duplicates
 
@@ -468,8 +485,13 @@ const getCarById = publicProcedure
     let ownerUser = null;
     if (input.full) {
       if (result.belongsTo.startsWith("org_")) {
-        const org = await clerkClient.organizations.getOrganization({ organizationId: result.belongsTo })
-        const [resultGarage] = await db.select().from(garages).where(eq(garages.orgId, result.belongsTo))
+        const org = await clerkClient.organizations.getOrganization({
+          organizationId: result.belongsTo,
+        });
+        const [resultGarage] = await db
+          .select()
+          .from(garages)
+          .where(eq(garages.orgId, result.belongsTo));
         if (resultGarage) {
           owner = {
             ...org,
@@ -478,9 +500,8 @@ const getCarById = publicProcedure
         }
       }
       if (result.belongsTo.startsWith("user_")) {
-        const user = await clerkClient.users.getUser(result.belongsTo)
-        ownerUser = user
-
+        const user = await clerkClient.users.getUser(result.belongsTo);
+        ownerUser = user;
       }
     }
     return {
@@ -494,31 +515,33 @@ const getCarById = publicProcedure
     };
   });
 
-const getMyCars = publicProcedure.input(z.string().optional().nullable()).query(async ({ ctx, input }) => {
-  const { db } = ctx;
+const getMyCars = publicProcedure
+  .input(z.string().optional().nullable())
+  .query(async ({ ctx, input }) => {
+    const { db } = ctx;
 
-  const result = await db
-    .select({
-      ...getTableColumns(cars),
-      images: objArray<InferSelectModel<typeof assets>>({
-        table: assets,
-        id: assets.id,
-      }),
+    const result = await db
+      .select({
+        ...getTableColumns(cars),
+        images: objArray<InferSelectModel<typeof assets>>({
+          table: assets,
+          id: assets.id,
+        }),
 
-      brand: brands,
-      model: models,
-      body: bodies,
-    })
-    .from(cars)
-    .leftJoin(assets, eq(cars.id, assets.ref))
-    .leftJoin(brands, eq(cars.brandId, brands.id))
-    .leftJoin(models, eq(cars.modelId, models.id))
-    .leftJoin(bodies, eq(cars.bodyId, bodies.id))
-    .where(eq(cars.belongsTo, input ?? ""))
-    .groupBy(() => [cars.id, brands.id, models.id, bodies.id]);
+        brand: brands,
+        model: models,
+        body: bodies,
+      })
+      .from(cars)
+      .leftJoin(assets, eq(cars.id, assets.ref))
+      .leftJoin(brands, eq(cars.brandId, brands.id))
+      .leftJoin(models, eq(cars.modelId, models.id))
+      .leftJoin(bodies, eq(cars.bodyId, bodies.id))
+      .where(eq(cars.belongsTo, input ?? ""))
+      .groupBy(() => [cars.id, brands.id, models.id, bodies.id]);
 
-  return result;
-});
+    return result;
+  });
 
 const getBidsCount = protectedProcedure
   .input(z.number())

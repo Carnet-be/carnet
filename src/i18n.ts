@@ -1,14 +1,13 @@
-// import { getRequestConfig } from 'next-intl/server';
-// import { notFound } from 'next/navigation';
+import { getRequestConfig } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { locales } from "./config";
 
-// // Can be imported from a shared config
-// const locales = ['en', 'de', 'fr'];
+export default getRequestConfig(async ({ locale }) => {
+  // Validate that the incoming `locale` parameter is valid
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+  if (!locales.includes(locale as any)) notFound();
 
-// export default getRequestConfig(async ({locale}) => {
-//   // Validate that the incoming `locale` parameter is valid
-//   if (!locales.includes(locale as any)) notFound();
-
-//   return {
-//     messages: (await import(`../translations/${locale}.json`)).default
-//   };
-// });
+  return {
+    messages: (await import(`../translations/${locale}.json`)).default,
+  };
+});

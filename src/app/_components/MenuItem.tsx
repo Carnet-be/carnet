@@ -15,7 +15,14 @@ const MenuItem = ({ children }: { children: TMenuItem }) => {
   const pathname = usePathname();
   const [isActive, setIsActive] = React.useState(false);
   useEffect(() => {
-    setIsActive(pathname.includes(children.route));
+    if (children.route === "/dashboard/home") {
+      setIsActive(
+        pathname.includes("/dashboard/home") ||
+          pathname.includes("/dashboard/car/"),
+      );
+    } else {
+      setIsActive(pathname.includes(children.route));
+    }
   }, [pathname]);
   return (
     <Link

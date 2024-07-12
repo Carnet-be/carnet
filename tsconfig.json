@@ -20,7 +20,8 @@
     "paths": {
       "~/*": ["./src/*"],
       "@components/*": ["./src/_components/*"],
-    },
+      "@/*": ["./src/*"]
+    }, 
     "plugins": [{ "name": "next" }]
   },
   "include": [

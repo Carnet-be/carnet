@@ -42,17 +42,33 @@ const NewCarPage = ({
   const router = useRouter();
 
   const getForm = () => {
-    const brand = searchParams.get("brand") ? parseInt(searchParams.get("brand") ?? "") : undefined ?? car?.brandId ?? data.brands[0]?.id ?? 0;
-    const model = searchParams.get("model") ? parseInt(searchParams.get("model") ?? "") : undefined ?? car?.modelId ?? data.models.filter((k) => k.brandId == brand)[0]?.id ?? 0;
-    const year = searchParams.get("year") ? parseInt(searchParams.get("year") ?? "") : undefined ?? car?.year ?? undefined;
-    const fuel = (searchParams.get("fuel") as "gasoline" | "diesel" | "electricity" | "hybrid") ?? car?.fuel ?? "gasoline"
-    return ({
+    const brand = searchParams.get("brand")
+      ? parseInt(searchParams.get("brand") ?? "")
+      : undefined ?? car?.brandId ?? data.brands[0]?.id ?? 0;
+    const model = searchParams.get("model")
+      ? parseInt(searchParams.get("model") ?? "")
+      : undefined ??
+        car?.modelId ??
+        data.models.filter((k) => k.brandId == brand)[0]?.id ??
+        0;
+    const year = searchParams.get("year")
+      ? parseInt(searchParams.get("year") ?? "")
+      : undefined ?? car?.year ?? undefined;
+    const fuel =
+      (searchParams.get("fuel") as
+        | "gasoline"
+        | "diesel"
+        | "electricity"
+        | "hybrid") ??
+      car?.fuel ??
+      "gasoline";
+    return {
       step1: {
         brand,
         model,
         //year: 0,
         fuel,
-        state: car?.state ?? "new",
+        state: car?.state,
         color: car?.color?.id,
         year,
       },
@@ -77,10 +93,11 @@ const NewCarPage = ({
       },
       step5: {
         images: car?.images,
-        country: car?.countryId ?? undefined,
+        country: car?.countryId ?? data.countries[0]?.id,
         city: car?.cityId ?? undefined,
         address: car?.address ?? undefined,
-        pos: car?.lat && car?.lon ? { lat: car?.lat, lng: car?.lon } : undefined,
+        pos:
+          car?.lat && car?.lon ? { lat: car?.lat, lng: car?.lon } : undefined,
       },
       step6: {
         //duration: "3d",
@@ -94,8 +111,8 @@ const NewCarPage = ({
         type: car?.type ?? "direct",
         description: car?.description ?? undefined,
       },
-    });
-  }
+    };
+  };
   const {
     form = getForm(),
     setForm,
@@ -120,7 +137,6 @@ const NewCarPage = ({
     setForm(getForm());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [car]);
-
 
   const {
     mutate: mutateCar,
@@ -271,14 +287,14 @@ const NewCarPage = ({
                 onUpdate={
                   car
                     ? (value) => {
-                      const newForm = { ...form, step6: value };
-                      updateCar({
-                        ...newForm,
-                        id: car.id!,
-                      });
-                      setIsOpen(true);
-                      setForm(newForm);
-                    }
+                        const newForm = { ...form, step6: value };
+                        updateCar({
+                          ...newForm,
+                          id: car.id!,
+                        });
+                        setIsOpen(true);
+                        setForm(newForm);
+                      }
                     : undefined
                 }
                 value={form.step6}
@@ -296,7 +312,6 @@ const NewCarPage = ({
 
         isDismissable={!(isLoading || isUploading || isUpdaing)}
         hideCloseButton={!(isLoading || isUploading || isUpdaing)}
-
       >
         <ModalContent>
           <ModalBody className="center p-10">
@@ -313,11 +328,10 @@ const NewCarPage = ({
         // backdrop="blur"
         isDismissable={false}
         isOpen={isSuccess}
-
         hideCloseButton={true}
-      // onClose={() => {
-      //   setIsSuccess(false);
-      // }}
+        // onClose={() => {
+        //   setIsSuccess(false);
+        // }}
       >
         <ModalContent>
           <ModalBody className="center p-10">
@@ -327,15 +341,14 @@ const NewCarPage = ({
               </div>
               <div className="flex -translate-y-10 flex-col items-center gap-4">
                 <span className="text-lg ">Your car has been published</span>
-                <div className="flex justify-around items-end w-full gap-4">
+                <div className="flex w-full items-end justify-around gap-4">
                   <Button
                     color="primary"
                     size="sm"
                     startContent={<Plus />}
                     onClick={() => {
                       setStep(1);
-                      router.replace(`/forms/car/new`)
-
+                      router.replace(`/forms/car/new`);
                     }}
                   >
                     Add another car

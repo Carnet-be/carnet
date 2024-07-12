@@ -50,14 +50,14 @@ export const NavbarPublic = () => {
                         Blogs
                       </a>
                     </li> */}
-                  <li>
+                  {/* <li>
                     <a
                       href="/#services"
                       className="text-dark flex py-2 text-base font-medium hover:text-primary dark:text-white lg:ml-10 lg:inline-flex"
                     >
                       Pricing
                     </a>
-                  </li>
+                  </li> */}
                   <li>
                     <a
                       href="/#contact"

@@ -2,7 +2,7 @@ import { Button, cn } from "@nextui-org/react";
 import { type InferSelectModel } from "drizzle-orm";
 import Image from "next/image";
 import Link from "next/link";
-import { RouterOutputs } from "~/trpc/shared";
+import { type RouterOutputs } from "~/trpc/shared";
 import { getCarImage, priceFormatter } from "~/utils/function";
 import { type assets, type cars } from "../../server/db/schema";
 import { AuctionIcon } from "./icons";
@@ -39,9 +39,11 @@ const CarCard = ({
   className,
   link,
 }: {
-  children: InferSelectModel<typeof cars> & {
-    images: InferSelectModel<typeof assets>[];
-  } | RouterOutputs['car']['getCars']['result'][number]
+  children:
+    | (InferSelectModel<typeof cars> & {
+        images: InferSelectModel<typeof assets>[];
+      })
+    | RouterOutputs["car"]["getCars"]["result"][number];
   className?: string;
   link?: string;
 }) => {
@@ -54,7 +56,7 @@ const CarCard = ({
         boxShadow: "0px 0px 65px -58px rgba(0,0,0,0.7)",
       }}
       className={cn(
-        "overflow-hidden rounded-xl bg-gray-50 transition duration-300 hover:shadow-2xl group",
+        "group overflow-hidden rounded-xl bg-gray-50 transition duration-300 hover:shadow-2xl",
         className,
       )}
     >

@@ -4,45 +4,45 @@
 @tailwind utilities;
 
 @layer base {
-    body {
-        @apply bg-gray-50 placeholder:text-opacity-30;
-    }
+  body {
+    @apply bg-gray-50 placeholder:text-opacity-30;
+  }
 
-    h1 {
-        @apply text-3xl font-bold text-black;
-    }
+  h1 {
+    @apply text-3xl font-bold text-black;
+  }
 
-    h2 {
-        @apply text-2xl font-bold text-black;
-    }
+  h2 {
+    @apply text-2xl font-bold text-black;
+  }
 
-    .center {
-        @apply flex items-center justify-center;
-    }
+  .center {
+    @apply flex items-center justify-center;
+  }
 
-    .iconButton {
-        @apply mr-1 rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white;
-    }
+  .iconButton {
+    @apply mr-1 rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white;
+  }
 
-    .icon {
-        @apply h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white;
-    }
+  .icon {
+    @apply h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white;
+  }
 }
 
-#textarea-wrapper>div>div {
-    height: auto !important;
+#textarea-wrapper > div > div {
+  height: auto !important;
 }
 
 @keyframes moveGradient {
-    0% {
-        background-position: 0% 50%;
-    }
+  0% {
+    background-position: 0% 50%;
+  }
 
-    100% {
-        background-position: 100% 50%;
-    }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 
 .animate-gradient {
-    animation: moveGradient 10s linear infinite;
+  animation: moveGradient 10s linear infinite;
 }

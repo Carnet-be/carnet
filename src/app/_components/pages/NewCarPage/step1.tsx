@@ -4,15 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Autocomplete, AutocompleteItem,
-  Button,
-  Input,
-  ScrollShadow,
-  Select,
-  SelectItem,
-  SelectSection,
-} from "@nextui-org/react";
+import { Button, ScrollShadow } from "@nextui-org/react";
 import cx from "classnames";
 import { motion } from "framer-motion";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
@@ -24,7 +16,7 @@ import { invertColor } from "~/utils/function";
 import { z } from "zod";
 import CSelect from "../../ui/CSelect";
 
-export const FUEL = ["Gasoline", "Diesel", "Electricity", "Hybrid"]
+export const FUEL = ["Gasoline", "Diesel", "Electricity", "Hybrid"];
 
 export const getListOfYearFrom1990 = () => {
   const currentYear = new Date().getFullYear();
@@ -57,8 +49,12 @@ const Step1 = ({
     defaultValues,
     resolver: zodResolver(
       z.object({
-        brand: z.number().min(1, { message: "Please select a brand" }),
-        model: z.number().min(1, { message: "Please select a model" }),
+        brand: z
+          .number({ description: "Please select a brand" })
+          .min(1, { message: "Please select a brand" }),
+        model: z
+          .number({ description: "Please select a brand" })
+          .min(1, { message: "Please select a model" }),
         fuel: z
           .enum(["gasoline", "diesel", "electricity", "hybrid"])
           .optional()
@@ -110,20 +106,18 @@ const Step1 = ({
             name="model"
             control={control}
             render={({ field: { value, onChange, onBlur } }) => (
-
-
               <CSelect
                 isDisabled={!watch("brand")}
                 error={errors.model?.message}
                 isInvalid={!!errors.model}
-
                 label={
                   watch("model")
                     ? "Model"
                     : watch("brand")
-                      ? `Select a model of ${brands.find((b) => b.id == watch("brand"))?.name
-                      }`
-                      : "Select a model (Required)"
+                    ? `Select a model of ${brands.find(
+                        (b) => b.id == watch("brand"),
+                      )?.name}`
+                    : "Select a model (Required)"
                 }
                 onChange={onChange}
                 onBlur={onBlur}
@@ -187,7 +181,6 @@ const Step1 = ({
           />
         </div>
         <div className="flex flex-row items-center gap-4">
-
           <Controller
             name="year"
             control={control}
@@ -200,13 +193,10 @@ const Step1 = ({
                     ? "Year of the car"
                     : "Select the year of your car"
                 }
-
-                onChange={
-                  (e) => {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                    onChange(e);
-                  }
-                }
+                onChange={(e) => {
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                  onChange(e);
+                }}
                 onBlur={onBlur}
                 value={value?.toString()}
                 options={getListOfYearFrom1990().map((b) => ({
@@ -223,9 +213,7 @@ const Step1 = ({
               <CSelect
                 type="text"
                 className="w-[400px]"
-                label={
-                  "State of the car"
-                }
+                label={"State of the car"}
                 onChange={onChange}
                 onBlur={onBlur}
                 value={value?.toString()}
@@ -249,12 +237,10 @@ const Step1 = ({
                 onChange={onChange}
                 onBlur={onBlur}
                 value={value?.toString()}
-                options={FUEL.map(
-                  (b) => ({
-                    label: b.toString(),
-                    value: b.toString().toLowerCase(),
-                  }),
-                )}
+                options={FUEL.map((b) => ({
+                  label: b.toString(),
+                  value: b.toString().toLowerCase(),
+                }))}
               />
             )}
           />
@@ -265,8 +251,6 @@ const Step1 = ({
           onSelect={(id) => setValue("color", id)}
         />
       </div>
-
-
 
       <div className="flex flex-row items-center justify-between">
         <div className="flex-grow"></div>
@@ -308,28 +292,34 @@ const ColorSelection = ({
         {bodies.map((b, index) => {
           const isSelected = selectedBody == b.id;
           return (
-            <div key={index}
+            <div
+              key={index}
               onClick={() => onSelect(b.id)}
               className={cx(
                 "center relative h-[60px] w-[60px] cursor-pointer rounded-[8px]   border transition-all duration-300",
                 isSelected ? "shadow-4xl  border-2 text-primary" : "",
               )}
               style={{
-                width: '60px',
-                height: '60px',
-                margin: '5px',
-                position: 'relative',
+                width: "60px",
+                height: "60px",
+                margin: "5px",
+                position: "relative",
                 backgroundColor: b.value,
-                borderRadius: '8px',
+                borderRadius: "8px",
 
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-              }}>
-              <div style={{
-                position: 'absolute',
-                inset: '0',
-                background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.2))',
-                borderRadius: '8px'
-              }}></div>
+                boxShadow:
+                  "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  inset: "0",
+                  background:
+                    "linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.2))",
+                  borderRadius: "8px",
+                }}
+              ></div>
               <div className="center w-[60px]">
                 {isSelected && (
                   <Check color={invertColor(b.value)} size={30} className="" />
