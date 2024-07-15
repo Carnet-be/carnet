@@ -1,4 +1,5 @@
 import { type Metadata } from "next";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Logo from "~/app/_components/ui/logo";
 import UserButton from "~/app/_components/ui/userButton";
@@ -11,7 +12,10 @@ export const metadata: Metadata = {
   description:
     "Carnet is marketplace for car. We provide the best car for you.",
 };
+
 export default function Page() {
+  const t = useTranslations("pages.landing");
+
   return (
     <div className="relative">
       <div className="sticky left-0 top-0 z-[100] w-full bg-white/60 backdrop-blur-lg">
@@ -34,7 +38,7 @@ export default function Page() {
                         href="/"
                         className="text-dark flex py-2 text-base font-medium hover:text-primary dark:text-white lg:ml-10 lg:inline-flex"
                       >
-                        Home
+                        {t("home")}
                       </a>
                     </li>
                     <li>
@@ -42,7 +46,7 @@ export default function Page() {
                         href="#about"
                         className="text-dark flex py-2 text-base font-medium hover:text-primary dark:text-white lg:ml-10 lg:inline-flex"
                       >
-                        About
+                        {t("about")}
                       </a>
                     </li>
                     <li>
@@ -50,31 +54,15 @@ export default function Page() {
                         href="#cars"
                         className="text-dark flex py-2 text-base font-medium hover:text-primary dark:text-white lg:ml-10 lg:inline-flex"
                       >
-                        Cars
+                        {t("cars")}
                       </a>
                     </li>
-                    {/* <li>
-                      <a
-                        href="#blogs"
-                        className="text-dark flex py-2 text-base font-medium hover:text-primary dark:text-white lg:ml-10 lg:inline-flex"
-                      >
-                        Blogs
-                      </a>
-                    </li> */}
-                    {/* <li>
-                      <a
-                        href="#services"
-                        className="text-dark flex py-2 text-base font-medium hover:text-primary dark:text-white lg:ml-10 lg:inline-flex"
-                      >
-                        Pricing
-                      </a>
-                    </li> */}
                     <li>
                       <a
                         href="#contact"
                         className="text-dark flex py-2 text-base font-medium hover:text-primary dark:text-white lg:ml-10 lg:inline-flex"
                       >
-                        Contact
+                        {t("contact")}
                       </a>
                     </li>
                   </ul>
@@ -97,49 +85,18 @@ export default function Page() {
               <div className="grow">
                 <div className="hero-content w-full">
                   <h1 className="text-dark mb-5 text-4xl font-bold !leading-[1.208] dark:text-white sm:text-[42px] lg:text-[40px] xl:text-5xl">
-                    The Greatest <br />
-                    Journey Of Car <br />
-                    Marketplace
+                    {t("heroTitle1")} <br />
+                    {t("heroTitle2")} <br />
+                    {t("heroTitle3")}
                   </h1>
                   <p className="text-body-color dark:text-dark-6 mb-8 max-w-[480px] text-base">
-                    With Carnet you can find the best car for you. We provide
-                    the best car for you.
+                    {t("heroDescription")}
                   </p>
                   <ul className="flex w-full flex-wrap items-center">
                     <li className="w-full">
-                      {/* <a
-                        href="javascript:void(0)"
-                        className="hover:bg-blue-dark inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-center text-base font-medium text-white lg:px-7"
-                      >
-                        Get Started
-                      </a> */}
                       <InteractCard />
-                      {/* <SearchButton /> */}
                     </li>
                   </ul>
-                  {/* <div className="clients pt-16">
-                    <h6 className="text-body-color dark:text-dark-6 mb-6 flex items-center text-xs font-normal">
-                      Some Of Our Clients
-                      <span className="bg-body-color ml-3 inline-block h-px w-8"></span>
-                    </h6>
-                    <div className="flex items-center gap-4 xl:gap-[50px]">
-                      <a href="javascript:void(0)" className="block py-3">
-                        <img
-                          src="assets/images/brands/oracle.svg"
-                          alt="oracle"
-                        />
-                      </a>
-                      <a href="javascript:void(0)" className="block py-3">
-                        <img src="assets/images/brands/intel.svg" alt="intel" />
-                      </a>
-                      <a href="javascript:void(0)" className="block py-3">
-                        <img
-                          src="assets/images/brands/logitech.svg"
-                          alt="logitech"
-                        />
-                      </a>
-                    </div>
-                  </div> */}
                 </div>
               </div>
 
@@ -196,12 +153,8 @@ export default function Page() {
         </div>
       </div>
       <About />
-      {/* <HowItWorks /> */}
       <CarSection />
-
       <Services />
-      {/* <Blog /> */}
-      {/* <Pricing /> */}
       <Contact />
       <Footer />
     </div>

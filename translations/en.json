@@ -1,37 +1,14 @@
 {
   "page": {
-    "landing": {
-      "hero": {
-        "title": "The Greatest Journey Of Car Marketplace",
-        "description": "With Carnet you can find the best car for you. We provide the best car for you."
-      },
-      "about": {
-        "button": "Get Started",
-        "title": "Make the best when buying a car",
-        "description": "Carnet is a morketplace for selling and buying cars, and also sell car as auction\nCarnet is a morketplace for selling and buying cars, and also sell car as auction"
-      },
-      "services": {
-        "title": "What We Offer",
-        "description": "Our services are the best in the market. We offer the best services for our clients. We are the best in the market.",
-        "items": [
-          {
-            "title": "Support 24/7",
-            "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-          },
-          {
-            "title": "Fast Delivery",
-            "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-          }
-        ]
-      },
-      "car": {
-        "title": "Our recent cars",
-        "description": "Those are the latest cars from added to our website."
-      },
-      "pricing": {
-        "title": "Our Pricing",
-        "description": "We offer the best pricing for our clients. We are the best in the market."
-      }
+    "landing":{
+      "home": "Home",
+      "about": "About",
+      "cars": "Cars",
+      "contact": "Contact",
+      "heroTitle1": "The Greatest",
+      "heroTitle2": "Journey Of Car",
+      "heroTitle3": "Marketplace",
+      "heroDescription": "With Carnet you can find the best car for you. We provide the best car for you."
     }
   }
 }
