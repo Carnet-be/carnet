@@ -7,7 +7,8 @@ import {
   cn,
   useDisclosure,
 } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+
 import { useState } from "react";
 import { BiSearch } from "react-icons/bi";
 import { CgAdd } from "react-icons/cg";
@@ -16,6 +17,7 @@ import {
   FUEL,
   getListOfYearFrom1990,
 } from "~/app/_components/pages/NewCarPage/step1";
+import { useRouter } from "~/navigation";
 import { api } from "~/trpc/react";
 
 export const SearchButton = () => {
@@ -33,7 +35,7 @@ export const SearchButton = () => {
       <Button
         onClick={() => {
           if (search) {
-            nouter.push(`/dashboard/home?q=${search}`);
+            nouter.push(`/dashboard/home?q=${search}` as never);
           }
         }}
         size="lg"
@@ -56,7 +58,8 @@ export const InteractCard = () => {
   const utils = api.useContext();
   const [loadin, setLoading] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+  const t = useTranslations("pages.landing.form");
+  const c = useTranslations("common");
   //get years from
   return (
     <div className="w-full">
@@ -68,7 +71,7 @@ export const InteractCard = () => {
             tab === "buy" ? "bg-[#E4EDF6]" : "bg-primary text-white",
           )}
         >
-          Buy
+          {c("buy")}
         </Button>
         <Button
           onClick={() => setTab("sell")}
@@ -77,15 +80,15 @@ export const InteractCard = () => {
             tab === "sell" ? "bg-[#E4EDF6]" : "bg-primary text-white",
           )}
         >
-          Sell
+          {c("sell")}
         </Button>
       </div>
       <div className="backdrop-shadow-md flex w-full flex-col gap-2 rounded-md rounded-tl-none bg-[#E4EDF6] px-5 py-10">
         <div>
           <div className="grid grid-cols-2 gap-3">
             <Autocomplete
-              label="Brand"
-              placeholder="Search a brand"
+              label={c("brand")}
+              placeholder={t("placeholderBrand")}
               isLoading={isLoading}
               selectedKey={brandId}
               onSelectionChange={(value) => {
@@ -110,7 +113,7 @@ export const InteractCard = () => {
               )) ?? []}
             </Autocomplete>
             <Autocomplete
-              label="Model"
+              label={c("model")}
               isLoading={isLoading}
               isDisabled={!brandId}
               inputProps={{
@@ -118,7 +121,7 @@ export const InteractCard = () => {
                   inputWrapper: " bg-white",
                 },
               }}
-              placeholder="Search a model"
+              placeholder={t("placeholderModel")}
               labelPlacement="outside"
               // className="max-w-xs"
               scrollShadowProps={{
@@ -145,8 +148,8 @@ export const InteractCard = () => {
             </Autocomplete>
 
             <Autocomplete
-              label="Year"
-              placeholder="Search a year"
+              label={c("year")}
+              placeholder={t("placeholderYear")}
               inputProps={{
                 classNames: {
                   inputWrapper: " bg-white",
@@ -171,8 +174,8 @@ export const InteractCard = () => {
             </Autocomplete>
 
             <Autocomplete
-              label="Fuel"
-              placeholder="Search a brand"
+              label={c("fuel")}
+              placeholder={t("placeholderFuel")}
               inputProps={{
                 classNames: {
                   inputWrapper: " bg-white",
@@ -193,7 +196,7 @@ export const InteractCard = () => {
                   key={animal.toLowerCase()}
                   value={animal.toLowerCase()}
                 >
-                  {animal}
+                  {c(animal)}
                 </AutocompleteItem>
               ))}
             </Autocomplete>
@@ -207,12 +210,12 @@ export const InteractCard = () => {
                   if (modelId) query.append("model", modelId.toString());
                   if (year) query.append("year", year.toString());
                   if (fuel) query.append("fuel", fuel);
-                  router.push("/dashboard/home?" + query.toString());
+                  router.push(("/dashboard/home?" + query.toString()) as never);
                 }}
                 color="primary"
                 startContent={<BiSearch />}
               >
-                Search Car
+                {t("searchCarButton")}
               </Button>
             )}
             {tab === "sell" && (
@@ -231,12 +234,12 @@ export const InteractCard = () => {
                   if (modelId) query.append("model", modelId.toString());
                   if (year) query.append("year", year.toString());
                   if (fuel) query.append("fuel", fuel);
-                  router.push("/forms/car/new?" + query.toString());
+                  router.push(("/forms/car/new?" + query.toString()) as never);
                 }}
                 color="primary"
                 startContent={<CgAdd />}
               >
-                Sell Car
+                {t("sellCarButton")}
               </Button>
             )}
           </div>

@@ -3,19 +3,18 @@ import "~/styles/globals.css";
 import { Inter } from "next/font/google";
 import { headers } from "next/headers";
 
+import { enUS, frFR, nlBE } from "@clerk/localizations";
 import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
+import { locales } from "~/config";
 import { TRPCReactProvider } from "~/trpc/react";
 import LoadingPage from "../_components/ui/LoadingPage";
 import { Providers } from "../providers";
-
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
 });
-
-const locales = ["en", "de", "fr"];
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -31,11 +30,16 @@ export default async function RootLayout({
   params: { locale },
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: { locale: (typeof locales)[number] };
 }) {
   const messages = await getMessages();
+  const internalization = {
+    en: enUS,
+    fr: frFR,
+    nl: nlBE,
+  };
   return (
-    <ClerkProvider>
+    <ClerkProvider localization={internalization[locale]}>
       <html lang={locale}>
         <body className={`font-sans ${inter.variable}  bg-gray-50`}>
           <TRPCReactProvider headers={headers()}>

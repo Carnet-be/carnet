@@ -1,6 +1,35 @@
 {
-  "page": {
-    "landing":{
+  "common": {
+    "Company": "Company",
+    "about": "About",
+    "contact": "Contact",
+    "privacyPolicy": "Privacy & Policy",
+    "phoneNumber": "Phone Number",
+    "buy": "Buy",
+    "sell": "Sell",
+    "brand": "Brand",
+    "fuel": "Fuel",
+    "year": "Year",
+    "gasoline": "Gasoline",
+    "diesel": "Diesel",
+    "electric": "Electric",
+    "hybrid": "Hybrid",
+    "close": "Close",
+    "add": "Add"
+  },
+  "text": {
+    "contactInformation": "Contact Information",
+    "contactInformation desc": " Before you can sell a car, you need to add a contact information.",
+    "contactInformation button": "Add Contact Information"
+  },
+  "form": {
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send"
+  },
+  "pages": {
+    "landing": {
       "home": "Home",
       "about": "About",
       "cars": "Cars",
@@ -8,7 +37,131 @@
       "heroTitle1": "The Greatest",
       "heroTitle2": "Journey Of Car",
       "heroTitle3": "Marketplace",
-      "heroDescription": "With Carnet you can find the best car for you. We provide the best car for you."
+      "heroDescription": "With Carnet you can find the best car for you. We provide the best car for you.",
+      "form": {
+        "placeholderBrand": "Search Brand",
+        "placeholderModel": "Search Model",
+        "placeholderYear": "Select Year",
+        "placeholderFuel": "Select Fuel",
+        "searchCarButton": "Search Car",
+        "sellCarButton": "Sell Car"
+      },
+
+      "sections": {
+        "howItWorks": {
+          "title": " We offer Marketplace and Auction",
+          "description1": "What we offer",
+          "item1": "No direct cost for you",
+          "item2": "A guaranteed offer from a dealership",
+          "item3": "No control technique needed"
+        },
+        "about": {
+          "title": "Make the best when buying a car",
+          "desciption": " Carnet is a morketplace for selling and buying cars, and also sell car as auction",
+          "button": "Get Started"
+        },
+        "footer": {
+          "description": "Carnet is a morketplace for selling and buying cars, and also sell car as auction",
+          "quickLinks": "Quick Links",
+          "premiumSupport": "Premiun Support",
+          "ourServices": "Our Services",
+          "followUs": "Follow Us"
+        },
+        "pricing": {
+          "title": "Pricing",
+          "description": " Choose the right plan for your business. All plans include unlimited support and free updates.",
+          "1": {
+            "title": "Basic",
+            "price": "Free",
+            "description": "A plan for small businesses",
+            "button": "Get Started",
+
+            "feature1": "Unlimited products",
+            "feature2": "Unlimited storage",
+            "feature3": "24/7 support"
+          },
+          "2": {
+            "title": "Pro",
+            "price": "$15",
+            "description": "A plan for medium businesses",
+            "button": "Get Started",
+            "feature1": "Unlimited products",
+            "feature2": "Unlimited storage",
+            "feature3": "24/7 support"
+          },
+          "3": {
+            "title": "Enterprise",
+            "price": "$29",
+            "description": "A plan for big businesses",
+            "button": "Get Started",
+            "feature1": "Unlimited products",
+            "feature2": "Unlimited storage",
+            "feature3": "24/7 support"
+          }
+        },
+        "contact": {
+          "title": "Contact Us",
+          "description": "If you have any questions, feel free to contact us",
+          "button": "Contact Us",
+          "form": {
+            "name": "Your Name",
+            "email": "Your Email",
+            "message": "Your Message",
+            "send": "Send",
+            "phone": "Phone Number"
+          }
+        },
+        "carSection": {
+          "title": "Our Recent cars",
+          "description": "We have the best cars for you. Choose the best car for you"
+        },
+        "services": {
+          "title": "Our Services",
+          "description": "We offer the best services for you. Choose the best service for you",
+          "1": {
+            "title": "Marketplace",
+            "description": "We offer the best marketplace for you. Choose the best marketplace for you",
+            "image": "/images/img_bidder_1.png"
+          },
+          "2": {
+            "title": "Auction",
+            "description": "We offer the best auction for you. Choose the best auction for you",
+            "image": "/images/img_bidder_2.png"
+          },
+          "3": {
+            "title": "Sell",
+            "description": "We offer the best sell for you. Choose the best sell for you",
+            "image": "/images/img_bidder_3.png"
+          },
+          "4": {
+            "title": "Buy",
+            "description": "We offer the best buy for you. Choose the best buy for you",
+            "image": "/images/img_bidder_4.png"
+          },
+          "5": {
+            "title": "Rent",
+            "description": "We offer the best rent for you. Choose the best rent for you",
+            "image": "/images/img_bidder_5.png"
+          },
+          "6": {
+            "title": "Lease",
+            "description": "We offer the best lease for you. Choose the best lease for you",
+            "image": "/images/img_bidder_6.png"
+          }
+        },
+        "carsSection": {
+          "title": "Our Recent cars",
+          "description": "We have the best cars for you. Choose the best car for you"
+        }
+      }
+    }
+  },
+  "components": {
+    "header": {
+      "home": "Home",
+      "about": "About",
+      "cars": "Cars",
+      "contact": "Contact"
     }
   }
 }

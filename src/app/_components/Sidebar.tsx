@@ -11,6 +11,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { CarFront, Home, Settings, Users2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -222,23 +223,22 @@ export const ModalCheckContact = ({
 }) => {
   const { orgId } = useAuth();
   const router = useRouter();
+  const te = useTranslations("text");
+  const c = useTranslations("common");
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Contact information
+              {te("contactInformation")}
             </ModalHeader>
             <ModalBody>
-              <p>
-                Before you can sell a car, you need to add a contact
-                information.
-              </p>
+              <p>{te("contactInformation desc")}</p>
             </ModalBody>
             <ModalFooter>
               <Button color="danger" variant="light" onPress={onClose}>
-                Close
+                {c("close")}
               </Button>
               <Button
                 color="primary"
@@ -251,7 +251,7 @@ export const ModalCheckContact = ({
                   onClose();
                 }}
               >
-                Add an address
+                {te("contactInformation button")}
               </Button>
             </ModalFooter>
           </>

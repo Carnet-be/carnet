@@ -16,7 +16,7 @@ import { invertColor } from "~/utils/function";
 import { z } from "zod";
 import CSelect from "../../ui/CSelect";
 
-export const FUEL = ["Gasoline", "Diesel", "Electricity", "Hybrid"];
+export const FUEL = ["gasoline", "diesel", "electric", "hybrid"];
 
 export const getListOfYearFrom1990 = () => {
   const currentYear = new Date().getFullYear();

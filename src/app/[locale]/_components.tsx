@@ -1,10 +1,14 @@
 import Image from "next/image";
 import { api } from "~/trpc/server";
 
+import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import CarCard from "~/app/_components/carCard";
 import Logo from "~/app/_components/ui/logo";
 
-export const HowItWorks = () => {
+export const HowItWorks = async () => {
+  const t = await getTranslations("pages.landing.sections.howItWorks");
+
   return (
     <section
       id="how-it-works"
@@ -13,7 +17,7 @@ export const HowItWorks = () => {
       <div className="container mx-auto">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-primary dark:text-gray-100">
-            We offer Marketplace and Auction
+            {t("title")}
           </h2>
         </div>
         <div className="flex items-center  justify-around gap-5 py-10">
@@ -24,25 +28,25 @@ export const HowItWorks = () => {
             height={350}
           />
           <div>
-            <p className="pb-4">On the Auction you get :</p>
+            <p className="pb-4">{t("description1")} :</p>
 
             <ol className="relative border-s border-gray-200 dark:border-gray-700">
               <li className="mb-10 ms-4">
                 <div className="absolute -start-3 mt-1.5 h-6 w-6 rounded-full border border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700"></div>
                 {/* <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">February 2022</time> */}
-                <p className="text-lg ">No direct cost for you </p>
+                <p className="text-lg ">{t("item1")} </p>
                 {/* <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Get access to over 20+ pages including a dashboard layout, charts, kanban board, calendar, and pre-order E-commerce & Marketing pages.</p> */}
               </li>
               <li className="mb-10 ms-4">
                 <div className="absolute -start-3 mt-1.5 h-6 w-6 rounded-full border border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700"></div>
                 {/* <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">February 2022</time> */}
-                <p className="text-lg ">A guaranteed offer from a dealership</p>
+                <p className="text-lg ">{t("item2")}</p>
                 {/* <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Get access to over 20+ pages including a dashboard layout, charts, kanban board, calendar, and pre-order E-commerce & Marketing pages.</p> */}
               </li>
               <li className="mb-10 ms-4">
                 <div className="absolute -start-3 mt-1.5 h-6 w-6 rounded-full border border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700"></div>
                 {/* <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">February 2022</time> */}
-                <p className="text-lg ">No control technique needed</p>
+                <p className="text-lg ">{t("item3")}</p>
                 {/* <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Get access to over 20+ pages including a dashboard layout, charts, kanban board, calendar, and pre-order E-commerce & Marketing pages.</p> */}
               </li>
             </ol>
@@ -53,7 +57,8 @@ export const HowItWorks = () => {
   );
 };
 
-export const About = () => {
+export const About = async () => {
+  const t = await getTranslations("pages.landing.sections.about");
   return (
     <section
       id="about"
@@ -100,21 +105,17 @@ export const About = () => {
           <div className="w-full px-4 lg:w-1/2 xl:w-5/12">
             <div className="mt-10 lg:mt-0">
               <h2 className="text-dark mb-5 text-3xl font-bold text-primary dark:text-white sm:text-[40px]/[48px]">
-                Make the best when buying a car
+                {t("title")}
               </h2>
               <p className="text-body-color dark:text-dark-6 mb-5 text-base">
-                Carnet is a morketplace for selling and buying cars, and also
-                sell car as auction
+                {t("description")}
               </p>
-              <p className="text-body-color dark:text-dark-6 mb-8 text-base">
-                Carnet is a morketplace for selling and buying cars, and also
-                sell car as auction
-              </p>
+
               <a
                 href="/auth/sign-up"
                 className="inline-flex items-center justify-center rounded-md border border-transparent bg-primary px-7 py-3 text-center text-base font-medium text-white hover:bg-opacity-90"
               >
-                Get Started
+                {t("button")}
               </a>
             </div>
           </div>
@@ -125,6 +126,8 @@ export const About = () => {
 };
 
 export const Footer = () => {
+  const t = useTranslations("pages.landing.sections.footer");
+  const c = useTranslations("common");
   return (
     <footer className="dark:bg-dark relative z-10 bg-white pb-10 pt-20 lg:pb-20 lg:pt-[120px]">
       <div className="container mx-auto">
@@ -135,8 +138,7 @@ export const Footer = () => {
                 <Logo size={60} />
               </a>
               <p className="text-body-color dark:text-dark-6 mb-7 text-base">
-                Carnet is a morketplace for selling and buying cars, and also
-                sell car as auction
+                {t("description")}
               </p>
               <p className="text-dark flex items-center text-sm font-medium dark:text-white">
                 <span className="mr-3 text-primary">
@@ -175,16 +177,14 @@ export const Footer = () => {
           <div className="w-full px-4 sm:w-1/2 lg:w-2/12"></div>
           <div className="w-full px-4 sm:w-1/2 lg:w-2/12">
             <div className="mb-10 w-full">
-              <h4 className="text-dark mb-9 text-lg font-semibold dark:text-white">
-                Company
-              </h4>
+              <h4 className="text-dark mb-9 text-lg font-semibold dark:text-white"></h4>
               <ul className="space-y-3">
                 <li>
                   <a
                     href="javascript:void(0)"
                     className="text-body-color dark:text-dark-6 inline-block text-base leading-loose hover:text-primary"
                   >
-                    About Carnet
+                    {c("about")} Carnet
                   </a>
                 </li>
                 <li>
@@ -192,7 +192,7 @@ export const Footer = () => {
                     href="javascript:void(0)"
                     className="text-body-color dark:text-dark-6 inline-block text-base leading-loose hover:text-primary"
                   >
-                    Contact
+                    {c("contact")}
                   </a>
                 </li>
 
@@ -201,7 +201,7 @@ export const Footer = () => {
                     href="javascript:void(0)"
                     className="text-body-color dark:text-dark-6 inline-block text-base leading-loose hover:text-primary"
                   >
-                    Privacy & Policy
+                    {c("privacyPolicy")}
                   </a>
                 </li>
               </ul>
@@ -210,7 +210,7 @@ export const Footer = () => {
           <div className="w-full px-4 sm:w-1/2 lg:w-2/12">
             <div className="mb-10 w-full">
               <h4 className="text-dark mb-9 text-lg font-semibold dark:text-white">
-                Quick Links
+                {t("quickLinks")}
               </h4>
               <ul className="space-y-3">
                 <li>
@@ -218,7 +218,7 @@ export const Footer = () => {
                     href="javascript:void(0)"
                     className="text-body-color dark:text-dark-6 inline-block text-base leading-loose hover:text-primary"
                   >
-                    Premium Support
+                    {t("premiumSupport")}
                   </a>
                 </li>
                 <li>
@@ -226,15 +226,7 @@ export const Footer = () => {
                     href="javascript:void(0)"
                     className="text-body-color dark:text-dark-6 inline-block text-base leading-loose hover:text-primary"
                   >
-                    Our Services
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="javascript:void(0)"
-                    className="text-body-color dark:text-dark-6 inline-block text-base leading-loose hover:text-primary"
-                  >
-                    Know Our Team
+                    {t("ourServices")}
                   </a>
                 </li>
               </ul>
@@ -243,7 +235,7 @@ export const Footer = () => {
           <div className="w-full px-4 sm:w-1/2 lg:w-3/12">
             <div className="mb-10 w-full">
               <h4 className="text-dark mb-9 text-lg font-semibold dark:text-white">
-                Follow Us On
+                {t("followUs")}
               </h4>
               <div className="mb-6 flex items-center">
                 <a
@@ -368,6 +360,7 @@ export const Footer = () => {
 };
 
 export const Pricing = () => {
+  const t = useTranslations("pages.landing.sections.pricing");
   return (
     <section
       id="pricing"
@@ -378,11 +371,10 @@ export const Pricing = () => {
           <div className="w-full px-4">
             <div className="mx-auto mb-[60px] max-w-[510px] text-center">
               <h2 className="text-dark mb-3  text-3xl font-bold leading-[1.208] text-primary dark:text-white sm:text-4xl md:text-[40px]">
-                Our Pricing Plan
+                {t("title")}
               </h2>
               <p className="text-body-color dark:text-dark-6 text-base">
-                Choose the right plan for your business. All plans include
-                unlimited support and free updates.
+                {t("description")}
               </p>
             </div>
           </div>
@@ -392,42 +384,33 @@ export const Pricing = () => {
           <div className="w-full px-4 md:w-1/2 lg:w-1/3">
             <div className="border-stroke shadow-pricing dark:border-dark-3 dark:bg-dark-2 relative z-10 mb-10 overflow-hidden rounded-[10px] border-2 bg-white px-8 py-10 sm:p-12 lg:px-6 lg:py-10 xl:p-[50px]">
               <span className="mb-3 block text-lg font-semibold text-primary">
-                Personal
+                {t("1.title")}
               </span>
               <h2 className="text-dark mb-5 text-[42px] font-bold dark:text-white">
-                <span>$0</span>
+                <span>{t("1.price")}</span>
                 <span className="text-body-color dark:text-dark-6 text-base font-medium">
                   / month
                 </span>
               </h2>
               <p className="border-stroke text-body-color dark:border-dark-3 dark:text-dark-6 mb-8 border-b pb-8 text-base">
-                Perfect for a normal user who wants to buy a car
+                {t("1.description")}
               </p>
               <div className="mb-9 flex flex-col gap-[14px]">
                 <p className="text-body-color dark:text-dark-6 text-base">
-                  1 User
+                  {t("1.feature1")}
                 </p>
                 <p className="text-body-color dark:text-dark-6 text-base">
-                  All UI components
+                  {t("1.feature2")}
                 </p>
                 <p className="text-body-color dark:text-dark-6 text-base">
-                  Lifetime access
-                </p>
-                <p className="text-body-color dark:text-dark-6 text-base">
-                  Free updates
-                </p>
-                <p className="text-body-color dark:text-dark-6 text-base">
-                  Use on 1 (one) project
-                </p>
-                <p className="text-body-color dark:text-dark-6 text-base">
-                  3 Months support
+                  {t("1.feature3")}
                 </p>
               </div>
               <a
                 href="/auth/sign-up"
                 className="border-stroke dark:border-dark-3 block w-full rounded-md border bg-primary p-3 text-center text-base font-medium text-white transition hover:bg-opacity-90"
               >
-                Choose Personal
+                {t("button")}
               </a>
 
               <div>
@@ -699,39 +682,30 @@ export const Pricing = () => {
           <div className="w-full px-4 md:w-1/2 lg:w-1/3">
             <div className="border-stroke shadow-pricing dark:border-dark-3 dark:bg-dark-2 relative z-10 mb-10 overflow-hidden rounded-[10px] border-2 bg-white px-8 py-10 sm:p-12 lg:px-6 lg:py-10 xl:p-[50px]">
               <span className="mb-3 block text-lg font-semibold text-primary">
-                Business
+                {t("2.title")}
               </span>
               <h2 className="text-dark mb-5 text-[42px] font-bold dark:text-white">
-                <span>$30</span>
+                <span>{t("2.price")}</span>
                 <span className="text-body-color dark:text-dark-6 text-base font-medium">
                   / month
                 </span>
               </h2>
               <p className="border-stroke text-body-color dark:border-dark-3 dark:text-dark-6 mb-8 border-b pb-8 text-base">
-                Perfect for a small garage who wants to sell cars
+                {t("2.description")}
               </p>
               <div className="mb-9 flex flex-col gap-[14px]">
                 <p className="text-body-color dark:text-dark-6 text-base">
-                  5 Users
+                  {t("2.feature1")}
                 </p>
                 <p className="text-body-color dark:text-dark-6 text-base">
-                  All UI components
+                  {t("2.feature2")}
                 </p>
                 <p className="text-body-color dark:text-dark-6 text-base">
-                  Lifetime access
-                </p>
-                <p className="text-body-color dark:text-dark-6 text-base">
-                  Free updates
-                </p>
-                <p className="text-body-color dark:text-dark-6 text-base">
-                  Use on 3 (Three) project
-                </p>
-                <p className="text-body-color dark:text-dark-6 text-base">
-                  4 Months support
+                  {t("2.feature3")}
                 </p>
               </div>
               <a className="block w-full rounded-md border p-3 text-center text-base font-medium text-primary transition hover:bg-opacity-90">
-                Coming Soon
+                {t("button")}
               </a>
 
               <div>
@@ -1003,39 +977,30 @@ export const Pricing = () => {
           <div className="w-full px-4 md:w-1/2 lg:w-1/3">
             <div className="border-stroke shadow-pricing dark:border-dark-3 dark:bg-dark-2 relative z-10 mb-10 overflow-hidden rounded-[10px] border-2 bg-white px-8 py-10 sm:p-12 lg:px-6 lg:py-10 xl:p-[50px]">
               <span className="mb-3 block text-lg font-semibold text-primary">
-                Entreprise
+                {t("3.title")}
               </span>
               <h2 className="text-dark mb-5 text-[42px] font-bold dark:text-white">
-                <span>$99</span>
+                <span>{t("3.price")}</span>
                 <span className="text-body-color dark:text-dark-6 text-base font-medium">
                   / month
                 </span>
               </h2>
               <p className="border-stroke text-body-color dark:border-dark-3 dark:text-dark-6 mb-8 border-b pb-8 text-base">
-                Perfect for a big garage who wants to sell cars.
+                {t("3.description")}
               </p>
               <div className="mb-9 flex flex-col gap-[14px]">
                 <p className="text-body-color dark:text-dark-6 text-base">
-                  Unlimited Users
+                  {t("3.feature1")}
                 </p>
                 <p className="text-body-color dark:text-dark-6 text-base">
-                  All UI components
+                  {t("3.feature2")}
                 </p>
                 <p className="text-body-color dark:text-dark-6 text-base">
-                  Lifetime access
-                </p>
-                <p className="text-body-color dark:text-dark-6 text-base">
-                  Free updates
-                </p>
-                <p className="text-body-color dark:text-dark-6 text-base">
-                  Use on Unlimited project
-                </p>
-                <p className="text-body-color dark:text-dark-6 text-base">
-                  12 Months support
+                  {t("3.feature3")}
                 </p>
               </div>
               <a className="border-stroke dark:border-dark-3 block w-full rounded-md border bg-transparent p-3 text-center text-base font-medium text-primary transition hover:border-primary hover:bg-primary hover:text-white">
-                Coming Soon
+                {t("button")}
               </a>
 
               <div>
@@ -1311,6 +1276,9 @@ export const Pricing = () => {
 };
 
 export const Contact = () => {
+  const t = useTranslations("pages.landing.sections.contact");
+  const form = useTranslations("form");
+  const c = useTranslations("common");
   return (
     <section
       id="contact"
@@ -1320,15 +1288,11 @@ export const Contact = () => {
         <div className="-mx-4 flex flex-wrap lg:justify-between">
           <div className="w-full px-4 lg:w-1/2 xl:w-6/12">
             <div className="mb-12 max-w-[570px] lg:mb-0">
-              <span className="mb-4 block text-base font-semibold text-primary">
-                Contact Us
-              </span>
               <h2 className="text-dark mb-6 text-[32px] font-bold uppercase dark:text-white sm:text-[40px] lg:text-[36px] xl:text-[40px]">
-                GET IN TOUCH WITH US
+                {t("title")}
               </h2>
               <p className="text-body-color dark:text-dark-6 mb-9 text-base leading-relaxed">
-                We are ready to build your garage. Tell us more about your
-                project.
+                {t("description")}
               </p>
 
               <div className="mb-8 flex w-full max-w-[370px]">
@@ -1347,9 +1311,6 @@ export const Contact = () => {
                   </svg>
                 </div>
                 <div className="w-full">
-                  <h4 className="text-dark mb-1 text-xl font-bold dark:text-white">
-                    Our Location
-                  </h4>
                   <p className="text-body-color dark:text-dark-6 text-base">
                     99 S.t Park Pekanbaru 28292. Belgium
                   </p>
@@ -1388,7 +1349,7 @@ export const Contact = () => {
                 </div>
                 <div className="w-full">
                   <h4 className="text-dark mb-1 text-xl font-bold dark:text-white">
-                    Phone Number
+                    {c("phoneNumber")}
                   </h4>
                   <p className="text-body-color dark:text-dark-6 text-base">
                     (+62)81 414 257 9980
@@ -1412,9 +1373,7 @@ export const Contact = () => {
                   </svg>
                 </div>
                 <div className="w-full">
-                  <h4 className="text-dark mb-1 text-xl font-bold dark:text-white">
-                    Email Address
-                  </h4>
+                  <h4 className="text-dark mb-1 text-xl font-bold dark:text-white"></h4>
                   <p className="text-body-color dark:text-dark-6 text-base">
                     info@carnet.be
                   </p>
@@ -1428,28 +1387,28 @@ export const Contact = () => {
                 <div className="mb-6">
                   <input
                     type="text"
-                    placeholder="Your Name"
+                    placeholder={t("form.name")}
                     className="border-stroke text-body-color dark:border-dark-3 dark:bg-dark dark:text-dark-6 w-full rounded border px-[14px] py-3 text-base outline-none focus:border-primary"
                   />
                 </div>
                 <div className="mb-6">
                   <input
                     type="email"
-                    placeholder="Your Email"
+                    placeholder={form("email")}
                     className="border-stroke text-body-color dark:border-dark-3 dark:bg-dark dark:text-dark-6 w-full rounded border px-[14px] py-3 text-base outline-none focus:border-primary"
                   />
                 </div>
                 <div className="mb-6">
                   <input
                     type="text"
-                    placeholder="Your Phone"
+                    placeholder={form("phone")}
                     className="border-stroke text-body-color dark:border-dark-3 dark:bg-dark dark:text-dark-6 w-full rounded border px-[14px] py-3 text-base outline-none focus:border-primary"
                   />
                 </div>
                 <div className="mb-6">
                   <textarea
                     rows={6}
-                    placeholder="Your Message"
+                    placeholder={form("message")}
                     className="border-stroke text-body-color dark:border-dark-3 dark:bg-dark dark:text-dark-6 w-full resize-none rounded border px-[14px] py-3 text-base outline-none focus:border-primary"
                   ></textarea>
                 </div>
@@ -1458,7 +1417,7 @@ export const Contact = () => {
                     type="submit"
                     className="w-full rounded border border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
                   >
-                    Send Message
+                    {t("form.phone")}
                   </button>
                 </div>
               </form>
@@ -2397,6 +2356,7 @@ export const Blog = () => {
 };
 
 export const CarSection = async () => {
+  const t = useTranslations("pages.landing.sections.carsSection");
   const cars = await api.car.getCars.query({ cursor: undefined, limit: 12 });
   return (
     <section
@@ -2415,10 +2375,10 @@ export const CarSection = async () => {
           <div className="w-full px-4">
             <div className="mx-auto mb-[60px] max-w-[510px] text-center">
               <h2 className="text-dark mb-3 text-3xl font-bold leading-[1.208] text-primary sm:text-4xl md:text-[40px]">
-                Our Recent cars
+                {t("title")}
               </h2>
               <p className="text-body-color dark:text-dark-6 text-base">
-                Those are the latest cars from added to our website.
+                {t("description")}
               </p>
             </div>
           </div>
@@ -2437,42 +2397,37 @@ export const CarSection = async () => {
 };
 
 export const Services = () => {
+  const t = useTranslations("pages.landing.sections.services");
   const services = [
     {
-      title: "Support 24/7",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      image: "/images/img_bidder_1.png",
+      title: t("1.title"),
+      description: t("1.description"),
+      image: "/images/services/1.png",
     },
     {
-      title: "Fast Delivery",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      image: "/images/img_bidder_2.png",
+      title: t("2.title"),
+      description: t("2.description"),
+      image: "/images/services/2.png",
     },
     {
-      title: "Quality Products",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      image: "/images/img_bidder_3.png",
+      title: t("3.title"),
+      description: t("3.description"),
+      image: "/images/services/3.png",
     },
     {
-      title: "Secure Payment",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      image: "/images/img_bidder_4.png",
+      title: t("4.title"),
+      description: t("4.description"),
+      image: "/images/services/4.png",
     },
     {
-      title: "Best Price",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      image: "/images/img_bidder_5.png",
+      title: t("5.title"),
+      description: t("5.description"),
+      image: "/images/services/5.png",
     },
     {
-      title: "Easy Return",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      image: "/images/img_bidder_6.png",
+      title: t("6.title"),
+      description: t("6.description"),
+      image: "/images/services/6.png",
     },
   ];
   return (
@@ -2485,11 +2440,10 @@ export const Services = () => {
           <div className="w-full px-4">
             <div className="mx-auto mb-12 max-w-[510px] text-center lg:mb-20">
               <h2 className="text-dark mb-3 text-3xl font-bold leading-[1.2] text-primary dark:text-white sm:text-4xl md:text-[40px]">
-                What We Offer
+                {t("title")}
               </h2>
               <p className="text-body-color dark:text-dark-6 text-base">
-                Our services are the best in the market. We offer the best
-                services for our clients. We are the best in the market.
+                {t("description")}
               </p>
             </div>
           </div>
