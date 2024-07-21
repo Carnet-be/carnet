@@ -1,5 +1,6 @@
 import { Button, cn } from "@nextui-org/react";
 import { type InferSelectModel } from "drizzle-orm";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { type RouterOutputs } from "~/trpc/shared";
@@ -48,7 +49,7 @@ const CarCard = ({
   link?: string;
 }) => {
   const primaryImage = getCarImage(car.images?.[0]?.key);
-
+  const c = useTranslations("common");
   return (
     <Link
       href={link ?? `/dashboard/car/${car.id}`}
@@ -89,7 +90,7 @@ const CarCard = ({
           </span>
           <Link href={link ?? `/dashboard/car/${car.id}`}>
             <Button size="sm" color="primary" variant="flat">
-              Details
+              {c("details")}
             </Button>
           </Link>
         </div>

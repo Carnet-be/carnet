@@ -2,6 +2,7 @@
 
 import { Avatar, Button, ScrollShadow, cn } from "@nextui-org/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
@@ -53,12 +54,13 @@ export const SearchGarage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [seach, setSearch] = useState(searchParams.get("q") ?? "");
-
+  const c = useTranslations("common");
+  const t = useTranslations("dashboard.garages");
   return (
     <div className="flex items-center gap-2">
       <div className="hidden md:block md:pl-4">
         <label htmlFor="topbar-search" className="sr-only">
-          Search
+          {c("search")}
         </label>
         <div className="relative  md:w-96">
           <input
@@ -73,7 +75,7 @@ export const SearchGarage = () => {
               }
             }}
             className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm  text-gray-900 ring-0 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-            placeholder="You know a garage name?"
+            placeholder={t("placeholderSearch")}
           />
         </div>
       </div>
@@ -90,7 +92,7 @@ export const SearchGarage = () => {
           router.replace(`/dashboard/garages?${params.toString()}`);
         }}
       >
-        Search
+        {c("search")}
       </Button>
     </div>
   );
@@ -104,14 +106,10 @@ export function GarageItemContact({
   profile: RouterOutputs["car"]["getCarById"]["profile"];
 }) {
   const [show, setShow] = useState(false);
+  const t = useTranslations("common");
   if (!org) return null;
 
   const { garage } = org;
-  const emails = [profile?.email, profile?.email2].filter((d) => d);
-  const email = emails.length <= 0 ? "No Email" : emails.join(", ");
-
-  const phones = [profile?.phone, profile?.phone2].filter((d) => d);
-  const phone = phones.length <= 0 ? "No Phone" : phones.join(", ");
 
   return (
     <div
@@ -137,7 +135,7 @@ export function GarageItemContact({
 
           <Link href={`/${org.slug}`}>
             <Button color="secondary" className="shadow">
-              Visite
+              {t("visit")}
             </Button>
           </Link>
         </div>
@@ -163,7 +161,7 @@ export function GarageItemContact({
               className="absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center gap-2 rounded-md backdrop-blur-md"
             >
               <MdVisibility className="text-lg" />
-              Show contact
+              {t("show contact")}
             </div>
           )}
         </div>
@@ -180,18 +178,8 @@ export function UserItemContact({
   profile: RouterOutputs["car"]["getCarById"]["profile"];
 }) {
   const [show, setShow] = useState(false);
+  const t = useTranslations("common");
   if (!org) return <div></div>;
-
-  const emails = [profile?.email, profile?.email2].filter((d) => d);
-  const email =
-    emails.length <= 0
-      ? org.emailAddresses[0]
-        ? org.emailAddresses[0]
-        : "No Email"
-      : emails.join(", ");
-
-  const phones = [profile?.phone, profile?.phone2].filter((d) => d);
-  const phone = phones.length <= 0 ? "No Phone" : phones.join(", ");
 
   return (
     <div className="relative h-[200px] w-full overflow-hidden rounded-md">
@@ -231,7 +219,7 @@ export function UserItemContact({
               className="absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center gap-2 rounded-md backdrop-blur-md"
             >
               <MdVisibility className="text-lg" />
-              Show contact
+              {t("show contact")}
             </div>
           )}
         </div>

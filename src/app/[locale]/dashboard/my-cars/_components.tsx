@@ -13,6 +13,7 @@ import {
 import cx from "classnames";
 import { type InferSelectModel } from "drizzle-orm";
 import { Edit } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -34,6 +35,7 @@ export const CarsSection = () => {
     orgId ?? userId,
   );
 
+  const t = useTranslations("dashboard.my cars");
   if (isLoading) {
     return <LoadingSection />;
   } else if (isError) {
@@ -42,7 +44,7 @@ export const CarsSection = () => {
   if (data?.length == 0) {
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center">
-        <span className="text-2xl font-semibold">You have no cars yet</span>
+        <span className="text-2xl font-semibold">{t("no cars")}</span>
       </div>
     );
   }
@@ -65,7 +67,7 @@ const CarCard = ({
   className?: string;
 }) => {
   const primaryImage = getCarImage(car.images?.[0]?.key);
-
+  const t = useTranslations("common");
   return (
     <div
       style={{
@@ -103,16 +105,16 @@ const CarCard = ({
         <div className="flex flex-row items-center justify-end gap-3">
           <Link href={`/forms/car/${car.id}`}>
             <Button startContent={<Edit size={15} />} color="primary" size="sm">
-              Edit
+              {t("edit")}
             </Button>
           </Link>
           <Link href={`/dashboard/car/${car.id}`}>
-            <Button size="sm">Details</Button>
+            <Button size="sm">{t("details")}</Button>
           </Link>
         </div>
       </div>
       <div className="absolute right-2 top-2">
-        <StatusTag>{car.status}</StatusTag>
+        <StatusTag>{t(car.status) as any}</StatusTag>
       </div>
     </div>
   );
@@ -187,6 +189,8 @@ export const BannierAddAuction = () => {
   const [loadin, setLoading] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
+  const t = useTranslations("dashboard.text");
+  const c = useTranslations("common");
   return (
     <div
       className={cx(
@@ -194,10 +198,7 @@ export const BannierAddAuction = () => {
       )}
     >
       <div className="flex max-w-[400px] flex-grow flex-col gap-4 space-y-6">
-        <p className="text-xl font-bold text-white">
-          Join the excitement: create your own auction or post your car and
-          watch the bids roll in!
-        </p>
+        <p className="text-xl font-bold text-white">{t("bannerText")}</p>
         <Button
           isLoading={loadin}
           onClick={async () => {
@@ -212,7 +213,7 @@ export const BannierAddAuction = () => {
           }}
           className="w-[200px] cursor-pointer rounded-xl bg-white px-4 py-2 text-center text-primary no-underline"
         >
-          Add a car
+          {c("add car")}
         </Button>
       </div>
       <div className="w-[330px]">

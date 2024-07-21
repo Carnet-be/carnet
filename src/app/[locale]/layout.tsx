@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 import { enUS, frFR, nlBE } from "@clerk/localizations";
 import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, unstable_setRequestLocale } from "next-intl/server";
 import { locales } from "~/config";
 import { TRPCReactProvider } from "~/trpc/react";
 import LoadingPage from "../_components/ui/LoadingPage";
@@ -32,6 +32,8 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: (typeof locales)[number] };
 }) {
+  unstable_setRequestLocale(locale);
+
   const messages = await getMessages();
   const internalization = {
     en: enUS,
@@ -59,3 +61,5 @@ export default async function RootLayout({
     </ClerkProvider>
   );
 }
+
+export const dynamic = "force-dynamic";

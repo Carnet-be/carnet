@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import { AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -124,6 +125,7 @@ const NewCarPage = ({
   const [images, setImages] = React.useState<Array<File | string>>(
     car?.images ?? [],
   );
+  const n = useTranslations("notifications");
 
   const next = () => setStep(step + 1);
   const back = () => setStep(step - 1);
@@ -149,7 +151,7 @@ const NewCarPage = ({
     },
     onError: (error) => {
       console.log("error adding car", error);
-      toast.error("Error adding car");
+      toast.error(n("insert car.error"));
     },
   });
   const { mutate: updateCar, isLoading: isUpdaing } =
@@ -161,7 +163,7 @@ const NewCarPage = ({
       },
       onError: (error) => {
         console.log("error updating car", error);
-        toast.error("Error updating car");
+        toast.error(n("update car.error"));
       },
     });
   const onAddCar = (
@@ -199,17 +201,17 @@ const NewCarPage = ({
 
       setIsUploading(false);
       if (car) {
-        toast.success("Car updated successfully");
+        toast.success(n("insert car.success"));
       } else {
         setIsSuccess(true);
       }
     } catch (error) {
-      console.log("error uploading images", error);
       setIsUploading(false);
-      setErrorUploading("Error uploading images");
+      setErrorUploading(n("upload image.error"));
     }
   };
 
+  const t = useTranslations("dashboard.text");
   return (
     <>
       <div className="space-y-6 p-10">
@@ -317,9 +319,9 @@ const NewCarPage = ({
           <ModalBody className="center p-10">
             {(isLoading || isUploading || isUpdaing) && <Spinner size="lg" />}
             <div className="flex flex-col items-center">
-              <span>{isLoading && "Publishing your car..."}</span>
-              <span>{isUploading && "Uploading your images..."}</span>
-              <span>{isError && "Error publishing your car"}</span>
+              <span>{isLoading && n("insert car.loading")}</span>
+              <span>{isUploading && n("upload image.loading")}</span>
+              <span>{isError && n("insert car.error")}</span>
             </div>
           </ModalBody>
         </ModalContent>
@@ -340,7 +342,9 @@ const NewCarPage = ({
                 <Lottie animationData={SuccessAnimation} />
               </div>
               <div className="flex -translate-y-10 flex-col items-center gap-4">
-                <span className="text-lg ">Your car has been published</span>
+                <span className="text-lg ">
+                  {car ? n("update car.success") : n("insert car.success")}
+                </span>
                 <div className="flex w-full items-end justify-around gap-4">
                   <Button
                     color="primary"
@@ -351,14 +355,14 @@ const NewCarPage = ({
                       router.replace(`/forms/car/new`);
                     }}
                   >
-                    Add another car
+                    {t("add another car")}
                   </Button>
                   <Button
                     variant="flat"
                     size="sm"
                     onClick={() => router.push(`/dashboard/my-cars`)}
                   >
-                    View yours cars
+                    {t("view cars")}
                   </Button>
                 </div>
               </div>

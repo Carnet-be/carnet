@@ -9,12 +9,11 @@ import {
   Input,
   Skeleton,
 } from "@nextui-org/react";
-import { Mail, PhoneCall } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { MdVisibility } from "react-icons/md";
 import ImageGallery from "react-image-gallery";
 import { useInterval } from "usehooks-ts";
 import "yet-another-react-lightbox/styles.css";
@@ -29,24 +28,26 @@ export function ContentCarPage({
 }: {
   car: RouterOutputs["car"]["getCarById"];
 }) {
+  const t = useTranslations("car");
+  const c = useTranslations("common");
   const rating = [
     {
-      title: "Handling",
+      title: t("handling"),
       // list: HANDLING,
       rate: car?.handling,
     },
     {
-      title: "Exterior",
+      title: t("exterior"),
       //list: EXTERIOR,
       rate: car?.exterior,
     },
     {
-      title: "Interior",
+      title: t("interior"),
       //  list: INTERIOR,
       rate: car?.interior,
     },
     {
-      title: "Tires",
+      title: t("tires"),
       //list: TIRES,
       rate: car?.tires,
     },
@@ -57,14 +58,14 @@ export function ContentCarPage({
       <Card shadow="none">
         {car.description && (
           <CardHeader>
-            <span className="min-w-[100px]">Description : </span>
+            <span className="min-w-[100px]">{c("description")} : </span>
           </CardHeader>
         )}
         <CardBody>
           <p className="whitespace-pre-line">{car.description}</p>
           {!car.description && (
             <div className="text-left font-light opacity-50">
-              No description
+              {c("no description")}
             </div>
           )}
         </CardBody>
@@ -73,7 +74,7 @@ export function ContentCarPage({
       <Card shadow="none">
         {car?.options?.length != 0 && (
           <CardHeader>
-            <span className="min-w-[100px]">Options : </span>
+            <span className="min-w-[100px]">{c("options")} : </span>
           </CardHeader>
         )}
         <CardBody>
@@ -90,7 +91,7 @@ export function ContentCarPage({
             })}
             {car?.options?.length == 0 && (
               <div className="text-center font-light opacity-50">
-                No options !
+                {c("no options")}
               </div>
             )}
           </div>
@@ -100,7 +101,7 @@ export function ContentCarPage({
       <Card shadow="none">
         {rating.filter((r) => !!r.rate).length != 0 && (
           <CardHeader>
-            <span className="min-w-[100px] ">Rating : </span>
+            <span className="min-w-[100px] ">{c("rating")} : </span>
           </CardHeader>
         )}
         <CardBody>
@@ -116,7 +117,9 @@ export function ContentCarPage({
               );
             })}
           {rating.filter((r) => !!r.rate).length == 0 && (
-            <div className="text-left font-light opacity-50">No rating !</div>
+            <div className="text-left font-light opacity-50">
+              {c("no rating")}
+            </div>
           )}
         </CardBody>
       </Card>
@@ -330,68 +333,53 @@ export const BidSection = ({
   );
 };
 
-export const ContactSection = ({
-  user,
-  profile,
-}: {
-  user: RouterOutputs["car"]["getCarById"]["ownerUser"];
-  profile: RouterOutputs["car"]["getCarById"]["profile"];
-}) => {
-  const [show, setShow] = useState(false);
-  const emails = [profile?.email, profile?.email2].filter((d) => d);
-  const email = emails.length <= 0 ? "No Email" : emails.join(", ");
+// export const ContactSection = ({
 
-  const phones = [profile?.phone, profile?.phone2].filter((d) => d);
-  const phone = phones.length <= 0 ? "No Phone" : phones.join(", ");
-  return (
-    <div className="relative">
-      <div className="flex items-center gap-3">
-        <div className="flex w-[50px] items-center justify-center">
-          <PhoneCall size={20} />
-        </div>
-        <span className="">
-          <a href={`tel:${phone as string}`}>{phone as string}</a>
-        </span>
-      </div>
-      <div className="flex items-center gap-3">
-        <div className="flex w-[50px] items-center justify-center">
-          <Mail size={20} />
-        </div>
-        <span className="">
-          <a href={`mailto:${email as string}`}>{email as string}</a>
-        </span>
-      </div>
-      {!show && (
-        <div
-          onClick={() => {
-            setShow(true);
-          }}
-          className="absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center gap-2 backdrop-blur-md"
-        >
-          <MdVisibility className="text-lg" />
-          Show contact
-        </div>
-      )}
-    </div>
-  );
-};
+//   profile,
+// }: {
+//   user: RouterOutputs["car"]["getCarById"]["ownerUser"];
+//   profile: RouterOutputs["car"]["getCarById"]["profile"];
+// }) => {
+//   const [show, setShow] = useState(false);
+//   const emails = [profile?.email, profile?.email2].filter((d) => d);
+//   const email = emails.length <= 0 ? "No Email" : emails.join(", ");
+
+//   const phones = [profile?.phone, profile?.phone2].filter((d) => d);
+//   const phone = phones.length <= 0 ? "No Phone" : phones.join(", ");
+//   return (
+//     <div className="relative">
+//       <div className="flex items-center gap-3">
+//         <div className="flex w-[50px] items-center justify-center">
+//           <PhoneCall size={20} />
+//         </div>
+//         <span className="">
+//           <a href={`tel:${phone as string}`}>{phone as string}</a>
+//         </span>
+//       </div>
+//       <div className="flex items-center gap-3">
+//         <div className="flex w-[50px] items-center justify-center">
+//           <Mail size={20} />
+//         </div>
+//         <span className="">
+//           <a href={`mailto:${email as string}`}>{email as string}</a>
+//         </span>
+//       </div>
+//       {!show && (
+//         <div
+//           onClick={() => {
+//             setShow(true);
+//           }}
+//           className="absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center gap-2 backdrop-blur-md"
+//         >
+//           <MdVisibility className="text-lg" />
+//           Show contact
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
 
 export const ImagesSection = ({ images }: { images: string[] }) => {
-  const [open, setOpen] = useState(false);
-  const [currentImage, setCurrentImage] = useState(images[0]);
-  const carousel = useRef<HTMLDivElement | null>(null);
-  const [imgs, setImgs] = useState<string[]>([]);
-  const onSelectImg = (img?: string) => {
-    const ims = images.filter((i) => i !== img);
-    setImgs([img ?? "", ...ims]);
-  };
-  const onClose = () => {
-    setImgs([]);
-  };
-  const next = () =>
-    (carousel.current as any)?.scrollBy({ left: 300, behavior: "smooth" });
-  const prev = () =>
-    (carousel.current as any)?.scrollBy({ left: -300, behavior: "smooth" });
   return (
     <div className="relative">
       {/* <div className="relative flex aspect-[3/2] w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border bg-white"> */}
@@ -416,62 +404,6 @@ export const ImagesSection = ({ images }: { images: string[] }) => {
           thumbnailWidth: 100,
         }))}
       />
-      {/* </div> */}
-
-      {/*
-        <Image
-          onClick={() => onSelectImg(currentImage)}
-          src={getCarImage(currentImage)}
-          alt="photo"
-          layout="fill"
-          objectFit="cover"
-        />
-        <div className="absolute left-3 top-3">
-          <span className="rounded-md bg-primary p-1 px-2 text-white">
-            {images.length} photos
-          </span>
-        </div>
-      </div>
-      <div className="flex flex-row items-center gap-2 py-3">
-        <Button variant={"light"} isIconOnly onClick={prev}>
-          <ChevronLeft />
-        </Button>
-        <ScrollShadow
-          orientation="horizontal"
-          ref={carousel}
-          className="flex flex-grow flex-row gap-3 overflow-hidden"
-        >
-          {images.map((img, i) => {
-            return (
-              <div
-                key={i}
-                onClick={() => setCurrentImage(img)}
-                className="relative flex aspect-[1/1] h-[120px] min-w-[140px] cursor-pointer cursor-pointer overflow-hidden rounded-lg border bg-white "
-              >
-                <Image
-                  onClick={() => setOpen(true)}
-                  src={getCarImage(img)}
-                  alt="photo"
-                  layout="fill"
-                  objectFit="cover"
-                />
-              </div>
-            );
-          })}
-        </ScrollShadow>
-        <Button variant={"light"} isIconOnly onClick={next}>
-          <ChevronRight />
-        </Button>
-      </div>
-      <Lightbox
-        open={imgs.length > 0}
-        close={onClose}
-        slides={imgs.map((img) => {
-          return {
-            src: getCarImage(img),
-          };
-        })}
-      /> */}
     </div>
   );
 };

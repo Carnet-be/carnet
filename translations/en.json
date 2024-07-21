@@ -15,7 +15,47 @@
     "electric": "Electric",
     "hybrid": "Hybrid",
     "close": "Close",
-    "add": "Add"
+    "add": "Add",
+    "body": "Body",
+    "clear": "Clear",
+    "load more": "Load More",
+    "details": "Details",
+    "back": "Back",
+    "reload": "Try Again",
+    "description": "Description",
+    "no description": "No description",
+    "options": "Options",
+    "no options": "No options",
+    "rating": "Rating",
+    "no rating": "No rating",
+    "visit": "Visit",
+    "show contact": "Show Contact",
+    "horsePower": "Horse Power",
+    "color": "Color",
+    "transmission": "Transmission",
+    "mileage": "Mileage",
+    "co2": "CO2",
+    "doors": "Doors",
+    "engine size": "Engine Size",
+    "search": "Search",
+    "my garage": "My Garage",
+    "view": "View",
+    "edit garage": "Edit Garage",
+    "analytics": "Analytics",
+    "overview": "Overview",
+    "cars": "Cars",
+    "garages": "Garages",
+    "users": "Users",
+    "my cars": "My Cars",
+    "settings": "Settings",
+    "add car": "Add Car",
+    "retry": "Retry",
+    "pending": "Pending",
+    "published": "Published",
+    "paused": "Paused",
+    "finished": "Finished",
+    "completed": "Completed",
+    "sold": "Sold"
   },
   "text": {
     "contactInformation": "Contact Information",
@@ -154,6 +194,10 @@
           "description": "We have the best cars for you. Choose the best car for you"
         }
       }
+    },
+    "error": {
+      "noCar": "Car not found",
+      "noCar description": "The car you are looking for is not found"
     }
   },
   "components": {
@@ -162,6 +206,76 @@
       "about": "About",
       "cars": "Cars",
       "contact": "Contact"
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "placeholderSearch": "Looking for a car?",
+      "search": "Search"
+    },
+
+    "sideBar": {
+      "overview": "Overview",
+      "cars": "Cars",
+      "garages": "Garages",
+      "users": "Users"
+    },
+    "text": {
+      "create garage page": "Create a garage page",
+      "sellYourCar title": "A new way to sell modern and classic cars",
+      "sellYourCar": "Sell your car",
+      "noGarages": "No garages found",
+      "bannerText": "Join the excitement: create your own auction or post your car and watch the bids roll in!",
+      "add another car": "Add another car",
+      "view cars": "View yours cars"
+    },
+    "garages": {
+      "title": "Garages",
+      "description": "  Find a garage near you, for all your car needs.",
+      "placeholderSearch": "You know a garage name?"
+    },
+    "my cars": {
+      "no cars": "You have no cars yet"
+    },
+    "home": {
+      "title": " Find your next car",
+      "description": "Search thousands of cars, trucks, and SUVs",
+      "filter": {
+        "placeholderBody": "Select Body",
+        "placeholderBrand": "Select Brand",
+        "placeholderModel": "Select Model"
+      },
+      "noResults": "No cars found, try another search"
+    }
+  },
+  "car": {
+    "handling": "Handling",
+    "interior": "Interior",
+    "exterior": "Exterior",
+    "tires": "Tires"
+  },
+  "bodyCar": {},
+  "error": {
+    "car not found": "Car not found"
+  },
+  "notifications": {
+    "create garage": {
+      "loading": "Creating the garage page...",
+      "success": "The car has been added to the garage",
+      "error": "Error creating the page"
+    },
+    "insert car": {
+      "error": "Error adding car",
+      "success": "Car added successfully",
+      "loading": "Publishing your car..."
+    },
+    "update car": {
+      "error": "Error updating car",
+      "success": "Car updated successfully"
+    },
+    "upload image": {
+      "error": "Error uploading image",
+      "loading": "Uploading your images..."
     }
   }
 }

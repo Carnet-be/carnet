@@ -6,6 +6,7 @@ import { clerkClient } from "@clerk/nextjs";
 import cx from "classnames";
 import Image from "next/image";
 
+import { useTranslations } from "next-intl";
 import BackButton from "~/app/_components/ui/backButton";
 import Map from "~/app/_components/ui/map";
 import { api } from "~/trpc/server";
@@ -62,6 +63,9 @@ const RightSide = async ({
   let img: string | undefined = undefined;
   let name: string | undefined = undefined;
 
+  const c = useTranslations("common");
+  const t = useTranslations("car");
+
   try {
     if (car.belongsTo!.startsWith("user")) {
       const user = await clerkClient.users.getUser(car.belongsTo!);
@@ -99,63 +103,63 @@ const RightSide = async ({
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title={"Body"}
+            title={c("brand")}
             img={`/body/${car.body?.logo ?? "Coupe"}.svg`}
             value={car.body?.name ?? "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={90}
-            title={"Fuel"}
+            title={c("fuel")}
             img={"/images/fuel.png"}
             value={car.fuel ?? "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title={"Color"}
+            title={c("color")}
             value={car.color?.value}
             color={car.color?.name}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title={"Transmission"}
+            title={c("transmission")}
             img={"/images/transmission.png"}
             value={car?.transmission ?? "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title={"Horse Power"}
+            title={c("horsePower")}
             img={"/images/horse.png"}
             value={car.cc?.toString() ?? "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title={"Mileage"}
+            title={c("mileage")}
             img={"/images/mileage.png"}
             value={car.kilometrage?.toString() ?? "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%] text-primary"
             size={110}
-            title="CO2"
+            title={c("co2")}
             img={"/images/CO2.svg"}
             value={car.co2?.toString() ?? "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title={"Doors"}
+            title={c("doors")}
             img={"/images/Doors.svg"}
             value={car.doors?.toString() ?? "-"}
           />
           <MiniCard
             containerClass="w-[48%] lg:w-[30%]"
             size={110}
-            title={"Engine Size"}
+            title={c("engine size")}
             img={"/images/engine.svg"}
             value={car.cc?.toString() ?? "-"}
           />

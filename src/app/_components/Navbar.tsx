@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import {
-  OrganizationSwitcher,
-  UserButton,
-  useAuth,
-} from "@clerk/nextjs";
+import { OrganizationSwitcher, UserButton, useAuth } from "@clerk/nextjs";
 import {
   Button,
   Dropdown,
@@ -19,25 +15,23 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { GiHomeGarage } from "react-icons/gi";
-import { IoAnalyticsSharp } from "react-icons/io5";
 import { MdAdd, MdModeEditOutline, MdVisibility } from "react-icons/md";
 import { api } from "~/trpc/react";
 
+import { useTranslations } from "next-intl";
 import ContactProfileSeciton from "./pages/profile/contact";
 import Logo from "./ui/logo";
 const Navbar = ({
   auth,
   isAdmin = false,
 }: {
-  isAdmin?: boolean,
+  isAdmin?: boolean;
   auth: {
     orgId: string;
     userId: string;
   };
 }) => {
   const { orgId, userId } = auth;
-
-
 
   const searchParams = useSearchParams();
 
@@ -51,7 +45,8 @@ const Navbar = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seach]);
-
+  const c = useTranslations("common");
+  const t = useTranslations("dashboard.nav");
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white px-4 py-2.5 dark:border-gray-700 dark:bg-gray-800">
       <div className="flex flex-wrap items-center justify-between">
@@ -92,20 +87,23 @@ const Navbar = ({
           </button>
 
           <div className="center w-56">
-            <Logo type={"1"} size={60} link={isAdmin ? "/dashboard/admin/overview" : "/dashboard/home"} />
+            <Logo
+              type={"1"}
+              size={60}
+              link={isAdmin ? "/dashboard/admin/overview" : "/dashboard/home"}
+            />
           </div>
           <div className="hidden md:block md:pl-4">
             <label htmlFor="topbar-search" className="sr-only">
-              Search
+              {c("search")}
             </label>
             <div className="relative  md:w-96">
               <input
                 type="search"
                 value={seach}
                 onChange={(e) => setSearch(e.target.value)}
-
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5  text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                placeholder="Looking for something?"
+                placeholder={t("placeholderSearch")}
               />
             </div>
           </div>
@@ -122,7 +120,7 @@ const Navbar = ({
               router.replace(`/dashboard/home?${params.toString()}`);
             }}
           >
-            Search
+            {c("search")}
           </Button>
         </div>
         <div className="flex items-center justify-center gap-4  lg:order-2">
@@ -135,7 +133,7 @@ const Navbar = ({
             <div className="translate-y-[3px]">
               <OrganizationSwitcher>
                 <OrganizationSwitcher.OrganizationProfilePage
-                  label="Contact"
+                  label={c("contact")}
                   labelIcon={<Dot size={18} />}
                   url="contact"
                 >
@@ -149,7 +147,7 @@ const Navbar = ({
 
             {/* You can also pass the content as direct children */}
             <UserButton.UserProfilePage
-              label="Contact"
+              label={c("contact")}
               labelIcon={<Dot size={18} />}
               url="contact"
             >
@@ -170,11 +168,16 @@ const GarageButton = ({ id }: { id: string }) => {
   const router = useRouter();
   const { mutateAsync, isLoading: isCreatingGarage } =
     api.garage.createGarage.useMutation();
+
+  const t = useTranslations("dashboard");
+  const c = useTranslations("common");
+  const n = useTranslations("notifications");
+
   return (
     <Dropdown>
       <DropdownTrigger>
         <Button startContent={<GiHomeGarage />} color="primary" variant="faded">
-          My Garage
+          {t("my garage")}
         </Button>
       </DropdownTrigger>
 
@@ -194,7 +197,7 @@ const GarageButton = ({ id }: { id: string }) => {
             }}
             startContent={<MdVisibility />}
           >
-            View
+            {c("view")}
           </DropdownItem>
           <DropdownItem
             key="edit"
@@ -202,15 +205,15 @@ const GarageButton = ({ id }: { id: string }) => {
             onClick={() => router.push(`/dashboard/my-garage`)}
             startContent={<MdModeEditOutline />}
           >
-            Edit page
+            {c("edit garage")}
           </DropdownItem>
-          <DropdownItem
+          {/* <DropdownItem
             key="analytics"
             shortcut="⌘A"
             startContent={<IoAnalyticsSharp />}
           >
-            Analytics
-          </DropdownItem>
+            {c("analytics")}
+          </DropdownItem> */}
         </DropdownMenu>
       ) : (
         <DropdownMenu variant="faded" aria-label="Dropdown menu with icons">
@@ -226,16 +229,16 @@ const GarageButton = ({ id }: { id: string }) => {
                   refetch();
                 }),
                 {
-                  loading: "Creating the garage page...",
-                  success: <b>The page has been created</b>,
-                  error: <b>Error creating the page </b>,
+                  loading: n("create garage.loading"),
+                  success: n("create garage.success"),
+                  error: n("create garage.error"),
                 },
               );
               //toast.success('Creating new page')
             }}
             startContent={<MdAdd />}
           >
-            Create my garage page
+            {c("create garage page")}
           </DropdownItem>
         </DropdownMenu>
       )}

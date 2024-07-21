@@ -21,24 +21,25 @@ import MenuItem, { type TMenuItem } from "./MenuItem";
 import { GarageIcon } from "./icons";
 
 const Sidebar = ({ isAdmin = false }: { isAdmin?: boolean }) => {
+  const c = useTranslations("common");
   const menuAdmin: TMenuItem[] = [
     {
-      label: "Overview",
+      label: c("overview"),
       icon: <Home size={20} />,
       route: "/dashboard/admin/overview",
     },
     {
-      label: "Cars",
+      label: c("cars"),
       icon: <CarFront size={20} />,
       route: "/dashboard/admin/cars",
     },
     {
-      label: "Users",
+      label: c("users"),
       icon: <Users2 size={20} />,
       route: "/dashboard/admin/users",
     },
     {
-      label: "Garages",
+      label: c("garages"),
       icon: <GarageIcon size={20} />,
       route: "/dashboard/admin/garages",
     },
@@ -62,17 +63,17 @@ const Sidebar = ({ isAdmin = false }: { isAdmin?: boolean }) => {
   const pathname = usePathname();
   const menu: TMenuItem[] = [
     {
-      label: "Home",
+      label: c("home"),
       icon: <Home size={20} />,
       route: "/dashboard/home",
     },
     {
-      label: "Garages",
+      label: c("garages"),
       icon: <GarageIcon size={20} />,
       route: "/dashboard/garages",
     },
     {
-      label: "My cars",
+      label: c("my cars"),
       icon: <CarFront size={20} />,
       route: "/dashboard/my-cars",
     },
@@ -96,7 +97,7 @@ const Sidebar = ({ isAdmin = false }: { isAdmin?: boolean }) => {
       <div className="h-full overflow-y-auto bg-white px-8 py-8 dark:bg-gray-800">
         <form action="#" method="GET" className="mb-2 md:hidden">
           <label htmlFor="sidebar-search" className="sr-only">
-            Search
+            {c("search")}
           </label>
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -166,7 +167,7 @@ const Sidebar = ({ isAdmin = false }: { isAdmin?: boolean }) => {
               )}
             >
               <Settings />
-              <span className="ml-3">Settings</span>
+              <span className="ml-3">{c("settings")}</span>
             </Link>
           </li>
         </ul>
@@ -182,11 +183,12 @@ const SellCarBanner = () => {
   const [loadin, setLoading] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
+  const t = useTranslations("dashboard");
   return (
     <>
       <div className="center flex-col gap-4 rounded-lg bg-gray-100 p-4 text-center">
         <span className="text-[12px] font-semibold opacity-70">
-          A new way to sell modern and classic cars
+          {t("sellYourCar title")}
         </span>
 
         <Button
@@ -206,7 +208,7 @@ const SellCarBanner = () => {
           className=" text-sm font-semibold"
           startContent={<AiFillCar />}
         >
-          Sell your car
+          {t("sellYourCar")}
         </Button>
       </div>
       <ModalCheckContact isOpen={isOpen} onOpenChange={onOpenChange} />
