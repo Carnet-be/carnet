@@ -4,14 +4,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input, Switch, Tab, Tabs, Textarea } from "@nextui-org/react";
-import cx from "classnames";
+import { Button, Input, Textarea } from "@nextui-org/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Banknote, Signpost } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { type RouterInputs } from "~/trpc/shared";
-import ProTag from "../../ui/proTag";
 import { numSchema } from "./step2";
 
 type TStep6 = RouterInputs["car"]["addCar"]["step6"];
@@ -27,6 +25,9 @@ const Step6 = ({
   onBack: () => void;
   data: any;
 }) => {
+  const c = useTranslations("common");
+  const t = useTranslations("car.step6");
+  const e = useTranslations("error");
   const {
     register,
     handleSubmit,
@@ -44,10 +45,12 @@ const Step6 = ({
           expectedPrice: numSchema.optional().nullable(),
           minPrice: numSchema.optional().nullable(),
           maxPrice: numSchema.optional().nullable(),
-          price: numSchema.optional().nullable(),
+          price: z
+            .number({ description: e("price") })
+            .or(z.string().transform((v) => Number(v) || undefined)),
           type: z.enum(["direct", "auction"]).default("direct"),
           inRange: z.boolean().optional().nullable().default(false),
-          description: z.string().optional().nullable(),
+          description: z.string().max(50, e("description")),
         })
         .refine(
           (data) => {
@@ -82,20 +85,18 @@ const Step6 = ({
       onSubmit={handleSubmit(onUpdate ? onUpdate : onNext, console.log)}
       className="flex w-full max-w-[500px] flex-col gap-10 md:gap-20"
     >
-      <h2 className="text-center text-xl">
-        Describe your car and finally choose the type of selling
-      </h2>
+      <h2 className="text-center text-xl">{t("title")}</h2>
 
       <div className="space-y-3">
         <div id="textarea-wrapper">
           <Textarea
             labelPlacement="outside"
             minRows={6}
-            label="Describe your car"
+            label={t("descriptionLabel")}
             classNames={{
               input: ["placeholder:text-default-700/40"],
             }}
-            placeholder="What caracterize your car? What is its history? Feel free to tell us everything about it!"
+            placeholder={t("placeholderDescription")}
             {...register("description")}
             defaultValue={value.description ?? undefined}
           />
@@ -125,7 +126,7 @@ const Step6 = ({
               buyer will be interested in your car, he will contact you.
             </span> */}
         <div className="space-y-3 pt-2">
-          <Controller
+          {/* <Controller
             name="inRange"
             control={control}
             render={({ field: { value, onChange } }) => {
@@ -138,78 +139,77 @@ const Step6 = ({
                 </Switch>
               );
             }}
-          />
+          /> */}
           <AnimatePresence>
-            {watch("inRange") ? (
-              <motion.div
-                initial={{ opacity: 0.4 }}
-                animate={{ opacity: 1 }}
-                transition={{ type: "spring", stiffness: 100 }}
-                exit={{ opacity: 0.4 }}
-              >
-                <div className="grid grid-cols-[auto_20px_auto] items-center gap-1">
+            {
+              // watch("inRange")
+              false ? (
+                <motion.div
+                  initial={{ opacity: 0.4 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 100 }}
+                  exit={{ opacity: 0.4 }}
+                >
+                  <div className="grid grid-cols-[auto_20px_auto] items-center gap-1">
+                    <Input
+                      label="Mininum Price"
+                      type="number"
+                      {...register("minPrice")}
+                      isInvalid={!!errors.minPrice}
+                      classNames={{
+                        input: ["placeholder:text-default-700/40"],
+                      }}
+                      errorMessage={errors.minPrice?.message}
+                      startContent={
+                        <div className="pointer-events-none flex items-center">
+                          <span className="text-small text-default-400">$</span>
+                        </div>
+                      }
+                    />
+                    <div className="h-1 rounded-md bg-gray-300"></div>
+                    <Input
+                      label="Maximum Price"
+                      type="number"
+                      {...register("maxPrice")}
+                      isInvalid={!!errors.maxPrice}
+                      errorMessage={errors.maxPrice?.message}
+                      classNames={{
+                        input: ["placeholder:text-default-700/40"],
+                      }}
+                      startContent={
+                        <div className="pointer-events-none flex items-center">
+                          <span className="text-small text-default-400">$</span>
+                        </div>
+                      }
+                    />
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0.4 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 100 }}
+                  exit={{ opacity: 0.4 }}
+                >
                   <Input
-                    label="Mininum Price"
+                    label={c("price")}
                     type="number"
-                    {...register("minPrice")}
-                    isInvalid={!!errors.minPrice}
+                    defaultValue={value.price?.toString() ?? undefined}
+                    {...register("price")}
+                    isInvalid={!!errors.price}
+                    errorMessage={errors.price?.message}
                     classNames={{
                       input: ["placeholder:text-default-700/40"],
                     }}
-                    errorMessage={errors.minPrice?.message}
                     startContent={
                       <div className="pointer-events-none flex items-center">
-                        <span className="text-small text-default-400">
-                          $
-                        </span>
+                        <span className="text-small text-default-400">$</span>
                       </div>
                     }
                   />
-                  <div className="h-1 rounded-md bg-gray-300"></div>
-                  <Input
-                    label="Maximum Price"
-                    type="number"
-                    {...register("maxPrice")}
-                    isInvalid={!!errors.maxPrice}
-                    errorMessage={errors.maxPrice?.message}
-                    classNames={{
-                      input: ["placeholder:text-default-700/40"],
-                    }}
-                    startContent={
-                      <div className="pointer-events-none flex items-center">
-                        <span className="text-small text-default-400">
-                          $
-                        </span>
-                      </div>
-                    }
-                  />
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0.4 }}
-                animate={{ opacity: 1 }}
-                transition={{ type: "spring", stiffness: 100 }}
-                exit={{ opacity: 0.4 }}
-              >
-                <Input
-                  label="Price"
-                  type="number"
-                  defaultValue={(value.price?.toString() ?? undefined)}
-                  {...register("price")}
-                  isInvalid={!!errors.price}
-                  errorMessage={errors.price?.message}
-                  classNames={{
-                    input: ["placeholder:text-default-700/40"],
-                  }}
-                  startContent={
-                    <div className="pointer-events-none flex items-center">
-                      <span className="text-small text-default-400">$</span>
-                    </div>
-                  }
-                />
-              </motion.div>
-            )}
+                </motion.div>
+              )
+            }
           </AnimatePresence>
         </div>
         {/* </Tab> */}
@@ -295,10 +295,10 @@ const Step6 = ({
       </div>
 
       <div className="mx-auto flex w-full max-w-[500px] flex-row items-center justify-between">
-        <Button onClick={onBack}>Back</Button>
+        <Button onClick={onBack}>{c("back")}</Button>
 
         <Button type="submit" variant="shadow" color="primary" className="px-5">
-          {onUpdate ? "Update your car" : "Publish your car"}
+          {onUpdate ? c("update your car") : c("publish your car")}
         </Button>
       </div>
     </motion.form>

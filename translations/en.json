@@ -55,7 +55,19 @@
     "paused": "Paused",
     "finished": "Finished",
     "completed": "Completed",
-    "sold": "Sold"
+    "sold": "Sold",
+    "new car": "New Car",
+    "used car": "Used Car",
+    "next": "Next",
+    "automatic": "Automatic",
+    "semi-automatic": "Semi-Automatic",
+    "manual": "Manual",
+    "country": "Country",
+    "city": "City",
+    "update your car": "Update your car",
+    "price": "Price",
+    "publish your car": "Publish your car",
+    "save": "Save"
   },
   "text": {
     "contactInformation": "Contact Information",
@@ -227,7 +239,14 @@
       "noGarages": "No garages found",
       "bannerText": "Join the excitement: create your own auction or post your car and watch the bids roll in!",
       "add another car": "Add another car",
-      "view cars": "View yours cars"
+      "view cars": "View yours cars",
+      "contact title": "Contact Information",
+      "contact description": "Contact information is important for users to reach out to you.",
+      "primary email": "Primary Email",
+      "primary phone": "Primary Phone",
+      "secondary email": "Secondary Email",
+      "secondary phone": "Secondary Phone",
+      "address": "Address"
     },
     "garages": {
       "title": "Garages",
@@ -252,11 +271,97 @@
     "handling": "Handling",
     "interior": "Interior",
     "exterior": "Exterior",
-    "tires": "Tires"
+    "tires": "Tires",
+    "step1": {
+      "title": "Start by giving us some information about your car",
+      "placeholderBrand": "Select a brand (Required)",
+      "placeholderModel": "Select a model (Required)",
+      "placeholderFuel": "Select a fuel (Required)",
+      "placeholderColor": "Select a color (Required)",
+      "placeholderYear": "Select a year (Required)",
+      "placeholderState": "State of the car"
+    },
+    "step2": {
+      "title": "Additional informations about your car",
+      "placeholderTransmission": "Select a transmission (Required)",
+      "placeholderVersion": "What is the version of your car?",
+      "version": "Version (Optional)",
+      "placeholderDoors": "Doors (Optional)",
+      "mileageLabel": "Mileage (km) (Required)",
+      "mileagePlaceholder": "How many kilometers has your car driven?",
+      "engineSizeLabel": "Engine Size (cc) (Required)",
+      "engineSizePlaceholder": "What is the engine size of your car?",
+      "horsePawerLabel": "Horse Power (Optional)",
+      "horsePowerPlaceholder": "What is the horse power of your car?",
+      "co2Label": "CO2 (g/km) (Optional)",
+      "co2Placeholder": "What is the CO2 emission of your car?",
+      "placeholderBody": "Select the body type of your car (Required)"
+    },
+    "step3": {
+      "title": "Select all the option that your car has"
+    },
+    "step4": {
+      "title": "Rate each parts of your car",
+      "handling": {
+        "1": "Doesn't start nor drive",
+        "2": "Starts but doesn't drive",
+        "3": "One or more failures are lit on the dashboard",
+        "4": "Only required some maintenance",
+        "5": "Everything still working perfectly!"
+      },
+      "exterior": {
+        "1": "Involved in a (serious) accident",
+        "2": "Only tinplate damage, no structural issues",
+        "3": "Scratches or dents",
+        "4": "Slight scratches",
+        "5": "Perfect condition"
+      },
+      "interior": {
+        "1": "Very bad condition",
+        "2": "Seats in very bad condition",
+        "3": "Noticeable Stains or fabric damage",
+        "4": "Good condition",
+        "5": "Excellent condition"
+      },
+
+      "tires": {
+        "1": "Required replacement ASAP",
+        "2": "They have little or no tread, but can still be inflated",
+        "3": "Risk of receiving an inspection warning",
+        "4": "They have miles of experience on the track",
+        "5": "Less than 5000 kms and still in perfect condition!"
+      }
+    },
+    "step5": {
+      "title": "Add some pictures of your car and tell us where it is located",
+      "placeholderCountry": "Select a country (Required)",
+      "placeholderCity": "Select a city (Required)"
+    },
+    "step6": {
+      "title": " Describe your car and finally choose the type of selling",
+      "descriptionLabel": "Describe your car",
+      "descriptionPlaceholder": "What caracterize your car? What is its history? Feel free to tell us everything about it!"
+    }
   },
-  "bodyCar": {},
+
   "error": {
-    "car not found": "Car not found"
+    "car not found": "Car not found",
+    "brand": "Please select a brand",
+    "model": "Please select a model",
+    "fuel": "Please select a fuel",
+    "color": "Please select a color",
+    "year": "Please select a year",
+    "body": "Please select a body",
+    "mileage": "Please enter the mileage",
+    "transmission": "Please select a transmission",
+    "engine size": "Please enter the engine size",
+    "rating": "Please select a rating",
+    "title": "Rate each parts of your car",
+    "country": "Please select a country",
+    "city": "Please select a city",
+    "images": "Please upload at least 2 images",
+    "price": "Please enter a price",
+    "description": "Please enter a description max 50 characters"
   },
   "notifications": {
     "create garage": {
@@ -277,5 +382,7 @@
       "error": "Error uploading image",
       "loading": "Uploading your images..."
     }
-  }
+  },
+  "bodyCar": {},
+  "optionCar": {}
 }

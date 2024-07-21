@@ -1,0 +1,383 @@
+{
+  "common": {
+    "Company": "Bedrijf",
+    "about": "Over",
+    "contact": "Contact",
+    "privacyPolicy": "Privacybeleid",
+    "phoneNumber": "Telefoonnummer",
+    "buy": "Kopen",
+    "sell": "Verkopen",
+    "brand": "Merk",
+    "fuel": "Brandstof",
+    "year": "Jaar",
+    "gasoline": "Benzine",
+    "diesel": "Diesel",
+    "electric": "Elektrisch",
+    "hybrid": "Hybride",
+    "close": "Dichtbij",
+    "add": "Toevoegen",
+    "body": "Lichaam",
+    "clear": "Duidelijk",
+    "load more": "Meer laden",
+    "details": "Details",
+    "back": "Rug",
+    "reload": "Probeer het nog eens",
+    "description": "Beschrijving",
+    "no description": "Geen beschrijving",
+    "options": "Opties",
+    "no options": "Geen opties",
+    "rating": "Beoordeling",
+    "no rating": "Geen beoordeling",
+    "visit": "Bezoek",
+    "show contact": "Toon contactpersoon",
+    "horsePower": "Paardenkracht",
+    "color": "Kleur",
+    "transmission": "Overdragen",
+    "mileage": "Kilometerstand",
+    "co2": "CO2",
+    "doors": "Deuren",
+    "engine size": "Motorgrootte",
+    "search": "Zoekopdracht",
+    "my garage": "Mijn garage",
+    "view": "Weergave",
+    "edit garage": "Garage bewerken",
+    "analytics": "Analyse",
+    "overview": "Overzicht",
+    "cars": "Auto's",
+    "garages": "Garages",
+    "users": "Gebruikers",
+    "my cars": "Mijn auto's",
+    "settings": "Instellingen",
+    "add car": "Auto toevoegen",
+    "retry": "Opnieuw proberen",
+    "pending": "In behandeling",
+    "published": "Gepubliceerd",
+    "paused": "Gepauzeerd",
+    "finished": "Afgerond",
+    "completed": "Voltooid",
+    "sold": "Verkocht",
+    "new car": "Nieuwe auto",
+    "used car": "Gebruikte auto",
+    "next": "Volgende",
+    "automatic": "Automatisch",
+    "semi-automatic": "Semi-automatisch",
+    "manual": "Handmatig",
+    "country": "Land",
+    "city": "Stad",
+    "update your car": "Update uw auto",
+    "price": "Prijs",
+    "publish your car": "Publiceer uw auto",
+    "save": "Redden"
+  },
+  "text": {
+    "contactInformation": "Contactgegevens",
+    "contactInformation desc": " Voordat u een auto kunt verkopen, moet u contactgegevens toevoegen.",
+    "contactInformation button": "Contactgegevens toevoegen"
+  },
+  "form": {
+    "name": "Naam",
+    "email": "E-mail",
+    "message": "Bericht",
+    "send": "Versturen"
+  },
+  "pages": {
+    "landing": {
+      "home": "Thuis",
+      "about": "Over",
+      "cars": "Auto's",
+      "contact": "Contact",
+      "heroTitle1": "De beste",
+      "heroTitle2": "Reis van auto",
+      "heroTitle3": "Marktplaats",
+      "heroDescription": "Met Carnet vindt u de beste auto voor u. ",
+      "form": {
+        "placeholderBrand": "Zoek merk",
+        "placeholderModel": "Zoekmodel",
+        "placeholderYear": "Selecteer Jaar",
+        "placeholderFuel": "Selecteer Brandstof",
+        "searchCarButton": "Zoek auto",
+        "sellCarButton": "Auto verkopen"
+      },
+      "sections": {
+        "howItWorks": {
+          "title": " Wij bieden marktplaats en veiling",
+          "description1": "Wat we aanbieden",
+          "item1": "Geen directe kosten voor u",
+          "item2": "Een gegarandeerd aanbod van een dealer",
+          "item3": "Geen controletechniek nodig"
+        },
+        "about": {
+          "title": "Maak het beste bij het kopen van een auto",
+          "desciption": " Carnet is een marktplaats voor het verkopen en kopen van auto's, en ook voor het verkopen van auto's op een veiling",
+          "button": "Begin"
+        },
+        "footer": {
+          "description": "Carnet is een marktplaats voor het verkopen en kopen van auto's, en ook voor het verkopen van auto's op een veiling",
+          "quickLinks": "Snelle koppelingen",
+          "premiumSupport": "Premium-ondersteuning",
+          "ourServices": "Onze diensten",
+          "followUs": "Volg ons"
+        },
+        "pricing": {
+          "1": {
+            "title": "Basis",
+            "price": "Vrij",
+            "description": "Een plan voor kleine bedrijven",
+            "button": "Begin",
+            "feature1": "Onbeperkte producten",
+            "feature2": "Onbeperkte opslag",
+            "feature3": "24/7 ondersteuning"
+          },
+          "2": {
+            "title": "Pro",
+            "price": "$ 15",
+            "description": "Een plan voor middelgrote bedrijven",
+            "button": "Begin",
+            "feature1": "Onbeperkte producten",
+            "feature2": "Onbeperkte opslag",
+            "feature3": "24/7 ondersteuning"
+          },
+          "3": {
+            "title": "Onderneming",
+            "price": "$ 29",
+            "description": "Een plan voor grote bedrijven",
+            "button": "Begin",
+            "feature1": "Onbeperkte producten",
+            "feature2": "Onbeperkte opslag",
+            "feature3": "24/7 ondersteuning"
+          },
+          "title": "Prijzen",
+          "description": " Kies het juiste abonnement voor uw bedrijf. "
+        },
+        "contact": {
+          "title": "Neem contact met ons op",
+          "description": "Als u vragen heeft, neem dan gerust contact met ons op",
+          "button": "Neem contact met ons op",
+          "form": {
+            "name": "Uw naam",
+            "email": "Jouw email",
+            "message": "Jouw bericht",
+            "send": "Versturen",
+            "phone": "Telefoonnummer"
+          }
+        },
+        "carSection": {
+          "title": "Onze recente auto's",
+          "description": "Wij hebben de beste auto's voor u. "
+        },
+        "services": {
+          "1": {
+            "title": "Marktplaats",
+            "description": "Wij bieden de beste marktplaats voor u. ",
+            "image": "/images/img_bidder_1.png"
+          },
+          "2": {
+            "title": "Veiling",
+            "description": "Wij bieden de beste veiling voor u. ",
+            "image": "/images/img_bidder_2.png"
+          },
+          "3": {
+            "title": "Verkopen",
+            "description": "Wij bieden de beste verkoop voor u. ",
+            "image": "/images/img_bidder_3.png"
+          },
+          "4": {
+            "title": "Kopen",
+            "description": "Wij bieden de beste koop voor u. ",
+            "image": "/images/img_bidder_4.png"
+          },
+          "5": {
+            "title": "Huur",
+            "description": "Wij bieden de beste huur voor u. ",
+            "image": "/images/img_bidder_5.png"
+          },
+          "6": {
+            "title": "Huren",
+            "description": "Wij bieden de beste lease voor u. ",
+            "image": "/images/img_bidder_6.png"
+          },
+          "title": "Onze diensten",
+          "description": "Wij bieden de beste diensten voor u. "
+        },
+        "carsSection": {
+          "title": "Onze recente auto's",
+          "description": "Wij hebben de beste auto's voor u. "
+        }
+      }
+    },
+    "error": {
+      "noCar": "Auto niet gevonden",
+      "noCar description": "De auto die u zoekt is niet gevonden"
+    }
+  },
+  "components": {
+    "header": {
+      "home": "Thuis",
+      "about": "Over",
+      "cars": "Auto's",
+      "contact": "Contact"
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "placeholderSearch": "Op zoek naar een auto?",
+      "search": "Zoekopdracht"
+    },
+    "sideBar": {
+      "overview": "Overzicht",
+      "cars": "Auto's",
+      "garages": "Garages",
+      "users": "Gebruikers"
+    },
+    "text": {
+      "create garage page": "Maak een garagepagina",
+      "sellYourCar title": "Een nieuwe manier om moderne en klassieke auto's te verkopen",
+      "sellYourCar": "Verkoop uw auto",
+      "noGarages": "Geen garages gevonden",
+      "bannerText": "Doe mee met de spanning: creëer uw eigen veiling of plaats uw auto en zie hoe de biedingen binnenstromen!",
+      "add another car": "Voeg nog een auto toe",
+      "view cars": "Bekijk de jouwe auto's",
+      "contact title": "Contactgegevens",
+      "contact description": "Contactgegevens zijn belangrijk voor gebruikers om contact met u op te nemen.",
+      "primary email": "Primaire email",
+      "primary phone": "Vaste telefoon",
+      "secondary email": "Secundaire e-mail",
+      "secondary phone": "secundaire telefoon",
+      "address": "Adres"
+    },
+    "garages": {
+      "title": "Garages",
+      "description": "  Vind een garage bij u in de buurt, voor al uw autobehoeften.",
+      "placeholderSearch": "Kent u een garagenaam?"
+    },
+    "my cars": {
+      "no cars": "Je hebt nog geen auto's"
+    },
+    "home": {
+      "title": " Vind uw volgende auto",
+      "description": "Doorzoek duizenden auto's, vrachtwagens en SUV's",
+      "filter": {
+        "placeholderBody": "Selecteer Lichaam",
+        "placeholderBrand": "Selecteer Merk",
+        "placeholderModel": "Selecteer Model"
+      },
+      "noResults": "Geen auto's gevonden, probeer een andere zoekopdracht"
+    }
+  },
+  "car": {
+    "handling": "Behandeling",
+    "interior": "Interieur",
+    "exterior": "Buitenkant",
+    "tires": "Banden",
+    "step1": {
+      "title": "Geef ons eerst wat informatie over uw auto",
+      "placeholderBrand": "Selecteer een merk (verplicht)",
+      "placeholderModel": "Selecteer een model (vereist)",
+      "placeholderFuel": "Selecteer een brandstof (vereist)",
+      "placeholderColor": "Selecteer een kleur (Verplicht)",
+      "placeholderYear": "Selecteer een jaar (Verplicht)",
+      "placeholderState": "Staat van de auto"
+    },
+    "step2": {
+      "title": "Aanvullende informatie over uw auto",
+      "placeholderTransmission": "Selecteer een transmissie (vereist)",
+      "placeholderVersion": "Wat is de versie van uw auto?",
+      "version": "Versie (optioneel)",
+      "placeholderDoors": "Deuren (optioneel)",
+      "mileageLabel": "Kilometerstand (km) (vereist)",
+      "mileagePlaceholder": "Hoeveel kilometer heeft uw auto gereden?",
+      "engineSizeLabel": "Motorinhoud (cc) (vereist)",
+      "engineSizePlaceholder": "Wat is de motorinhoud van uw auto?",
+      "horsePawerLabel": "Paardenkracht (optioneel)",
+      "horsePowerPlaceholder": "Wat is het aantal pk's van uw auto?",
+      "co2Label": "CO2 (g/km) (Optioneel)",
+      "co2Placeholder": "Wat is de CO2-uitstoot van uw auto?",
+      "placeholderBody": "Selecteer het carrosserietype van uw auto (Verplicht)"
+    },
+    "step3": {
+      "title": "Selecteer alle opties die uw auto heeft"
+    },
+    "step4": {
+      "title": "Beoordeel elk onderdeel van uw auto",
+      "handling": {
+        "1": "Start en rijdt niet",
+        "2": "Start maar rijdt niet",
+        "3": "Op het dashboard branden één of meerdere storingen",
+        "4": "Heeft alleen wat onderhoud nodig",
+        "5": "Alles werkt nog perfect!"
+      },
+      "exterior": {
+        "1": "Betrokken bij een (ernstig) ongeval",
+        "2": "Alleen blikschade, geen structurele problemen",
+        "3": "Krassen of deuken",
+        "4": "Lichte krassen",
+        "5": "Perfecte staat"
+      },
+      "interior": {
+        "1": "Zeer slechte staat",
+        "2": "Stoelen in zeer slechte staat",
+        "3": "Merkbare vlekken of beschadiging van de stof",
+        "4": "Goede conditie",
+        "5": "Uitstekende staat"
+      },
+      "tires": {
+        "1": "Vereiste vervanging zo snel mogelijk",
+        "2": "Ze hebben weinig of geen profiel, maar kunnen nog steeds worden opgepompt",
+        "3": "Risico op het ontvangen van een inspectiewaarschuwing",
+        "4": "Ze hebben kilometers ervaring op het circuit",
+        "5": "Minder dan 5000 km en nog steeds in perfecte staat!"
+      }
+    },
+    "step5": {
+      "title": "Voeg enkele foto's van uw auto toe en vertel ons waar deze zich bevindt",
+      "placeholderCountry": "Selecteer een land (verplicht)",
+      "placeholderCity": "Selecteer een stad (verplicht)"
+    },
+    "step6": {
+      "title": " Beschrijf uw auto en kies ten slotte het type verkoop",
+      "descriptionLabel": "Beschrijf uw auto",
+      "descriptionPlaceholder": "Wat kenmerkt uw auto? "
+    }
+  },
+  "error": {
+    "car not found": "Auto niet gevonden",
+    "brand": "Selecteer een merk",
+    "model": "Selecteer een model",
+    "fuel": "Selecteer een brandstof",
+    "color": "Kies een kleur",
+    "year": "Selecteer een jaar",
+    "body": "Selecteer een lichaam",
+    "mileage": "Voer de kilometerstand in",
+    "transmission": "Selecteer een transmissie",
+    "engine size": "Voer het motorvermogen in",
+    "rating": "Selecteer een beoordeling",
+    "title": "Beoordeel elk onderdeel van uw auto",
+    "country": "Selecteer alstublieft een land",
+    "city": "Selecteer een stad",
+    "images": "Upload minimaal 2 afbeeldingen",
+    "price": "Voer een prijs in",
+    "description": "Voer een beschrijving in van maximaal 50 tekens"
+  },
+  "notifications": {
+    "create garage": {
+      "loading": "De garagepagina maken...",
+      "success": "De auto is aan de garage toegevoegd",
+      "error": "Fout bij het maken van de pagina"
+    },
+    "insert car": {
+      "error": "Fout bij toevoegen van auto",
+      "success": "Auto succesvol toegevoegd",
+      "loading": "Uw auto publiceren..."
+    },
+    "update car": {
+      "error": "Fout bij updaten van auto",
+      "success": "Auto succesvol bijgewerkt"
+    },
+    "upload image": {
+      "error": "Fout bij uploaden afbeelding",
+      "loading": "Uw afbeeldingen uploaden..."
+    }
+  },
+  "bodyCar": {},
+  "optionCar": {}
+}

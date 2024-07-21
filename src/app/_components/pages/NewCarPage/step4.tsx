@@ -6,6 +6,7 @@ import { Button, Divider } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { Controller, useForm } from "react-hook-form";
 
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { type RouterInputs } from "~/trpc/shared";
 import RatingStar from "../../ui/ratingStar";
@@ -20,14 +21,16 @@ const Step4 = ({
   onNext: (values: TStep4) => void;
   onBack: () => void;
 }) => {
+  const c = useTranslations("common");
+  const t = useTranslations("car.step4");
   const { handleSubmit, control } = useForm({
     defaultValues: value,
     resolver: zodResolver(
       z.object({
-        handling: z.number().optional().nullable(),
-        tires: z.number().optional().nullable(),
-        exterior: z.number().optional().nullable(),
-        interior: z.number().optional().nullable(),
+        handling: z.number(),
+        tires: z.number(),
+        exterior: z.number(),
+        interior: z.number(),
       }),
     ),
   });
@@ -40,7 +43,7 @@ const Step4 = ({
       onSubmit={handleSubmit(onNext)}
       className="flex w-full max-w-[700px] flex-col gap-10 md:gap-20"
     >
-      <h2 className="text-center text-xl">Rate each parts of your car</h2>
+      <h2 className="text-center text-xl">{t("title")}</h2>
 
       <div className="space-y-10">
         <Controller
@@ -53,11 +56,11 @@ const Step4 = ({
                 value={value ?? undefined}
                 onChange={onChange}
                 tooltips={[
-                  "Doesn't start nor drive",
-                  "Starts but doesn't drive",
-                  "One or more failures are lit on the dashboard",
-                  "Only required some maintenance",
-                  "Everything still working perfectly!",
+                  t("handling.1"),
+                  t("handling.2"),
+                  t("handling.3"),
+                  t("handling.4"),
+                  t("handling.5"),
                 ]}
               />
             </div>
@@ -74,11 +77,11 @@ const Step4 = ({
                 value={value ?? undefined}
                 onChange={onChange}
                 tooltips={[
-                  "Involved in a (serious) accident",
-                  "Only tinplate damage, no structural issues",
-                  "Scratches or dents",
-                  "Slight scratches",
-                  "Perfect condition",
+                  t("exterior.1"),
+                  t("exterior.2"),
+                  t("exterior.3"),
+                  t("exterior.4"),
+                  t("exterior.5"),
                 ]}
               />
             </div>
@@ -95,11 +98,11 @@ const Step4 = ({
                 value={value ?? undefined}
                 onChange={onChange}
                 tooltips={[
-                  "Very bad condition (the airbags have gone off …)",
-                  "Seats in very bad condition",
-                  "Noticeable Stains or fabric damage",
-                  "Good condition (Smell of smoking)",
-                  "Excellent condition",
+                  t("interior.1"),
+                  t("interior.2"),
+                  t("interior.3"),
+                  t("interior.4"),
+                  t("interior.5"),
                 ]}
               />
             </div>
@@ -116,11 +119,11 @@ const Step4 = ({
                 value={value ?? undefined}
                 onChange={onChange}
                 tooltips={[
-                  "Required replacement ASAP",
-                  "They have little or no tread, but can still be inflated",
-                  "Risk of receiving an inspection warning",
-                  "They have miles of experience on the track",
-                  "Less than 5000 kms and still in perfect condition!",
+                  t("tires.1"),
+                  t("tires.2"),
+                  t("tires.3"),
+                  t("tires.4"),
+                  t("tires.5"),
                 ]}
               />
             </div>
@@ -129,14 +132,14 @@ const Step4 = ({
         />
       </div>
       <div className="mx-auto flex w-full max-w-[500px] flex-row items-center justify-between">
-        <Button onClick={onBack}>Back</Button>
+        <Button onClick={onBack}>{c("back")}</Button>
         <Button
           type={"submit"}
           variant="shadow"
           color="primary"
           className="px-5"
         >
-          Next
+          {c("next")}
         </Button>
       </div>
     </motion.form>

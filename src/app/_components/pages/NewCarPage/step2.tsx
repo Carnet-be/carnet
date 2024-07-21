@@ -5,36 +5,23 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, ScrollShadow } from "@nextui-org/react";
-import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import cx from "classnames";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useRef } from "react";
 import { z } from "zod";
 import { type RouterInputs, type RouterOutputs } from "~/trpc/shared";
 import CSelect from "../../ui/CSelect";
-
 type TStep2 = RouterInputs["car"]["addCar"]["step2"];
 
 export const numSchema = z
   .number()
   .or(z.string().transform((v) => Number(v) || undefined));
 
-const step2Schema = z.object({
-  body: z.number().optional(),
-  transmission: z
-    .enum(["manual", "automatic", "semi-automatic"])
-    .optional(),
-  //transform to number
-  mileage: numSchema.optional(),
-  doors: numSchema.optional(),
-  cv: numSchema.optional(),
-  cc: numSchema.optional(),
-  co2: numSchema.optional(),
-  version: z.string().optional(),
-});
 const Step2 = ({
   value,
   onNext,
@@ -47,7 +34,24 @@ const Step2 = ({
   data: RouterOutputs["public"]["carData"];
 }) => {
   const bodies = data?.bodies;
-
+  const c = useTranslations("common");
+  const e = useTranslations("error");
+  const t = useTranslations("car.step2");
+  const step2Schema = z.object({
+    body: z.number({ description: e("body") }),
+    transmission: z.enum(["manual", "automatic", "semi-automatic"]),
+    //transform to number
+    mileage: z
+      .number({ description: e("mileage") })
+      .or(z.string().transform((v) => Number(v) || undefined)),
+    doors: numSchema.optional(),
+    cv: numSchema.optional(),
+    cc: z
+      .number({ description: e("engine size") })
+      .or(z.string().transform((v) => Number(v) || undefined)),
+    co2: numSchema.optional(),
+    version: z.string().optional(),
+  });
   const {
     register,
     handleSubmit,
@@ -72,9 +76,7 @@ const Step2 = ({
       })}
       className="flex max-w-[700px] flex-col gap-10 p-3 md:gap-20"
     >
-      <h2 className="text-center text-xl">
-        Additional informations about your car
-      </h2>
+      <h2 className="text-center text-xl">{t("title")}</h2>
       <div className="space-y-6">
         <BodySelection
           bodies={bodies}
@@ -88,24 +90,23 @@ const Step2 = ({
             render={({ field: { value, onChange, onBlur } }) => (
               <CSelect
                 type="text"
-                label="Transmission (Optional)"
-
+                label={t("placeholderTransmission")}
                 isInvalid={!!errors.transmission}
                 error={errors.transmission?.message}
                 value={value?.toString()}
                 onChange={onChange}
                 onBlur={onBlur}
-                options={["Automatic", "Semi-Automatic", "Manual"].map((t) => ({
+                options={["automatic", "semi-automatic", "manual"].map((t) => ({
                   value: t.toLowerCase(),
-                  label: t,
+                  label: c(t),
                 }))}
               />
             )}
           />
 
           <Input
-            label="Version (Optional)"
-            placeholder="What is the version of your car?"
+            label={t("version")}
+            placeholder={t("placeholderVersion")}
             {...register("version")}
             isInvalid={!!errors.version}
             classNames={{
@@ -121,7 +122,7 @@ const Step2 = ({
               <CSelect
                 className="w-[450px] placeholder:opacity-50"
                 type="number"
-                label="Doors (Optional)"
+                label={t("placeholderDoors")}
                 isInvalid={!!errors.doors}
                 error={errors.doors?.message}
                 value={value?.toString()}
@@ -137,8 +138,8 @@ const Step2 = ({
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Input
-            label="Mileage (km) (Optional)"
-            placeholder="How many kilometers has your car driven?"
+            label={t("mileageLabel")}
+            placeholder={t("mileagePlaceholder")}
             type="number"
             defaultValue={value.mileage?.toString() ?? undefined}
             {...register("mileage")}
@@ -149,9 +150,9 @@ const Step2 = ({
             errorMessage={errors.mileage?.message}
           />
           <Input
-            label="Engine Size (cc) (Optional)"
+            label={t("engineSizeLabel")}
             type="number"
-            placeholder="How many engine size has your car?"
+            placeholder={t("engineSizePlaceholder")}
             defaultValue={value.cc?.toString() ?? undefined}
             {...register("cc")}
             isInvalid={!!errors.cc}
@@ -161,10 +162,10 @@ const Step2 = ({
             errorMessage={errors.cc?.message}
           />
           <Input
-            label="Horse Power (cv) (Optional)"
+            label={t("horsePowerLabel")}
             type="number"
             defaultValue={value.cv?.toString() ?? undefined}
-            placeholder="How many horse power has your car?"
+            placeholder={t("horsePowerPlaceholder")}
             {...register("cv")}
             isInvalid={!!errors.cv}
             classNames={{
@@ -173,11 +174,11 @@ const Step2 = ({
             errorMessage={errors.cv?.message}
           />
           <Input
-            label={"CO2 Emissions (g/km) (Optional)"}
+            label={t("co2Label")}
             type="number"
             defaultValue={value.co2?.toString() ?? undefined}
             {...register("co2")}
-            placeholder="How many CO2 emissions has your car?"
+            placeholder={t("co2Placeholder")}
             isInvalid={!!errors.co2}
             classNames={{
               input: ["placeholder:text-default-700/40"],
@@ -188,14 +189,14 @@ const Step2 = ({
       </div>
 
       <div className="mx-auto flex w-full max-w-[500px] flex-row items-center justify-between">
-        <Button onClick={onBack}>Back</Button>
+        <Button onClick={onBack}>{c("back")}</Button>
         <Button
           type={"submit"}
           variant="shadow"
           color="primary"
           className="px-5"
         >
-          Next
+          {c("next")}
         </Button>
       </div>
     </motion.form>
@@ -213,17 +214,20 @@ const BodySelection = ({
   selectedBody?: number;
   onSelect: (id: number) => void;
 }) => {
+  // const t = useTranslations("car.step2");
+  // const bT = useTranslations("bodyCar");
   const carousel = useRef<HTMLDivElement | null>(null);
   const next = () =>
     (carousel.current as any)?.scrollBy({ left: 300, behavior: "smooth" });
   const prev = () =>
     (carousel.current as any)?.scrollBy({ left: -300, behavior: "smooth" });
+
+  const t = useTranslations("car.step2");
+  const tt = useTranslations("bodyCar");
   //TODO: scroll to the element
   return (
     <div>
-      <span className="px-20">
-        Select the body type of your car (Optional):
-      </span>
+      <span className="px-20">{t("placeholderBody")}</span>
       <div className="h-3"></div>
       <div className="flex flex-row items-center gap-2">
         <Button variant={"light"} isIconOnly onClick={prev}>
@@ -255,7 +259,7 @@ const BodySelection = ({
                   className="w-[100px]"
                 />
                 <span className="whitespace-nowrap text-sm  text-opacity-70">
-                  {b.name}
+                  {tt(b.name)}
                 </span>
               </div>
             );

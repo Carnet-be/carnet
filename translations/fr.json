@@ -1,1 +1,383 @@
-{}
+{
+  "common": {
+    "Company": "Entreprise",
+    "about": "À propos",
+    "contact": "Contact",
+    "privacyPolicy": "Politique de confidentialité",
+    "phoneNumber": "Numéro de téléphone",
+    "buy": "Acheter",
+    "sell": "Vendre",
+    "brand": "Marque",
+    "fuel": "Carburant",
+    "year": "Année",
+    "gasoline": "De l'essence",
+    "diesel": "Diesel",
+    "electric": "Électrique",
+    "hybrid": "Hybride",
+    "close": "Fermer",
+    "add": "Ajouter",
+    "body": "Corps",
+    "clear": "Clair",
+    "load more": "Charger plus",
+    "details": "Détails",
+    "back": "Dos",
+    "reload": "Essayer à nouveau",
+    "description": "Description",
+    "no description": "Pas de description",
+    "options": "Possibilités",
+    "no options": "Aucune option",
+    "rating": "Notation",
+    "no rating": "Pas de notation",
+    "visit": "Visite",
+    "show contact": "Afficher les contacts",
+    "horsePower": "Puissance en chevaux",
+    "color": "Couleur",
+    "transmission": "Transmission",
+    "mileage": "Kilométrage",
+    "co2": "CO2",
+    "doors": "Des portes",
+    "engine size": "La taille du moteur",
+    "search": "Recherche",
+    "my garage": "Mon garage",
+    "view": "Voir",
+    "edit garage": "Modifier le garage",
+    "analytics": "Analytique",
+    "overview": "Aperçu",
+    "cars": "Voitures",
+    "garages": "Garage",
+    "users": "Utilisateurs",
+    "my cars": "Mes voitures",
+    "settings": "Paramètres",
+    "add car": "Ajouter une voiture",
+    "retry": "Recommencez",
+    "pending": "En attente",
+    "published": "Publié",
+    "paused": "En pause",
+    "finished": "Fini",
+    "completed": "Complété",
+    "sold": "Vendu",
+    "new car": "Nouvelle voiture",
+    "used car": "Voiture d'occasion",
+    "next": "Suivant",
+    "automatic": "Automatique",
+    "semi-automatic": "Semi-automatique",
+    "manual": "Manuel",
+    "country": "Pays",
+    "city": "Ville",
+    "update your car": "Mettez à jour votre voiture",
+    "price": "Prix",
+    "publish your car": "Publiez votre voiture",
+    "save": "Sauvegarder"
+  },
+  "text": {
+    "contactInformation": "Coordonnées",
+    "contactInformation desc": " Avant de pouvoir vendre une voiture, vous devez ajouter des informations de contact.",
+    "contactInformation button": "Ajouter des informations de contact"
+  },
+  "form": {
+    "name": "Nom",
+    "email": "E-mail",
+    "message": "Message",
+    "send": "Envoyer"
+  },
+  "pages": {
+    "landing": {
+      "home": "Maison",
+      "about": "À propos",
+      "cars": "Voitures",
+      "contact": "Contact",
+      "heroTitle1": "Le meilleur",
+      "heroTitle2": "Voyage en voiture",
+      "heroTitle3": "Marché",
+      "heroDescription": "Avec Carnet, vous pouvez trouver la voiture qui vous convient le mieux. ",
+      "form": {
+        "placeholderBrand": "Rechercher une marque",
+        "placeholderModel": "Modèle de recherche",
+        "placeholderYear": "Sélectionnez l'année",
+        "placeholderFuel": "Sélectionnez le carburant",
+        "searchCarButton": "Rechercher une voiture",
+        "sellCarButton": "Vendre une voiture"
+      },
+      "sections": {
+        "howItWorks": {
+          "title": " Nous proposons une place de marché et des enchères",
+          "description1": "Ce que nous offrons",
+          "item1": "Aucun coût direct pour vous",
+          "item2": "Une offre garantie d'un concessionnaire",
+          "item3": "Aucune technique de contrôle nécessaire"
+        },
+        "about": {
+          "title": "Tirez le meilleur parti de l'achat d'une voiture",
+          "desciption": " Carnet est un marché pour vendre et acheter des voitures, ainsi que pour vendre des voitures aux enchères.",
+          "button": "Commencer"
+        },
+        "footer": {
+          "description": "Carnet est un marché pour vendre et acheter des voitures, ainsi que pour vendre des voitures aux enchères.",
+          "quickLinks": "Liens rapides",
+          "premiumSupport": "Assistance Premium",
+          "ourServices": "Nos services",
+          "followUs": "Suivez-nous"
+        },
+        "pricing": {
+          "1": {
+            "title": "Basique",
+            "price": "Gratuit",
+            "description": "Un plan pour les petites entreprises",
+            "button": "Commencer",
+            "feature1": "Produits illimités",
+            "feature2": "Stockage illimité",
+            "feature3": "Assistance 24h/24 et 7j/7"
+          },
+          "2": {
+            "title": "Pro",
+            "price": "15 $",
+            "description": "Un plan pour les moyennes entreprises",
+            "button": "Commencer",
+            "feature1": "Produits illimités",
+            "feature2": "Stockage illimité",
+            "feature3": "Assistance 24h/24 et 7j/7"
+          },
+          "3": {
+            "title": "Entreprise",
+            "price": "29 $",
+            "description": "Un plan pour les grandes entreprises",
+            "button": "Commencer",
+            "feature1": "Produits illimités",
+            "feature2": "Stockage illimité",
+            "feature3": "Assistance 24h/24 et 7j/7"
+          },
+          "title": "Tarifs",
+          "description": " Choisissez le plan adapté à votre entreprise. "
+        },
+        "contact": {
+          "title": "Contactez-nous",
+          "description": "Si vous avez des questions, n'hésitez pas à nous contacter",
+          "button": "Contactez-nous",
+          "form": {
+            "name": "votre nom",
+            "email": "Votre e-mail",
+            "message": "Votre message",
+            "send": "Envoyer",
+            "phone": "Numéro de téléphone"
+          }
+        },
+        "carSection": {
+          "title": "Nos voitures récentes",
+          "description": "Nous avons les meilleures voitures pour vous. "
+        },
+        "services": {
+          "1": {
+            "title": "Marché",
+            "description": "Nous vous proposons le meilleur marché. ",
+            "image": "/images/img_bidder_1.png"
+          },
+          "2": {
+            "title": "Enchères",
+            "description": "Nous vous proposons la meilleure vente aux enchères. ",
+            "image": "/images/img_bidder_2.png"
+          },
+          "3": {
+            "title": "Vendre",
+            "description": "Nous vous proposons la meilleure vente. ",
+            "image": "/images/img_bidder_3.png"
+          },
+          "4": {
+            "title": "Acheter",
+            "description": "Nous vous proposons le meilleur achat. ",
+            "image": "/images/img_bidder_4.png"
+          },
+          "5": {
+            "title": "Louer",
+            "description": "Nous vous proposons le meilleur loyer. ",
+            "image": "/images/img_bidder_5.png"
+          },
+          "6": {
+            "title": "Location",
+            "description": "Nous vous proposons le meilleur bail. ",
+            "image": "/images/img_bidder_6.png"
+          },
+          "title": "Nos services",
+          "description": "Nous vous offrons les meilleurs services. "
+        },
+        "carsSection": {
+          "title": "Nos voitures récentes",
+          "description": "Nous avons les meilleures voitures pour vous. "
+        }
+      }
+    },
+    "error": {
+      "noCar": "Voiture introuvable",
+      "noCar description": "La voiture que vous recherchez n'est pas trouvée"
+    }
+  },
+  "components": {
+    "header": {
+      "home": "Maison",
+      "about": "À propos",
+      "cars": "Voitures",
+      "contact": "Contact"
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "placeholderSearch": "Vous cherchez une voiture ?",
+      "search": "Recherche"
+    },
+    "sideBar": {
+      "overview": "Aperçu",
+      "cars": "Voitures",
+      "garages": "Garage",
+      "users": "Utilisateurs"
+    },
+    "text": {
+      "create garage page": "Créer une page de garage",
+      "sellYourCar title": "Une nouvelle façon de vendre des voitures modernes et classiques",
+      "sellYourCar": "Vendez votre voiture",
+      "noGarages": "Aucun garage trouvé",
+      "bannerText": "Joignez-vous à l'excitation : créez votre propre vente aux enchères ou publiez votre voiture et regardez les enchères affluer !",
+      "add another car": "Ajouter une autre voiture",
+      "view cars": "Visualisez vos voitures",
+      "contact title": "Coordonnées",
+      "contact description": "Les informations de contact sont importantes pour que les utilisateurs puissent vous contacter.",
+      "primary email": "E-mail principal",
+      "primary phone": "Téléphone primaire",
+      "secondary email": "Email secondaire",
+      "secondary phone": "Téléphone secondaire",
+      "address": "Adresse"
+    },
+    "garages": {
+      "title": "Garage",
+      "description": "  Trouvez un garage près de chez vous, pour tous vos besoins automobiles.",
+      "placeholderSearch": "Vous connaissez un nom de garage ?"
+    },
+    "my cars": {
+      "no cars": "Vous n'avez pas encore de voiture"
+    },
+    "home": {
+      "title": " Trouvez votre prochaine voiture",
+      "description": "Recherchez des milliers de voitures, camions et SUV",
+      "filter": {
+        "placeholderBody": "Sélectionnez le corps",
+        "placeholderBrand": "Sélectionnez la marque",
+        "placeholderModel": "Sélectionnez le modèle"
+      },
+      "noResults": "Aucune voiture trouvée, essayez une autre recherche"
+    }
+  },
+  "car": {
+    "handling": "Manutention",
+    "interior": "Intérieur",
+    "exterior": "Extérieur",
+    "tires": "Pneus",
+    "step1": {
+      "title": "Commencez par nous donner quelques informations sur votre voiture",
+      "placeholderBrand": "Sélectionnez une marque (obligatoire)",
+      "placeholderModel": "Sélectionnez un modèle (obligatoire)",
+      "placeholderFuel": "Sélectionnez un carburant (obligatoire)",
+      "placeholderColor": "Sélectionnez une couleur (obligatoire)",
+      "placeholderYear": "Sélectionnez une année (obligatoire)",
+      "placeholderState": "Etat de la voiture"
+    },
+    "step2": {
+      "title": "Informations complémentaires sur votre voiture",
+      "placeholderTransmission": "Sélectionnez une transmission (obligatoire)",
+      "placeholderVersion": "Quelle est la version de ta voiture ?",
+      "version": "Version (Facultatif)",
+      "placeholderDoors": "Portes (En option)",
+      "mileageLabel": "Kilométrage (km) (obligatoire)",
+      "mileagePlaceholder": "Combien de kilomètres votre voiture a-t-elle parcouru ?",
+      "engineSizeLabel": "Cylindrée du moteur (cc) (obligatoire)",
+      "engineSizePlaceholder": "Quelle est la cylindrée du moteur de votre voiture ?",
+      "horsePawerLabel": "Puissance en chevaux (en option)",
+      "horsePowerPlaceholder": "Quelle est la puissance de votre voiture ?",
+      "co2Label": "CO2 (g/km) (Facultatif)",
+      "co2Placeholder": "Quelle est l’émission de CO2 de votre voiture ?",
+      "placeholderBody": "Sélectionnez le type de carrosserie de votre voiture (obligatoire)"
+    },
+    "step3": {
+      "title": "Sélectionnez toutes les options dont dispose votre voiture"
+    },
+    "step4": {
+      "title": "Évaluez chaque partie de votre voiture",
+      "handling": {
+        "1": "Ne démarre ni ne roule",
+        "2": "Démarre mais ne roule pas",
+        "3": "Une ou plusieurs pannes sont allumées sur le tableau de bord",
+        "4": "Nécessitait seulement un peu d'entretien",
+        "5": "Tout fonctionne toujours parfaitement !"
+      },
+      "exterior": {
+        "1": "Impliqué dans un (grave) accident",
+        "2": "Seulement des dommages causés par le fer blanc, pas de problèmes structurels",
+        "3": "Rayures ou bosses",
+        "4": "Légères rayures",
+        "5": "Condition parfaite"
+      },
+      "interior": {
+        "1": "Très mauvais état",
+        "2": "Sièges en très mauvais état",
+        "3": "Taches visibles ou dommages au tissu",
+        "4": "Bonne condition",
+        "5": "Condition excellente"
+      },
+      "tires": {
+        "1": "Remplacement requis dès que possible",
+        "2": "Ils ont peu ou pas de bande de roulement, mais peuvent quand même être gonflés",
+        "3": "Risque de recevoir un avertissement d'inspection",
+        "4": "Ils ont des kilomètres d'expérience sur la piste",
+        "5": "Moins de 5000 kms et toujours en parfait état !"
+      }
+    },
+    "step5": {
+      "title": "Ajoutez quelques photos de votre voiture et dites-nous où elle se trouve",
+      "placeholderCountry": "Sélectionnez un pays (obligatoire)",
+      "placeholderCity": "Sélectionnez une ville (obligatoire)"
+    },
+    "step6": {
+      "title": " Décrivez votre voiture et choisissez enfin le type de vente",
+      "descriptionLabel": "Décrivez votre voiture",
+      "descriptionPlaceholder": "Qu'est-ce qui caractérise votre voiture ? "
+    }
+  },
+  "error": {
+    "car not found": "Voiture introuvable",
+    "brand": "Veuillez sélectionner une marque",
+    "model": "Veuillez sélectionner un modèle",
+    "fuel": "Veuillez sélectionner un carburant",
+    "color": "Veuillez sélectionner une couleur",
+    "year": "Veuillez sélectionner une année",
+    "body": "Veuillez sélectionner un corps",
+    "mileage": "Veuillez entrer le kilométrage",
+    "transmission": "Veuillez sélectionner une transmission",
+    "engine size": "Veuillez entrer la cylindrée du moteur",
+    "rating": "Veuillez sélectionner une note",
+    "title": "Évaluez chaque partie de votre voiture",
+    "country": "Veuillez sélectionner un pays",
+    "city": "Veuillez sélectionner une ville",
+    "images": "Veuillez télécharger au moins 2 images",
+    "price": "Veuillez entrer un prix",
+    "description": "Veuillez saisir une description de 50 caractères maximum"
+  },
+  "notifications": {
+    "create garage": {
+      "loading": "Création de la page du garage...",
+      "success": "La voiture a été ajoutée au garage",
+      "error": "Erreur lors de la création de la page"
+    },
+    "insert car": {
+      "error": "Erreur lors de l'ajout de la voiture",
+      "success": "Voiture ajoutée avec succès",
+      "loading": "Publier votre voiture..."
+    },
+    "update car": {
+      "error": "Erreur lors de la mise à jour de la voiture",
+      "success": "Voiture mise à jour avec succès"
+    },
+    "upload image": {
+      "error": "Erreur lors de l'envoi de l'image",
+      "loading": "Téléchargement de vos images..."
+    }
+  },
+  "bodyCar": {},
+  "optionCar": {}
+}

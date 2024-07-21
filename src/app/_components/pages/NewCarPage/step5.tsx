@@ -6,12 +6,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { ImagePlus, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { z } from "zod";
 import { type RouterInputs, type RouterOutputs } from "~/trpc/shared";
@@ -35,8 +36,10 @@ const Step5 = ({
   images: Array<File | string>;
   onChangeImages: (images: Array<File | string>) => void;
 }) => {
+  const c = useTranslations("common");
+  const t = useTranslations("car.step5");
+  const e = useTranslations("error");
   const {
-    register,
     handleSubmit,
     watch,
     control,
@@ -45,9 +48,9 @@ const Step5 = ({
     defaultValues: value,
     resolver: zodResolver(
       z.object({
-        images: z.array(z.string()).default([]),
-        country: z.number().optional().nullable(),
-        city: z.number().optional().nullable(),
+        images: z.array(z.string()).min(2, e("images")).default([]),
+        country: z.number({ description: e("country") }),
+        city: z.number({ description: e("city") }),
         address: z.string().optional().nullable(),
         pos: z
           .object({
@@ -62,7 +65,6 @@ const Step5 = ({
   });
   const countries = data?.countries;
   const cities = data?.cities;
-  console.log("Images", images);
   return (
     <motion.form
       initial={{ opacity: 0.2, y: -100 }}
@@ -74,9 +76,7 @@ const Step5 = ({
       })}
       className="flex w-full max-w-[700px] flex-col gap-10 md:gap-20"
     >
-      <h2 className="text-center text-xl">
-        Add some pictures of your car and tell us where it is located
-      </h2>
+      <h2 className="text-center text-xl">{t("title")}</h2>
 
       <div className="space-y-5">
         <Uploader value={images} onChange={onChangeImages} />
@@ -87,8 +87,8 @@ const Step5 = ({
             control={control}
             render={({ field: { value, onChange, onBlur } }) => (
               <CSelect
-                label="Country"
-                placeholder="Where is your car located?"
+                label={c("country")}
+                placeholder={c("placeholderCountry")}
                 isInvalid={!!errors.country}
                 error={errors.country?.message}
                 value={value?.toString()}
@@ -107,13 +107,7 @@ const Step5 = ({
             control={control}
             render={({ field: { value, onChange, onBlur } }) => (
               <CSelect
-                label={
-                  watch("country")
-                    ? `Select a city of ${countries.find(
-                      (c) => c.id == watch("country"),
-                    )?.name}`
-                    : `City`
-                }
+                label={c("city")}
                 isDisabled={!watch("country")}
                 isInvalid={!!errors.city}
                 error={errors.city?.message}
@@ -159,21 +153,21 @@ const Step5 = ({
                   center={
                     field?.value
                       ? {
-                        lat: field?.value.lat,
-                        lng: field?.value.lng,
-                      }
+                          lat: field?.value.lat,
+                          lng: field?.value.lng,
+                        }
                       : undefined
                   }
-                  className="overflow-hidden rounded-xl col-span-2 h-[200px]"
+                  className="col-span-2 h-[200px] overflow-hidden rounded-xl"
                   onClick={(pos) => field.onChange(pos)}
                   markers={
                     field.value?.lat && field.value?.lng
                       ? [
-                        {
-                          lat: field.value.lat,
-                          lng: field.value.lng,
-                        },
-                      ]
+                          {
+                            lat: field.value.lat,
+                            lng: field.value.lng,
+                          },
+                        ]
                       : undefined
                   }
                 />
@@ -183,9 +177,9 @@ const Step5 = ({
         </div>
       </div>
       <div className="mx-auto flex w-full max-w-[500px] flex-row items-center justify-between">
-        <Button onClick={onBack}>Back</Button>
+        <Button onClick={onBack}>{c("back")}</Button>
         <Button type="submit" variant="shadow" color="primary" className="px-5">
-          Next
+          {c("next")}
         </Button>
       </div>
     </motion.form>

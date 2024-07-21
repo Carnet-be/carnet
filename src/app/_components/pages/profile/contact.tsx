@@ -1,6 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Spinner, Textarea } from "@nextui-org/react";
+import { useTranslations } from "next-intl";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { api } from "~/trpc/react";
@@ -30,16 +31,17 @@ const FormContact = ({
   id: string;
 }) => {
   const { mutate, isLoading: isUpdating } = api.profile.update.useMutation();
-
+  const c = useTranslations("common");
+  const e = useTranslations("error");
+  const t = useTranslations("dashboard.text");
   const contactSchema = z.object({
-    email: z.string().optional().nullable(),
+    email: z.string({ description: e("email") }),
     email2: z.string().optional().nullable(),
-    phone: z.string().optional().nullable(),
+    phone: z.string({ description: e("phone") }),
     phone2: z.string().optional().nullable(),
     address: z.string().optional().nullable(),
   });
 
-  console.log({ data });
   const { register, handleSubmit, control } = useForm({
     defaultValues: {
       email: data?.email,
@@ -52,10 +54,8 @@ const FormContact = ({
   });
   return (
     <div>
-      <h1>Contact</h1>
-      <span>
-        Contact information is important for users to reach out to you.
-      </span>
+      <h1>{t("contact title")}</h1>
+      <span>{t("description")}</span>
 
       <form
         className="mt-5 flex max-w-[400px] flex-col gap-3"
@@ -77,8 +77,7 @@ const FormContact = ({
           render={({ field }) => (
             <Input
               labelPlacement="outside"
-              label="Primary Email"
-              placeholder="Enter your primary email"
+              label={t("primary email")}
               value={field.value ?? ""}
               onChange={field.onChange}
               classNames={{
@@ -94,8 +93,7 @@ const FormContact = ({
           render={({ field }) => (
             <Input
               labelPlacement="outside"
-              label="Secondary Email"
-              placeholder="Enter your secondary email"
+              label={t("secondary email")}
               value={field.value ?? ""}
               onChange={field.onChange}
               classNames={{
@@ -111,8 +109,7 @@ const FormContact = ({
           render={({ field }) => (
             <Input
               labelPlacement="outside"
-              label="Primary Phone"
-              placeholder="Enter your primary phone number"
+              label={t("primary phone")}
               value={field.value ?? ""}
               onChange={field.onChange}
               classNames={{
@@ -128,8 +125,7 @@ const FormContact = ({
           render={({ field }) => (
             <Input
               labelPlacement="outside"
-              label="Secondary Phone"
-              placeholder="Enter your secondary phone number"
+              label={t("secondary phone")}
               value={field.value ?? ""}
               onChange={field.onChange}
               classNames={{
@@ -147,13 +143,12 @@ const FormContact = ({
             <Textarea
               labelPlacement="outside"
               //  minRows={4}
-              label="Address"
+              label={t("address")}
               value={field.value ?? ""}
               onChange={field.onChange}
               classNames={{
                 input: ["placeholder:text-default-700/40"],
               }}
-              placeholder="Enter your address"
             />
             // </div>
           )}
@@ -165,7 +160,7 @@ const FormContact = ({
           color="primary"
           className="mt-3 w-[200px]"
         >
-          Save
+          {c("save")}
         </Button>
       </form>
     </div>

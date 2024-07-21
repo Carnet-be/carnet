@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@nextui-org/react";
 import cx from "classnames";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { type RouterInputs, type RouterOutputs } from "~/trpc/shared";
@@ -29,6 +30,9 @@ const Step3 = ({
       }),
     ),
   });
+  const c = useTranslations("common");
+  const t = useTranslations("car.step3");
+  const oT = useTranslations("optionCar");
   const options = data?.carOptions;
   return (
     <motion.form
@@ -41,9 +45,7 @@ const Step3 = ({
       })}
       className="flex w-full max-w-[700px] flex-col gap-10 md:gap-20"
     >
-      <h2 className="text-center text-xl">
-        Select all the option that your car has
-      </h2>
+      <h2 className="text-center text-xl">{t("title")}</h2>
       <div className="flex flex-wrap items-center justify-center gap-3">
         {options.map((o) => {
           return (
@@ -70,7 +72,7 @@ const Step3 = ({
                       : "",
                   )}
                 >
-                  {o.name}
+                  {oT(o.name)}
                 </div>
               )}
               name={"options"}
@@ -79,14 +81,14 @@ const Step3 = ({
         })}
       </div>
       <div className="mx-auto flex w-full max-w-[500px] flex-row items-center justify-between">
-        <Button onClick={onBack}>Back</Button>
+        <Button onClick={onBack}>{c("back")}</Button>
         <Button
           type={"submit"}
           variant="shadow"
           color="primary"
           className="px-5"
         >
-          Next
+          {c("next")}
         </Button>
       </div>
     </motion.form>

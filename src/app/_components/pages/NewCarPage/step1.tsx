@@ -13,6 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { type RouterInputs, type RouterOutputs } from "~/trpc/shared";
 import { invertColor } from "~/utils/function";
 
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 import CSelect from "../../ui/CSelect";
 
@@ -38,6 +39,9 @@ const Step1 = ({
 }) => {
   const brands = data?.brands;
   const models = data?.models;
+  const e = useTranslations("error");
+  const t = useTranslations("car.step1");
+  const c = useTranslations("common");
   const colors = data?.colors;
   const {
     handleSubmit,
@@ -50,18 +54,15 @@ const Step1 = ({
     resolver: zodResolver(
       z.object({
         brand: z
-          .number({ description: "Please select a brand" })
-          .min(1, { message: "Please select a brand" }),
+          .number({ description: e("brand") })
+          .min(1, { message: e("brand") }),
         model: z
-          .number({ description: "Please select a brand" })
-          .min(1, { message: "Please select a model" }),
-        fuel: z
-          .enum(["gasoline", "diesel", "electricity", "hybrid"])
-          .optional()
-          .nullable(),
-        color: z.number().optional().nullable(),
+          .number({ description: e("model") })
+          .min(1, { message: e("model") }),
+        fuel: z.enum(["gasoline", "diesel", "electricity", "hybrid"]),
+        color: z.number({ description: e("color") }),
         state: z.enum(["new", "used"]).optional().nullable(),
-        year: z.number().optional().nullable(),
+        year: z.number({ description: e("year") }),
       }),
     ),
   });
@@ -77,9 +78,7 @@ const Step1 = ({
       })}
       className="flex  w-full max-w-[700px] flex-col gap-10 md:gap-20"
     >
-      <h2 className="text-center text-xl">
-        Start by giving us some information about your car
-      </h2>
+      <h2 className="text-center text-xl">{t("title")}</h2>
       <div className="space-y-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Controller
@@ -90,7 +89,7 @@ const Step1 = ({
                 required
                 error={errors.brand?.message}
                 isInvalid={!!errors.brand}
-                label={!watch("brand") ? "Select a brand (Required)" : "Brand"}
+                label={!watch("brand") ? t("placeholderBrand") : c("brand")}
                 onChange={onChange}
                 onBlur={onBlur}
                 value={value}
@@ -110,15 +109,7 @@ const Step1 = ({
                 isDisabled={!watch("brand")}
                 error={errors.model?.message}
                 isInvalid={!!errors.model}
-                label={
-                  watch("model")
-                    ? "Model"
-                    : watch("brand")
-                    ? `Select a model of ${brands.find(
-                        (b) => b.id == watch("brand"),
-                      )?.name}`
-                    : "Select a model (Required)"
-                }
+                label={watch("model") ? c("model") : t("placeholderModel")}
                 onChange={onChange}
                 onBlur={onBlur}
                 value={value}
@@ -188,11 +179,7 @@ const Step1 = ({
               <CSelect
                 type="number"
                 className="w-[500px]"
-                label={
-                  watch("year")
-                    ? "Year of the car"
-                    : "Select the year of your car"
-                }
+                label={watch("year") ? c("year") : t("placeholderYear")}
                 onChange={(e) => {
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                   onChange(e);
@@ -213,12 +200,12 @@ const Step1 = ({
               <CSelect
                 type="text"
                 className="w-[400px]"
-                label={"State of the car"}
+                label={t("placeholderState")}
                 onChange={onChange}
                 onBlur={onBlur}
                 value={value?.toString()}
                 options={["new", "used"].map((b) => ({
-                  label: b === "new" ? "New car" : "Used car",
+                  label: b === "new" ? c("new car") : c("used car"),
                   value: b.toString(),
                 }))}
               />
@@ -231,14 +218,12 @@ const Step1 = ({
             render={({ field: { value, onChange, onBlur } }) => (
               <CSelect
                 type="text"
-                label={
-                  watch("fuel") ? "Fuel" : "Select the type of fuel (Required)"
-                }
+                label={watch("fuel") ? c("fuel") : t("placeholderFuel")}
                 onChange={onChange}
                 onBlur={onBlur}
                 value={value?.toString()}
                 options={FUEL.map((b) => ({
-                  label: b.toString(),
+                  label: c(b.toString()),
                   value: b.toString().toLowerCase(),
                 }))}
               />
@@ -255,7 +240,7 @@ const Step1 = ({
       <div className="flex flex-row items-center justify-between">
         <div className="flex-grow"></div>
         <Button type="submit" variant="shadow" color="primary" className="px-5">
-          Next
+          {c("next")}
         </Button>
       </div>
     </motion.form>
