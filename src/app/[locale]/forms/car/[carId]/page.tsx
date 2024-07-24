@@ -1,4 +1,4 @@
-import { auth, clerkClient } from "@clerk/nextjs";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 import NewCarPage from "~/app/_components/pages/NewCarPage";
 

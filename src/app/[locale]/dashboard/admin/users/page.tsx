@@ -60,7 +60,7 @@ export default function CarPageEntreprise() {
   });
   const pathname = usePathname();
   const render = (
-    item: RouterOutputs["bo"]["user"]["getUsers"]["data"][number],
+    item: RouterOutputs["bo"]["user"]["getUsers"]["data"]["data"][number],
     columnKey: Key,
   ) => {
     switch (columnKey as (typeof columns)[number]["key"]) {
@@ -164,7 +164,7 @@ export default function CarPageEntreprise() {
           loadingState={isLoading ? "loading" : undefined}
           loadingContent={<Spinner />}
           emptyContent={isLoading ? " " : "No bids found"}
-          items={rows?.data ?? []}
+          items={rows?.data.data ?? []}
         >
           {(item) => (
             <TableRow key={item.id}>
