@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { auth, currentUser } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import Navbar from "~/app/_components/Navbar";
 import Sidebar from "~/app/_components/Sidebar";
 

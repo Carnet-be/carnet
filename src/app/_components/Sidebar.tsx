@@ -188,7 +188,7 @@ const SellCarBanner = () => {
     <>
       <div className="center flex-col gap-4 rounded-lg bg-gray-100 p-4 text-center">
         <span className="text-[12px] font-semibold opacity-70">
-          {t("sellYourCar title")}
+          {t("text.sellYourCar title")}
         </span>
 
         <Button
@@ -208,7 +208,7 @@ const SellCarBanner = () => {
           className=" text-sm font-semibold"
           startContent={<AiFillCar />}
         >
-          {t("sellYourCar")}
+          {t("text.sellYourCar")}
         </Button>
       </div>
       <ModalCheckContact isOpen={isOpen} onOpenChange={onOpenChange} />

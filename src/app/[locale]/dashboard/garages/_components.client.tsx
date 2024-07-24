@@ -227,3 +227,12 @@ export function UserItemContact({
     </div>
   );
 }
+
+export const NoGarage = () => {
+  const t = useTranslations("dashboard.text");
+  return (
+    <div className="flex h-[300px] w-full items-center justify-center">
+      {t("noGarages")}
+    </div>
+  );
+};

@@ -20,7 +20,7 @@
     "@aws-sdk/s3-presigned-post": "^3.438.0",
     "@aws-sdk/s3-request-presigner": "^3.438.0",
     "@clerk/localizations": "^2.4.6",
-    "@clerk/nextjs": "^4.29.5",
+    "@clerk/nextjs": "^5.2.6",
     "@formkit/auto-animate": "^0.8.1",
     "@hookform/resolvers": "^3.3.2",
     "@neondatabase/serverless": "^0.8.1",

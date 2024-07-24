@@ -8,18 +8,15 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import {
-  getAuth,
-  type SignedInAuthObject,
-  type SignedOutAuthObject,
-} from "@clerk/nextjs/server";
+import type { AuthObject } from "@clerk/backend/internal";
+import { currentUser, getAuth } from "@clerk/nextjs/server";
 import { initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { db } from "~/server/db";
 
-type AuthContext = SignedInAuthObject | SignedOutAuthObject;
+type AuthContext = AuthObject;
 
 /**
  * 1. CONTEXT
@@ -120,9 +117,9 @@ export const protectedProcedure = t.procedure.use((opts) => {
   return opts.next();
 });
 
-export const adminProcedure = t.procedure.use((opts) => {
-  const { auth } = opts.ctx;
-  const isAdmin = auth?.user?.privateMetadata?.role === "admin";
+export const adminProcedure = t.procedure.use(async (opts) => {
+  const user = await currentUser();
+  const isAdmin = user?.privateMetadata?.role === "admin";
   if (!isAdmin) {
     throw new Error("You are not an admin");
   }

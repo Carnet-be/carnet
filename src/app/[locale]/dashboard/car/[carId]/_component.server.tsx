@@ -2,11 +2,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { clerkClient } from "@clerk/nextjs";
+import { clerkClient } from "@clerk/nextjs/server";
 import cx from "classnames";
 import Image from "next/image";
 
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import BackButton from "~/app/_components/ui/backButton";
 import Map from "~/app/_components/ui/map";
 import { api } from "~/trpc/server";
@@ -63,8 +63,7 @@ const RightSide = async ({
   let img: string | undefined = undefined;
   let name: string | undefined = undefined;
 
-  const c = useTranslations("common");
-  const t = useTranslations("car");
+  const c = await getTranslations("common");
 
   try {
     if (car.belongsTo!.startsWith("user")) {

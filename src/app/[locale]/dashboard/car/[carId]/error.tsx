@@ -23,7 +23,7 @@ export default function Error({
   const t = useTranslations("pages.error");
   const c = useTranslations("common");
   return (
-    <div className="animate-gradient flex min-h-screen items-center justify-center bg-gradient-to-r from-primary-50 py-48">
+    <div className=" flex h-[calc(100vh-100px)] items-center justify-center">
       <div className="flex flex-col">
         <div className="flex flex-col items-center">
           <Image src="/logo.png" width={200} height={200} alt="Error" />

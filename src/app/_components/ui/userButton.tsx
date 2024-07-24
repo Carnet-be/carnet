@@ -1,4 +1,4 @@
-import { currentUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import {
   Avatar,
   Button,
@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
   User,
 } from "@nextui-org/react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { BiCar } from "react-icons/bi";
 import { MdDashboard, MdPerson } from "react-icons/md";
@@ -19,6 +20,7 @@ import LogoutButton from "./logoutButton";
 
 async function UserButton() {
   let user;
+  const c = useTranslations("common");
   try {
     user = await currentUser();
   } catch (e) {
@@ -32,19 +34,19 @@ async function UserButton() {
           href="/auth/sign-up"
           className="hover:bg-blue-dark rounded-md bg-primary px-7 py-1 text-base font-medium text-white"
         >
-          Get Started
+          {c("get started")}
         </a>
         <a
           href="/auth/sign-in"
           className="hover:bg-blue-dark  rounded-md border-2 border-primary bg-white px-7 py-1 text-base font-medium text-primary"
         >
-          Login
+          {c("login")}
         </a>
       </div>
     );
   }
 
-  const isAdmin = user.privateMetadata?.rolesv === "admin";
+  const isAdmin = user.privateMetadata?.role === "admin";
 
   return (
     <Popover showArrow placement="bottom">
@@ -81,7 +83,7 @@ async function UserButton() {
                   startContent={<MdDashboard />}
                   className="flex justify-start"
                 >
-                  Dashboard
+                  {c("dashboard")}
                 </Button>
               </Link>
             ) : (
@@ -93,7 +95,7 @@ async function UserButton() {
                   startContent={<MdDashboard />}
                   className="flex justify-start"
                 >
-                  Marketplace
+                  {c("marketplace")}
                 </Button>
               </Link>
             )}
@@ -107,7 +109,7 @@ async function UserButton() {
                 startContent={<GarageIcon />}
                 className="flex justify-start"
               >
-                Garages
+                {c("garages")}
               </Button>
             </Link>
             {isAdmin ? (
@@ -119,7 +121,7 @@ async function UserButton() {
                   startContent={<BiCar />}
                   className="flex justify-start"
                 >
-                  Cars
+                  {c("cars")}
                 </Button>
               </Link>
             ) : (
@@ -131,7 +133,7 @@ async function UserButton() {
                   startContent={<BiCar />}
                   className="flex justify-start"
                 >
-                  My cars
+                  {c("my cars")}
                 </Button>
               </Link>
             )}
@@ -143,7 +145,7 @@ async function UserButton() {
                 startContent={<MdPerson />}
                 className="flex justify-start"
               >
-                Profile
+                {c("profile")}
               </Button>
             </Link>
           </CardBody>

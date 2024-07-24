@@ -4,7 +4,7 @@
 // if(role) redirect('dashboard/admin/overview')
 // redirect("/dashboard/home");
 
-import { currentUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { type AdminRole } from "~/utils/constants";
 

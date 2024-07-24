@@ -1,11 +1,10 @@
-import { clerkClient } from "@clerk/nextjs";
+import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCClientError } from "@trpc/client";
 import {
   and,
   desc,
   eq,
   getTableColumns,
-  ilike,
   inArray,
   type InferSelectModel,
 } from "drizzle-orm";
@@ -39,7 +38,7 @@ export const garageRouter = createTRPCRouter({
       const [garage] = await ctx.db
         .select({
           ...getTableColumns(garages),
-          contact: getTableColumns(profiles)
+          contact: getTableColumns(profiles),
         })
         .from(garages)
         .leftJoin(profiles, eq(garages.orgId, profiles.id))
@@ -104,41 +103,66 @@ export const garageRouter = createTRPCRouter({
       return update.rows;
     }),
 
-  getGarages: publicProcedure.input(z.object({
-    q: z.string().optional().nullable(),
-  })).query(async ({ ctx, input }) => {
-    const { q } = input;
-    const orgs = await clerkClient.organizations.getOrganizationList({ query: q ?? undefined })
-    if (!orgs.length) return []
-    const garagesData = await ctx.db.select().from(garages)
-      .where(
-        and(
-          inArray(garages.orgId, orgs.map((org) => org.id)),
-          eq(garages.state, "published"),
-        )).limit(20);
-
-    if (!garagesData.length) {
-      return [];
-    }
-    const carsData = await ctx.db.select({
-      ...getTableColumns(cars),
-      images: objArray<InferSelectModel<typeof assets>>({
-        table: assets,
-        id: assets.id,
+  getGarages: publicProcedure
+    .input(
+      z.object({
+        q: z.string().optional().nullable(),
       }),
-    }).from(cars)
-      .leftJoin(assets, eq(cars.id, assets.ref))
-      .where(and(eq(cars.status, "published"),
-        inArray(cars.belongsTo, garagesData.map((garage) => garage.orgId)))).groupBy(() => [cars.id])
-      .orderBy(desc(cars.createdAt), desc(cars.updatedAt));
-    return garagesData.map((garage) => {
-      const garageCars = carsData.filter((car) => car.belongsTo === garage.orgId);
-      const org = orgs.find((org) => org.id === garage.orgId);
-      return {
-        ...org,
-        ...garage,
-        cars: garageCars,
-      };
-    });
-  })
+    )
+    .query(async ({ ctx, input }) => {
+      const { q } = input;
+      const orgs = await clerkClient.organizations.getOrganizationList({
+        query: q ?? undefined,
+      });
+      if (!orgs.totalCount) return [];
+      const garagesData = await ctx.db
+        .select()
+        .from(garages)
+        .where(
+          and(
+            inArray(
+              garages.orgId,
+              orgs.data.map((org) => org.id),
+            ),
+            eq(garages.state, "published"),
+          ),
+        )
+        .limit(20);
+
+      if (!garagesData.length) {
+        return [];
+      }
+      const carsData = await ctx.db
+        .select({
+          ...getTableColumns(cars),
+          images: objArray<InferSelectModel<typeof assets>>({
+            table: assets,
+            id: assets.id,
+          }),
+        })
+        .from(cars)
+        .leftJoin(assets, eq(cars.id, assets.ref))
+        .where(
+          and(
+            eq(cars.status, "published"),
+            inArray(
+              cars.belongsTo,
+              garagesData.map((garage) => garage.orgId),
+            ),
+          ),
+        )
+        .groupBy(() => [cars.id])
+        .orderBy(desc(cars.createdAt), desc(cars.updatedAt));
+      return garagesData.map((garage) => {
+        const garageCars = carsData.filter(
+          (car) => car.belongsTo === garage.orgId,
+        );
+        const org = orgs.data.find((org) => org.id === garage.orgId);
+        return {
+          ...org,
+          ...garage,
+          cars: garageCars,
+        };
+      });
+    }),
 });

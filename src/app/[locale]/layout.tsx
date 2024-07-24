@@ -41,9 +41,9 @@ export default async function RootLayout({
     nl: nlBE,
   };
   return (
-    <ClerkProvider localization={internalization[locale]}>
-      <html lang={locale}>
-        <body className={`font-sans ${inter.variable}  bg-gray-50`}>
+    <html lang={locale}>
+      <body className={`font-sans ${inter.variable}  bg-gray-50`}>
+        <ClerkProvider localization={internalization[locale || "en"]}>
           <TRPCReactProvider headers={headers()}>
             <Providers>
               <ClerkLoading>
@@ -56,9 +56,9 @@ export default async function RootLayout({
               </ClerkLoaded>
             </Providers>
           </TRPCReactProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
 

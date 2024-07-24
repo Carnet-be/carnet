@@ -20,7 +20,7 @@ export default function LocaleSwitcherSelect({ defaultValue }: Props) {
   const labels = {
     en: "English",
     fr: "Français",
-    ln: "Netherlandish",
+    nl: "Netherlandish",
   } as const;
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -60,13 +60,22 @@ export default function LocaleSwitcherSelect({ defaultValue }: Props) {
     // </label>
     <Dropdown>
       <DropdownTrigger>
-        <Button variant="bordered" className="uppercase">
+        <Button
+          isLoading={isPending}
+          isIconOnly
+          variant="bordered"
+          className="font-bold uppercase text-primary"
+        >
           {defaultValue}
         </Button>
       </DropdownTrigger>
       <DropdownMenu>
         {Object.entries(labels).map(([locale, label]) => (
-          <DropdownItem key={locale} onClick={() => onSelectChange(locale)}>
+          <DropdownItem
+            className={locale === defaultValue ? "bg-primary text-white" : ""}
+            key={locale}
+            onClick={() => onSelectChange(locale)}
+          >
             {label}
           </DropdownItem>
         ))}

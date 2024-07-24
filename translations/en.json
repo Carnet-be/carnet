@@ -67,7 +67,15 @@
     "update your car": "Update your car",
     "price": "Price",
     "publish your car": "Publish your car",
-    "save": "Save"
+    "save": "Save",
+    "model": "Model",
+    "get started": " Get Started",
+    "login": "Login",
+    "dashboard": "Dashboard",
+    "marketplace": "Marketplace",
+    "profile": "Profile",
+    "logout": "Logout",
+    "home": "Home"
   },
   "text": {
     "contactInformation": "Contact Information",
@@ -221,6 +229,7 @@
     }
   },
   "dashboard": {
+    "my garage": "My Garage",
     "nav": {
       "placeholderSearch": "Looking for a car?",
       "search": "Search"

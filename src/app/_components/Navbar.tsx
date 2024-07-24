@@ -19,6 +19,7 @@ import { MdAdd, MdModeEditOutline, MdVisibility } from "react-icons/md";
 import { api } from "~/trpc/react";
 
 import { useTranslations } from "next-intl";
+import LocaleSwitcher from "./LangueSwitcher";
 import ContactProfileSeciton from "./pages/profile/contact";
 import Logo from "./ui/logo";
 const Navbar = ({
@@ -154,6 +155,7 @@ const Navbar = ({
               <ContactProfileSeciton id={userId} />
             </UserButton.UserProfilePage>
           </UserButton>
+          <LocaleSwitcher />
         </div>
       </div>
     </nav>

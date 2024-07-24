@@ -1,28 +1,23 @@
 "use client";
-import {
-  OrganizationProfile,
-  OrganizationSwitcher,
-  UserButton,
-  UserProfile,
-  useAuth,
-} from "@clerk/nextjs";
+import { UserButton, UserProfile, useAuth } from "@clerk/nextjs";
 import { Tab, Tabs } from "@nextui-org/react";
 import { Dot } from "lucide-react";
 import ContactProfileSeciton from "~/app/_components/pages/profile/contact";
 
 const LayoutSettings = () => {
   const { userId, orgId } = useAuth();
+  console.log(userId);
   if (!userId) return null;
   return (
     <div>
       <Tabs aria-label="Options">
-        {orgId && (
+        {/* {orgId && (
           <Tab key="organization" title="Organization">
             <OrganizationProfile
-              path="/dashboard/settings"
+              //  path="en/dashboard/settings"
               appearance={{
                 elements: {
-                  card: "shadow-none",
+                  card: "shadow-none w-full",
                 },
               }}
             >
@@ -35,10 +30,10 @@ const LayoutSettings = () => {
               </OrganizationSwitcher.OrganizationProfilePage>
             </OrganizationProfile>
           </Tab>
-        )}
-        <Tab key="personal" title="Personal">
+        )} */}
+        <Tab key="personal" title="Profile">
           <UserProfile
-            path="/dashboard/settings"
+            //  path="en/dashboard/settings"
             appearance={{
               elements: {
                 card: "shadow-none",

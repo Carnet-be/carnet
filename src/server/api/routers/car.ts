@@ -19,7 +19,7 @@ import {
 
 import { z } from "zod";
 
-import { clerkClient, currentUser } from "@clerk/nextjs";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
 import { objArray } from "~/utils/dbUtils";
 import {

@@ -1,4 +1,4 @@
-import { clerkClient } from "@clerk/nextjs";
+import { clerkClient } from "@clerk/nextjs/server";
 import { inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -26,7 +26,7 @@ export const boGarageRouter = createTRPCRouter({
           .where(
             inArray(
               garages.orgId,
-              orgs.map((t) => t.id),
+              orgs.data.map((t) => t.id),
             ),
           );
 
@@ -39,7 +39,7 @@ export const boGarageRouter = createTRPCRouter({
         };
       });
 
-      const result = orgs.map((org) => {
+      const result = orgs.data.map((org) => {
         const item = query.garages.find((t) => t.orgId === org.id);
         return {
           ...org,
